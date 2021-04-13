@@ -1,14 +1,18 @@
+package de.fhbielefeld.pmdungeon.quibble;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 
 import de.fhbielefeld.pmdungeon.desktop.DesktopLauncher;
+import de.fhbielefeld.pmdungeon.quibble.entity.Entity;
+import de.fhbielefeld.pmdungeon.quibble.entity.Knight;
 import de.fhbielefeld.pmdungeon.vorgaben.game.Controller.MainController;
 
-public class TestMain extends MainController
+public class DungeonStart extends MainController
 {
 	public static void main(String[] args)
 	{
-		DesktopLauncher.run(new TestMain());
+		DesktopLauncher.run(new DungeonStart());
 	}
 	
 	/****************************************
@@ -17,7 +21,7 @@ public class TestMain extends MainController
 	
 	private Entity myHero;
 	
-	public TestMain()
+	public DungeonStart()
 	{
 		
 	}
@@ -32,7 +36,7 @@ public class TestMain extends MainController
 	public void onLevelLoad()
 	{
 		super.onLevelLoad();
-		this.myHero = new Entity();
+		this.myHero = new Knight();
 		this.entityController.addEntity(this.myHero);
 		this.camera.follow(this.myHero);
 		Gdx.app.log("GAME", "Level loaded.");
@@ -63,7 +67,6 @@ public class TestMain extends MainController
 	@Override
 	protected void endFrame()
 	{
-		// TODO Auto-generated method stub
 		super.endFrame();
 	}
 }
