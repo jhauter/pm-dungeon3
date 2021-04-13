@@ -12,10 +12,21 @@ public abstract class Entity implements IEntity, IAnimatable
 	
 	private Point position;
 	
+	/**
+	 * <code>AnimationHandler</code> instance that will handle this entity's animations.
+	 */
 	protected AnimationHandler animationHandler;
 	
+	/**
+	 * <code>DungeonWorld</code> reference for this entity to allow interaction with the level.
+	 */
 	protected DungeonWorld world;
 	
+	/**
+	 * Creates an entity
+	 * @param x
+	 * @param y
+	 */
 	public Entity(float x, float y)
 	{
 		this.position = new Point(x, y);
@@ -69,6 +80,7 @@ public abstract class Entity implements IEntity, IAnimatable
 	public void update()
 	{
 		this.ticks++;
+		this.animationHandler.frameUpdate();
 		this.draw(0.0F, (float)Math.sin(this.ticks / 10.0F) * 0.2F);
 	}
 	

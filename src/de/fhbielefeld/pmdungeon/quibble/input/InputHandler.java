@@ -22,6 +22,11 @@ public interface InputHandler
 	 */
 	public void notityListeners(String eventName);
 	
+	/*
+	 * Called once per frame and retrieves the state of registered buttons and fires events accordingly.
+	 */
+	public void updateHandler();
+	
 	/**
 	 * Registers a key event which is fired every time the specified <code>key</code> is pressed.
 	 * Every key is assigned a name which will be passed to the listeners.
