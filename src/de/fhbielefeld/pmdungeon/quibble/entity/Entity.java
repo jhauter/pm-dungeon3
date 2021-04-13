@@ -1,4 +1,9 @@
 package de.fhbielefeld.pmdungeon.quibble.entity;
+
+import java.io.IOException;
+
+import com.badlogic.gdx.math.Vector2;
+
 import de.fhbielefeld.pmdungeon.quibble.animation.AnimationHandler;
 import de.fhbielefeld.pmdungeon.vorgaben.dungeonCreator.DungeonWorld;
 import de.fhbielefeld.pmdungeon.vorgaben.graphic.Animation;
@@ -12,6 +17,17 @@ public abstract class Entity implements IEntity, IAnimatable
 	
 	private Point position;
 	
+	private boolean noclip;
+	
+	private Vector2 velocity;
+	
+	/**
+	 * The velocity is multiplied by this value every frame to ensure that a moving object loses speed and
+	 * does not slide infinitely. Value must be <code>&lt;= 1.0</code> or else the entity will get exponentially faster every frame.
+	 * Value must not be negative.
+	 */
+	private float linearDamping = 0.65F;
+	
 	/**
 	 * <code>AnimationHandler</code> instance that will handle this entity's animations.
 	 */
@@ -23,28 +39,35 @@ public abstract class Entity implements IEntity, IAnimatable
 	protected DungeonWorld world;
 	
 	/**
-	 * Creates an entity
-	 * @param x
-	 * @param y
+	 * @param x x-coordinate
+	 * @param y y-coordinate
 	 */
 	public Entity(float x, float y)
 	{
 		this.position = new Point(x, y);
+		this.velocity = new Vector2();
+		this.noclip = true; //noclip is true until collision detection is implemented
+		//TODO init animation handler
 	}
 	
+	/**
+	 * Creates an entity with a default position
+	 */
 	public Entity()
 	{
 		this(0.0F, 0.0F);
 	}
 	
-	public void loadResources()
+	/**
+	 * This is intended to be used to load all resources that read files and thus block the thread.
+	 * Hopefully this makes it easier to adapt this to a possible new file loading system.
+	 * This is not called by the entity itself but by the system that is responsible for adding the entity to the level.
+	 * @throws IOException if an I/O error occurs while loading the resources
+	 */
+	//TODO maybe create own exception type for this?
+	public void loadResources() throws IOException
 	{
-//		List<Texture> idleTex = new ArrayList<Texture>();
-//		for(int i = 0; i < 4; ++i)
-//		{
-//			idleTex.add(new Texture("assets/textures/entity/right/knight/knight_f_idle_anim_f" + i + ".png"));
-//		}
-//		this.idleAnimation = new Animation(idleTex, 3);
+		this.animationHandler.loadAnimations();
 	}
 	
 	@Override
@@ -53,12 +76,41 @@ public abstract class Entity implements IEntity, IAnimatable
 		return this.position;
 	}
 	
+	/**
+	 * Instantly sets the position of this entity and thus teleporting it. No collision checks are made.
+	 * @param x new x-coordinate
+	 * @param y new y-coordinate
+	 */
 	public final void setPosition(float x, float y)
 	{
 		this.position.x = x;
 		this.position.y = y;
 	}
 	
+	/**
+	 * Returns the current velocity of this entity.
+	 * @return current velocity of this entity
+	 */
+	public Vector2 getVelocity()
+	{
+		return this.velocity;
+	}
+	
+	/**
+	 * Sets the current velocity of this entity. Velocity is used to move an entity and to calculate its new position.
+	 * @param xVel new velocity x-value
+	 * @param yVel new velocity y-value
+	 */
+	public void setVelocity(float xVel, float yVel)
+	{
+		this.velocity.x = xVel;
+		this.velocity.y = yVel;
+	}
+	
+	/**
+	 * Returns the amount of frames since this entity was added to the level.
+	 * @return the amount of frames since this entity was added to the level
+	 */
 	public final long getTicks()
 	{
 		return this.ticks;
@@ -79,20 +131,92 @@ public abstract class Entity implements IEntity, IAnimatable
 	@Override
 	public void update()
 	{
+		
+		/******LOGIC******/
+		
+		this.move(this.velocity.x, this.velocity.y);
+		this.velocity.x *= this.linearDamping;
+		this.velocity.y *= this.linearDamping;
 		this.ticks++;
-		this.animationHandler.frameUpdate();
-		this.draw(0.0F, (float)Math.sin(this.ticks / 10.0F) * 0.2F);
+		
+		/******GRAPHICS******/
+		
+		//		this.animationHandler.frameUpdate();
+		this.draw();
 	}
 	
+	/**
+	 * Tries to move the entity in the direction specified by the <code>x</code> and <code>y</code> parameters.
+	 * Parameters are usually the velocity x and y values.
+	 * If collision checks detect a collision along the way that the entity should be moved, the moving will be aborted
+	 * and the entity will only be moved up until the point of collision. (This is complex collision detection
+	 * and will be implemented at a later date)
+	 * @param x units to be moved along the x-axis
+	 * @param y units to be moved along the y-axis
+	 */
 	public void move(float x, float y)
 	{
-		this.position.x += x;
-		this.position.y += y;
-		//collision detection
+		if(this.noclip) //noclip toggles collision detection
+		{
+			this.position.x += x;
+			this.position.y += y;
+		}
+		else
+		{
+			//collision detection
+		}
+		
 	}
 	
+	/**
+	 * This is executed when the entity is added to a level and allows the entity to obtain
+	 * a <code>DungeonWorld</code> reference.
+	 * @param world the <code>DungeonWorld</code> that this entity was added to
+	 */
 	public void onSpawn(DungeonWorld world)
 	{
 		this.world = world;
+	}
+	
+	/**
+	 * Returns true if noclip is active, i.e. collision detection should not be performed.
+	 * @return whether noclip is active
+	 */
+	public final boolean isNoclip()
+	{
+		return this.noclip;
+	}
+	
+	/**
+	 * Sets the noclip value of this entity which determines whether collision detection should
+	 * be performed or not.
+	 * @param noclip whether noclip should be activated
+	 */
+	public void setNoclip(boolean noclip)
+	{
+		this.noclip = noclip;
+	}
+	
+	/**
+	 * Returns the linear damping of this entity.
+	 * The velocity is multiplied by this value every frame to ensure that a moving object loses speed and
+	 * does not slide infinitely.
+	 * @return the linear damping of this entity
+	 */
+	public float getLinearDamping()
+	{
+		return this.linearDamping;
+	}
+	
+	/**
+	 * Sets the linear damping of this entity.
+	 * The velocity is multiplied by this value every frame to ensure that a moving object loses speed and
+	 * does not slide infinitely. Value must be <code>&lt;= 1.0</code> or else the entity will get exponentially faster every frame.
+	 * Value must not be negative.
+	 * @param v new linear damping
+	 */
+	public void setLinearDamping(float v)
+	{
+		this.linearDamping = v;
 	}
 }
