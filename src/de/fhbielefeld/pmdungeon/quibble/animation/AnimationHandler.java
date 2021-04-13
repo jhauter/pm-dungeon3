@@ -13,10 +13,10 @@ public interface AnimationHandler
 	 * Registers a new animation for this animation handler.
 	 * Each animation is a set of textures which is assigned a name.
 	 * The number of textures is specified by <code>numFrames</code>.
-	 * The nth texture file of this set is expected to be at the following filepath:
+	 * The nth texture file of this set is expected to be at the following file path:
 	 * 
 	 * <br>
-	 * <blockquote><code>&ltpathToTexDir&gt/&ltfileName&gt_&ltanimName&gt_&ltFILENAME_SUFFIX&gt_&ltn&gt.&ltFILENAME_EXT&gt</code></blockquote>
+	 * <blockquote><code>&ltpathToTexDir&gt;/&ltfileName&gt;_&ltanimName&gt;_&ltFILENAME_SUFFIX&gt;_&lt;n&gt;.&ltFILENAME_EXT&gt;</code></blockquote>
 	 * 
 	 * This method stores the supplied parameters internally.
 	 * The files can be loaded by calling <code>loadAnimations()</code>.
