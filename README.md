@@ -38,7 +38,14 @@ sowie [Praktikumsblatt "Lerntagebuch"](pm_praktikum.html#lerntagebuch).
 Bitte hier die zu lösende Aufgabe kurz in eigenen Worten beschreiben.
 -->
 
-tbd
+Die gegebenen Ressourcen in die eigene IDE einbetten.
+Danach die Dokumentation durchlesen und sich in die API einfinden.
+Gegenfalls die JavaDoc als Hilfe nehmen.
+Einen eigenen ersten Helden erstellen und diesen zum Laufen bringen.
+Dem Helden werden entsprechende Textures und Animationen hinzufügen.
+Gegebenenfalls eigene Textures suchen.
+
+In das Git System einfinden und damit vertraut machen.
 
 
 # Ansatz und Modellierung
@@ -51,7 +58,23 @@ Bitte hier den Lösungsansatz kurz beschreiben:
 -   Worauf müssen Sie konkret achten?
 -->
 
-tbd
+Die bereitgestellten Dateien herunterladen und diese extrahieren.
+Diese sollen als Dateien in die IDE eingepflegt werden und gegebenenfalls
+Einstellungen konfiguriert.
+Die passenden Texturen hinzugefügt, um sich mit der Dokumentation in die API
+einzufinden
+Mithilfe der Dokumentation dann die ersten Schritte des Helden unternehmen.
+Der erste eigene Held wird in den Dungeon implementiert, „Hello Dungeon“.
+Als Letztes sollen die Animationen des Helden eingefügt und erweitert werden.
+Der Held soll zwischen Lauf- und Idle- Animationen unterscheiden und auch nach links
+laufen können.
+
+Ein Grundgerüst mithilfe von einem Klassendiagramm aufbauen.
+Dafür an spätere Implementationen denken.
+Es soll damit verhindert, das kein replizierter Code geschrieben wird oder es zu Fehlern
+kommt, die nur mit aufwendigem Refactorn zu beheben sind.
+Gegebenenfalls Design Pattern für bestimmte Methoden um „Clean Code“ zu erstellen.
+Dies verhindert ebenfalls nötiges Refactorn.
 
 
 # Umsetzung
@@ -64,8 +87,22 @@ Bitte hier die Umsetzung der Lösung kurz beschreiben:
 -   was war das Ergebnis?
 -->
 
-tbd
+Das Dokument und die Vorkehrungen wurden nach Beschreibung und Tutorials abgearbeitet.
+In GitLab wurden die Mitglieder hinzugefügt und die Java Projekte vereinheitlicht.
+Erste Tests mit GitLab wurden umgesetzt und so erprobt.
+Beispielsweise wurde ein Ordner von einem nicht Admin als Pull Request hinzugefügt.
+Die Readme verändert und Commits geschrieben.
 
+Aus der UML kristallisierte sich eine
+Grund Entity Klasse, ein InputListener und ein Animationsloader.
+Diese Stellen nachher das Gerüst für Bewegung, das Laden der Animationen, sowie
+für bewegte, sowie unbewegte Objekte, dar.
+Des Weiteren werden schon Aufgabenfelder verteilt, die mithilfe der UML sichtbar werden.
+Jeder Entwickler wird so bereits ein Spezialist für ein Feld, dieser muss sicherstellen das seine Methoden von den Teammitgliedern verstanden und benutzt werden können!
+Die ersten Implementationen werden umgesetzt.
+
+Tutorials, Selbstlernen = 4 Stunden.
+Meeting am 13.04.21 von 13 Uhr - 22 Uhr.
 
 # Postmortem
 
