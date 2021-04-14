@@ -1,15 +1,13 @@
 package de.fhbielefeld.pmdungeon.quibble;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 
 import de.fhbielefeld.pmdungeon.desktop.DesktopLauncher;
 import de.fhbielefeld.pmdungeon.quibble.entity.Entity;
 import de.fhbielefeld.pmdungeon.quibble.entity.Knight;
-import de.fhbielefeld.pmdungeon.quibble.entity.LookingDirection;
 import de.fhbielefeld.pmdungeon.quibble.entity.Player;
-import de.fhbielefeld.pmdungeon.quibble.entity.WalkingDirection;
 import de.fhbielefeld.pmdungeon.quibble.input.InputHandler;
+import de.fhbielefeld.pmdungeon.quibble.input.KeyHandler;
 import de.fhbielefeld.pmdungeon.vorgaben.game.Controller.MainController;
 
 public class DungeonStart extends MainController
@@ -53,7 +51,7 @@ public class DungeonStart extends MainController
 	protected void beginFrame()
 	{
 		super.beginFrame();
-		this.listener = new KeyHandler();
+		KeyHandler listener = new KeyHandler();
 		listener.addInputListener(myHero);
 		listener.notityListeners(listener.updateHandler());
 	}
