@@ -4,11 +4,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 
 import de.fhbielefeld.pmdungeon.desktop.DesktopLauncher;
-import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
 import de.fhbielefeld.pmdungeon.quibble.entity.Entity;
 import de.fhbielefeld.pmdungeon.quibble.entity.Knight;
 import de.fhbielefeld.pmdungeon.quibble.entity.LookingDirection;
+import de.fhbielefeld.pmdungeon.quibble.entity.Player;
 import de.fhbielefeld.pmdungeon.quibble.entity.WalkingDirection;
+import de.fhbielefeld.pmdungeon.quibble.input.InputHandler;
 import de.fhbielefeld.pmdungeon.vorgaben.game.Controller.MainController;
 
 public class DungeonStart extends MainController
@@ -22,7 +23,9 @@ public class DungeonStart extends MainController
 	 *                GAME                  *
 	 ****************************************/
 	
-	private Creature myHero;
+	private Player myHero;
+	
+	private InputHandler inputHandler;
 	
 	public DungeonStart()
 	{
@@ -41,6 +44,7 @@ public class DungeonStart extends MainController
 		super.onLevelLoad();
 		this.myHero = new Knight();
 		this.addEntityToLevel(this.myHero);
+//		this.inputHandler.addInputListener(this.myHero);
 		this.camera.follow(this.myHero);
 		Gdx.app.log("GAME", "Level loaded.");
 	}
