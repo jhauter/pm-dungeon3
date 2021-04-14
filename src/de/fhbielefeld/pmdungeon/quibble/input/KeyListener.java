@@ -1,18 +1,13 @@
 package de.fhbielefeld.pmdungeon.quibble.input;
 
-import de.fhbielefeld.pmdungeon.quibble.entity.Knight;
 
-public abstract class KeyListener implements InputListener {
-  
-  protected Knight knight;
-  
-  public KeyListener(Knight knight) {
-    this.knight = knight;
-  }
-
-  @Override
-  public abstract void onInputRecieved(KEY eventName);
-
-  
-  
+@FunctionalInterface
+public interface InputListener
+{
+	/**
+	 * This is called every time a user input is received with the registered <code>eventName</code>
+	 * @param eventName name of the input event that was assigned upon registration
+	 */
+	public void onInputRecieved(KEY key);
+	
 }

@@ -49,24 +49,9 @@ public class DungeonStart extends MainController
 	protected void beginFrame()
 	{
 		super.beginFrame();
-		if(Gdx.input.isKeyPressed(Input.Keys.A))
-		{
-			this.myHero.walk(WalkingDirection.LEFT, 1.0F);
-			this.myHero.setLookingDirection(LookingDirection.LEFT);
-		}
-		else if(Gdx.input.isKeyPressed(Input.Keys.D))
-		{
-			this.myHero.walk(WalkingDirection.RIGHT, 1.0F);
-			this.myHero.setLookingDirection(LookingDirection.RIGHT);
-		}
-		else if(Gdx.input.isKeyPressed(Input.Keys.W))
-		{
-			this.myHero.walk(WalkingDirection.UP, 1.0F);
-		}
-		else if(Gdx.input.isKeyPressed(Input.Keys.S))
-		{
-			this.myHero.walk(WalkingDirection.DOWN, 1.0F);
-		}
+		this.listener = new KeyHandler();
+		listener.addInputListener(myHero);
+		listener.notityListeners(listener.updateHandler());
 	}
 	
 	@Override

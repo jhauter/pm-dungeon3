@@ -20,12 +20,12 @@ public interface InputHandler
 	 * Notifies all listeners about an input event. This should only be called internally.
 	 * @param eventName the name of the registered input event
 	 */
-	public void notityListeners(String eventName);
+	public void notityListeners(KEY key);
 	
 	/*
 	 * Called once per frame and retrieves the state of registered buttons and fires events accordingly.
 	 */
-	public void updateHandler();
+	public KEY updateHandler();
 	
 	/**
 	 * Registers a key event which is fired every time the specified <code>key</code> is pressed.
@@ -39,7 +39,7 @@ public interface InputHandler
 	 * @param justPressed whether this event fires as long as the button is held down or only when is was just pressed
 	 * @throws IllegalArgumentException if a key event with the same name was already registered
 	 */
-	public void registerKeyEvent(String eventName, int key, boolean justPressed);
+	public void registerKeyEvent(KEY key);
 	
 	/**
 	 * Registers a mouse button event which is fired every time the specified <code>button</code> is pressed.
@@ -53,5 +53,5 @@ public interface InputHandler
 	 * @param justPressed whether this event fires as long as the button is held down or only when is was just pressed
 	 * @throws IllegalArgumentException if a button event with the same name was already registered
 	 */
-	public void registerMouseEvent(String eventName, int button, boolean justPressed);
+	public void registerMouseEvent(KEY key);
 }
