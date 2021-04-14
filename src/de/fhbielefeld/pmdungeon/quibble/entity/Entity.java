@@ -1,10 +1,9 @@
 package de.fhbielefeld.pmdungeon.quibble.entity;
 
-import java.io.IOException;
-
 import com.badlogic.gdx.math.Vector2;
 
 import de.fhbielefeld.pmdungeon.quibble.animation.AnimationHandler;
+import de.fhbielefeld.pmdungeon.quibble.animation.AnimationHandlerImpl;
 import de.fhbielefeld.pmdungeon.vorgaben.dungeonCreator.DungeonWorld;
 import de.fhbielefeld.pmdungeon.vorgaben.graphic.Animation;
 import de.fhbielefeld.pmdungeon.vorgaben.interfaces.IAnimatable;
@@ -47,7 +46,7 @@ public abstract class Entity implements IEntity, IAnimatable
 		this.position = new Point(x, y);
 		this.velocity = new Vector2();
 		this.noclip = true; //noclip is true until collision detection is implemented
-		//TODO init animation handler
+		this.animationHandler = new AnimationHandlerImpl();
 	}
 	
 	/**
@@ -62,12 +61,11 @@ public abstract class Entity implements IEntity, IAnimatable
 	 * This is intended to be used to load all resources that read files and thus block the thread.
 	 * Hopefully this makes it easier to adapt this to a possible new file loading system.
 	 * This is not called by the entity itself but by the system that is responsible for adding the entity to the level.
-	 * @throws IOException if an I/O error occurs while loading the resources
+	 * @return true if all resources have been loaded successfully
 	 */
-	//TODO maybe create own exception type for this?
-	public void loadResources() throws IOException
+	public boolean loadResources()
 	{
-		this.animationHandler.loadAnimations();
+		return this.animationHandler.loadAnimations();
 	}
 	
 	@Override
@@ -108,6 +106,24 @@ public abstract class Entity implements IEntity, IAnimatable
 	}
 	
 	/**
+	 * Sets the velocity in x direction.
+	 * @param x the new x velocity
+	 */
+	public void setVelocityX(float x)
+	{
+		this.velocity.x = x;
+	}
+	
+	/**
+	 * Sets the velocity in y direction.
+	 * @param y the new y velocity
+	 */
+	public void setVelocityY(float y)
+	{
+		this.velocity.y = y;
+	}
+	
+	/**
 	 * Returns the amount of frames since this entity was added to the level.
 	 * @return the amount of frames since this entity was added to the level
 	 */
@@ -141,7 +157,7 @@ public abstract class Entity implements IEntity, IAnimatable
 		
 		/******GRAPHICS******/
 		
-		//		this.animationHandler.frameUpdate();
+		this.animationHandler.frameUpdate();
 		this.draw();
 	}
 	

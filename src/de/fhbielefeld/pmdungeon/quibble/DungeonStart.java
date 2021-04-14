@@ -1,7 +1,5 @@
 package de.fhbielefeld.pmdungeon.quibble;
 
-import java.io.IOException;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 
@@ -50,19 +48,19 @@ public class DungeonStart extends MainController
 		super.beginFrame();
 		if(Gdx.input.isKeyPressed(Input.Keys.A))
 		{
-			this.myHero.setVelocity(-0.1F, 0);
+			this.myHero.setVelocityX(-0.1F);
 		}
 		if(Gdx.input.isKeyPressed(Input.Keys.D))
 		{
-			this.myHero.setVelocity(+0.1F, 0);
+			this.myHero.setVelocityX(+0.1F);
 		}
 		if(Gdx.input.isKeyPressed(Input.Keys.W))
 		{
-			this.myHero.setVelocity(0, +0.1F);
+			this.myHero.setVelocityY(+0.1F);
 		}
 		if(Gdx.input.isKeyPressed(Input.Keys.S))
 		{
-			this.myHero.setVelocity(0, -0.1F);
+			this.myHero.setVelocityY(-0.1F);
 		}
 	}
 	
@@ -79,15 +77,10 @@ public class DungeonStart extends MainController
 	 */
 	public void addEntityToLevel(Entity entity)
 	{
-		try
+		if(!entity.loadResources())
 		{
-			entity.loadResources();
-		}
-		catch(IOException e)
-		{
-			e.printStackTrace();
-			return;
 			//Don't add entity if an error occurs
+			return;
 		}
 		this.entityController.addEntity(entity);
 		entity.onSpawn(this.levelController.getDungeon());
