@@ -1,13 +1,14 @@
 package de.fhbielefeld.pmdungeon.quibble;
 
-import java.io.IOException;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 
 import de.fhbielefeld.pmdungeon.desktop.DesktopLauncher;
+import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
 import de.fhbielefeld.pmdungeon.quibble.entity.Entity;
 import de.fhbielefeld.pmdungeon.quibble.entity.Knight;
+import de.fhbielefeld.pmdungeon.quibble.entity.LookingDirection;
+import de.fhbielefeld.pmdungeon.quibble.entity.WalkingDirection;
 import de.fhbielefeld.pmdungeon.vorgaben.game.Controller.MainController;
 
 public class DungeonStart extends MainController
@@ -21,7 +22,7 @@ public class DungeonStart extends MainController
 	 *                GAME                  *
 	 ****************************************/
 	
-	private Entity myHero;
+	private Creature myHero;
 	
 	public DungeonStart()
 	{
@@ -50,19 +51,21 @@ public class DungeonStart extends MainController
 		super.beginFrame();
 		if(Gdx.input.isKeyPressed(Input.Keys.A))
 		{
-			this.myHero.setVelocity(-0.1F, 0);
+			this.myHero.walk(WalkingDirection.LEFT, 1.0F);
+			this.myHero.setLookingDirection(LookingDirection.LEFT);
 		}
-		if(Gdx.input.isKeyPressed(Input.Keys.D))
+		else if(Gdx.input.isKeyPressed(Input.Keys.D))
 		{
-			this.myHero.setVelocity(+0.1F, 0);
+			this.myHero.walk(WalkingDirection.RIGHT, 1.0F);
+			this.myHero.setLookingDirection(LookingDirection.RIGHT);
 		}
-		if(Gdx.input.isKeyPressed(Input.Keys.W))
+		else if(Gdx.input.isKeyPressed(Input.Keys.W))
 		{
-			this.myHero.setVelocity(0, +0.1F);
+			this.myHero.walk(WalkingDirection.UP, 1.0F);
 		}
-		if(Gdx.input.isKeyPressed(Input.Keys.S))
+		else if(Gdx.input.isKeyPressed(Input.Keys.S))
 		{
-			this.myHero.setVelocity(0, -0.1F);
+			this.myHero.walk(WalkingDirection.DOWN, 1.0F);
 		}
 	}
 	
@@ -79,15 +82,10 @@ public class DungeonStart extends MainController
 	 */
 	public void addEntityToLevel(Entity entity)
 	{
-		try
+		if(!entity.loadResources())
 		{
-			entity.loadResources();
-		}
-		catch(IOException e)
-		{
-			e.printStackTrace();
-			return;
 			//Don't add entity if an error occurs
+			return;
 		}
 		this.entityController.addEntity(entity);
 		entity.onSpawn(this.levelController.getDungeon());

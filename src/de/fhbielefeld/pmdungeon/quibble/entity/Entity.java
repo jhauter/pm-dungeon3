@@ -1,10 +1,9 @@
 package de.fhbielefeld.pmdungeon.quibble.entity;
 
-import java.io.IOException;
-
 import com.badlogic.gdx.math.Vector2;
 
 import de.fhbielefeld.pmdungeon.quibble.animation.AnimationHandler;
+import de.fhbielefeld.pmdungeon.quibble.animation.AnimationHandlerImpl;
 import de.fhbielefeld.pmdungeon.vorgaben.dungeonCreator.DungeonWorld;
 import de.fhbielefeld.pmdungeon.vorgaben.graphic.Animation;
 import de.fhbielefeld.pmdungeon.vorgaben.interfaces.IAnimatable;
@@ -47,7 +46,7 @@ public abstract class Entity implements IEntity, IAnimatable
 		this.position = new Point(x, y);
 		this.velocity = new Vector2();
 		this.noclip = true; //noclip is true until collision detection is implemented
-		//TODO init animation handler
+		this.animationHandler = new AnimationHandlerImpl();
 	}
 	
 	/**
@@ -62,12 +61,11 @@ public abstract class Entity implements IEntity, IAnimatable
 	 * This is intended to be used to load all resources that read files and thus block the thread.
 	 * Hopefully this makes it easier to adapt this to a possible new file loading system.
 	 * This is not called by the entity itself but by the system that is responsible for adding the entity to the level.
-	 * @throws IOException if an I/O error occurs while loading the resources
+	 * @return true if all resources have been loaded successfully
 	 */
-	//TODO maybe create own exception type for this?
-	public void loadResources() throws IOException
+	public boolean loadResources()
 	{
-		this.animationHandler.loadAnimations();
+		return this.animationHandler.loadAnimations();
 	}
 	
 	@Override
@@ -108,6 +106,24 @@ public abstract class Entity implements IEntity, IAnimatable
 	}
 	
 	/**
+	 * Sets the velocity in x direction.
+	 * @param x the new x velocity
+	 */
+	public void setVelocityX(float x)
+	{
+		this.velocity.x = x;
+	}
+	
+	/**
+	 * Sets the velocity in y direction.
+	 * @param y the new y velocity
+	 */
+	public void setVelocityY(float y)
+	{
+		this.velocity.y = y;
+	}
+	
+	/**
 	 * Returns the amount of frames since this entity was added to the level.
 	 * @return the amount of frames since this entity was added to the level
 	 */
@@ -129,19 +145,59 @@ public abstract class Entity implements IEntity, IAnimatable
 	}
 	
 	@Override
-	public void update()
+	public final void update()
 	{
+		this.updateBegin();
+		this.updateLogic();
 		
-		/******LOGIC******/
-		
+		//Apply the new values calculated in updateLogic
+		//This is core stuff that has to be done for every entity
 		this.move(this.velocity.x, this.velocity.y);
 		this.velocity.x *= this.linearDamping;
 		this.velocity.y *= this.linearDamping;
 		this.ticks++;
 		
+		this.updateAnimationState();
+		this.updateEnd();
+	}
+	
+	/**
+	 * Called every update and should be used for preparation for each frame
+	 * This makes it easier to override because we don't have to think as much about where the super belongs.
+	 */
+	protected void updateBegin()
+	{
+		
+	}
+	
+	/**
+	 * Called every update and should be used for logic extension.
+	 * This makes it easier to override because we don't have to think as much about where the super belongs.
+	 */
+	protected void updateLogic()
+	{
+		
+	}
+	
+	/**
+	 * Called every update and should be used for calculating animation states based on the logic
+	 * that has been calculated.
+	 * This makes it easier to override because we don't have to think as much about where the super belongs.
+	 */
+	protected void updateAnimationState()
+	{
+		
+	}
+	
+	/**
+	 * Called every update and should be used for post logic stuff such as drawing.
+	 * This makes it easier to override because we don't have to think as much about where the super belongs.
+	 */
+	protected void updateEnd()
+	{
 		/******GRAPHICS******/
 		
-		//		this.animationHandler.frameUpdate();
+		this.animationHandler.frameUpdate();
 		this.draw();
 	}
 	
