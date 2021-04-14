@@ -70,7 +70,10 @@ public interface AnimationHandler
 	 * said animation. A cyclic animation will stop playing if this method does not "keep alive" the cyclic
 	 * animation every frame anymore.
 	 * A non-cyclic animation does only need to be called once and will play until it runs out of frames.
-	 * Calling this method if the non-cyclic animation has already started will restart this animation.
+	 * Calling this method if the non-cyclic animation has already started will reset the duration the animation
+	 * but will not reset it so that the animation starts over again at the first frame. It would have the
+	 * same effect as a cyclic animation apart from that a non-cyclic animation will play out after this method stops
+	 * reseting the animation.
 	 * <br><br>
 	 * DISCLAIMER: as there is no real way known by me to get any useful information out of the Animation class,
 	 * the duration for non-cyclic animations are just estimates and may differ from how long they would actually last.
