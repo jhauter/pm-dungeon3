@@ -1,7 +1,19 @@
 package de.fhbielefeld.pmdungeon.quibble.entity;
 
+import de.fhbielefeld.pmdungeon.quibble.animation.AnimationStateHelper;
+
 public abstract class Creature extends Entity
 {
+	private static final int ANIM_SWITCH_IDLE_L = 0;
+	private static final int ANIM_SWITCH_IDLE_R = 1;
+	private static final int ANIM_SWITCH_RUN_L = 2;
+	private static final int ANIM_SWITCH_RUN_R = 3;
+
+	protected static final String ANIM_NAME_IDLE_L = "idle_left";
+	protected static final String ANIM_NAME_IDLE_R = "idle_right";
+	protected static final String ANIM_NAME_RUN_L = "run_left";
+	protected static final String ANIM_NAME_RUN_R = "run_right";
+	
 	/**
 	 * The walking speed of this entity, measured in tiles per frame.
 	 */
@@ -10,6 +22,8 @@ public abstract class Creature extends Entity
 	private boolean isWalking;
 	
 	private LookingDirection lookingDirection;
+	
+	private AnimationStateHelper defaultAnimationsHelper;
 	
 	/**
 	 * @param x x-coordinate
@@ -23,6 +37,15 @@ public abstract class Creature extends Entity
 		
 		//Default looking direction should be right
 		this.lookingDirection = LookingDirection.RIGHT;
+		
+		if(this.useDefaultAnimation())
+		{
+			this.defaultAnimationsHelper = new AnimationStateHelper(this.animationHandler);
+			this.defaultAnimationsHelper.addSwitch(ANIM_SWITCH_IDLE_L, ANIM_NAME_IDLE_L, 0);
+			this.defaultAnimationsHelper.addSwitch(ANIM_SWITCH_IDLE_R, ANIM_NAME_IDLE_R, 0);
+			this.defaultAnimationsHelper.addSwitch(ANIM_SWITCH_RUN_L, ANIM_NAME_RUN_L, 5);
+			this.defaultAnimationsHelper.addSwitch(ANIM_SWITCH_RUN_R, ANIM_NAME_RUN_R, 5);
+		}
 	}
 	
 	/**
@@ -112,6 +135,27 @@ public abstract class Creature extends Entity
 	public LookingDirection getLookingDirection()
 	{
 		return this.lookingDirection;
+	}
+	
+	public boolean useDefaultAnimation()
+	{
+		return true;
+	}
+	
+	@Override
+	protected void updateAnimationState()
+	{
+		super.updateAnimationState();
+		if(this.useDefaultAnimation())
+		{
+			final boolean lookLeft = this.getLookingDirection() == LookingDirection.LEFT;
+			final boolean lookRight = this.getLookingDirection() == LookingDirection.RIGHT;
+			this.defaultAnimationsHelper.setSwitchValue(ANIM_SWITCH_IDLE_L, lookLeft);
+			this.defaultAnimationsHelper.setSwitchValue(ANIM_SWITCH_IDLE_R, lookRight);
+			this.defaultAnimationsHelper.setSwitchValue(ANIM_SWITCH_RUN_L, this.isWalking() && lookLeft);
+			this.defaultAnimationsHelper.setSwitchValue(ANIM_SWITCH_RUN_R, this.isWalking() && lookRight);
+			this.defaultAnimationsHelper.update();
+		}
 	}
 	
 	@Override
