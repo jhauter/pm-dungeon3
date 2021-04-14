@@ -1,5 +1,8 @@
 package de.fhbielefeld.pmdungeon.quibble.entity;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+
 public class Knight extends Player
 {
 	public Knight(float x, float y)
@@ -22,17 +25,16 @@ public class Knight extends Player
 	@Override
 	public float getInitWalkingSpeed()
 	{
-		return 1.0F;
+		return 0.1F;
 	}
 	
-	/****** ANIMATION DEMO *********
-	
 	@Override
-	public void update()
+	public void updateAnimationState()
 	{
-		if(Gdx.input.isKeyPressed(Input.Keys.R)) //Holding R will play running animation
+		if(this.isWalking())
 		{
 			this.animationHandler.playAnimation("run", 5, true);
+			//TODO let looking direction affect the animation
 		}
 		
 		//Hitting space will play a hit animation and take over the running animation
@@ -40,9 +42,7 @@ public class Knight extends Player
 		{
 			this.animationHandler.playAnimation("hit", 10, false);
 		}
-		
-		super.update();
+		System.out.println(this.getLookingDirection());
+		super.updateAnimationState();
 	}
-	
-	******************************/
 }

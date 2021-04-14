@@ -145,16 +145,56 @@ public abstract class Entity implements IEntity, IAnimatable
 	}
 	
 	@Override
-	public void update()
+	public final void update()
 	{
+		this.updateBegin();
+		this.updateLogic();
 		
-		/******LOGIC******/
-		
+		//Apply the new values calculated in updateLogic
+		//This is core stuff that has to be done for every entity
 		this.move(this.velocity.x, this.velocity.y);
 		this.velocity.x *= this.linearDamping;
 		this.velocity.y *= this.linearDamping;
 		this.ticks++;
 		
+		this.updateAnimationState();
+		this.updateEnd();
+	}
+	
+	/**
+	 * Called every update and should be used for preparation for each frame
+	 * This makes it easier to override because we don't have to think as much about where the super belongs.
+	 */
+	protected void updateBegin()
+	{
+		
+	}
+	
+	/**
+	 * Called every update and should be used for logic extension.
+	 * This makes it easier to override because we don't have to think as much about where the super belongs.
+	 */
+	protected void updateLogic()
+	{
+		
+	}
+	
+	/**
+	 * Called every update and should be used for calculating animation states based on the logic
+	 * that has been calculated.
+	 * This makes it easier to override because we don't have to think as much about where the super belongs.
+	 */
+	protected void updateAnimationState()
+	{
+		
+	}
+	
+	/**
+	 * Called every update and should be used for post logic stuff such as drawing.
+	 * This makes it easier to override because we don't have to think as much about where the super belongs.
+	 */
+	protected void updateEnd()
+	{
 		/******GRAPHICS******/
 		
 		this.animationHandler.frameUpdate();
