@@ -42,7 +42,6 @@ public class Knight extends Player
 		{
 			this.animationHandler.playAnimation("hit", 10, false);
 		}
-		System.out.println(this.getLookingDirection());
 		super.updateAnimationState();
 	}
 }
