@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 import de.fhbielefeld.pmdungeon.quibble.animation.AnimationHandler;
 import de.fhbielefeld.pmdungeon.quibble.animation.AnimationHandlerImpl;
 import de.fhbielefeld.pmdungeon.vorgaben.dungeonCreator.DungeonWorld;
+import de.fhbielefeld.pmdungeon.vorgaben.dungeonCreator.tiles.Tile;
 import de.fhbielefeld.pmdungeon.vorgaben.graphic.Animation;
 import de.fhbielefeld.pmdungeon.vorgaben.interfaces.IAnimatable;
 import de.fhbielefeld.pmdungeon.vorgaben.interfaces.IEntity;
@@ -45,7 +46,6 @@ public abstract class Entity implements IEntity, IAnimatable
 	{
 		this.position = new Point(x, y);
 		this.velocity = new Vector2();
-		this.noclip = true; //noclip is true until collision detection is implemented
 		this.animationHandler = new AnimationHandlerImpl();
 	}
 	
@@ -72,6 +72,17 @@ public abstract class Entity implements IEntity, IAnimatable
 	public final Point getPosition()
 	{
 		return this.position;
+	}
+	
+	/**
+	 * Instantly sets the position of this entity and thus teleporting it. No collision checks are made.
+	 * @param pos the new position
+	 */
+	public final void setPosition(Point pos)
+	{
+		//I thinks this is more efficient than this.position = pos;
+		this.position.x = pos.x;
+		this.position.y = pos.y;
 	}
 	
 	/**
@@ -219,7 +230,12 @@ public abstract class Entity implements IEntity, IAnimatable
 		}
 		else
 		{
-			//collision detection
+			Point newPos = new Point(this.position.x + x, this.position.y + y);
+			if(this.world.isTileAccessible(newPos))
+			{
+				this.position.x += x;
+				this.position.y += y;
+			}
 		}
 		
 	}

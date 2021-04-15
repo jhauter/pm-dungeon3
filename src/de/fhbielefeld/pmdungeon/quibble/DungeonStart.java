@@ -41,6 +41,7 @@ public class DungeonStart extends MainController
 	{
 		super.onLevelLoad();
 		this.myHero = new Knight();
+		this.myHero.setPosition(this.levelController.getDungeon().getRandomPointInDungeon());
 		this.addEntityToLevel(this.myHero);
 //		this.inputHandler.addInputListener(this.myHero);
 		this.camera.follow(this.myHero);
