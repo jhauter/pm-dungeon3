@@ -1,8 +1,8 @@
 ---
-title:  'Lerntagebuch zur Bearbeitung von Blatt XYZ'
+title:  'Lerntagebuch zur Bearbeitung von Blatt 01
 author:
 - VORNAME NAME (EMAIL)
-- VORNAME NAME (EMAIL)
+Malte Kanders (malte_theodor.kanders@fh-bielefeld.de)
 - VORNAME NAME (EMAIL)
 ...
 
@@ -103,6 +103,7 @@ Die ersten Implementationen werden umgesetzt.
 
 Tutorials, Selbstlernen = 4 Stunden.
 Meeting am 13.04.21 von 13 Uhr - 22 Uhr.
+Feinarbeiten und Eigenarbeiten ~
 
 # Postmortem
 
@@ -114,4 +115,13 @@ kritisch zurück:
 -   Wie haben Sie die Probleme letztlich gelöst?
 -->
 
-tbd
+Umsetzung der zusammenarbeit mit Git funktioniert unglaublich gut und vereinfacht die Zusammenarbeit.
+Es hakt an manchen Stellen, da Git noch neu ist, aber ist es erstmal konfiguriert klappt das
+Arbeiten damit wunderbar.
+Gemerged wurden größere Projektabschnitte über eine Online Sitzung, um etwaige Probleme und Verbesserungen anzusprechen.
+Große relevante Probleme bei der Umsetzung der Aufgabe traten nicht auf.
+Vorgehensweise aus meiner Sicht: Sehr gut, durch die Vorbereitung und dem aufteilen der Aufgaben kam sich niemand in die 
+Quere. Während dem Verteilen der Aufgaben wurde bereits Funktionalität bestimmter Klassen/Packages skizziert.
+Bei einer späteren Sitzung wurden diese dann dem jeweiligen anderem auch präsentiert, damit jeder vom gesamten ein 
+Eindruck hat.
+
