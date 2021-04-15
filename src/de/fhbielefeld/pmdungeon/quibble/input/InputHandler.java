@@ -18,7 +18,7 @@ public interface InputHandler
 	
 	/**
 	 * Notifies all listeners about an input event. This should only be called internally.
-	 * @param eventName the name of the registered input event
+	 * @param key The specified button that was pressed by the player.
 	 */
 	public void notityListeners(KEY key);
 	
