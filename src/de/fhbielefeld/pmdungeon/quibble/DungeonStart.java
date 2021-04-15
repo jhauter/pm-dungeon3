@@ -23,7 +23,7 @@ public class DungeonStart extends MainController
 	
 	private Player myHero;
 	
-	private InputHandler inputHandler;
+	KeyHandler handler;
 	
 	public DungeonStart()
 	{
@@ -42,7 +42,8 @@ public class DungeonStart extends MainController
 		super.onLevelLoad();
 		this.myHero = new Knight();
 		this.addEntityToLevel(this.myHero);
-//		this.inputHandler.addInputListener(this.myHero);
+		handler = new KeyHandler();
+		handler.addInputListener(myHero);
 		this.camera.follow(this.myHero);
 		Gdx.app.log("GAME", "Level loaded.");
 	}
@@ -51,9 +52,8 @@ public class DungeonStart extends MainController
 	protected void beginFrame()
 	{
 		super.beginFrame();
-		KeyHandler listener = new KeyHandler();
-		listener.addInputListener(myHero);
-		listener.notityListeners(listener.updateHandler());
+		
+		handler.notityListeners(handler.updateHandler());
 	}
 	
 	@Override
