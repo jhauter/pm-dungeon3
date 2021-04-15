@@ -137,7 +137,7 @@ public abstract class Creature extends Entity
 		return this.lookingDirection;
 	}
 	
-	public boolean useDefaultAnimation()
+	protected boolean useDefaultAnimation()
 	{
 		return true;
 	}
