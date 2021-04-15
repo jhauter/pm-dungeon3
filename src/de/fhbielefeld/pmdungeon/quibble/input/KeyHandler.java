@@ -63,9 +63,6 @@ public class KeyHandler implements InputHandler {
 	@Override
 	public void notityListeners(KEY key) {
 		listener.forEach(l -> l.onInputRecieved(key));
-		for (InputListener inputListener : listener) {
-			inputListener.onInputRecieved(key);
-		}
 	}
 
 	@Override
