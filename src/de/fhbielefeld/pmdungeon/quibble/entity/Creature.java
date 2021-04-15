@@ -1,6 +1,7 @@
 package de.fhbielefeld.pmdungeon.quibble.entity;
 
 import de.fhbielefeld.pmdungeon.quibble.animation.AnimationStateHelper;
+import de.fhbielefeld.pmdungeon.vorgaben.tools.Point;
 
 public abstract class Creature extends Entity
 {
@@ -137,6 +138,12 @@ public abstract class Creature extends Entity
 		return this.lookingDirection;
 	}
 	
+	/**
+	 * Whether this entity should use default animation that has a walk and run animation.
+	 * This method must be overridden to change this behavior.
+	 * If this is true then an <code>AnimationStateHelper</code> is created for this class.
+	 * @return whether this entity should use default animation
+	 */
 	protected boolean useDefaultAnimation()
 	{
 		return true;
@@ -165,5 +172,14 @@ public abstract class Creature extends Entity
 		this.isWalking = false;
 		
 		super.updateEnd();
+	}
+	
+	@Override
+	protected Point getDrawingOffsetOverride()
+	{
+		//Draw the entity half its width to the left.
+		//Draw the entity a bit higher to make its feet position match its real position.
+		//Y of zero makes the bottom side the position y.
+		return new Point(-0.5F, 0.0F);
 	}
 }
