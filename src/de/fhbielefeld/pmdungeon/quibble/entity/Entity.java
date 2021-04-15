@@ -253,10 +253,15 @@ public abstract class Entity implements IEntity, IAnimatable
 		}
 		else
 		{
-			Point newPos = new Point(this.position.x + x, this.position.y + y);
-			if(this.level.getDungeon().isTileAccessible(newPos))
+			//Calculate the axis independently so that it doesn't get stuck if it moves diagonally
+			Point newPosX = new Point(this.position.x + x, this.position.y);
+			Point newPosY = new Point(this.position.x, this.position.y + y);
+			if(this.level.getDungeon().isTileAccessible(newPosX))
 			{
 				this.position.x += x;
+			}
+			if(this.level.getDungeon().isTileAccessible(newPosY))
+			{
 				this.position.y += y;
 			}
 		}
