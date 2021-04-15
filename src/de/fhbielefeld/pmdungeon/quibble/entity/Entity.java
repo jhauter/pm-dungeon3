@@ -2,9 +2,9 @@ package de.fhbielefeld.pmdungeon.quibble.entity;
 
 import com.badlogic.gdx.math.Vector2;
 
+import de.fhbielefeld.pmdungeon.quibble.Level;
 import de.fhbielefeld.pmdungeon.quibble.animation.AnimationHandler;
 import de.fhbielefeld.pmdungeon.quibble.animation.AnimationHandlerImpl;
-import de.fhbielefeld.pmdungeon.vorgaben.dungeonCreator.DungeonWorld;
 import de.fhbielefeld.pmdungeon.vorgaben.graphic.Animation;
 import de.fhbielefeld.pmdungeon.vorgaben.interfaces.IAnimatable;
 import de.fhbielefeld.pmdungeon.vorgaben.interfaces.IEntity;
@@ -20,6 +20,8 @@ public abstract class Entity implements IEntity, IAnimatable
 	
 	private Vector2 velocity;
 	
+	private boolean loadedResources;
+	
 	/**
 	 * The velocity is multiplied by this value every frame to ensure that a moving object loses speed and
 	 * does not slide infinitely. Value must be <code>&lt;= 1.0</code> or else the entity will get exponentially faster every frame.
@@ -33,9 +35,9 @@ public abstract class Entity implements IEntity, IAnimatable
 	protected AnimationHandler animationHandler;
 	
 	/**
-	 * <code>DungeonWorld</code> reference for this entity to allow interaction with the level.
+	 * <code>Level</code> reference for this entity to allow interaction with the level.
 	 */
-	protected DungeonWorld world;
+	protected Level level;
 	
 	/**
 	 * @param x x-coordinate
@@ -45,7 +47,6 @@ public abstract class Entity implements IEntity, IAnimatable
 	{
 		this.position = new Point(x, y);
 		this.velocity = new Vector2();
-		this.noclip = true; //noclip is true until collision detection is implemented
 		this.animationHandler = new AnimationHandlerImpl();
 	}
 	
@@ -65,13 +66,35 @@ public abstract class Entity implements IEntity, IAnimatable
 	 */
 	public boolean loadResources()
 	{
-		return this.animationHandler.loadAnimations();
+		this.loadedResources = this.animationHandler.loadAnimations();
+		return this.loadedResources;
+	}
+	
+	/**
+	 * Whether all resources have been loaded successfully. This is a requirement
+	 * for an entity to be added to a level.
+	 * @return whether all resources have been loaded successfully
+	 */
+	public boolean isLoadedResources()
+	{
+		return this.loadedResources;
 	}
 	
 	@Override
 	public final Point getPosition()
 	{
 		return this.position;
+	}
+	
+	/**
+	 * Instantly sets the position of this entity and thus teleporting it. No collision checks are made.
+	 * @param pos the new position
+	 */
+	public final void setPosition(Point pos)
+	{
+		//I think this is more efficient than this.position = pos;
+		this.position.x = pos.x;
+		this.position.y = pos.y;
 	}
 	
 	/**
@@ -198,7 +221,18 @@ public abstract class Entity implements IEntity, IAnimatable
 		/******GRAPHICS******/
 		
 		this.animationHandler.frameUpdate();
-		this.draw();
+		
+		final Point drawingOffsetOverride = this.getDrawingOffsetOverride();
+		if(drawingOffsetOverride != null)
+		{
+			this.draw(drawingOffsetOverride.x, drawingOffsetOverride.y);
+		}
+		else
+		{
+			//I think this draws the entity texture with the center at the entity position
+			//But it doesn't quite seem to fit...
+			this.draw();
+		}
 	}
 	
 	/**
@@ -219,9 +253,13 @@ public abstract class Entity implements IEntity, IAnimatable
 		}
 		else
 		{
-			//collision detection
+			Point newPos = new Point(this.position.x + x, this.position.y + y);
+			if(this.level.getDungeon().isTileAccessible(newPos))
+			{
+				this.position.x += x;
+				this.position.y += y;
+			}
 		}
-		
 	}
 	
 	/**
@@ -229,9 +267,9 @@ public abstract class Entity implements IEntity, IAnimatable
 	 * a <code>DungeonWorld</code> reference.
 	 * @param world the <code>DungeonWorld</code> that this entity was added to
 	 */
-	public void onSpawn(DungeonWorld world)
+	public void onSpawn(Level level)
 	{
-		this.world = world;
+		this.level = level;
 	}
 	
 	/**
@@ -274,5 +312,14 @@ public abstract class Entity implements IEntity, IAnimatable
 	public void setLinearDamping(float v)
 	{
 		this.linearDamping = v;
+	}
+	
+	/**
+	 * A point of (0 | 0) renders the textures bottom left corner at the entities' position
+	 * @return
+	 */
+	protected Point getDrawingOffsetOverride()
+	{
+		return null;
 	}
 }
