@@ -32,7 +32,16 @@ public abstract class Player extends Creature implements InputListener
 			return;
 		}
 		this.walk(key.getAngle());
-		this.setLookingDirection(key.getAngle() > 90 && key.getAngle() < 270 ? LookingDirection.LEFT : LookingDirection.RIGHT);
+		if(key.getAngle() > 90 && key.getAngle() < 270)
+		{
+			this.setLookingDirection(LookingDirection.LEFT);
+		}
+		else if(key.getAngle() < 90 || key.getAngle() > 270)
+		{
+			this.setLookingDirection(LookingDirection.RIGHT);
+		}
+		//if it is exactly 90 or 270 do nothing
+		//So that when you press up or down, the looking direction does not change
 	}
 	
 	/**
