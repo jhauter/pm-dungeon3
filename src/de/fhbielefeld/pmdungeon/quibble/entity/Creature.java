@@ -60,7 +60,7 @@ public abstract class Creature extends Entity
 	 * Returns the walking speed this entity should be initialized with.
 	 * @return init walking speed
 	 */
-	public abstract float getInitWalkingSpeed();
+	protected abstract float getInitWalkingSpeed();
 	
 	/**
 	 * Returns the current walking speed of this entity measured in tiles per frame.

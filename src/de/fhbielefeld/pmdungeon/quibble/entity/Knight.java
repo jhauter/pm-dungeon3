@@ -15,8 +15,8 @@ public class Knight extends Player
 		//Other animations
 		this.animationHandler.addAnimation("idle_left", 4, 5, "assets/textures/entity/knight", "knight_m");
 		
-		this.animationHandler.addAnimation("run_right", 4, 5, "assets/textures/entity/knight", "knight_m");
-		this.animationHandler.addAnimation("run_left", 4, 5, "assets/textures/entity/knight", "knight_m");
+		this.animationHandler.addAnimation("run_right", 4, 2, "assets/textures/entity/knight", "knight_m");
+		this.animationHandler.addAnimation("run_left", 4, 2, "assets/textures/entity/knight", "knight_m");
 		this.animationHandler.addAnimation("hit_right", 1, 15, "assets/textures/entity/knight", "knight_m");
 		this.animationHandler.addAnimation("hit_left", 1, 15, "assets/textures/entity/knight", "knight_m");
 	}
