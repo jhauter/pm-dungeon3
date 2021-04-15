@@ -5,7 +5,7 @@ public interface InputListener
 {
 	/**
 	 * This is called every time a user input is received with the registered <code>eventName</code>
-	 * @param eventName name of the input event that was assigned upon registration
+	 * @param key The specified button that was pressed by the player.
 	 */
 	public void onInputRecieved(KEY eventName);
 }
