@@ -1,8 +1,8 @@
 ---
 title:  'Lerntagebuch zur Bearbeitung von Blatt 01
 author:
-- VORNAME NAME (EMAIL)
-Malte Kanders (malte_theodor.kanders@fh-bielefeld.de)
+- Andreas Wegner (andreas.wegner@fh-bielefeld.de)
+- Malte Kanders (malte_theodor.kanders@fh-bielefeld.de)
 - VORNAME NAME (EMAIL)
 ...
 
