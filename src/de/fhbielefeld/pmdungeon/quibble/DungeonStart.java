@@ -23,7 +23,7 @@ public class DungeonStart extends MainController
 	
 	private Player myHero;
 	
-	KeyHandler handler;
+	private InputHandler inputHandler;
 	
 	/**
 	 * Use this level to spawn entities instead of <code>this.entityController</code>!!
