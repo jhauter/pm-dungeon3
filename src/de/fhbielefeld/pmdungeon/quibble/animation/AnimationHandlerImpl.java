@@ -108,13 +108,13 @@ public class AnimationHandlerImpl implements AnimationHandler
 	@Override
 	public boolean loadAnimations()
 	{
-		if(this.defaultAnimInfo == null)
-		{
-			throw new IllegalStateException("a default animation must be added");
-		}
 		if(this.isLoaded)
 		{
 			throw new IllegalStateException("animations have already been loaded");
+		}
+		if(this.defaultAnimInfo == null) //This must be second as defaultAnimation is set to null after loading
+		{
+			throw new IllegalStateException("a default animation must be added");
 		}
 		StringBuilder pathBuilder = new StringBuilder();
 		List<Texture> frames;
