@@ -92,7 +92,7 @@ public abstract class Entity implements IEntity, IAnimatable
 	 */
 	public final void setPosition(Point pos)
 	{
-		//I thinks this is more efficient than this.position = pos;
+		//I think this is more efficient than this.position = pos;
 		this.position.x = pos.x;
 		this.position.y = pos.y;
 	}

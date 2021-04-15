@@ -12,8 +12,6 @@ import de.fhbielefeld.pmdungeon.vorgaben.game.Controller.MainController;
 
 public class DungeonStart extends MainController
 {
-	public static final int TILE_SIZE = 16;
-	
 	public static void main(String[] args)
 	{
 		DesktopLauncher.run(new DungeonStart());
