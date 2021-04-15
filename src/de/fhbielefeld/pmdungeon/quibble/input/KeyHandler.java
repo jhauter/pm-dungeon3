@@ -9,46 +9,23 @@ import com.badlogic.gdx.Input;
 public class KeyHandler implements InputHandler {
 
 	private ArrayList<InputListener> listener = new ArrayList<>();
+	
+	private final boolean UP = (Gdx.input.isKeyPressed(Input.Keys.W));
+	private final boolean RIGHT = (Gdx.input.isKeyPressed(Input.Keys.D));
+	private final boolean DOWN = (Gdx.input.isKeyPressed(Input.Keys.S));
+	private final boolean LEFT = (Gdx.input.isKeyPressed(Input.Keys.A));
+	
+	private final ArrayList<Boolean> straightDirectionIsPressed = new ArrayList<>(Arrays.asList(UP, RIGHT, DOWN, LEFT));
+	private final ArrayList<KEY> straightDirectionKEY = new ArrayList<>(Arrays.asList(KEY.UP, KEY.RIGHT, KEY.DOWN, KEY.LEFT));
+	
+	private final boolean UP_RIGHT = (Gdx.input.isKeyPressed(Input.Keys.W) && (Gdx.input.isKeyPressed(Input.Keys.D)));
+	private final boolean DOWN_RIGHT = (Gdx.input.isKeyPressed(Input.Keys.S) && (Gdx.input.isKeyPressed(Input.Keys.D)));
+	private final boolean DOWN_LEFT = (Gdx.input.isKeyPressed(Input.Keys.S) && (Gdx.input.isKeyPressed(Input.Keys.A)));
+	private final boolean UP_LEFT = (Gdx.input.isKeyPressed(Input.Keys.W) && (Gdx.input.isKeyPressed(Input.Keys.A)));
 
-	private ArrayList<Boolean> getSimpleB() {
-		ArrayList<Boolean> a = new ArrayList<>();
-		boolean up = (Gdx.input.isKeyPressed(Input.Keys.W));
-		boolean right = (Gdx.input.isKeyPressed(Input.Keys.D));
-		boolean down = (Gdx.input.isKeyPressed(Input.Keys.S));
-		boolean left = (Gdx.input.isKeyPressed(Input.Keys.A));
+	private final ArrayList<Boolean> diagonalDirectionIsPressed = new ArrayList<>(Arrays.asList(UP_RIGHT, DOWN_RIGHT, DOWN_LEFT, UP_LEFT));
+	private final ArrayList<KEY> diagonalDirectionKEY = new ArrayList<>(Arrays.asList(KEY.UP_RIGHT, KEY.DOWN_RIGHT, KEY.DOWN_LEFT, KEY.UP_LEFT));
 
-		a.add(up);
-		a.add(right);
-		a.add(down);
-		a.add(left);
-		return a;
-	}
-
-	private ArrayList<Boolean> getDiagonalB() {
-		ArrayList<Boolean> a = new ArrayList<>();
-		boolean upRight = (Gdx.input.isKeyPressed(Input.Keys.W) && (Gdx.input.isKeyPressed(Input.Keys.D)));
-		boolean downRight = (Gdx.input.isKeyPressed(Input.Keys.S) && (Gdx.input.isKeyPressed(Input.Keys.D)));
-		boolean downLeft = (Gdx.input.isKeyPressed(Input.Keys.S) && (Gdx.input.isKeyPressed(Input.Keys.A)));
-		boolean upLeft = (Gdx.input.isKeyPressed(Input.Keys.W) && (Gdx.input.isKeyPressed(Input.Keys.A)));
-
-		a.add(upRight);
-		a.add(downRight);
-		a.add(downLeft);
-		a.add(upLeft);
-		return a;
-	}
-
-	private ArrayList<KEY> getSimpleKeys() {
-		ArrayList<KEY> keyList = new ArrayList<>();
-		keyList.addAll(Arrays.asList(KEY.UP, KEY.RIGHT, KEY.DOWN, KEY.LEFT));
-		return keyList;
-	}
-
-	private ArrayList<KEY> getDiagonalKeys() {
-		ArrayList<KEY> keyList = new ArrayList<>();
-		keyList.addAll(Arrays.asList(KEY.UP_RIGHT, KEY.DOWN_RIGHT, KEY.DOWN_LEFT, KEY.UP_LEFT));
-		return keyList;
-	}
 
 	@Override
 	public void addInputListener(InputListener listener) {
@@ -70,26 +47,16 @@ public class KeyHandler implements InputHandler {
 
 	@Override
 	public KEY updateHandler() {
-		for (int i = 0; i < getSimpleB().size(); i++) {
-			for (int j = 0; j < getDiagonalKeys().size(); j++) {
-				if(getDiagonalB().get(j))
-				return getDiagonalKeys().get(j);
+		for (int i = 0; i < straightDirectionKEY.size(); i++) {
+			for (int j = 0; j < diagonalDirectionKEY.size(); j++) {
+				if(diagonalDirectionIsPressed.get(j))
+					return diagonalDirectionKEY.get(j);
 			}
-			if(getSimpleB().get(i))
-			return getSimpleKeys().get(i);
+			if(straightDirectionIsPressed.get(i))
+				return straightDirectionKEY.get(i);
 		}
 		return KEY.NO_KEY;
 	}
 
-	@Override
-	public void registerMouseEvent(KEY key) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void registerKeyEvent(KEY key) {
-		// TODO Auto-generated method stub
-	}
 
 }
