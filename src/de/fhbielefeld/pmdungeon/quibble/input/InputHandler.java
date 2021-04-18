@@ -20,11 +20,11 @@ public interface InputHandler
 	 * Notifies all listeners about an input event. This should only be called internally.
 	 * @param key the button that was pressed by the player.
 	 */
-	public void notifyListeners(KEY key);
+	public void notifyListeners(Key key);
 	
 	/*
 	 * Called once per frame and retrieves the state of registered buttons and fires events accordingly.
 	 */
-	public KEY updateHandler();
+	public Key updateHandler();
 	
 }

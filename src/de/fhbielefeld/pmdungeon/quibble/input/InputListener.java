@@ -6,5 +6,5 @@ public interface InputListener
 	/**
 	 * @param key the button that was pressed by the player.
 	 */
-	public void onInputRecieved(KEY key);
+	public void onInputRecieved(Key key);
 }

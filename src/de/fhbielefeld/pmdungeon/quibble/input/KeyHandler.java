@@ -18,7 +18,7 @@ public class KeyHandler implements InputHandler {
 	private final Supplier<Boolean> LEFT = () -> Gdx.input.isKeyPressed(Input.Keys.A);
 	
 	private final List<Supplier<Boolean>> straightDirectionIsPressed = (Arrays.asList(UP, RIGHT, DOWN, LEFT));
-	private final List<KEY> straightDirectionKEY = new ArrayList<>(Arrays.asList(KEY.UP, KEY.RIGHT, KEY.DOWN, KEY.LEFT));
+	private final List<Key> straightDirectionKEY = new ArrayList<>(Arrays.asList(Key.UP, Key.RIGHT, Key.DOWN, Key.LEFT));
 	
 	private final Supplier<Boolean> UP_RIGHT = () -> Gdx.input.isKeyPressed(Input.Keys.W) && Gdx.input.isKeyPressed(Input.Keys.D);
 	private final Supplier<Boolean> DOWN_RIGHT = () -> Gdx.input.isKeyPressed(Input.Keys.S) && (Gdx.input.isKeyPressed(Input.Keys.D));
@@ -26,7 +26,7 @@ public class KeyHandler implements InputHandler {
 	private final Supplier<Boolean> UP_LEFT = () -> Gdx.input.isKeyPressed(Input.Keys.W) && (Gdx.input.isKeyPressed(Input.Keys.A));
 
 	private final List<Supplier<Boolean>> diagonalDirectionIsPressed = new ArrayList<>(Arrays.asList(UP_RIGHT, DOWN_RIGHT, DOWN_LEFT, UP_LEFT));
-	private final List<KEY> diagonalDirectionKEY = new ArrayList<>(Arrays.asList(KEY.UP_RIGHT, KEY.DOWN_RIGHT, KEY.DOWN_LEFT, KEY.UP_LEFT));
+	private final List<Key> diagonalDirectionKEY = new ArrayList<>(Arrays.asList(Key.UP_RIGHT, Key.DOWN_RIGHT, Key.DOWN_LEFT, Key.UP_LEFT));
 
 
 	@Override
@@ -44,12 +44,12 @@ public class KeyHandler implements InputHandler {
 	}
 
 	@Override
-	public void notifyListeners(KEY key) {
+	public void notifyListeners(Key key) {
 		listener.forEach(l -> l.onInputRecieved(key));
 	}
 
 	@Override
-	public KEY updateHandler() {
+	public Key updateHandler() {
 		
 		for (int i = 0; i < straightDirectionIsPressed.size(); i++) {
 			for (int j = 0; j < diagonalDirectionKEY.size(); j++) {
@@ -59,7 +59,7 @@ public class KeyHandler implements InputHandler {
 			if((boolean) straightDirectionIsPressed.get(i).get())
 				return straightDirectionKEY.get(i);
 		}
-		return KEY.NO_KEY;
+		return Key.NO_KEY;
 	}
 
 
