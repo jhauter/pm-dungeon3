@@ -3,5 +3,6 @@ bin/**
 # eclipse project file
 *.project
 
-# visual paradigm backup file
-*.vpp.bak*
+# visual paradigm files
+**/*.vpp.bak*
+**/*.vpp.lck
