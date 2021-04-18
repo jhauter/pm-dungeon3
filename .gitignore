@@ -1,2 +1,7 @@
-/bin/
+bin/**
+
+# eclipse project file
 *.project
+
+# visual paradigm backup file
+*.vpp.bak*
