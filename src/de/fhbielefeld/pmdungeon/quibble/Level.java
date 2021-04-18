@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.fhbielefeld.pmdungeon.quibble.entity.Entity;
+import de.fhbielefeld.pmdungeon.quibble.particle.ParticleSystem;
 import de.fhbielefeld.pmdungeon.vorgaben.dungeonCreator.DungeonWorld;
 import de.fhbielefeld.pmdungeon.vorgaben.game.Controller.EntityController;
 
@@ -13,7 +14,9 @@ public class Level
 	
 	private final EntityController entityController;
 	
-	private List<Entity> newEntityBuffer;
+	private final ParticleSystem particleSystem;
+	
+	private final List<Entity> newEntityBuffer;
 	
 	/**
 	 * Creates a Level that contains a <code>DungeonWorld</code> and an <code>EntityController</code>.
@@ -27,6 +30,7 @@ public class Level
 	{
 		this.world = world;
 		this.entityController = entityController;
+		this.particleSystem = new ParticleSystem();
 		this.newEntityBuffer = new ArrayList<Entity>();
 	}
 	
@@ -71,5 +75,10 @@ public class Level
 	public boolean isEntityBufferEmpty()
 	{
 		return this.newEntityBuffer.isEmpty();
+	}
+	
+	public ParticleSystem getParticleSystem()
+	{
+		return this.particleSystem;
 	}
 }

@@ -7,6 +7,7 @@ import de.fhbielefeld.pmdungeon.quibble.entity.Knight;
 import de.fhbielefeld.pmdungeon.quibble.entity.Player;
 import de.fhbielefeld.pmdungeon.quibble.input.InputHandler;
 import de.fhbielefeld.pmdungeon.quibble.input.KeyHandler;
+import de.fhbielefeld.pmdungeon.quibble.particle.ParticleSystem;
 import de.fhbielefeld.pmdungeon.vorgaben.dungeonCreator.dungeonconverter.Coordinate;
 import de.fhbielefeld.pmdungeon.vorgaben.game.Controller.MainController;
 
@@ -31,6 +32,8 @@ public class DungeonStart extends MainController
 	 */
 	private Level currentLevel;
 	
+	private long lastFrameTimeStamp;
+	
 	public DungeonStart()
 	{
 		this.inputHandler = new KeyHandler();
@@ -42,6 +45,9 @@ public class DungeonStart extends MainController
 		super.setup();
 		this.myHero = new Knight();
 		this.inputHandler.addInputListener(myHero);
+		ParticleSystem.loadTextures();
+		this.lastFrameTimeStamp = System.currentTimeMillis();
+		Gdx.app.getGraphics().setResizable(true);
 		Gdx.app.log("GAME", "Setup.");
 	}
 	
@@ -56,7 +62,9 @@ public class DungeonStart extends MainController
 		
 		//Spawn the hero at the right spot
 		Coordinate startingPoint = this.levelController.getDungeon().getStartingLocation();
-		this.myHero.setPosition(startingPoint.getX(), startingPoint.getY());
+//		this.myHero.setPosition(startingPoint.getX(), startingPoint.getY());
+		this.myHero.setPosition(0, 0);
+		this.myHero.setNoclip(true);
 		this.currentLevel.spawnEntity(this.myHero);
 		
 		//Set the camera to follow the hero
@@ -79,6 +87,9 @@ public class DungeonStart extends MainController
 			this.levelController.triggerNextStage();
 			this.myHero.onNextLevelEntered();
 		}
+		
+		this.currentLevel.getParticleSystem().update((System.currentTimeMillis() - this.lastFrameTimeStamp) / 1000.0F);
+		this.lastFrameTimeStamp = System.currentTimeMillis();
 	}
 	
 	@Override
@@ -92,5 +103,7 @@ public class DungeonStart extends MainController
 		{
 			this.currentLevel.flushEntityBuffer();
 		}
+		
+		this.currentLevel.getParticleSystem().draw(this.camera.position.x, this.camera.position.y);
 	}
 }
