@@ -17,16 +17,16 @@ public class KeyHandler implements InputHandler {
 	private final Supplier<Boolean> RIGHT = () -> Gdx.input.isKeyPressed(Input.Keys.D);
 	private final Supplier<Boolean> LEFT = () -> Gdx.input.isKeyPressed(Input.Keys.A);
 	
-	private final List<Supplier<Boolean>> straightDirectionIsPressed = (Arrays.asList(UP, RIGHT, DOWN, LEFT));
-	private final List<Key> straightDirectionKEY = new ArrayList<>(Arrays.asList(Key.UP, Key.RIGHT, Key.DOWN, Key.LEFT));
+	private final List<Supplier<Boolean>> straightDirectionIsPressed = Arrays.asList(UP, RIGHT, DOWN, LEFT);
+	private final List<Key> straightDirectionKEY = Arrays.asList(Key.UP, Key.RIGHT, Key.DOWN, Key.LEFT);
 	
 	private final Supplier<Boolean> UP_RIGHT = () -> Gdx.input.isKeyPressed(Input.Keys.W) && Gdx.input.isKeyPressed(Input.Keys.D);
 	private final Supplier<Boolean> DOWN_RIGHT = () -> Gdx.input.isKeyPressed(Input.Keys.S) && (Gdx.input.isKeyPressed(Input.Keys.D));
 	private final Supplier<Boolean> DOWN_LEFT = () -> Gdx.input.isKeyPressed(Input.Keys.S) && (Gdx.input.isKeyPressed(Input.Keys.A));
 	private final Supplier<Boolean> UP_LEFT = () -> Gdx.input.isKeyPressed(Input.Keys.W) && (Gdx.input.isKeyPressed(Input.Keys.A));
 
-	private final List<Supplier<Boolean>> diagonalDirectionIsPressed = new ArrayList<>(Arrays.asList(UP_RIGHT, DOWN_RIGHT, DOWN_LEFT, UP_LEFT));
-	private final List<Key> diagonalDirectionKEY = new ArrayList<>(Arrays.asList(Key.UP_RIGHT, Key.DOWN_RIGHT, Key.DOWN_LEFT, Key.UP_LEFT));
+	private final List<Supplier<Boolean>> diagonalDirectionIsPressed = Arrays.asList(UP_RIGHT, DOWN_RIGHT, DOWN_LEFT, UP_LEFT);
+	private final List<Key> diagonalDirectionKEY = Arrays.asList(Key.UP_RIGHT, Key.DOWN_RIGHT, Key.DOWN_LEFT, Key.UP_LEFT);
 
 
 	@Override
@@ -49,18 +49,19 @@ public class KeyHandler implements InputHandler {
 	}
 
 	@Override
-	public Key updateHandler() {
+	public void updateHandler() {
 		
 		for (int i = 0; i < straightDirectionIsPressed.size(); i++) {
 			for (int j = 0; j < diagonalDirectionKEY.size(); j++) {
-				if(diagonalDirectionIsPressed.get(j).get())
-					return diagonalDirectionKEY.get(j);
+				if(diagonalDirectionIsPressed.get(j).get()) {
+					this.notifyListeners(diagonalDirectionKEY.get(j));
+					return;
+				}
 			}
-			if((boolean) straightDirectionIsPressed.get(i).get())
-				return straightDirectionKEY.get(i);
+			if(straightDirectionIsPressed.get(i).get()) {
+				this.notifyListeners(straightDirectionKEY.get(i));
+				return;
+			}
 		}
-		return Key.NO_KEY;
 	}
-
-
 }

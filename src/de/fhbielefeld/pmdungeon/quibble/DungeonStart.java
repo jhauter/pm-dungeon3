@@ -71,7 +71,7 @@ public class DungeonStart extends MainController
 		
 		//Don't call notify listeners here but internally.
 		//updateHandler() should not return anything.
-		this.inputHandler.notifyListeners(this.inputHandler.updateHandler());
+		this.inputHandler.updateHandler();
 		
 		//Check the triggeredNextLevel flag of the player
 		if(this.myHero.triggeredNextLevel())

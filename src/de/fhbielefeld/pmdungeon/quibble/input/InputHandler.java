@@ -25,6 +25,6 @@ public interface InputHandler
 	/*
 	 * Called once per frame and retrieves the state of registered buttons and fires events accordingly.
 	 */
-	public Key updateHandler();
+	public void updateHandler();
 	
 }
