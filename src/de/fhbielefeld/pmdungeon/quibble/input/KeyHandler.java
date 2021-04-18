@@ -31,6 +31,10 @@ public class KeyHandler implements InputHandler {
 
 	@Override
 	public void addInputListener(InputListener listener) {
+		if(this.listener.contains(listener))
+		{
+			throw new IllegalArgumentException("this listener was already added");
+		}
 		this.listener.add(listener);
 	}
 
@@ -40,7 +44,7 @@ public class KeyHandler implements InputHandler {
 	}
 
 	@Override
-	public void notityListeners(KEY key) {
+	public void notifyListeners(KEY key) {
 		listener.forEach(l -> l.onInputRecieved(key));
 	}
 

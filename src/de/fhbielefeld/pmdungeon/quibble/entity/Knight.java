@@ -1,10 +1,14 @@
 package de.fhbielefeld.pmdungeon.quibble.entity;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-
 public class Knight extends Player
 {
+	/**
+	 * Creates a knight instance at the given coordinates.
+	 * The coordinates can be changed after creating the knight by calling
+	 * {@link Knight#setPosition(float, float)}. This way it can be placed anywhere in the dungeon.
+	 * @param x x position
+	 * @param y y position
+	 */
 	public Knight(float x, float y)
 	{
 		super(x, y);
@@ -21,6 +25,11 @@ public class Knight extends Player
 		this.animationHandler.addAnimation("hit_left", 1, 15, "assets/textures/entity/knight", "knight_m");
 	}
 	
+	/**
+	 * Creates a knight instance at <code>x = 0</code> and <code>y = 0</code>.
+	 * The coordinates can be changed after creating the knight by calling
+	 * {@link Knight#setPosition(float, float)}. This way it can be placed anywhere in the dungeon.
+	 */
 	public Knight()
 	{
 		this(0.0F, 0.0F);
@@ -32,6 +41,8 @@ public class Knight extends Player
 		return 0.1F;
 	}
 	
+	/************** DEMO **************
+	
 	@Override
 	public void updateAnimationState()
 	{
@@ -42,4 +53,6 @@ public class Knight extends Player
 		}
 		super.updateAnimationState();
 	}
+	
+	**********************************/
 }

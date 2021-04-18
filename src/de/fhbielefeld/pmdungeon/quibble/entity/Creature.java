@@ -9,10 +9,29 @@ public abstract class Creature extends Entity
 	private static final int ANIM_SWITCH_IDLE_R = 1;
 	private static final int ANIM_SWITCH_RUN_L = 2;
 	private static final int ANIM_SWITCH_RUN_R = 3;
-
+	
+	/**
+	 * Animation name constant used by the <code>AnimationStateHelper</code>.
+	 * Names of animations that are handled by the <code>AnimationStateHelper</code> need to match this.
+	 */
 	protected static final String ANIM_NAME_IDLE_L = "idle_left";
+	
+	/**
+	 * Animation name constant used by the <code>AnimationStateHelper</code>.
+	 * Names of animations that are handled by the <code>AnimationStateHelper</code> need to match this.
+	 */
 	protected static final String ANIM_NAME_IDLE_R = "idle_right";
+	
+	/**
+	 * Animation name constant used by the <code>AnimationStateHelper</code>.
+	 * Names of animations that are handled by the <code>AnimationStateHelper</code> need to match this.
+	 */
 	protected static final String ANIM_NAME_RUN_L = "run_left";
+	
+	/**
+	 * Animation name constant used by the <code>AnimationStateHelper</code>.
+	 * Names of animations that are handled by the <code>AnimationStateHelper</code> need to match this.
+	 */
 	protected static final String ANIM_NAME_RUN_R = "run_right";
 	
 	/**

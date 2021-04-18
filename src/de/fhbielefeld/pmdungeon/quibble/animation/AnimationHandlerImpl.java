@@ -73,6 +73,9 @@ public class AnimationHandlerImpl implements AnimationHandler
 	
 	private Animation currentAnimation;
 	
+	/**
+	 * Creates an empty animation handler to which animations can be added.
+	 */
 	public AnimationHandlerImpl()
 	{
 		this.registeredAnimations = new ArrayList<AnimationInfo>();

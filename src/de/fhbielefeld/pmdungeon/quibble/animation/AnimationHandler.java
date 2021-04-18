@@ -4,7 +4,14 @@ import de.fhbielefeld.pmdungeon.vorgaben.graphic.Animation;
 
 public interface AnimationHandler
 {
+	/**
+	 * String that is inserted into the file path according to documentation of {@link #addAnimation(String, int, int, String, String)}.
+	 */
 	public static final String FILENAME_SUFFIX = "anim_f";
+	
+	/**
+	 * File extension of the texture files.
+	 */
 	public static final String FILENAME_EXT = "png";
 	
 	/**

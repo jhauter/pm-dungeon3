@@ -27,7 +27,7 @@ public abstract class Player extends Creature implements InputListener
 	@Override
 	public void onInputRecieved(KEY key)
 	{
-		if(key == KEY.NO_KEY)
+		if(key == KEY.NO_KEY) //Fix: this method should actually not be executed when no key is pressed
 		{
 			return;
 		}
