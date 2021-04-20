@@ -72,4 +72,19 @@ public class Level
 	{
 		return this.newEntityBuffer.isEmpty();
 	}
+	
+	/**
+	 * Returns the number of entities actually in the level. (not in the buffer)
+	 * @return amount of entities in the level
+	 */
+	public int getNumEntities()
+	{
+		return this.entityController.getList().size();
+	}
+	
+	public Entity getEntity(int index)
+	{
+		//We can cast because we only add "our" entity
+		return (Entity)this.entityController.getList().get(index);
+	}
 }

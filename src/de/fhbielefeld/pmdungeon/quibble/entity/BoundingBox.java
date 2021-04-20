@@ -46,4 +46,32 @@ public class BoundingBox
 		this.width = width;
 		this.height = height;
 	}
+	
+	/**
+	 * Tests if this bounding box overlaps with another one.
+	 * @param other the other bounding box
+	 * @return true if the two boxes overlap
+	 */
+	public boolean intersects(BoundingBox other)
+	{
+		return this.x < other.x + other.width && this.x + this.width > other.x &&
+			   this.y + this.height > other.y && this.y < other.y + other.height;
+	}
+	
+	/**
+	 * Creates a new bounding box by applying an offset to this bounding box.
+	 * @param x offset x
+	 * @param y offset y
+	 * @return a new bounding box relative to this bounding box by the specified offset
+	 */
+	public BoundingBox offset(float x, float y)
+	{
+		return new BoundingBox(this.x + x, this.y + y, this.width, this.height);
+	}
+	
+	@Override
+	public String toString()
+	{
+		return "BoundingBox[" + this.x + ", " + this.y + ", " + this.width + ", " + this.height + "]";
+	}
 }

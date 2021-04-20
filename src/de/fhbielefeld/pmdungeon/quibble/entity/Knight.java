@@ -41,6 +41,12 @@ public class Knight extends Player
 		return 0.1F;
 	}
 	
+	@Override
+	protected BoundingBox getInitBoundingBox()
+	{
+		return new BoundingBox(-0.35F, -0.5F, 0.7F, 1.0F);
+	}
+	
 	/************** DEMO **************
 	
 	@Override
