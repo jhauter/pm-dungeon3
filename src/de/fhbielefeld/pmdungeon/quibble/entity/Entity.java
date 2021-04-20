@@ -401,6 +401,17 @@ public abstract class Entity implements IEntity, IAnimatable
 	}
 	
 	/**
+	 * Returns the radius of this entity.
+	 * While there is a bounding box, some mechanics use the radius to do certain checks,
+	 * for example hitting of creatures.
+	 * @return the entity's radius
+	 */
+	public float getRadius()
+	{
+		return 0.5F;
+	}
+	
+	/**
 	 * This is called when collision between entities occurs.
 	 * @param otherEntity the entity this entity is colliding with
 	 */

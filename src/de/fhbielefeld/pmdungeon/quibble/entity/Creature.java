@@ -1,9 +1,15 @@
 package de.fhbielefeld.pmdungeon.quibble.entity;
 
+import com.badlogic.gdx.math.Vector2;
+
 import de.fhbielefeld.pmdungeon.quibble.animation.AnimationStateHelper;
+import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
+import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
+import de.fhbielefeld.pmdungeon.quibble.entity.battle.DamageSource;
+import de.fhbielefeld.pmdungeon.quibble.entity.battle.DamageType;
 import de.fhbielefeld.pmdungeon.vorgaben.tools.Point;
 
-public abstract class Creature extends Entity
+public abstract class Creature extends Entity implements DamageSource
 {
 	private static final int ANIM_SWITCH_IDLE_L = 0;
 	private static final int ANIM_SWITCH_IDLE_R = 1;
@@ -34,16 +40,23 @@ public abstract class Creature extends Entity
 	 */
 	protected static final String ANIM_NAME_RUN_R = "run_right";
 	
-	/**
-	 * The walking speed of this entity, measured in tiles per frame.
-	 */
-	protected float walkingSpeed;
-	
 	private boolean isWalking;
 	
 	private LookingDirection lookingDirection;
 	
 	private AnimationStateHelper defaultAnimationsHelper;
+	
+	private CreatureStats baseStats;
+	
+	private CreatureStats maxStats;
+	
+	private CreatureStats currentStats;
+	
+	private int expLevel;
+	
+	private int invulnerableTicks;
+	
+	
 	
 	/**
 	 * @param x x-coordinate
@@ -53,10 +66,12 @@ public abstract class Creature extends Entity
 	{
 		super(x, y);
 		
-		this.walkingSpeed = this.getInitWalkingSpeed();
-		
 		//Default looking direction should be right
 		this.lookingDirection = LookingDirection.RIGHT;
+		
+		this.baseStats = this.getBaseStatsForLevel(this.expLevel);
+		this.maxStats = this.calculateMaxStats();
+		this.currentStats = this.maxStats.addCopy(new CreatureStats());
 		
 		if(this.useDefaultAnimation())
 		{
@@ -77,19 +92,13 @@ public abstract class Creature extends Entity
 	}
 	
 	/**
-	 * Returns the walking speed this entity should be initialized with.
-	 * @return init walking speed
-	 */
-	protected abstract float getInitWalkingSpeed();
-	
-	/**
 	 * Returns the current walking speed of this entity measured in tiles per frame.
 	 * This is not the current speed.
 	 * @return walking speed of this entity
 	 */
 	public final float getWalkingSpeed()
 	{
-		return this.walkingSpeed;
+		return (float)this.getCurrentStats().getStat(CreatureStatsAttribs.WALKING_SPEED);
 	}
 	
 	/**
@@ -113,8 +122,8 @@ public abstract class Creature extends Entity
 	{
 		this.isWalking = true;
 		final float rad = (float)Math.toRadians(angle);
-		this.setVelocityX((float)Math.cos(rad) * this.walkingSpeed * mult);
-		this.setVelocityY((float)Math.sin(rad) * this.walkingSpeed * mult);
+		this.setVelocityX((float)Math.cos(rad) * this.getWalkingSpeed() * mult);
+		this.setVelocityY((float)Math.sin(rad) * this.getWalkingSpeed() * mult);
 	}
 	
 	/**
@@ -168,6 +177,23 @@ public abstract class Creature extends Entity
 		return true;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected void updateLogic()
+	{
+		super.updateLogic();
+		
+		if(this.invulnerableTicks > 0)
+		{
+			--this.invulnerableTicks;
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	protected void updateAnimationState()
 	{
@@ -184,6 +210,9 @@ public abstract class Creature extends Entity
 		}
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	protected void updateEnd()
 	{
@@ -193,6 +222,9 @@ public abstract class Creature extends Entity
 		super.updateEnd();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	protected Point getDrawingOffsetOverride()
 	{
@@ -200,5 +232,124 @@ public abstract class Creature extends Entity
 		//Draw the entity a bit higher to make its feet position match its real position.
 		//Y of zero makes the bottom side the position y.
 		return new Point(-0.5F, 0.0F);
+	}
+	
+	/**
+	 * Calculates the base stats that a creature has based on its exp level
+	 * @param level current exp level
+	 * @return the base stats
+	 */
+	protected abstract CreatureStats getBaseStatsForLevel(int level);
+	
+	/**
+	 * Returns the base stats that a creature has based on its exp level.
+	 * These are only base stats and are not the necessarily the final stats.
+	 * Things like item effects, weapons, armor, status effects, etc. are yet to be calculated.
+	 * @return the base stats
+	 */
+	public CreatureStats getBaseStats()
+	{
+		return this.baseStats;
+	}
+	
+	/**
+	 * No real implementation by now but can later be used when items and status effects are added
+	 * @return the base stats for now
+	 */
+	public CreatureStats calculateMaxStats()
+	{
+		return this.baseStats;
+	}
+	
+	/**
+	 * Returns the maximum stats values for this creatures. These are the base stats extended by effects from
+	 * items, etc.
+	 * @return the maximum stats
+	 */
+	public CreatureStats getMaxStats()
+	{
+		return this.maxStats;
+	}
+	
+	/**
+	 * Returns the current stats which move between 0 and maxStats.
+	 * There stats are the actual stat values that the creature has.
+	 * For example the health stat has its maximum value stored in maxStats.
+	 * The current health is stored in currentStats.
+	 * This system allows for modification of every stat value dynamically, not only health.
+	 * @return the current stats
+	 */
+	public CreatureStats getCurrentStats()
+	{
+		return this.currentStats;
+	}
+	
+	/**
+	 * Returns whether this creature can receive damage at this moment.
+	 * This is always true for a short time after a creature has been hit.
+	 * @return whether this creature can receive damage at this moment
+	 */
+	public boolean isInvulnerable()
+	{
+		return this.invulnerableTicks > 0;
+	}
+	
+	public double getCurrentHealth()
+	{
+		return this.getCurrentStats().getStat(CreatureStatsAttribs.HEALTH);
+	}
+	
+	public double getMaxHealth()
+	{
+		return this.getMaxStats().getStat(CreatureStatsAttribs.HEALTH);
+	}
+	
+	public void damage(double damage, DamageType damageType, DamageSource damageSource, boolean ignoreInvincibleTicks)
+	{
+		if(!ignoreInvincibleTicks && this.isInvulnerable())
+		{
+			return;
+		}
+		
+		//-----Knockback-----
+		Vector2 knockbackDirection = new Vector2(this.getX() - damageSource.getX(), this.getY() - damageSource.getY());
+		knockbackDirection.setLength((float)damageSource.getCurrentStats().getStat(CreatureStatsAttribs.KNOCKBACK));
+		knockbackDirection.scl(1.0F - (float)this.getCurrentStats().getStat(CreatureStatsAttribs.KNOCKBACK_RES));
+		this.setVelocity(knockbackDirection.x, knockbackDirection.y);
+		
+		//-----Damage-----
+		double actualDamage = damageType.getDamageAgainst(damage, this.getCurrentStats());
+		this.getCurrentStats().addStat(CreatureStatsAttribs.HEALTH, -actualDamage);
+		
+		//-----Misc-----
+		this.invulnerableTicks = this.getInvulnerabilityTicksWhenHit();
+	}
+	
+	/**
+	 * 
+	 * @param target
+	 */
+	public void hit(Creature target, DamageType damageType)
+	{
+		double distance = Math.sqrt(Math.pow(this.getX() - target.getX(), 2) + Math.pow(this.getY() - target.getY(), 2)) - this.getRadius() - target.getRadius();
+		if(distance > this.getCurrentStats().getStat(CreatureStatsAttribs.HIT_REACH))
+		{
+			return;
+		}
+		
+		//return if miss chance
+		
+		//double damage if crit chance
+		
+		target.damage(this.getCurrentStats().getStat(damageType.getSourceDamageStat()), damageType, this, false);
+	}
+	
+	/**
+	 * Returns the amount of ticks this creature is invincible after it was hit.
+	 * @return amount of invincible ticks when hit
+	 */
+	public int getInvulnerabilityTicksWhenHit()
+	{
+		return 20;
 	}
 }

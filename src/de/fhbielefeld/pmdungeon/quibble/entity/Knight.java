@@ -1,5 +1,8 @@
 package de.fhbielefeld.pmdungeon.quibble.entity;
 
+import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
+import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
+
 public class Knight extends Player
 {
 	/**
@@ -36,15 +39,27 @@ public class Knight extends Player
 	}
 	
 	@Override
-	public float getInitWalkingSpeed()
-	{
-		return 0.1F;
-	}
-	
-	@Override
 	protected BoundingBox getInitBoundingBox()
 	{
 		return new BoundingBox(-0.35F, -0.5F, 0.7F, 1.0F);
+	}
+
+	@Override
+	protected CreatureStats getBaseStatsForLevel(int level)
+	{
+		CreatureStats stats = new CreatureStats();
+		stats.setStat(CreatureStatsAttribs.HEALTH, 10 + level);
+		stats.setStat(CreatureStatsAttribs.RESISTANCE_PHYS, level);
+		stats.setStat(CreatureStatsAttribs.RESISTANCE_MAGIC, level);
+		stats.setStat(CreatureStatsAttribs.MISS_CHANCE, 0.1D);
+		stats.setStat(CreatureStatsAttribs.CRIT_CHANCE, 0.1D);
+		stats.setStat(CreatureStatsAttribs.KNOCKBACK, 0.5D);
+		stats.setStat(CreatureStatsAttribs.KNOCKBACK_RES, 0.1D);
+		stats.setStat(CreatureStatsAttribs.DAMAGE_PHYS, 1.0D);
+		stats.setStat(CreatureStatsAttribs.DAMAGE_MAGIC, 1.0D);
+		stats.setStat(CreatureStatsAttribs.WALKING_SPEED, 0.1D);
+		stats.setStat(CreatureStatsAttribs.HIT_REACH, 0.6D);
+		return stats;
 	}
 	
 	/************** DEMO **************
