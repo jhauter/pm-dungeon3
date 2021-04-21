@@ -8,6 +8,9 @@ import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsEventListener;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.DamageSource;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.DamageType;
+import de.fhbielefeld.pmdungeon.quibble.particle.Levitate;
+import de.fhbielefeld.pmdungeon.quibble.particle.ParticleFightText;
+import de.fhbielefeld.pmdungeon.quibble.particle.ParticleFightText.Type;
 import de.fhbielefeld.pmdungeon.vorgaben.tools.Point;
 
 public abstract class Creature extends Entity implements DamageSource, CreatureStatsEventListener
@@ -61,7 +64,9 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	
 	private boolean isDead;
 	
+	private boolean beingMoved;
 	
+	private float beingMovedThreshold = 0.005F;
 	
 	/**
 	 * @param x x-coordinate
@@ -128,6 +133,10 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	 */
 	public void walk(float angle, float mult)
 	{
+		if(!this.canWalk())
+		{
+			return;
+		}
 		this.isWalking = true;
 		final float rad = (float)Math.toRadians(angle);
 		this.setVelocityX((float)Math.cos(rad) * this.getWalkingSpeed() * mult);
@@ -152,6 +161,27 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	public boolean isWalking()
 	{
 		return this.isWalking;
+	}
+	
+	/**
+	 * Returns whether the creature is able to walk at the moment.
+	 * The entity can not walk for example when it is under the influence of knockback or
+	 * when it is dead.
+	 * @return whether the creature can walk at the moment
+	 */
+	public boolean canWalk()
+	{
+		return !this.isDead && !this.beingMoved;
+	}
+	
+	public boolean isBeingMoved()
+	{
+		return this.beingMoved;
+	}
+	
+	public void setBeingMoved()
+	{
+		this.beingMoved = true;
 	}
 	
 	/**
@@ -200,11 +230,12 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		
 		if(this.isDead)
 		{
-			if(this.deadTicks > this.getDeadTicksBeforeDelete())
-			{
-				System.out.println("DELETE");
-			}
 			++this.deadTicks;
+		}
+		
+		if(this.beingMoved && this.getVelocity().len2() <= this.beingMovedThreshold)
+		{
+			this.beingMoved = false;
 		}
 	}
 	
@@ -355,6 +386,7 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		knockbackDirection.setLength((float)damageSource.getCurrentStats().getStat(CreatureStatsAttribs.KNOCKBACK));
 		knockbackDirection.scl(1.0F - (float)this.getCurrentStats().getStat(CreatureStatsAttribs.KNOCKBACK_RES));
 		this.setVelocity(knockbackDirection.x, knockbackDirection.y);
+		this.setBeingMoved();
 		
 		//-----Damage-----
 		double actualDamage = damageType.getDamageAgainst(damage, this.getCurrentStats());
@@ -363,7 +395,18 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		//-----Misc-----
 		this.invulnerableTicks = this.getInvulnerabilityTicksWhenHit();
 		
+		this.spawnDamageParticles(actualDamage);
+		
 		//Death is handled in onStatValueChanged()
+	}
+	
+	private void spawnDamageParticles(double damage)
+	{
+		String dmgStr = String.valueOf(Math.round(damage));
+		for(int i = 0; i < dmgStr.length(); ++i)
+		{
+			this.level.getParticleSystem().addParticle(new ParticleFightText(Type.NUMBER, dmgStr.charAt(i) - '0', this.getX() + i * 0.3F, this.getY() + 0.5F), new Levitate());
+		}
 	}
 	
 	/**
