@@ -57,5 +57,10 @@ public enum CreatureStatsAttribs
 	/**
 	 * How far an entity can reach when hitting.
 	 */
-	HIT_REACH
+	HIT_REACH,
+	
+	/**
+	 * Ticks remaining until a creature can hit again. Zero means no cool down and ready to hit.
+	 */
+	HIT_COOLDOWN
 }
