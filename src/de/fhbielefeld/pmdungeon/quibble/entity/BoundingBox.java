@@ -69,6 +69,18 @@ public class BoundingBox
 		return new BoundingBox(this.x + x, this.y + y, this.width, this.height);
 	}
 	
+	/**
+	 * Creates a new bounding box by growing it while keeping it centered.
+	 * The added length is distributed on each side equally.
+	 * @param x length added to the width
+	 * @param y length added to the height
+	 * @return a new bounding box relative to this bounding box by the specified offset
+	 */
+	public BoundingBox grow(float x, float y)
+	{
+		return new BoundingBox(this.x - x * 0.5F, this.y - y * 0.5F, this.width + x * 2.0F, this.height + y * 2.0F);
+	}
+	
 	@Override
 	public String toString()
 	{
