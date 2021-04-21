@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import de.fhbielefeld.pmdungeon.quibble.entity.BoundingBox;
 import de.fhbielefeld.pmdungeon.quibble.entity.Entity;
 import de.fhbielefeld.pmdungeon.quibble.particle.ParticleSystem;
 import de.fhbielefeld.pmdungeon.vorgaben.dungeonCreator.DungeonWorld;
 import de.fhbielefeld.pmdungeon.vorgaben.game.Controller.EntityController;
+import de.fhbielefeld.pmdungeon.vorgaben.interfaces.IEntity;
 
 public class Level
 {
@@ -104,5 +106,21 @@ public class Level
 	public Random getRNG()
 	{
 		return this.rng;
+	}
+	
+	public List<Entity> getEntitiesInArea(BoundingBox area)
+	{
+		List<IEntity> entityList = this.entityController.getList();
+		List<Entity> entitiesInArea = new ArrayList<Entity>();
+		Entity currentEntity;
+		for(int i = 0; i < entityList.size(); ++i)
+		{
+			currentEntity = (Entity)entityList.get(i);
+			if(currentEntity.getBoundingBox().offset(currentEntity.getX(), currentEntity.getY()).intersects(area))
+			{
+				entitiesInArea.add(currentEntity);
+			}
+		}
+		return entitiesInArea;
 	}
 }
