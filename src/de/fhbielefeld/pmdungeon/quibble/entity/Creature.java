@@ -5,11 +5,12 @@ import com.badlogic.gdx.math.Vector2;
 import de.fhbielefeld.pmdungeon.quibble.animation.AnimationStateHelper;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
+import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsEventListener;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.DamageSource;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.DamageType;
 import de.fhbielefeld.pmdungeon.vorgaben.tools.Point;
 
-public abstract class Creature extends Entity implements DamageSource
+public abstract class Creature extends Entity implements DamageSource, CreatureStatsEventListener
 {
 	private static final int ANIM_SWITCH_IDLE_L = 0;
 	private static final int ANIM_SWITCH_IDLE_R = 1;
@@ -56,6 +57,10 @@ public abstract class Creature extends Entity implements DamageSource
 	
 	private int invulnerableTicks;
 	
+	private int deadTicks;
+	
+	private boolean isDead;
+	
 	
 	
 	/**
@@ -69,9 +74,12 @@ public abstract class Creature extends Entity implements DamageSource
 		//Default looking direction should be right
 		this.lookingDirection = LookingDirection.RIGHT;
 		
+		//=====Improve this section=====
 		this.baseStats = this.getBaseStatsForLevel(this.expLevel);
 		this.maxStats = this.calculateMaxStats();
 		this.currentStats = this.maxStats.addCopy(new CreatureStats());
+		this.currentStats.setEventListener(this);
+		//==============================
 		
 		if(this.useDefaultAnimation())
 		{
@@ -189,6 +197,15 @@ public abstract class Creature extends Entity implements DamageSource
 		{
 			--this.invulnerableTicks;
 		}
+		
+		if(this.isDead)
+		{
+			if(this.deadTicks > this.getDeadTicksBeforeDelete())
+			{
+				System.out.println("DELETE");
+			}
+			++this.deadTicks;
+		}
 	}
 	
 	/**
@@ -284,6 +301,23 @@ public abstract class Creature extends Entity implements DamageSource
 		return this.currentStats;
 	}
 	
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void onStatValueChanged(CreatureStatsAttribs stat, double oldVal, double newVal)
+	{
+		if(stat == CreatureStatsAttribs.HEALTH)
+		{
+			if(newVal <= 0.0D)
+			{
+				this.isDead = true;
+			}
+			System.out.println(newVal);
+		}
+	}
+	
 	/**
 	 * Returns whether this creature can receive damage at this moment.
 	 * This is always true for a short time after a creature has been hit.
@@ -311,6 +345,11 @@ public abstract class Creature extends Entity implements DamageSource
 			return;
 		}
 		
+		if(this.isDead)
+		{
+			return;
+		}
+		
 		//-----Knockback-----
 		Vector2 knockbackDirection = new Vector2(this.getX() - damageSource.getX(), this.getY() - damageSource.getY());
 		knockbackDirection.setLength((float)damageSource.getCurrentStats().getStat(CreatureStatsAttribs.KNOCKBACK));
@@ -323,6 +362,8 @@ public abstract class Creature extends Entity implements DamageSource
 		
 		//-----Misc-----
 		this.invulnerableTicks = this.getInvulnerabilityTicksWhenHit();
+		
+		//Death is handled in onStatValueChanged()
 	}
 	
 	/**
@@ -337,11 +378,21 @@ public abstract class Creature extends Entity implements DamageSource
 			return;
 		}
 		
-		//return if miss chance
+		if(this.level.getRNG().nextFloat() <= this.getCurrentStats().getStat(CreatureStatsAttribs.MISS_CHANCE))
+		{
+			//Miss
+			return;
+		}
 		
-		//double damage if crit chance
+		double damage = this.getCurrentStats().getStat(damageType.getSourceDamageStat());
 		
-		target.damage(this.getCurrentStats().getStat(damageType.getSourceDamageStat()), damageType, this, false);
+		if(this.level.getRNG().nextFloat() <= this.getCurrentStats().getStat(CreatureStatsAttribs.CRIT_CHANCE))
+		{
+			//Crit
+			damage *= 2.0D;
+		}
+		
+		target.damage(damage, damageType, this, false);
 	}
 	
 	/**
@@ -351,5 +402,35 @@ public abstract class Creature extends Entity implements DamageSource
 	public int getInvulnerabilityTicksWhenHit()
 	{
 		return 20;
+	}
+	
+	/**
+	 * The amount of ticks since this entity has been marked as dead.
+	 * @return amount of ticks since death
+	 */
+	public int getDeadTicks()
+	{
+		return this.deadTicks;
+	}
+	
+	/**
+	 * The amount of ticks this entity remains in the level before it gets removed.
+	 * @return amount of ticks until removal after death
+	 */
+	public int getDeadTicksBeforeDelete()
+	{
+		return 30;
+	}
+	
+	@Override
+	public boolean isInvisible()
+	{
+		return this.deadTicks % 2 != 0 || this.invulnerableTicks % 2 != 0;
+	}
+	
+	@Override
+	public boolean deleteableWorkaround()
+	{
+		return this.isDead && this.deadTicks >= this.getDeadTicksBeforeDelete();
 	}
 }
