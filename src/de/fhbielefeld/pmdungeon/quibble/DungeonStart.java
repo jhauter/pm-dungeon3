@@ -1,8 +1,11 @@
 package de.fhbielefeld.pmdungeon.quibble;
 
+import java.util.List;
+
 import com.badlogic.gdx.Gdx;
 
 import de.fhbielefeld.pmdungeon.desktop.DesktopLauncher;
+import de.fhbielefeld.pmdungeon.quibble.entity.Entity;
 import de.fhbielefeld.pmdungeon.quibble.entity.Knight;
 import de.fhbielefeld.pmdungeon.quibble.entity.Player;
 import de.fhbielefeld.pmdungeon.quibble.input.InputHandler;
@@ -10,6 +13,7 @@ import de.fhbielefeld.pmdungeon.quibble.input.KeyHandler;
 import de.fhbielefeld.pmdungeon.quibble.particle.ParticleSystem;
 import de.fhbielefeld.pmdungeon.vorgaben.dungeonCreator.dungeonconverter.Coordinate;
 import de.fhbielefeld.pmdungeon.vorgaben.game.Controller.MainController;
+import de.fhbielefeld.pmdungeon.vorgaben.interfaces.IEntity;
 
 public class DungeonStart extends MainController
 {
@@ -62,9 +66,10 @@ public class DungeonStart extends MainController
 		
 		//Spawn the hero at the right spot
 		Coordinate startingPoint = this.levelController.getDungeon().getStartingLocation();
-//		this.myHero.setPosition(startingPoint.getX(), startingPoint.getY());
-		this.myHero.setPosition(0, 0);
-		this.myHero.setNoclip(true);
+		this.myHero.setPosition(startingPoint.getX(), startingPoint.getY());
+		
+		this.currentLevel.spawnEntity(new Knight(startingPoint.getX(), startingPoint.getY()));
+		
 		this.currentLevel.spawnEntity(this.myHero);
 		
 		//Set the camera to follow the hero
@@ -102,6 +107,18 @@ public class DungeonStart extends MainController
 		if(this.currentLevel != null && !this.currentLevel.isEntityBufferEmpty())
 		{
 			this.currentLevel.flushEntityBuffer();
+		}
+		
+		List<IEntity> entityList = this.entityController.getList();
+		Entity currentEntity;
+		for(int i = 0; i < entityList.size(); ++i)
+		{
+			currentEntity = (Entity)entityList.get(i);
+			if(currentEntity.deleteableWorkaround())
+			{
+				entityList.remove(i);
+				--i;
+			}
 		}
 		
 		this.currentLevel.getParticleSystem().draw(this.camera.position.x, this.camera.position.y);
