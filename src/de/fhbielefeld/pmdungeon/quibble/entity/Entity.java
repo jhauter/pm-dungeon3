@@ -266,16 +266,19 @@ public abstract class Entity implements IEntity, IAnimatable
 		
 		this.animationHandler.frameUpdate();
 		
-		final Point drawingOffsetOverride = this.getDrawingOffsetOverride();
-		if(drawingOffsetOverride != null)
+		if(!this.isInvisible())
 		{
-			this.draw(drawingOffsetOverride.x, drawingOffsetOverride.y);
-		}
-		else
-		{
-			//I think this draws the entity texture with the center at the entity position
-			//But it doesn't quite seem to fit...
-			this.draw();
+			final Point drawingOffsetOverride = this.getDrawingOffsetOverride();
+			if(drawingOffsetOverride != null)
+			{
+				this.draw(drawingOffsetOverride.x, drawingOffsetOverride.y);
+			}
+			else
+			{
+				//I think this draws the entity texture with the center at the entity position
+				//But it doesn't quite seem to fit...
+				this.draw();
+			}
 		}
 	}
 	
@@ -418,5 +421,19 @@ public abstract class Entity implements IEntity, IAnimatable
 	protected void onEntityCollision(Entity otherEntity)
 	{
 		
+	}
+	
+	/**
+	 * Whether this entity should not be rendered.
+	 * @return true if invisible
+	 */
+	public boolean isInvisible()
+	{
+		return false;
+	}
+	
+	public boolean deleteableWorkaround()
+	{
+		return false;
 	}
 }
