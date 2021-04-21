@@ -2,6 +2,7 @@ package de.fhbielefeld.pmdungeon.quibble;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import de.fhbielefeld.pmdungeon.quibble.entity.Entity;
 import de.fhbielefeld.pmdungeon.vorgaben.dungeonCreator.DungeonWorld;
@@ -14,6 +15,8 @@ public class Level
 	private final EntityController entityController;
 	
 	private List<Entity> newEntityBuffer;
+	
+	private Random rng;
 	
 	/**
 	 * Creates a Level that contains a <code>DungeonWorld</code> and an <code>EntityController</code>.
@@ -28,6 +31,7 @@ public class Level
 		this.world = world;
 		this.entityController = entityController;
 		this.newEntityBuffer = new ArrayList<Entity>();
+		this.rng = new Random();
 	}
 	
 	/**
@@ -86,5 +90,10 @@ public class Level
 	{
 		//We can cast because we only add "our" entity
 		return (Entity)this.entityController.getList().get(index);
+	}
+	
+	public Random getRNG()
+	{
+		return this.rng;
 	}
 }
