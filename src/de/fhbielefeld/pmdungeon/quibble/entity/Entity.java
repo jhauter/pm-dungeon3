@@ -40,6 +40,11 @@ public abstract class Entity implements IEntity, IAnimatable
 	protected Level level;
 	
 	/**
+	 * Bounding box relative to this entity's position. Used for collision detection.
+	 */
+	protected BoundingBox boundingBox;
+	
+	/**
 	 * @param x x-coordinate
 	 * @param y y-coordinate
 	 */
@@ -48,6 +53,7 @@ public abstract class Entity implements IEntity, IAnimatable
 		this.position = new Point(x, y);
 		this.velocity = new Vector2();
 		this.animationHandler = new AnimationHandlerImpl();
+		this.boundingBox = this.getInitBoundingBox();
 	}
 	
 	/**
@@ -84,6 +90,24 @@ public abstract class Entity implements IEntity, IAnimatable
 	public final Point getPosition()
 	{
 		return this.position;
+	}
+	
+	/**
+	 * Convenience method for returning the position x.
+	 * @return x position
+	 */
+	public float getX()
+	{
+		return this.position.x;
+	}
+	
+	/**
+	 * Convenience method for returning the position y.
+	 * @return y position
+	 */
+	public float getY()
+	{
+		return this.position.y;
 	}
 	
 	/**
@@ -178,6 +202,26 @@ public abstract class Entity implements IEntity, IAnimatable
 		this.move(this.velocity.x, this.velocity.y);
 		this.velocity.x *= this.linearDamping;
 		this.velocity.y *= this.linearDamping;
+		
+		final int numOtherEntities = this.level.getNumEntities();
+		Entity cOther;
+		for(int i = 0; i < numOtherEntities; ++i)
+		{
+			cOther = this.level.getEntity(i);
+			if(cOther == this)
+			{
+				continue;
+			}
+//			System.out.println(this.boundingBox.offset(this.getX(), this.getY()));
+//			System.out.print("Other: ");
+//			System.out.println(cOther.boundingBox.offset(cOther.getX(), cOther.getY()));
+			if(this.boundingBox.offset(this.getX(), this.getY()).intersects(cOther.boundingBox.offset(cOther.getX(), cOther.getY())))
+			{
+				//This is called on the other entity too by its own update() method
+				this.onEntityCollision(cOther);
+			}
+		}
+		
 		this.ticks++;
 		
 		this.updateAnimationState();
@@ -222,16 +266,19 @@ public abstract class Entity implements IEntity, IAnimatable
 		
 		this.animationHandler.frameUpdate();
 		
-		final Point drawingOffsetOverride = this.getDrawingOffsetOverride();
-		if(drawingOffsetOverride != null)
+		if(!this.isInvisible())
 		{
-			this.draw(drawingOffsetOverride.x, drawingOffsetOverride.y);
-		}
-		else
-		{
-			//I think this draws the entity texture with the center at the entity position
-			//But it doesn't quite seem to fit...
-			this.draw();
+			final Point drawingOffsetOverride = this.getDrawingOffsetOverride();
+			if(drawingOffsetOverride != null)
+			{
+				this.draw(drawingOffsetOverride.x, drawingOffsetOverride.y);
+			}
+			else
+			{
+				//I think this draws the entity texture with the center at the entity position
+				//But it doesn't quite seem to fit...
+				this.draw();
+			}
 		}
 	}
 	
@@ -291,7 +338,7 @@ public abstract class Entity implements IEntity, IAnimatable
 	 * be performed or not.
 	 * @param noclip whether noclip should be activated
 	 */
-	public void setNoclip(boolean noclip)
+	public final void setNoclip(boolean noclip)
 	{
 		this.noclip = noclip;
 	}
@@ -302,7 +349,7 @@ public abstract class Entity implements IEntity, IAnimatable
 	 * does not slide infinitely.
 	 * @return the linear damping of this entity
 	 */
-	public float getLinearDamping()
+	public final float getLinearDamping()
 	{
 		return this.linearDamping;
 	}
@@ -314,17 +361,79 @@ public abstract class Entity implements IEntity, IAnimatable
 	 * Value must not be negative.
 	 * @param v new linear damping
 	 */
-	public void setLinearDamping(float v)
+	public final void setLinearDamping(float v)
 	{
 		this.linearDamping = v;
 	}
 	
 	/**
-	 * A point of (0 | 0) renders the textures bottom left corner at the entities' position
+	 * A point of (0 | 0) renders the texture's bottom left corner at the entity's position
 	 * @return
 	 */
 	protected Point getDrawingOffsetOverride()
 	{
 		return null;
+	}
+	
+	/**
+	 * Sets this entity's bounding box relative to the entity's position.
+	 * @param bb bounding box which is relative to the entity's position.
+	 */
+	public final void setBoundingBox(BoundingBox bb)
+	{
+		this.boundingBox = bb;
+	}
+	
+	/**
+	 * Returns this entity's bounding box which is relative to the entity's position.
+	 * The bounding box is used for collision detection.
+	 * @return bounding box which is relative to the entity's position.
+	 */
+	public final BoundingBox getBoundingBox()
+	{
+		return this.boundingBox;
+	}
+	
+	/**
+	 * Returns the initial value for the bounding box. This can be overridden to change the initial value.
+	 * @return the initial bounding box relative to the entity's position
+	 */
+	protected BoundingBox getInitBoundingBox()
+	{
+		return new BoundingBox(-0.5F, -0.5F, 1.0F, 1.0F);
+	}
+	
+	/**
+	 * Returns the radius of this entity.
+	 * While there is a bounding box, some mechanics use the radius to do certain checks,
+	 * for example hitting of creatures.
+	 * @return the entity's radius
+	 */
+	public float getRadius()
+	{
+		return 0.5F;
+	}
+	
+	/**
+	 * This is called when collision between entities occurs.
+	 * @param otherEntity the entity this entity is colliding with
+	 */
+	protected void onEntityCollision(Entity otherEntity)
+	{
+		
+	}
+	
+	/**
+	 * Whether this entity should not be rendered.
+	 * @return true if invisible
+	 */
+	public boolean isInvisible()
+	{
+		return false;
+	}
+	
+	public boolean deleteableWorkaround()
+	{
+		return false;
 	}
 }

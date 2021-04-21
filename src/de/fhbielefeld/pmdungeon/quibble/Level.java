@@ -2,6 +2,7 @@ package de.fhbielefeld.pmdungeon.quibble;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import de.fhbielefeld.pmdungeon.quibble.entity.Entity;
 import de.fhbielefeld.pmdungeon.quibble.particle.ParticleSystem;
@@ -18,6 +19,8 @@ public class Level
 	
 	private final List<Entity> newEntityBuffer;
 	
+	private Random rng;
+	
 	/**
 	 * Creates a Level that contains a <code>DungeonWorld</code> and an <code>EntityController</code>.
 	 * The parameters should be copied from the main controller as this class is basically a convenience class.
@@ -32,6 +35,7 @@ public class Level
 		this.entityController = entityController;
 		this.particleSystem = new ParticleSystem();
 		this.newEntityBuffer = new ArrayList<Entity>();
+		this.rng = new Random();
 	}
 	
 	/**
@@ -80,5 +84,25 @@ public class Level
 	public ParticleSystem getParticleSystem()
 	{
 		return this.particleSystem;
+	}
+	
+	/**
+	 * Returns the number of entities actually in the level. (not in the buffer)
+	 * @return amount of entities in the level
+	 */
+	public int getNumEntities()
+	{
+		return this.entityController.getList().size();
+	}
+	
+	public Entity getEntity(int index)
+	{
+		//We can cast because we only add "our" entity
+		return (Entity)this.entityController.getList().get(index);
+	}
+	
+	public Random getRNG()
+	{
+		return this.rng;
 	}
 }

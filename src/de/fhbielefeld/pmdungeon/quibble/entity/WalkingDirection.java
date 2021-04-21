@@ -1,5 +1,10 @@
 package de.fhbielefeld.pmdungeon.quibble.entity;
 
+/**
+ * Constants for easier use of the {@link Creature#walk(float, float)} method.
+ * @author Andreas
+ *
+ */
 public interface WalkingDirection
 {
 	public static final float RIGHT = 0.0F;
