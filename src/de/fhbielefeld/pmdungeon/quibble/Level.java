@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Random;
 
 import de.fhbielefeld.pmdungeon.quibble.entity.Entity;
+import de.fhbielefeld.pmdungeon.quibble.particle.ParticleSystem;
 import de.fhbielefeld.pmdungeon.vorgaben.dungeonCreator.DungeonWorld;
 import de.fhbielefeld.pmdungeon.vorgaben.game.Controller.EntityController;
 
@@ -14,7 +15,9 @@ public class Level
 	
 	private final EntityController entityController;
 	
-	private List<Entity> newEntityBuffer;
+	private final ParticleSystem particleSystem;
+	
+	private final List<Entity> newEntityBuffer;
 	
 	private Random rng;
 	
@@ -30,6 +33,7 @@ public class Level
 	{
 		this.world = world;
 		this.entityController = entityController;
+		this.particleSystem = new ParticleSystem();
 		this.newEntityBuffer = new ArrayList<Entity>();
 		this.rng = new Random();
 	}
@@ -75,6 +79,11 @@ public class Level
 	public boolean isEntityBufferEmpty()
 	{
 		return this.newEntityBuffer.isEmpty();
+	}
+	
+	public ParticleSystem getParticleSystem()
+	{
+		return this.particleSystem;
 	}
 	
 	/**
