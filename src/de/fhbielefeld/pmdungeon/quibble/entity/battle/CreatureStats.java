@@ -1,5 +1,7 @@
 package de.fhbielefeld.pmdungeon.quibble.entity.battle;
 
+import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsEventListener.CreatureStatsEvent;
+
 public class CreatureStats
 {
 	private final double[] stats;
@@ -13,16 +15,12 @@ public class CreatureStats
 	
 	public void setStat(CreatureStatsAttribs stat, double value)
 	{
-		final double tmpOldVal = this.stats[stat.ordinal()];
-		this.stats[stat.ordinal()] = value;
-		this.fireStatChanged(stat, tmpOldVal, value);
+		this.stats[stat.ordinal()] = this.fireStatChange(stat, this.stats[stat.ordinal()], value);
 	}
 	
 	public void addStat(CreatureStatsAttribs stat, double add)
 	{
-		final double tmpOldVal = this.stats[stat.ordinal()];
-		this.stats[stat.ordinal()] += add;
-		this.fireStatChanged(stat, tmpOldVal, this.stats[stat.ordinal()]);
+		this.stats[stat.ordinal()] = this.fireStatChange(stat, this.stats[stat.ordinal()], this.stats[stat.ordinal()] + add);
 	}
 	
 	public double getStat(CreatureStatsAttribs stat)
@@ -45,11 +43,14 @@ public class CreatureStats
 		this.listener = l;
 	}
 	
-	private void fireStatChanged(CreatureStatsAttribs stat, double oldVal, double newVal)
+	private double fireStatChange(CreatureStatsAttribs stat, double oldVal, double newVal)
 	{
 		if(this.listener != null)
 		{
-			this.listener.onStatValueChanged(stat, oldVal, newVal);
+			final CreatureStatsEvent event =  new CreatureStatsEvent(stat, oldVal, newVal);
+			this.listener.onStatValueChange(event);
+			return event.getNewValue();
 		}
+		return newVal;
 	}
 }
