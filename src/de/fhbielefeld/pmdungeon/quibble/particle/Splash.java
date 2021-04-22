@@ -1,19 +1,19 @@
 package de.fhbielefeld.pmdungeon.quibble.particle;
 
-public class Drop implements ParticleMovement
+public class Splash implements ParticleMovement
 {
 	private final float upBoost;
 	private final float dragDown;
 	private final float driftOff;
 	
-	public Drop()
+	public Splash()
 	{
 		this.upBoost = ParticleSystem.RNG.nextFloat() * 2.0F + 4.0F;
 		this.driftOff = (float)ParticleSystem.RNG.nextGaussian() * 0.6F;
-		this.dragDown = 12.0F;
+		this.dragDown = 8.0F;
 	}
 	
-	public Drop(float upBoost, float dragDown, float driftOff)
+	public Splash(float upBoost, float dragDown, float driftOff)
 	{
 		this.upBoost = upBoost;
 		this.dragDown = dragDown;
