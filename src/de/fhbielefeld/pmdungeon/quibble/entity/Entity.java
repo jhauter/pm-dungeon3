@@ -1,10 +1,15 @@
 package de.fhbielefeld.pmdungeon.quibble.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.badlogic.gdx.math.Vector2;
 
 import de.fhbielefeld.pmdungeon.quibble.Level;
 import de.fhbielefeld.pmdungeon.quibble.animation.AnimationHandler;
 import de.fhbielefeld.pmdungeon.quibble.animation.AnimationHandlerImpl;
+import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEvent;
+import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEventHandler;
 import de.fhbielefeld.pmdungeon.vorgaben.graphic.Animation;
 import de.fhbielefeld.pmdungeon.vorgaben.interfaces.IAnimatable;
 import de.fhbielefeld.pmdungeon.vorgaben.interfaces.IEntity;
@@ -12,6 +17,9 @@ import de.fhbielefeld.pmdungeon.vorgaben.tools.Point;
 
 public abstract class Entity implements IEntity, IAnimatable
 {
+	public static final int EVENT_ID_SPAWN = EntityEvent.genEventID();
+	public static final int EVENT_ID_DESPAWN = EntityEvent.genEventID();
+	
 	private long ticks;
 	
 	private Point position;
@@ -44,6 +52,8 @@ public abstract class Entity implements IEntity, IAnimatable
 	 */
 	protected BoundingBox boundingBox;
 	
+	private List<EntityEventHandler> eventHandlers;
+	
 	/**
 	 * @param x x-coordinate
 	 * @param y y-coordinate
@@ -54,6 +64,7 @@ public abstract class Entity implements IEntity, IAnimatable
 		this.velocity = new Vector2();
 		this.animationHandler = new AnimationHandlerImpl();
 		this.boundingBox = this.getInitBoundingBox();
+		this.eventHandlers = new ArrayList<EntityEventHandler>();
 	}
 	
 	/**
@@ -311,6 +322,7 @@ public abstract class Entity implements IEntity, IAnimatable
 			{
 				this.position.y += y;
 			}
+			//TODO add collision event
 		}
 	}
 	
@@ -435,5 +447,25 @@ public abstract class Entity implements IEntity, IAnimatable
 	public boolean deleteableWorkaround()
 	{
 		return false;
+	}
+	
+	public EntityEvent fireEvent(EntityEvent event)
+	{
+		this.eventHandlers.forEach(handler -> handler.handleEvent(event));
+		return event;
+	}
+	
+	public void addEntityEventHandler(EntityEventHandler h)
+	{
+		if(this.eventHandlers.contains(h))
+		{
+			throw new IllegalArgumentException("this EntityEventHandler is already added");
+		}
+		this.eventHandlers.add(h);
+	}
+	
+	public void removeEntityEventHandler(EntityEventHandler h)
+	{
+		this.eventHandlers.remove(h);
 	}
 }
