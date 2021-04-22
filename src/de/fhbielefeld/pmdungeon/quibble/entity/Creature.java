@@ -8,17 +8,32 @@ import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsEventListener;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.DamageSource;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.DamageType;
+import de.fhbielefeld.pmdungeon.quibble.entity.event.CreatureDamageEvent;
+import de.fhbielefeld.pmdungeon.quibble.entity.event.CreatureHitTargetEvent;
+import de.fhbielefeld.pmdungeon.quibble.entity.event.CreatureHitTargetPostEvent;
+import de.fhbielefeld.pmdungeon.quibble.entity.event.CreatureStatChangeEvent;
+import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEvent;
 import de.fhbielefeld.pmdungeon.quibble.particle.Levitate;
 import de.fhbielefeld.pmdungeon.quibble.particle.ParticleFightText;
 import de.fhbielefeld.pmdungeon.quibble.particle.ParticleFightText.Type;
+import de.fhbielefeld.pmdungeon.quibble.particle.Splash;
 import de.fhbielefeld.pmdungeon.vorgaben.tools.Point;
 
 public abstract class Creature extends Entity implements DamageSource, CreatureStatsEventListener
 {
+	public static final int EVENT_ID_STAT_CHANGE = EntityEvent.genEventID();
+	public static final int EVENT_ID_TAKE_DAMAGE = EntityEvent.genEventID();
+	public static final int EVENT_ID_HIT_TARGET = EntityEvent.genEventID();
+	public static final int EVENT_ID_HIT_TARGET_POST = EntityEvent.genEventID();
+	
 	private static final int ANIM_SWITCH_IDLE_L = 0;
 	private static final int ANIM_SWITCH_IDLE_R = 1;
 	private static final int ANIM_SWITCH_RUN_L = 2;
 	private static final int ANIM_SWITCH_RUN_R = 3;
+	
+	private static final int ANIM_PRIO_IDLE = 0;
+	private static final int ANIM_PRIO_RUN = 5;
+	private static final int ANIM_PRIO_HIT = 10;
 	
 	/**
 	 * Animation name constant used by the <code>AnimationStateHelper</code>.
@@ -43,6 +58,18 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	 * Names of animations that are handled by the <code>AnimationStateHelper</code> need to match this.
 	 */
 	protected static final String ANIM_NAME_RUN_R = "run_right";
+	
+	/**
+	 * Animation name constant used by the <code>AnimationStateHelper</code>.
+	 * Names of animations that are handled by the <code>AnimationStateHelper</code> need to match this.
+	 */
+	protected static final String ANIM_NAME_HIT_L = "hit_left";
+	
+	/**
+	 * Animation name constant used by the <code>AnimationStateHelper</code>.
+	 * Names of animations that are handled by the <code>AnimationStateHelper</code> need to match this.
+	 */
+	protected static final String ANIM_NAME_HIT_R = "hit_right";
 	
 	private boolean isWalking;
 	
@@ -89,10 +116,10 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		if(this.useDefaultAnimation())
 		{
 			this.defaultAnimationsHelper = new AnimationStateHelper(this.animationHandler);
-			this.defaultAnimationsHelper.addSwitch(ANIM_SWITCH_IDLE_L, ANIM_NAME_IDLE_L, 0);
-			this.defaultAnimationsHelper.addSwitch(ANIM_SWITCH_IDLE_R, ANIM_NAME_IDLE_R, 0);
-			this.defaultAnimationsHelper.addSwitch(ANIM_SWITCH_RUN_L, ANIM_NAME_RUN_L, 5);
-			this.defaultAnimationsHelper.addSwitch(ANIM_SWITCH_RUN_R, ANIM_NAME_RUN_R, 5);
+			this.defaultAnimationsHelper.addSwitch(ANIM_SWITCH_IDLE_L, ANIM_NAME_IDLE_L, ANIM_PRIO_IDLE);
+			this.defaultAnimationsHelper.addSwitch(ANIM_SWITCH_IDLE_R, ANIM_NAME_IDLE_R, ANIM_PRIO_IDLE);
+			this.defaultAnimationsHelper.addSwitch(ANIM_SWITCH_RUN_L, ANIM_NAME_RUN_L, ANIM_PRIO_RUN);
+			this.defaultAnimationsHelper.addSwitch(ANIM_SWITCH_RUN_R, ANIM_NAME_RUN_R, ANIM_PRIO_RUN);
 		}
 	}
 	
@@ -237,6 +264,11 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		{
 			this.beingMoved = false;
 		}
+		
+		if(this.getCurrentStats().getStat(CreatureStatsAttribs.HIT_COOLDOWN) > 0.0D)
+		{
+			this.getCurrentStats().addStat(CreatureStatsAttribs.HIT_COOLDOWN, -1.0D);
+		}
 	}
 	
 	/**
@@ -332,20 +364,22 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		return this.currentStats;
 	}
 	
-	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void onStatValueChanged(CreatureStatsAttribs stat, double oldVal, double newVal)
+	public void onStatValueChange(CreatureStatsEvent event)
 	{
-		if(stat == CreatureStatsAttribs.HEALTH)
+		EntityEvent ev = this.fireEvent(new CreatureStatChangeEvent(EVENT_ID_STAT_CHANGE, this, event.getStat(), event.getOldValue(), event.getNewValue()));
+		event.setNewValue(((CreatureStatChangeEvent)ev).getNewValue());
+		
+		if(event.getStat() == CreatureStatsAttribs.HEALTH)
 		{
-			if(newVal <= 0.0D)
+			if(event.getNewValue() <= 0.0D)
 			{
 				this.isDead = true;
 			}
-			System.out.println(newVal);
+			System.out.println(event.getNewValue());
 		}
 	}
 	
@@ -381,23 +415,39 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 			return;
 		}
 		
+		//====================CALCULATE====================
 		//-----Knockback-----
 		Vector2 knockbackDirection = new Vector2(this.getX() - damageSource.getX(), this.getY() - damageSource.getY());
 		knockbackDirection.setLength((float)damageSource.getCurrentStats().getStat(CreatureStatsAttribs.KNOCKBACK));
 		knockbackDirection.scl(1.0F - (float)this.getCurrentStats().getStat(CreatureStatsAttribs.KNOCKBACK_RES));
-		this.setVelocity(knockbackDirection.x, knockbackDirection.y);
-		this.setBeingMoved();
 		
 		//-----Damage-----
 		double actualDamage = damageType.getDamageAgainst(damage, this.getCurrentStats());
-		this.getCurrentStats().addStat(CreatureStatsAttribs.HEALTH, -actualDamage);
+		
+		//-----Event-----
+		CreatureDamageEvent event = (CreatureDamageEvent)this.fireEvent(
+			new CreatureDamageEvent(EVENT_ID_TAKE_DAMAGE, this,
+				damageSource, damageType, damage, actualDamage, knockbackDirection.x, knockbackDirection.y));
+		
+		if(event.isCancelled())
+		{
+			//Don't take damage if event is cancelled
+			return;
+		}
+		
+		//====================APPLY====================
+		
+		this.getCurrentStats().addStat(CreatureStatsAttribs.HEALTH, -event.getDamageActual());
+		this.setVelocity(event.getKnockbackX(), event.getKnockbackY());
+		this.setBeingMoved();
 		
 		//-----Misc-----
 		this.invulnerableTicks = this.getInvulnerabilityTicksWhenHit();
 		
-		this.spawnDamageParticles(actualDamage);
+		this.spawnDamageParticles(event.getDamageActual());
+		this.animationHandler.playAnimation(this.lookingDirection == LookingDirection.LEFT ? ANIM_NAME_HIT_L : ANIM_NAME_HIT_R, ANIM_PRIO_HIT, false);
 		
-		//Death is handled in onStatValueChanged()
+		//Death is handled in onStatValueChange()
 	}
 	
 	private void spawnDamageParticles(double damage)
@@ -405,7 +455,8 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		String dmgStr = String.valueOf(Math.round(damage));
 		for(int i = 0; i < dmgStr.length(); ++i)
 		{
-			this.level.getParticleSystem().addParticle(new ParticleFightText(Type.NUMBER, dmgStr.charAt(i) - '0', this.getX() + i * 0.3F, this.getY() + 0.5F), new Levitate());
+			this.level.getParticleSystem().addParticle(new ParticleFightText(Type.NUMBER, dmgStr.charAt(i) - '0', this.getX() + i * 0.3F, this.getY() + 0.5F),
+				new Levitate());
 		}
 	}
 	
@@ -415,7 +466,14 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	 */
 	public void hit(Creature target, DamageType damageType)
 	{
-		double distance = Math.sqrt(Math.pow(this.getX() - target.getX(), 2) + Math.pow(this.getY() - target.getY(), 2)) - this.getRadius() - target.getRadius();
+		if(this.getCurrentStats().getStat(CreatureStatsAttribs.HIT_COOLDOWN) > 0.0D)
+		{
+			return;
+		}
+		this.getCurrentStats().setStat(CreatureStatsAttribs.HIT_COOLDOWN, this.getMaxStats().getStat(CreatureStatsAttribs.HIT_COOLDOWN));
+		
+		double distance = Math.sqrt(Math.pow(this.getX() - target.getX(), 2) + Math.pow(this.getY() - target.getY(), 2)) - this.getRadius()
+			- target.getRadius();
 		if(distance > this.getCurrentStats().getStat(CreatureStatsAttribs.HIT_REACH))
 		{
 			return;
@@ -423,7 +481,8 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		
 		if(this.level.getRNG().nextFloat() <= this.getCurrentStats().getStat(CreatureStatsAttribs.MISS_CHANCE))
 		{
-			//Miss
+			this.level.getParticleSystem().addParticle(new ParticleFightText(Type.MISS, target.getX(), target.getY() + 0.5F),
+				new Splash());
 			return;
 		}
 		
@@ -435,7 +494,12 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 			damage *= 2.0D;
 		}
 		
-		target.damage(damage, damageType, this, false);
+		CreatureHitTargetEvent event = (CreatureHitTargetEvent)this
+			.fireEvent(new CreatureHitTargetEvent(EVENT_ID_HIT_TARGET, this, target, damageType, damage));
+		
+		target.damage(event.getDamage(), event.getDamageType(), this, false);
+		
+		this.fireEvent(new CreatureHitTargetPostEvent(EVENT_ID_HIT_TARGET_POST, this, target, damageType, damage));
 	}
 	
 	/**
@@ -463,6 +527,11 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	public int getDeadTicksBeforeDelete()
 	{
 		return 30;
+	}
+	
+	public boolean isDead()
+	{
+		return this.isDead;
 	}
 	
 	@Override
