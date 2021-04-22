@@ -1,14 +1,12 @@
 package de.fhbielefeld.pmdungeon.quibble.entity;
 
-import java.util.Random;
+import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 
+import de.fhbielefeld.pmdungeon.quibble.entity.battle.DamageType;
 import de.fhbielefeld.pmdungeon.quibble.input.InputListener;
-import de.fhbielefeld.pmdungeon.quibble.particle.Drop;
-import de.fhbielefeld.pmdungeon.quibble.particle.ParticleFightText;
-import de.fhbielefeld.pmdungeon.quibble.particle.ParticleSystem;
 import de.fhbielefeld.pmdungeon.quibble.input.Key;
 
 public abstract class Player extends Creature implements InputListener
@@ -85,11 +83,26 @@ public abstract class Player extends Creature implements InputListener
 		
 		if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE))
 		{
-			Random r = new Random();
-			for(int i = 0; i < 1; ++i)
+			List<Entity> l = this.level.getEntitiesInArea(boundingBox.offset(getX(), getY()).grow(1, 1));
+			if(this.level.getEntity(1) != this)
 			{
-				this.level.getParticleSystem().addParticle(new ParticleFightText(ParticleFightText.Type.NUMBER, ParticleSystem.RNG.nextInt(10), this.getPosition().x + (r.nextFloat()  - 0.5F) * 0.1F, this.getPosition().y + r.nextFloat() * 0.1F + 0.5F), new Drop());
+				return;
 			}
+			for(Entity e : l)
+			{
+				if(e == this)
+				{
+					continue;
+				}
+				this.hit((Creature)e, DamageType.PHYSICAL);
+			}
+			
+			
+//			Random r = new Random();
+//			for(int i = 0; i < 1; ++i)
+//			{
+//				this.level.getParticleSystem().addParticle(new ParticleFightText(ParticleFightText.Type.NUMBER, ParticleSystem.RNG.nextInt(10), this.getPosition().x + (r.nextFloat()  - 0.5F) * 0.1F, this.getPosition().y + r.nextFloat() * 0.1F + 0.5F), new Drop());
+//			}
 		}
 		
 		/************ DEBUG ***********
