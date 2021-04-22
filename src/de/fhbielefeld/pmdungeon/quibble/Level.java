@@ -6,6 +6,7 @@ import java.util.Random;
 
 import de.fhbielefeld.pmdungeon.quibble.entity.BoundingBox;
 import de.fhbielefeld.pmdungeon.quibble.entity.Entity;
+import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEvent;
 import de.fhbielefeld.pmdungeon.quibble.particle.ParticleSystem;
 import de.fhbielefeld.pmdungeon.vorgaben.dungeonCreator.DungeonWorld;
 import de.fhbielefeld.pmdungeon.vorgaben.game.Controller.EntityController;
@@ -58,6 +59,12 @@ public class Level
 		if(!entity.isLoadedResources() && !entity.loadResources())
 		{
 			//Don't add entity if an error occurs
+			return;
+		}
+		EntityEvent spawnEvent = entity.fireEvent(new EntityEvent(Entity.EVENT_ID_SPAWN, entity));
+		if(spawnEvent.isCancelled())
+		{
+			//Don't spawn entity if event is cancelled
 			return;
 		}
 		this.newEntityBuffer.add(entity);
@@ -123,4 +130,9 @@ public class Level
 		}
 		return entitiesInArea;
 	}
+	
+	/*
+	 * 
+	 * TODO add getEntitiesInRadius()
+	 */
 }
