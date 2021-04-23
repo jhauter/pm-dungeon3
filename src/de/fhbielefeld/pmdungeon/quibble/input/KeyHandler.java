@@ -5,13 +5,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 
 import de.fhbielefeld.pmdungeon.quibble.LoggingHandler;
-import de.fhbielefeld.pmdungeon.quibble.Logger.ExceptionLogger;
 
 public class KeyHandler implements InputHandler {
 
@@ -61,13 +59,13 @@ public class KeyHandler implements InputHandler {
 		for (int i = 0; i < straightDirectionIsPressed.size(); i++) {
 			for (int j = 0; j < diagonalDirectionKEY.size(); j++) {
 				if(diagonalDirectionIsPressed.get(j).get()) {
-					LoggingHandler.status.log(Level.INFO, diagonalDirectionKEY.get(j).toString());
+					LoggingHandler.status.log(Level.FINEST, diagonalDirectionKEY.get(j).toString());
 					this.notifyListeners(diagonalDirectionKEY.get(j));
 					return;
 				}
 			}
 			if(straightDirectionIsPressed.get(i).get()) {
-				LoggingHandler.status.log(Level.INFO, straightDirectionKEY.get(i).toString());
+				LoggingHandler.status.log(Level.FINEST, straightDirectionKEY.get(i).toString());
 				this.notifyListeners(straightDirectionKEY.get(i));
 				return;
 			}
