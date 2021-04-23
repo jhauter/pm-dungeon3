@@ -10,8 +10,8 @@ import java.util.logging.Logger;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 
+import de.fhbielefeld.pmdungeon.quibble.LoggingHandler;
 import de.fhbielefeld.pmdungeon.quibble.Logger.ExceptionLogger;
-import de.fhbielefeld.pmdungeon.quibble.Logger.LoggingHandler;
 
 public class KeyHandler implements InputHandler {
 
@@ -39,7 +39,7 @@ public class KeyHandler implements InputHandler {
 		if(this.listener.contains(listener))
 		{
 			IllegalArgumentException e = new IllegalArgumentException("this listener was already added");
-			ExceptionLogger.log(Logger.getLogger("KeyHandler"), Level.SEVERE, e.getMessage(), e);
+			LoggingHandler.status.log(Level.SEVERE, e.getMessage(), e);
 			throw e;
 		}
 		this.listener.add(listener);

@@ -3,7 +3,6 @@ package de.fhbielefeld.pmdungeon.quibble;
 import com.badlogic.gdx.Gdx;
 
 import de.fhbielefeld.pmdungeon.desktop.DesktopLauncher;
-import de.fhbielefeld.pmdungeon.quibble.Logger.LoggingHandler;
 import de.fhbielefeld.pmdungeon.quibble.entity.Knight;
 import de.fhbielefeld.pmdungeon.quibble.entity.Player;
 import de.fhbielefeld.pmdungeon.quibble.input.InputHandler;

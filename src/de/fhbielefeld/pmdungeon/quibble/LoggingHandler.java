@@ -1,4 +1,4 @@
-package de.fhbielefeld.pmdungeon.quibble.Logger;
+package de.fhbielefeld.pmdungeon.quibble;
 
 import java.time.Instant;
 import java.time.ZonedDateTime;
