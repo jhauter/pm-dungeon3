@@ -17,26 +17,15 @@ public class LoggingHandler {
 
 	// author Malte Kanders
 	public static final Logger logger = Logger.getLogger(LoggingHandler.class.getName());
-	private static final String classPath = "de.fhbielefeld.pmdungeon.quibble.";
-	private FileHandler fh;
+//	private static final String classPath = "de.fhbielefeld.pmdungeon.quibble.";
+	private static FileHandler fh;
+	private static DateTimeFormatter dtFormatter = java.time.format.DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
 
-	Handler handler = new ConsoleHandler();
-
-	/**
-	 * Initializes the LoggingHandler. <br>
-	 * The class own's a static logger of type java.util.logging.Logger’s. </br>
-	 * 
-	 * <br>
-	 * Formatted texts are as follows: </br>
-	 * 
-	 * <code>Logger: <strong>.LoggingHandler</strong> in <strong>SourceClass</strong> 
-	 * <br><code>Level</code>: Message </br>
-	 * Date and time
-	 * 
-	 * @Format: “dd . MM. yyyyy HH:mm: ss”
-	 */
-	public LoggingHandler() {
-//		handler.setLevel(Level.FINEST);
+	private static Handler handler = new ConsoleHandler();
+	
+	static
+	{
+		handler.setLevel(Level.FINEST);
 		handler.setFormatter(MyFormatter());
 
 		logger.setUseParentHandlers(false);
@@ -45,7 +34,30 @@ public class LoggingHandler {
 		savedata();
 	}
 
-	private void savedata() {
+	/**
+	 * Initializes the LoggingHandler. <br>
+	 * The class owns a static logger of type java.util.logging.Logger. </br>
+	 * 
+	 * <br>
+	 * Formatted texts are as follows: </br>
+	 * 
+	 * <code>Logger: <strong>.LoggingHandler</strong> in <strong>SourceClass</strong> 
+	 * <br><code>Level</code>: Message </br>
+	 * Date and time
+	 * 
+	 * @Format: “dd.MM.yyyy HH:mm:ss”
+	 */
+	private LoggingHandler() {
+//		handler.setLevel(Level.FINEST);
+//		handler.setFormatter(MyFormatter());
+//
+//		logger.setUseParentHandlers(false);
+//		logger.addHandler(handler);
+//
+//		savedata();
+	}
+
+	private static void savedata() {
 		File file = new File("log.txt");
 		try {
 			if (!(file.exists())) {
@@ -62,7 +74,7 @@ public class LoggingHandler {
 
 	}
 
-	private Formatter MyFormatter() {
+	private static Formatter MyFormatter() {
 
 		Formatter f = new Formatter() {
 
@@ -70,21 +82,21 @@ public class LoggingHandler {
 			public String format(LogRecord record) {
 
 				String date = formatMillis(record.getMillis());
+				String className = record.getSourceClassName();
 
-				String topString = "Logger: " + record.getLoggerName().replace(classPath, ".") + " in "
-						+ record.getSourceClassName().replace(classPath, ".");
+				String topString = record.getLoggerName() + " in "
+						+ className.substring(className.lastIndexOf('.') + 1);
 				String middleString = record.getLevel() + ": " + record.getMessage();
 
-				return String.format(topString + "\n" + middleString + "\n" + date + "\n");
+				return date + " " + topString + "\n" + middleString + "\n";
 			}
 		};
 		return f;
 	}
 
-	private String formatMillis(long millis) {
+	private static String formatMillis(long millis) {
 		Instant instance = java.time.Instant.ofEpochMilli(millis);
-		ZonedDateTime zonedDateTime = java.time.ZonedDateTime.ofInstant(instance, java.time.ZoneId.of("Europe/Berlin"));
-		DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
-		return zonedDateTime.format(formatter);
+		ZonedDateTime zonedDateTime = java.time.ZonedDateTime.ofInstant(instance, java.time.ZoneId.systemDefault());
+		return zonedDateTime.format(dtFormatter);
 	}
 }
