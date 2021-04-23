@@ -485,7 +485,7 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		for(int i = 0; i < dmgStr.length(); ++i)
 		{
 			this.level.getParticleSystem().addParticle(
-				new ParticleFightText(Type.NUMBER, dmgStr.charAt(i) - '0', this.getX() + i * 0.3F, this.getY() + 0.5F, this),
+				new ParticleFightText(Type.NUMBER, dmgStr.charAt(i) - '0', this.getX() + i * 0.3F, this.getY() + 0.5F, null),
 				new Levitate());
 		}
 	}
@@ -505,7 +505,7 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		
 		if(this.level.getRNG().nextFloat() <= this.getCurrentStats().getStat(CreatureStatsAttribs.MISS_CHANCE))
 		{
-			this.level.getParticleSystem().addParticle(new ParticleFightText(Type.MISS, target.getX(), target.getY() + 0.5F, this),
+			this.level.getParticleSystem().addParticle(new ParticleFightText(Type.MISS, target.getX(), target.getY() + 0.5F, null),
 				new Splash());
 			return;
 		}
@@ -533,16 +533,20 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 			return;
 		}
 		this.getCurrentStats().setStat(CreatureStatsAttribs.HIT_COOLDOWN, this.getMaxStats().getStat(CreatureStatsAttribs.HIT_COOLDOWN));
-		final float swingSpeed = 3.5F;
-		final float weaponWidth = 1F * 0.5F;
-		final float weaponHeight = 2.5F * 0.5F;
-		final float weaponTime = 0.25F;
-		final Point weaponOffset = this.getWeaponHoldOffset();
-		SwingOrientation swingDir = this.lookingDirection == LookingDirection.RIGHT ? SwingOrientation.RIGHT : SwingOrientation.LEFT;
-		Swing weaponMovement = new Swing(swingDir, swingSpeed);
-		this.level.getParticleSystem().addParticle(
-			new ParticleWeapon(ParticleWeapon.Type.SWORD, weaponWidth, weaponHeight, weaponTime, this.getX() + weaponOffset.x, this.getY() + weaponOffset.y, this),
-			weaponMovement);
+		
+		if(this.showWeaponOnAttack())
+		{
+			final float swingSpeed = 3.5F;
+			final float weaponWidth = 1F * 0.5F;
+			final float weaponHeight = 2.5F * 0.5F;
+			final float weaponTime = 0.25F;
+			final Point weaponOffset = this.getWeaponHoldOffset();
+			SwingOrientation swingDir = this.lookingDirection == LookingDirection.RIGHT ? SwingOrientation.RIGHT : SwingOrientation.LEFT;
+			Swing weaponMovement = new Swing(swingDir, swingSpeed);
+			this.level.getParticleSystem().addParticle(
+				new ParticleWeapon(ParticleWeapon.Type.SWORD, weaponWidth, weaponHeight, weaponTime, this.getX() + weaponOffset.x, this.getY() + weaponOffset.y, this),
+				weaponMovement);
+		}
 		
 		List<Entity> entitiesInRadius = this.level.getEntitiesInRadius(this.getX(), this.getY(), (float)this.getCurrentStats().getStat(CreatureStatsAttribs.HIT_REACH) + this.getRadius(), this);
 		for(Entity e : entitiesInRadius)
@@ -604,4 +608,9 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	}
 	
 	public abstract Point getWeaponHoldOffset();
+	
+	public boolean showWeaponOnAttack()
+	{
+		return false;
+	}
 }
