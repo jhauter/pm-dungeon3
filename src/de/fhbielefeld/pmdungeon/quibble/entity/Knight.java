@@ -70,6 +70,12 @@ public class Knight extends Player
 		return new Point(0.0F, 1.25F);
 	}
 	
+	@Override
+	public boolean showWeaponOnAttack()
+	{
+		return true;
+	}
+	
 	/************** DEMO **************
 	
 	@Override
