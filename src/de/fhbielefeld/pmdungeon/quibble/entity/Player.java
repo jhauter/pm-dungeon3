@@ -27,24 +27,25 @@ public abstract class Player extends Creature implements InputListener
 	@Override
 	public void onInputRecieved(DungeonInput input)
 	{
-		float ctrlX = input.getAxisScaleX();
-		float ctrlY = input.getAxisScaleY();
-		
-		float angle = (float)Math.toDegrees(Math.atan2(ctrlY, ctrlX));
-		
-		this.walk(angle);
-		if(angle > 90 && angle < 270)
+		if(input.isMovementInput())
 		{
-			this.setLookingDirection(LookingDirection.LEFT);
+			float ctrlX = input.getAxisScaleX();
+			float ctrlY = input.getAxisScaleY();
+			
+			float angle = (float)Math.toDegrees(Math.atan2(ctrlY, ctrlX));
+			
+			this.walk(angle);
+			if(angle > 90 && angle < 270)
+			{
+				this.setLookingDirection(LookingDirection.LEFT);
+			}
+			else if(angle < 90 || angle > 270)
+			{
+				this.setLookingDirection(LookingDirection.RIGHT);
+			}
+			//if it is exactly 90 or 270 do nothing
+			//So that when you press up or down, the looking direction does not change
 		}
-		else if(angle < 90 || angle > 270)
-		{
-			this.setLookingDirection(LookingDirection.RIGHT);
-		}
-		//if it is exactly 90 or 270 do nothing
-		//So that when you press up or down, the looking direction does not change
-		
-		
 	}
 	
 	/**
