@@ -34,7 +34,7 @@ public class DungeonStart extends MainController
 	 * Use this level to spawn entities instead of <code>this.entityController</code>!!
 	 * This <code>Level</code> object makes it easier to let entities spawn other entities by themselves.
 	 */
-	private Level currentLevel;
+	private DungeonLevel currentLevel;
 	
 	private long lastFrameTimeStamp;
 	
@@ -52,7 +52,7 @@ public class DungeonStart extends MainController
 		ParticleSystem.loadTextures();
 		this.lastFrameTimeStamp = System.currentTimeMillis();
 		Gdx.app.getGraphics().setResizable(true);
-		Gdx.app.log("GAME", "Setup.");
+//		LoggingHandler.logger.log(, null);
 	}
 	
 	@Override
@@ -62,7 +62,7 @@ public class DungeonStart extends MainController
 		//Clear entities from previous level
 		this.entityController.getList().clear();
 		//Set current level from the level controller and entity controller
-		this.currentLevel = new Level(this.levelController.getDungeon(), this.entityController);
+		this.currentLevel = new DungeonLevel(this.levelController.getDungeon(), this.entityController);
 		
 		//Spawn the hero at the right spot
 		Coordinate startingPoint = this.levelController.getDungeon().getStartingLocation();

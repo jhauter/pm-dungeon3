@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.badlogic.gdx.math.Vector2;
 
-import de.fhbielefeld.pmdungeon.quibble.Level;
+import de.fhbielefeld.pmdungeon.quibble.DungeonLevel;
 import de.fhbielefeld.pmdungeon.quibble.animation.AnimationHandler;
 import de.fhbielefeld.pmdungeon.quibble.animation.AnimationHandlerImpl;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEvent;
@@ -46,7 +46,7 @@ public abstract class Entity implements IEntity, IAnimatable, ParticleSource
 	/**
 	 * <code>Level</code> reference for this entity to allow interaction with the level.
 	 */
-	protected Level level;
+	protected DungeonLevel level;
 	
 	/**
 	 * Bounding box relative to this entity's position. Used for collision detection.
@@ -332,7 +332,7 @@ public abstract class Entity implements IEntity, IAnimatable, ParticleSource
 	 * a <code>DungeonWorld</code> reference.
 	 * @param world the <code>DungeonWorld</code> that this entity was added to
 	 */
-	public void onSpawn(Level level)
+	public void onSpawn(DungeonLevel level)
 	{
 		this.level = level;
 	}

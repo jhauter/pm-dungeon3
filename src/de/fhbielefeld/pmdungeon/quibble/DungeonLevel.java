@@ -13,7 +13,7 @@ import de.fhbielefeld.pmdungeon.vorgaben.dungeonCreator.DungeonWorld;
 import de.fhbielefeld.pmdungeon.vorgaben.game.Controller.EntityController;
 import de.fhbielefeld.pmdungeon.vorgaben.interfaces.IEntity;
 
-public class Level
+public class DungeonLevel
 {
 	private final DungeonWorld world;
 	
@@ -33,7 +33,7 @@ public class Level
 	 * @param entityController entity controller reference
 	 */
 	
-	public Level(DungeonWorld world, EntityController entityController)
+	public DungeonLevel(DungeonWorld world, EntityController entityController)
 	{
 		this.world = world;
 		this.entityController = entityController;
