@@ -18,9 +18,9 @@ public interface InputHandler
 	
 	/**
 	 * Notifies all listeners about an input event. This should only be called internally.
-	 * @param key the button that was pressed by the player.
+	 * @param input the input that was done by the player.
 	 */
-	public void notifyListeners(DungeonInput key);
+	public void notifyListeners(DungeonInput input);
 	
 	/*
 	 * Called once per frame and retrieves the state of registered buttons and fires events accordingly.
