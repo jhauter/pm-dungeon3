@@ -1,6 +1,7 @@
 package de.fhbielefeld.pmdungeon.quibble;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -131,8 +132,20 @@ public class Level
 		return entitiesInArea;
 	}
 	
-	/*
-	 * 
-	 * TODO add getEntitiesInRadius()
-	 */
+	public List<Entity> getEntitiesInRadius(float x, float y, float radius, Entity... exclude)
+	{
+		List<IEntity> entityList = this.entityController.getList();
+		List<Entity> entitiesInRadius = new ArrayList<Entity>();
+		Entity currentEntity;
+		for(int i = 0; i < entityList.size(); ++i)
+		{
+			currentEntity = (Entity)entityList.get(i);
+			if(Math.pow(currentEntity.getX() - x, 2) + Math.pow(currentEntity.getY() - y, 2) <= Math.pow(radius + currentEntity.getRadius(), 2)
+				&& !Arrays.asList(exclude).contains(currentEntity))
+			{
+				entitiesInRadius.add(currentEntity);
+			}
+		}
+		return entitiesInRadius;
+	}
 }
