@@ -75,6 +75,22 @@ public abstract class Player extends Creature implements InputListener
 			this.triggeredNextLevel = true;
 		}
 		
+//		if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE))
+//		{
+//			if(this.level.getEntity(0) != this)
+//			{
+//				return;
+//			}
+//			((Creature)this.level.getEntity(0)).attack();
+			
+			
+//			Random r = new Random();
+//			for(int i = 0; i < 1; ++i)
+//			{
+//				this.level.getParticleSystem().addParticle(new ParticleFightText(ParticleFightText.Type.NUMBER, ParticleSystem.RNG.nextInt(10), this.getPosition().x + (r.nextFloat()  - 0.5F) * 0.1F, this.getPosition().y + r.nextFloat() * 0.1F + 0.5F), new Drop());
+//			}
+//		}
+		
 		/************ DEBUG ***********
 		
 		if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE))
