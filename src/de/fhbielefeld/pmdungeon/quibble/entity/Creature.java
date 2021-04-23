@@ -400,6 +400,11 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	public void onStatValueChange(CreatureStatsEvent event)
 	{
 		EntityEvent ev = this.fireEvent(new CreatureStatChangeEvent(EVENT_ID_STAT_CHANGE, this, event.getStat(), event.getOldValue(), event.getNewValue()));
+		if(ev.isCancelled())
+		{
+			event.setCancelled(true);
+			return;
+		}
 		event.setNewValue(((CreatureStatChangeEvent)ev).getNewValue());
 		
 		if(event.getStat() == CreatureStatsAttribs.HEALTH)
@@ -408,7 +413,6 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 			{
 				this.isDead = true;
 			}
-			System.out.println(event.getNewValue());
 		}
 	}
 	
@@ -521,9 +525,16 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		CreatureHitTargetEvent event = (CreatureHitTargetEvent)this
 			.fireEvent(new CreatureHitTargetEvent(EVENT_ID_HIT_TARGET, this, target, damageType, damage));
 		
+		if(event.isCancelled())
+		{
+			//Don't proceed is event is cancelled
+			return;
+		}
+		
 		target.damage(event.getDamage(), event.getDamageType(), this, false);
 		
 		this.fireEvent(new CreatureHitTargetPostEvent(EVENT_ID_HIT_TARGET_POST, this, target, damageType, damage));
+		//Canceling target post event has no effect
 	}
 	
 	public void attack()

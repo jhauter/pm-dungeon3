@@ -8,6 +8,7 @@ public interface CreatureStatsEventListener
 		private final CreatureStatsAttribs stat;
 		private final double oldVal;
 		private double newVal;
+		private boolean cancelled;
 		
 		public CreatureStatsEvent(CreatureStatsAttribs stat, double oldVal, double newVal)
 		{
@@ -34,6 +35,16 @@ public interface CreatureStatsEventListener
 		public double getOldValue()
 		{
 			return this.oldVal;
+		}
+		
+		public boolean isCancelled()
+		{
+			return this.cancelled;
+		}
+		
+		public void setCancelled(boolean cancelled)
+		{
+			this.cancelled = cancelled;
 		}
 	}
 	

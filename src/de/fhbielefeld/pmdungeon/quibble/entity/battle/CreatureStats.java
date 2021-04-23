@@ -15,12 +15,36 @@ public class CreatureStats
 	
 	public void setStat(CreatureStatsAttribs stat, double value)
 	{
-		this.stats[stat.ordinal()] = this.fireStatChange(stat, this.stats[stat.ordinal()], value);
+		CreatureStatsEvent ev = this.fireStatChange(stat, this.stats[stat.ordinal()], value);
+		if(ev != null)
+		{
+			if(ev.isCancelled())
+			{
+				return;
+			}
+			this.stats[stat.ordinal()] = ev.getNewValue();
+		}
+		else
+		{
+			this.stats[stat.ordinal()] = value;
+		}
 	}
 	
 	public void addStat(CreatureStatsAttribs stat, double add)
 	{
-		this.stats[stat.ordinal()] = this.fireStatChange(stat, this.stats[stat.ordinal()], this.stats[stat.ordinal()] + add);
+		CreatureStatsEvent ev = this.fireStatChange(stat, this.stats[stat.ordinal()], this.stats[stat.ordinal()] + add);
+		if(ev != null)
+		{
+			if(ev.isCancelled())
+			{
+				return;
+			}
+			this.stats[stat.ordinal()] = ev.getNewValue();
+		}
+		else
+		{
+			this.stats[stat.ordinal()] += add;
+		}
 	}
 	
 	public double getStat(CreatureStatsAttribs stat)
@@ -43,14 +67,14 @@ public class CreatureStats
 		this.listener = l;
 	}
 	
-	private double fireStatChange(CreatureStatsAttribs stat, double oldVal, double newVal)
+	private CreatureStatsEvent fireStatChange(CreatureStatsAttribs stat, double oldVal, double newVal)
 	{
-		if(this.listener != null)
+		if(this.listener == null)
 		{
-			final CreatureStatsEvent event =  new CreatureStatsEvent(stat, oldVal, newVal);
-			this.listener.onStatValueChange(event);
-			return event.getNewValue();
+			return null;
 		}
-		return newVal;
+		final CreatureStatsEvent event =  new CreatureStatsEvent(stat, oldVal, newVal);
+		this.listener.onStatValueChange(event);
+		return event;
 	}
 }
