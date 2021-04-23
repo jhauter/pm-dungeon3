@@ -1,6 +1,6 @@
 package de.fhbielefeld.pmdungeon.quibble.input;
 
-public enum Key {
+public enum DungeonInput {
 
 	UP(2, false, 90.0F), UP_RIGHT(2, false, 45.0F), RIGHT(2, false, 0.0F), DOWN_RIGHT(2, false, 315.0F),
 	DOWN(2, false, 270.0F), DOWN_LEFT(2, false, 225.0F), LEFT(2, false, 180.0F), UP_LEFT(2, false, 135.0F),
@@ -21,7 +21,7 @@ public enum Key {
 	 *                    Starts with the right direction button at 0 and runs
 	 *                    counter-clockwise. Values from 0 to 360
 	 */
-	Key(int priority, boolean justPressed, float angle) {
+	DungeonInput(int priority, boolean justPressed, float angle) {
 		this.priority = priority;
 		this.justPressed = justPressed;
 		this.angle = angle;

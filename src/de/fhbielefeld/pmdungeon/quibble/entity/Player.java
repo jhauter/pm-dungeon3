@@ -1,7 +1,7 @@
 package de.fhbielefeld.pmdungeon.quibble.entity;
 
 import de.fhbielefeld.pmdungeon.quibble.input.InputListener;
-import de.fhbielefeld.pmdungeon.quibble.input.Key;
+import de.fhbielefeld.pmdungeon.quibble.input.DungeonInput;
 
 public abstract class Player extends Creature implements InputListener
 {
@@ -25,9 +25,9 @@ public abstract class Player extends Creature implements InputListener
 	}
 	
 	@Override
-	public void onInputRecieved(Key key)
+	public void onInputRecieved(DungeonInput key)
 	{
-		if(key == Key.NO_KEY) //Fix: this method should actually not be executed when no key is pressed
+		if(key == DungeonInput.NO_KEY) //Fix: this method should actually not be executed when no key is pressed
 		{
 			return;
 		}
