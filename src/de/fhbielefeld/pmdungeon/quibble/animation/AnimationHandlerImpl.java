@@ -91,7 +91,7 @@ public class AnimationHandlerImpl implements AnimationHandler
 			if(this.registeredAnimations.get(i).name.equals(animInfo.name))
 			{
 				IllegalArgumentException e = new IllegalArgumentException("animation with name " + animInfo.name + " is already registered");
-				LoggingHandler.status.log(Level.SEVERE, "animation with name " + animInfo.name + " is already registered", e);
+				LoggingHandler.logger.log(Level.SEVERE, "animation with name " + animInfo.name + " is already registered", e);
 				throw e;
 			}
 		}
@@ -118,13 +118,13 @@ public class AnimationHandlerImpl implements AnimationHandler
 		if(this.isLoaded)
 		{
 			IllegalStateException e = new IllegalStateException("animations have already been loaded");
-			LoggingHandler.status.log(Level.SEVERE, "animations have already been loaded", e);
+			LoggingHandler.logger.log(Level.SEVERE, "animations have already been loaded", e);
 			throw e;			
 		}
 		if(this.defaultAnimInfo == null) //This must be second as defaultAnimation is set to null after loading
 		{
 			IllegalStateException e = new IllegalStateException("a default animation must be added");
-			LoggingHandler.status.log(Level.SEVERE, "animations have already been loaded", e);
+			LoggingHandler.logger.log(Level.SEVERE, "animations have already been loaded", e);
 			throw e;
 		}
 		StringBuilder pathBuilder = new StringBuilder();
@@ -179,7 +179,7 @@ public class AnimationHandlerImpl implements AnimationHandler
 			catch(GdxRuntimeException e) //failure to load throws a GdxRuntimeException
 			{
 				this.loadedAnimations.clear(); //clear list to allow retry to load
-				LoggingHandler.status.log(Level.SEVERE, "Error", e);
+				LoggingHandler.logger.log(Level.SEVERE, "Error", e);
 				Gdx.app.log("Error", e.getMessage());
 				return null;
 			}

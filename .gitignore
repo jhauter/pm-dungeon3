@@ -7,3 +7,6 @@ bin/**
 **/*.vpp.bak*
 **/*.vpp.lck
 /bin/
+
+#logdata
+*.log.txt

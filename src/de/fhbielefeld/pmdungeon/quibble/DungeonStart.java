@@ -60,7 +60,7 @@ public class DungeonStart extends MainController
 		Coordinate startingPoint = this.levelController.getDungeon().getStartingLocation();
 		this.myHero.setPosition(startingPoint.getX(), startingPoint.getY());
 		this.currentLevel.spawnEntity(this.myHero);
-		LoggingHandler.status.log(java.util.logging.Level.SEVERE, "Entity is spawnt " + myHero);
+		LoggingHandler.logger.log(java.util.logging.Level.SEVERE, "Entity is spawned " + myHero);
 		
 		//Set the camera to follow the hero
 		this.camera.follow(this.myHero);

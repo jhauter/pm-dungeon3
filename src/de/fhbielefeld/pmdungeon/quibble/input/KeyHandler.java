@@ -37,7 +37,7 @@ public class KeyHandler implements InputHandler {
 		if(this.listener.contains(listener))
 		{
 			IllegalArgumentException e = new IllegalArgumentException("this listener was already added");
-			LoggingHandler.status.log(Level.SEVERE, e.getMessage(), e);
+			LoggingHandler.logger.log(Level.SEVERE, e.getMessage(), e);
 			throw e;
 		}
 		this.listener.add(listener);
@@ -59,13 +59,13 @@ public class KeyHandler implements InputHandler {
 		for (int i = 0; i < straightDirectionIsPressed.size(); i++) {
 			for (int j = 0; j < diagonalDirectionKEY.size(); j++) {
 				if(diagonalDirectionIsPressed.get(j).get()) {
-					LoggingHandler.status.log(Level.FINEST, diagonalDirectionKEY.get(j).toString());
+					LoggingHandler.logger.log(Level.FINEST, diagonalDirectionKEY.get(j).toString());
 					this.notifyListeners(diagonalDirectionKEY.get(j));
 					return;
 				}
 			}
 			if(straightDirectionIsPressed.get(i).get()) {
-				LoggingHandler.status.log(Level.FINEST, straightDirectionKEY.get(i).toString());
+				LoggingHandler.logger.log(Level.FINEST, straightDirectionKEY.get(i).toString());
 				this.notifyListeners(straightDirectionKEY.get(i));
 				return;
 			}
