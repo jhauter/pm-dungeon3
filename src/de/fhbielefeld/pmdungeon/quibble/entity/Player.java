@@ -1,11 +1,8 @@
 package de.fhbielefeld.pmdungeon.quibble.entity;
 
-import java.util.List;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 
-import de.fhbielefeld.pmdungeon.quibble.entity.battle.DamageType;
 import de.fhbielefeld.pmdungeon.quibble.input.InputListener;
 import de.fhbielefeld.pmdungeon.quibble.input.Key;
 
@@ -83,19 +80,11 @@ public abstract class Player extends Creature implements InputListener
 		
 		if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE))
 		{
-			List<Entity> l = this.level.getEntitiesInArea(boundingBox.offset(getX(), getY()).grow(1, 1));
-			if(this.level.getEntity(1) != this)
+			if(this.level.getEntity(0) != this)
 			{
 				return;
 			}
-			for(Entity e : l)
-			{
-				if(e == this)
-				{
-					continue;
-				}
-				this.hit((Creature)e, DamageType.PHYSICAL);
-			}
+			((Creature)this.level.getEntity(0)).attack(); 
 			
 			
 //			Random r = new Random();
