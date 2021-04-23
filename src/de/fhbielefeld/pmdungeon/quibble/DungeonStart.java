@@ -9,7 +9,7 @@ import de.fhbielefeld.pmdungeon.quibble.entity.Entity;
 import de.fhbielefeld.pmdungeon.quibble.entity.Knight;
 import de.fhbielefeld.pmdungeon.quibble.entity.Player;
 import de.fhbielefeld.pmdungeon.quibble.input.InputHandler;
-import de.fhbielefeld.pmdungeon.quibble.input.KeyHandler;
+import de.fhbielefeld.pmdungeon.quibble.input.DungeonInputHandler;
 import de.fhbielefeld.pmdungeon.quibble.particle.ParticleSystem;
 import de.fhbielefeld.pmdungeon.vorgaben.dungeonCreator.dungeonconverter.Coordinate;
 import de.fhbielefeld.pmdungeon.vorgaben.game.Controller.MainController;
@@ -40,7 +40,7 @@ public class DungeonStart extends MainController
 	
 	public DungeonStart()
 	{
-		this.inputHandler = new KeyHandler();
+		this.inputHandler = new DungeonInputHandler();
 	}
 	
 	@Override
