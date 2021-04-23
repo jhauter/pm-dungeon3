@@ -6,3 +6,4 @@ bin/**
 # visual paradigm files
 **/*.vpp.bak*
 **/*.vpp.lck
+/bin/

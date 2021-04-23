@@ -4,9 +4,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Supplier;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+
+import de.fhbielefeld.pmdungeon.quibble.Logger.ExceptionLogger;
+import de.fhbielefeld.pmdungeon.quibble.Logger.LoggingHandler;
 
 public class KeyHandler implements InputHandler {
 
@@ -33,7 +38,9 @@ public class KeyHandler implements InputHandler {
 	public void addInputListener(InputListener listener) {
 		if(this.listener.contains(listener))
 		{
-			throw new IllegalArgumentException("this listener was already added");
+			IllegalArgumentException e = new IllegalArgumentException("this listener was already added");
+			ExceptionLogger.log(Logger.getLogger("KeyHandler"), Level.SEVERE, e.getMessage(), e);
+			throw e;
 		}
 		this.listener.add(listener);
 	}
@@ -54,11 +61,13 @@ public class KeyHandler implements InputHandler {
 		for (int i = 0; i < straightDirectionIsPressed.size(); i++) {
 			for (int j = 0; j < diagonalDirectionKEY.size(); j++) {
 				if(diagonalDirectionIsPressed.get(j).get()) {
+					LoggingHandler.status.log(Level.INFO, diagonalDirectionKEY.get(j).toString());
 					this.notifyListeners(diagonalDirectionKEY.get(j));
 					return;
 				}
 			}
 			if(straightDirectionIsPressed.get(i).get()) {
+				LoggingHandler.status.log(Level.INFO, straightDirectionKEY.get(i).toString());
 				this.notifyListeners(straightDirectionKEY.get(i));
 				return;
 			}

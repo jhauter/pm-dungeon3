@@ -3,6 +3,7 @@ package de.fhbielefeld.pmdungeon.quibble;
 import com.badlogic.gdx.Gdx;
 
 import de.fhbielefeld.pmdungeon.desktop.DesktopLauncher;
+import de.fhbielefeld.pmdungeon.quibble.Logger.LoggingHandler;
 import de.fhbielefeld.pmdungeon.quibble.entity.Knight;
 import de.fhbielefeld.pmdungeon.quibble.entity.Player;
 import de.fhbielefeld.pmdungeon.quibble.input.InputHandler;
@@ -24,6 +25,8 @@ public class DungeonStart extends MainController
 	private Player myHero;
 	
 	private InputHandler inputHandler;
+	
+	LoggingHandler logginghandler = new LoggingHandler();
 	
 	/**
 	 * Use this level to spawn entities instead of <code>this.entityController</code>!!
@@ -58,6 +61,8 @@ public class DungeonStart extends MainController
 		Coordinate startingPoint = this.levelController.getDungeon().getStartingLocation();
 		this.myHero.setPosition(startingPoint.getX(), startingPoint.getY());
 		this.currentLevel.spawnEntity(this.myHero);
+//		LoggingHandler.log(java.util.logging.Level.INFO, "Entity is spawned", this.getClass().toString());
+		LoggingHandler.status.log(java.util.logging.Level.SEVERE, "Entity is spawnt " + myHero);
 		
 		//Set the camera to follow the hero
 		this.camera.follow(this.myHero);
