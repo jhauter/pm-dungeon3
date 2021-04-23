@@ -1,11 +1,17 @@
 package de.fhbielefeld.pmdungeon.quibble;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
+import de.fhbielefeld.pmdungeon.quibble.entity.BoundingBox;
 import de.fhbielefeld.pmdungeon.quibble.entity.Entity;
+import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEvent;
+import de.fhbielefeld.pmdungeon.quibble.particle.ParticleSystem;
 import de.fhbielefeld.pmdungeon.vorgaben.dungeonCreator.DungeonWorld;
 import de.fhbielefeld.pmdungeon.vorgaben.game.Controller.EntityController;
+import de.fhbielefeld.pmdungeon.vorgaben.interfaces.IEntity;
 
 public class Level
 {
@@ -13,7 +19,11 @@ public class Level
 	
 	private final EntityController entityController;
 	
-	private List<Entity> newEntityBuffer;
+	private final ParticleSystem particleSystem;
+	
+	private final List<Entity> newEntityBuffer;
+	
+	private Random rng;
 	
 	/**
 	 * Creates a Level that contains a <code>DungeonWorld</code> and an <code>EntityController</code>.
@@ -27,7 +37,9 @@ public class Level
 	{
 		this.world = world;
 		this.entityController = entityController;
+		this.particleSystem = new ParticleSystem();
 		this.newEntityBuffer = new ArrayList<Entity>();
+		this.rng = new Random();
 	}
 	
 	/**
@@ -48,6 +60,12 @@ public class Level
 		if(!entity.isLoadedResources() && !entity.loadResources())
 		{
 			//Don't add entity if an error occurs
+			return;
+		}
+		EntityEvent spawnEvent = entity.fireEvent(new EntityEvent(Entity.EVENT_ID_SPAWN, entity));
+		if(spawnEvent.isCancelled())
+		{
+			//Don't spawn entity if event is cancelled
 			return;
 		}
 		this.newEntityBuffer.add(entity);
@@ -71,5 +89,63 @@ public class Level
 	public boolean isEntityBufferEmpty()
 	{
 		return this.newEntityBuffer.isEmpty();
+	}
+	
+	public ParticleSystem getParticleSystem()
+	{
+		return this.particleSystem;
+	}
+	
+	/**
+	 * Returns the number of entities actually in the level. (not in the buffer)
+	 * @return amount of entities in the level
+	 */
+	public int getNumEntities()
+	{
+		return this.entityController.getList().size();
+	}
+	
+	public Entity getEntity(int index)
+	{
+		//We can cast because we only add "our" entity
+		return (Entity)this.entityController.getList().get(index);
+	}
+	
+	public Random getRNG()
+	{
+		return this.rng;
+	}
+	
+	public List<Entity> getEntitiesInArea(BoundingBox area)
+	{
+		List<IEntity> entityList = this.entityController.getList();
+		List<Entity> entitiesInArea = new ArrayList<Entity>();
+		Entity currentEntity;
+		for(int i = 0; i < entityList.size(); ++i)
+		{
+			currentEntity = (Entity)entityList.get(i);
+			if(currentEntity.getBoundingBox().offset(currentEntity.getX(), currentEntity.getY()).intersects(area))
+			{
+				entitiesInArea.add(currentEntity);
+			}
+		}
+		return entitiesInArea;
+	}
+	
+	public List<Entity> getEntitiesInRadius(float x, float y, float radius, Entity... exclude)
+	{
+		List<IEntity> entityList = this.entityController.getList();
+		List<Entity> entitiesInRadius = new ArrayList<Entity>();
+		Entity currentEntity;
+		for(int i = 0; i < entityList.size(); ++i)
+		{
+			currentEntity = (Entity)entityList.get(i);
+			if(Math.pow(currentEntity.getX() - x, 2) + Math.pow(currentEntity.getY() - y, 2) <= Math.pow(radius + currentEntity.getRadius(), 2)
+				&& !Arrays.asList(exclude).contains(currentEntity))
+			{
+				entitiesInRadius.add(currentEntity);
+			}
+		}
+		return entitiesInRadius;
 	}
 }
