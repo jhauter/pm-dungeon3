@@ -1,15 +1,19 @@
 package de.fhbielefeld.pmdungeon.quibble.entity;
 
-import de.fhbielefeld.pmdungeon.quibble.input.InputListener;
-
 import java.util.logging.Level;
 
 import de.fhbielefeld.pmdungeon.quibble.LoggingHandler;
 import de.fhbielefeld.pmdungeon.quibble.input.DungeonInput;
+import de.fhbielefeld.pmdungeon.quibble.input.InputListener;
 
 public abstract class Player extends Creature implements InputListener
 {
 	private boolean triggeredNextLevel;
+
+	private float controlMinX;
+	private float controlMaxX;
+	private float controlMinY;
+	private float controlMaxY;
 	
 	/**
 	 * @param x x-coordinate
@@ -31,26 +35,17 @@ public abstract class Player extends Creature implements InputListener
 	@Override
 	public void onInputRecieved(DungeonInput input)
 	{
-		if(input.isMovementInput())
+		//This logic is to make a player stand still if keys of opposite directions are pressed
+		
+		this.controlMinX = Math.min(this.controlMinX, input.getAxisScaleX());
+		this.controlMaxX = Math.max(this.controlMaxX, input.getAxisScaleX());
+		this.controlMinY = Math.min(this.controlMinY, input.getAxisScaleY());
+		this.controlMaxY = Math.max(this.controlMaxY, input.getAxisScaleY());
+		
+		if(input == DungeonInput.HIT)
 		{
-			float ctrlX = input.getAxisScaleX();
-			float ctrlY = input.getAxisScaleY();
-			
-			float angle = (float)Math.toDegrees(Math.atan2(ctrlY, ctrlX));
-			
-			this.walk(angle);
-			if(angle > 90 && angle < 270)
-			{
-				this.setLookingDirection(LookingDirection.LEFT);
-			}
-			else if(angle < 90 || angle > 270)
-			{
-				this.setLookingDirection(LookingDirection.RIGHT);
-			}
-			//if it is exactly 90 or 270 do nothing
-			//So that when you press up or down, the looking direction does not change
-			
-			LoggingHandler.logger.log(Level.FINE, "Player received movement input: " + input);
+			this.attack();
+			LoggingHandler.logger.log(Level.FINE, "Mouse input: attack");
 		}
 	}
 	
@@ -85,37 +80,39 @@ public abstract class Player extends Creature implements InputListener
 			this.triggeredNextLevel = true;
 		}
 		
-//		if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE))
-//		{
-//			if(this.level.getEntity(0) != this)
-//			{
-//				return;
-//			}
-//			((Creature)this.level.getEntity(0)).attack();
-			
-			
-//			Random r = new Random();
-//			for(int i = 0; i < 1; ++i)
-//			{
-//				this.level.getParticleSystem().addParticle(new ParticleFightText(ParticleFightText.Type.NUMBER, ParticleSystem.RNG.nextInt(10), this.getPosition().x + (r.nextFloat()  - 0.5F) * 0.1F, this.getPosition().y + r.nextFloat() * 0.1F + 0.5F), new Drop());
-//			}
-//		}
+		float dirX = (this.controlMaxX + this.controlMinX) * 0.5F;
+		float dirY = (this.controlMaxY + this.controlMinY) * 0.5F;
 		
-		/************ DEBUG ***********
-		
-		if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE))
+		if(dirX != 0.0D || dirY != 0.0D)
 		{
-			Tile t = this.level.getDungeon().getTileAt((int)this.getPosition().x, (int)this.getPosition().y);
-			this.level.spawnEntity(new DotRed(t.getX(), t.getY()));
+			float angle = (float)Math.toDegrees(Math.atan2(dirY, dirX));
+			
+			this.walk(angle);
+			System.out.println(angle);
+			if(angle > 90 || angle < -90)
+			{
+				this.setLookingDirection(LookingDirection.LEFT);
+			}
+			else if(angle < 90 && angle > -90)
+			{
+				this.setLookingDirection(LookingDirection.RIGHT);
+			}
+			//if it is exactly 90 or -90 do nothing
+			//So that when you press up or down, the looking direction does not change
+			
+			LoggingHandler.logger.log(Level.FINE, "Movement input: " + angle + "deg");
 		}
-		if(Gdx.input.isKeyJustPressed(Input.Keys.T))
-		{
-			Tile t = this.level.getDungeon().getNextLevelTrigger();
-			Point pos = this.getPosition();
-			System.out.println("Trigger Tile: (" + t.getX() + " | " + t.getY() + ")");
-			System.out.println("Player Pos: (" + pos.x + " | " + pos.y + ")");
-		}
+	}
+	
+	@Override
+	protected void updateEnd()
+	{
+		super.updateEnd();
 		
-		***********************************/
+		//Clear the controls of this frame
+		this.controlMinX = 0.0F;
+		this.controlMaxX = 0.0F;
+		this.controlMinY = 0.0F;
+		this.controlMaxY = 0.0F;
 	}
 }
