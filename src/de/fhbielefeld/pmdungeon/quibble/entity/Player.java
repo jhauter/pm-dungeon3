@@ -25,23 +25,26 @@ public abstract class Player extends Creature implements InputListener
 	}
 	
 	@Override
-	public void onInputRecieved(DungeonInput key)
+	public void onInputRecieved(DungeonInput input)
 	{
-		if(key == DungeonInput.NO_KEY) //Fix: this method should actually not be executed when no key is pressed
-		{
-			return;
-		}
-		this.walk(key.getAngle());
-		if(key.getAngle() > 90 && key.getAngle() < 270)
+		float ctrlX = input.getAxisScaleX();
+		float ctrlY = input.getAxisScaleY();
+		
+		float angle = (float)Math.toDegrees(Math.atan2(ctrlY, ctrlX));
+		
+		this.walk(angle);
+		if(angle > 90 && angle < 270)
 		{
 			this.setLookingDirection(LookingDirection.LEFT);
 		}
-		else if(key.getAngle() < 90 || key.getAngle() > 270)
+		else if(angle < 90 || angle > 270)
 		{
 			this.setLookingDirection(LookingDirection.RIGHT);
 		}
 		//if it is exactly 90 or 270 do nothing
 		//So that when you press up or down, the looking direction does not change
+		
+		
 	}
 	
 	/**
