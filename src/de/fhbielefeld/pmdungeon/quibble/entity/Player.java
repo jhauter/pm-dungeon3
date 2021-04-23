@@ -1,6 +1,10 @@
 package de.fhbielefeld.pmdungeon.quibble.entity;
 
 import de.fhbielefeld.pmdungeon.quibble.input.InputListener;
+
+import java.util.logging.Level;
+
+import de.fhbielefeld.pmdungeon.quibble.LoggingHandler;
 import de.fhbielefeld.pmdungeon.quibble.input.DungeonInput;
 
 public abstract class Player extends Creature implements InputListener
@@ -45,6 +49,8 @@ public abstract class Player extends Creature implements InputListener
 			}
 			//if it is exactly 90 or 270 do nothing
 			//So that when you press up or down, the looking direction does not change
+			
+			LoggingHandler.logger.log(Level.FINE, "Player received movement input: " + input);
 		}
 	}
 	

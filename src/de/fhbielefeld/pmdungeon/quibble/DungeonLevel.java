@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import java.util.logging.Level;
 
 import de.fhbielefeld.pmdungeon.quibble.entity.BoundingBox;
 import de.fhbielefeld.pmdungeon.quibble.entity.Entity;
@@ -70,6 +71,7 @@ public class DungeonLevel
 		}
 		this.newEntityBuffer.add(entity);
 		entity.onSpawn(this); //Entity is not actually spawned but still in buffer but makes little difference
+		LoggingHandler.logger.log(Level.FINE, "Added entity to spawn queue: " + entity);
 	}
 	
 	/**

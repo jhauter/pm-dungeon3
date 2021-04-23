@@ -1,6 +1,9 @@
 package de.fhbielefeld.pmdungeon.quibble.input;
 
 import java.util.ArrayList;
+import java.util.logging.Level;
+
+import de.fhbielefeld.pmdungeon.quibble.LoggingHandler;
 
 public class DungeonInputHandler implements InputHandler {
 
@@ -9,7 +12,9 @@ public class DungeonInputHandler implements InputHandler {
 	@Override
 	public void addInputListener(InputListener listener) {
 		if (this.listener.contains(listener)) {
-			throw new IllegalArgumentException("this listener was already added");
+			IllegalArgumentException e = new IllegalArgumentException("this listener was already added");
+			LoggingHandler.logger.log(Level.SEVERE, e.toString());
+			throw e;
 		}
 		this.listener.add(listener);
 	}

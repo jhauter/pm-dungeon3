@@ -91,7 +91,7 @@ public class AnimationHandlerImpl implements AnimationHandler
 			if(this.registeredAnimations.get(i).name.equals(animInfo.name))
 			{
 				IllegalArgumentException e = new IllegalArgumentException("animation with name " + animInfo.name + " is already registered");
-				LoggingHandler.logger.log(Level.SEVERE, "animation with name " + animInfo.name + " is already registered", e);
+				LoggingHandler.logger.log(Level.SEVERE, e.toString());
 				throw e;
 			}
 		}

@@ -1,21 +1,27 @@
 package de.fhbielefeld.pmdungeon.quibble;
 
 import java.util.List;
+import java.util.logging.Level;
 
 import com.badlogic.gdx.Gdx;
 
 import de.fhbielefeld.pmdungeon.desktop.DesktopLauncher;
+import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
 import de.fhbielefeld.pmdungeon.quibble.entity.Entity;
 import de.fhbielefeld.pmdungeon.quibble.entity.Knight;
 import de.fhbielefeld.pmdungeon.quibble.entity.Player;
-import de.fhbielefeld.pmdungeon.quibble.input.InputHandler;
+import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
+import de.fhbielefeld.pmdungeon.quibble.entity.event.CreatureStatChangeEvent;
+import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEvent;
+import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEventHandler;
 import de.fhbielefeld.pmdungeon.quibble.input.DungeonInputHandler;
+import de.fhbielefeld.pmdungeon.quibble.input.InputHandler;
 import de.fhbielefeld.pmdungeon.quibble.particle.ParticleSystem;
 import de.fhbielefeld.pmdungeon.vorgaben.dungeonCreator.dungeonconverter.Coordinate;
 import de.fhbielefeld.pmdungeon.vorgaben.game.Controller.MainController;
 import de.fhbielefeld.pmdungeon.vorgaben.interfaces.IEntity;
 
-public class DungeonStart extends MainController
+public class DungeonStart extends MainController implements EntityEventHandler
 {
 	public static void main(String[] args)
 	{
@@ -48,11 +54,12 @@ public class DungeonStart extends MainController
 	{
 		super.setup();
 		this.myHero = new Knight();
+		this.myHero.addEntityEventHandler(this);
 		this.inputHandler.addInputListener(myHero);
 		ParticleSystem.loadTextures();
 		this.lastFrameTimeStamp = System.currentTimeMillis();
 		Gdx.app.getGraphics().setResizable(true);
-//		LoggingHandler.logger.log(, null);
+		LoggingHandler.logger.log(Level.INFO, "Setup done.");
 	}
 	
 	@Override
@@ -69,11 +76,10 @@ public class DungeonStart extends MainController
 		this.myHero.setPosition(startingPoint.getX(), startingPoint.getY());
 		
 		this.currentLevel.spawnEntity(this.myHero);
-		LoggingHandler.logger.log(java.util.logging.Level.SEVERE, "Entity is spawned " + myHero);
 		
 		//Set the camera to follow the hero
 		this.camera.follow(this.myHero);
-		Gdx.app.log("GAME", "Level loaded.");
+		LoggingHandler.logger.log(Level.INFO, "New level loaded.");
 	}
 	
 	@Override
@@ -91,7 +97,7 @@ public class DungeonStart extends MainController
 			this.levelController.triggerNextStage();
 			this.myHero.onNextLevelEntered();
 			
-//			LoggingHandler.status.log(java.util.logging.Level.INFO, "The player reaches another level "); // + level Info   <<<<<----
+			LoggingHandler.logger.log(Level.INFO, "Player entered new level.");
 		}
 		
 		this.currentLevel.getParticleSystem().update((System.currentTimeMillis() - this.lastFrameTimeStamp) / 1000.0F);
@@ -123,5 +129,21 @@ public class DungeonStart extends MainController
 		}
 		
 		this.currentLevel.getParticleSystem().draw(this.camera.position.x, this.camera.position.y);
+	}
+
+	@Override
+	public void handleEvent(EntityEvent event) //There are events for myHero
+	{
+		if(event.getEventID() == Creature.EVENT_ID_STAT_CHANGE)
+		{
+			final CreatureStatChangeEvent statEvent = (CreatureStatChangeEvent)event;
+			final Creature hero = statEvent.getEntity(); //In this case its hero
+			if(statEvent.getStat() == CreatureStatsAttribs.HEALTH)
+			{
+				LoggingHandler.logger.log(Level.INFO, "Health [" + statEvent.getNewValue() + "/" + hero.getMaxHealth() + "]");
+			}
+			
+		}
+		
 	}
 }
