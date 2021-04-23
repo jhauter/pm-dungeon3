@@ -6,11 +6,13 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
+import de.fhbielefeld.pmdungeon.quibble.LoggingHandler;
 import de.fhbielefeld.pmdungeon.vorgaben.graphic.Animation;
 
 public class AnimationHandlerImpl implements AnimationHandler
@@ -88,7 +90,9 @@ public class AnimationHandlerImpl implements AnimationHandler
 		{
 			if(this.registeredAnimations.get(i).name.equals(animInfo.name))
 			{
-				throw new IllegalArgumentException("animation with name " + animInfo.name + " is already registered");
+				IllegalArgumentException e = new IllegalArgumentException("animation with name " + animInfo.name + " is already registered");
+				LoggingHandler.logger.log(Level.SEVERE, "animation with name " + animInfo.name + " is already registered", e);
+				throw e;
 			}
 		}
 		this.registeredAnimations.add(animInfo);
@@ -113,11 +117,15 @@ public class AnimationHandlerImpl implements AnimationHandler
 	{
 		if(this.isLoaded)
 		{
-			throw new IllegalStateException("animations have already been loaded");
+			IllegalStateException e = new IllegalStateException("animations have already been loaded");
+			LoggingHandler.logger.log(Level.SEVERE, "animations have already been loaded", e);
+			throw e;			
 		}
 		if(this.defaultAnimInfo == null) //This must be second as defaultAnimation is set to null after loading
 		{
-			throw new IllegalStateException("a default animation must be added");
+			IllegalStateException e = new IllegalStateException("a default animation must be added");
+			LoggingHandler.logger.log(Level.SEVERE, "animations have already been loaded", e);
+			throw e;
 		}
 		StringBuilder pathBuilder = new StringBuilder();
 		List<Texture> frames;
@@ -171,6 +179,7 @@ public class AnimationHandlerImpl implements AnimationHandler
 			catch(GdxRuntimeException e) //failure to load throws a GdxRuntimeException
 			{
 				this.loadedAnimations.clear(); //clear list to allow retry to load
+				LoggingHandler.logger.log(Level.SEVERE, "Error", e);
 				Gdx.app.log("Error", e.getMessage());
 				return null;
 			}
