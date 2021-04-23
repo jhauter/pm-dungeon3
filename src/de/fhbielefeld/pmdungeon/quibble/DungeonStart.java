@@ -68,8 +68,6 @@ public class DungeonStart extends MainController
 		Coordinate startingPoint = this.levelController.getDungeon().getStartingLocation();
 		this.myHero.setPosition(startingPoint.getX(), startingPoint.getY());
 		
-		this.currentLevel.spawnEntity(new Knight(startingPoint.getX(), startingPoint.getY()));
-		
 		this.currentLevel.spawnEntity(this.myHero);
 		
 		//Set the camera to follow the hero
