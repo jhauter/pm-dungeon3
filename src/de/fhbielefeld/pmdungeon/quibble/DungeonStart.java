@@ -47,6 +47,7 @@ public class DungeonStart extends MainController implements EntityEventHandler
 	public DungeonStart()
 	{
 		this.inputHandler = new DungeonInputHandler();
+		LoggingHandler.logger.setLevel(Level.CONFIG);
 	}
 	
 	@Override
