@@ -13,6 +13,7 @@ public class ParticleSystem
 	public static TextureRegion textureCrit;
 	public static TextureRegion textureMiss;
 	public static TextureRegion[] textureNumbers = new TextureRegion[10];
+	public static TextureRegion textureSwordBlue;
 	
 	public static final Random RNG = new Random();
 	
@@ -24,6 +25,7 @@ public class ParticleSystem
 		{
 			textureNumbers[i] = new TextureRegion(new Texture("assets/textures/particle/" + i + ".png"));
 		}
+		textureSwordBlue = new TextureRegion(new Texture("assets/textures/weapon/sword.png"));
 	}
 	
 	private List<Particle> particles;
@@ -60,13 +62,23 @@ public class ParticleSystem
 	
 	public void draw(float camX, float camY)
 	{
-		float x, y, width, height, rot;
+		float x, y, width, height, rot, srcOffsetX, srcOffsetY;
 		SpriteBatch batch = new SpriteBatch();
 		batch.begin();
 		for(Particle p : this.particles)
 		{
-			x = DrawingUtil.dungeonToScreenXCam(p.particleMovement.getOffsetX(p.timeExisted) + p.getSpawnX(), camX);
-			y = DrawingUtil.dungeonToScreenYCam(p.particleMovement.getOffsetY(p.timeExisted) + p.getSpawnY(), camY);
+			if(p.getParticleSource() != null)
+			{
+				srcOffsetX = (p.getParticleSource().getX() + p.getSourceDiffX()) - p.getSpawnX();
+				srcOffsetY = (p.getParticleSource().getY() + p.getSourceDiffY()) - p.getSpawnY();
+			}
+			else
+			{
+				srcOffsetX = 0.0F;
+				srcOffsetY = 0.0F;
+			}
+			x = DrawingUtil.dungeonToScreenXCam(p.particleMovement.getOffsetX(p.timeExisted) + p.getSpawnX() + srcOffsetX, camX);
+			y = DrawingUtil.dungeonToScreenYCam(p.particleMovement.getOffsetY(p.timeExisted) + p.getSpawnY() + srcOffsetY, camY);
 			width = DrawingUtil.dungeonToScreenX(p.getWidth());
 			height = DrawingUtil.dungeonToScreenY(p.getHeight());
 			rot = p.particleMovement.getRotation(p.timeExisted);

@@ -24,16 +24,16 @@ public class ParticleFightText extends Particle
 	
 	private int numberIndex;
 	
-	public ParticleFightText(Type type, int numberIndex, float spawnX, float spawnY)
+	public ParticleFightText(Type type, int numberIndex, float spawnX, float spawnY, ParticleSource particleSource)
 	{
-		super(spawnX, spawnY);
+		super(spawnX, spawnY, particleSource);
 		this.type = type;
 		this.numberIndex = numberIndex;
 	}
 	
-	public ParticleFightText(Type type, float spawnX, float spawnY)
+	public ParticleFightText(Type type, float spawnX, float spawnY, ParticleSource particleSource)
 	{
-		this(type, -1, spawnX, spawnY);
+		this(type, -1, spawnX, spawnY, particleSource);
 	}
 
 	@Override

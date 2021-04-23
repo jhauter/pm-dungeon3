@@ -16,10 +16,26 @@ public abstract class Particle
 	
 	protected ParticleMovement particleMovement;
 	
-	public Particle(float spawnX, float spawnY)
+	private ParticleSource particleSource;
+
+	private final float diffSourceX;
+	private final float diffSourceY;
+	
+	public Particle(float spawnX, float spawnY, ParticleSource particleSource)
 	{
 		this.spawnX = spawnX;
 		this.spawnY = spawnY;
+		this.particleSource = particleSource;
+		if(this.particleSource != null)
+		{
+			this.diffSourceX = this.spawnX - this.particleSource.getX();
+			this.diffSourceY = this.spawnY - this.particleSource.getY();
+		}
+		else
+		{
+			this.diffSourceX = 0.0F;
+			this.diffSourceY = 0.0F;
+		}
 	}
 	
 	protected void update(float delta)
@@ -35,6 +51,21 @@ public abstract class Particle
 	public final float getSpawnY()
 	{
 		return this.spawnY;
+	}
+	
+	public ParticleSource getParticleSource()
+	{
+		return this.particleSource;
+	}
+	
+	public float getSourceDiffX()
+	{
+		return this.diffSourceX;
+	}
+	
+	public float getSourceDiffY()
+	{
+		return this.diffSourceY;
 	}
 	
 	public abstract TextureRegion getTexture();

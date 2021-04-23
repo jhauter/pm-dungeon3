@@ -10,12 +10,13 @@ import de.fhbielefeld.pmdungeon.quibble.animation.AnimationHandler;
 import de.fhbielefeld.pmdungeon.quibble.animation.AnimationHandlerImpl;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEventHandler;
+import de.fhbielefeld.pmdungeon.quibble.particle.ParticleSource;
 import de.fhbielefeld.pmdungeon.vorgaben.graphic.Animation;
 import de.fhbielefeld.pmdungeon.vorgaben.interfaces.IAnimatable;
 import de.fhbielefeld.pmdungeon.vorgaben.interfaces.IEntity;
 import de.fhbielefeld.pmdungeon.vorgaben.tools.Point;
 
-public abstract class Entity implements IEntity, IAnimatable
+public abstract class Entity implements IEntity, IAnimatable, ParticleSource
 {
 	public static final int EVENT_ID_SPAWN = EntityEvent.genEventID();
 	public static final int EVENT_ID_DESPAWN = EntityEvent.genEventID();
