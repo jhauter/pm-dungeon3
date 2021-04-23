@@ -2,6 +2,7 @@ package de.fhbielefeld.pmdungeon.quibble.entity;
 
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
+import de.fhbielefeld.pmdungeon.vorgaben.tools.Point;
 
 public class Knight extends Player
 {
@@ -58,9 +59,15 @@ public class Knight extends Player
 		stats.setStat(CreatureStatsAttribs.DAMAGE_PHYS, 1.0D);
 		stats.setStat(CreatureStatsAttribs.DAMAGE_MAGIC, 1.0D);
 		stats.setStat(CreatureStatsAttribs.WALKING_SPEED, 0.1D);
-		stats.setStat(CreatureStatsAttribs.HIT_REACH, 0.6D);
+		stats.setStat(CreatureStatsAttribs.HIT_REACH, 0.4D);
 		stats.setStat(CreatureStatsAttribs.HIT_COOLDOWN, 15.0D);
 		return stats;
+	}
+
+	@Override
+	public Point getWeaponHoldOffset()
+	{
+		return new Point(0.0F, 1.25F);
 	}
 	
 	/************** DEMO **************

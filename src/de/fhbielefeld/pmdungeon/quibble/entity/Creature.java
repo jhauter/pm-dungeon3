@@ -1,5 +1,7 @@
 package de.fhbielefeld.pmdungeon.quibble.entity;
 
+import java.util.List;
+
 import com.badlogic.gdx.math.Vector2;
 
 import de.fhbielefeld.pmdungeon.quibble.animation.AnimationStateHelper;
@@ -16,7 +18,10 @@ import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEvent;
 import de.fhbielefeld.pmdungeon.quibble.particle.Levitate;
 import de.fhbielefeld.pmdungeon.quibble.particle.ParticleFightText;
 import de.fhbielefeld.pmdungeon.quibble.particle.ParticleFightText.Type;
+import de.fhbielefeld.pmdungeon.quibble.particle.ParticleWeapon;
 import de.fhbielefeld.pmdungeon.quibble.particle.Splash;
+import de.fhbielefeld.pmdungeon.quibble.particle.Swing;
+import de.fhbielefeld.pmdungeon.quibble.particle.Swing.SwingOrientation;
 import de.fhbielefeld.pmdungeon.vorgaben.tools.Point;
 
 public abstract class Creature extends Entity implements DamageSource, CreatureStatsEventListener
@@ -34,6 +39,7 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	private static final int ANIM_PRIO_IDLE = 0;
 	private static final int ANIM_PRIO_RUN = 5;
 	private static final int ANIM_PRIO_HIT = 10;
+	private static final int ANIM_PRIO_ATTACK = 8;
 	
 	/**
 	 * Animation name constant used by the <code>AnimationStateHelper</code>.
@@ -70,6 +76,18 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	 * Names of animations that are handled by the <code>AnimationStateHelper</code> need to match this.
 	 */
 	protected static final String ANIM_NAME_HIT_R = "hit_right";
+	
+	/**
+	 * Animation name constant used by the <code>AnimationStateHelper</code>.
+	 * Names of animations that are handled by the <code>AnimationStateHelper</code> need to match this.
+	 */
+	protected static final String ANIM_NAME_ATTACK_L = "attack_left";
+	
+	/**
+	 * Animation name constant used by the <code>AnimationStateHelper</code>.
+	 * Names of animations that are handled by the <code>AnimationStateHelper</code> need to match this.
+	 */
+	protected static final String ANIM_NAME_ATTACK_R = "attack_right";
 	
 	private boolean isWalking;
 	
@@ -240,6 +258,17 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	protected boolean useDefaultAnimation()
 	{
 		return true;
+	}
+	
+	/**
+	 * Whether this entity should use an attack animation when it attacks.
+	 * This method must be overridden to change this behavior.
+	 * The default for this method is false.
+	 * @return whether this entity should use an attack animation
+	 */
+	protected boolean useAttackAnimation()
+	{
+		return false;
 	}
 	
 	/**
@@ -455,7 +484,8 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		String dmgStr = String.valueOf(Math.round(damage));
 		for(int i = 0; i < dmgStr.length(); ++i)
 		{
-			this.level.getParticleSystem().addParticle(new ParticleFightText(Type.NUMBER, dmgStr.charAt(i) - '0', this.getX() + i * 0.3F, this.getY() + 0.5F),
+			this.level.getParticleSystem().addParticle(
+				new ParticleFightText(Type.NUMBER, dmgStr.charAt(i) - '0', this.getX() + i * 0.3F, this.getY() + 0.5F, this),
 				new Levitate());
 		}
 	}
@@ -466,12 +496,6 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	 */
 	public void hit(Creature target, DamageType damageType)
 	{
-		if(this.getCurrentStats().getStat(CreatureStatsAttribs.HIT_COOLDOWN) > 0.0D)
-		{
-			return;
-		}
-		this.getCurrentStats().setStat(CreatureStatsAttribs.HIT_COOLDOWN, this.getMaxStats().getStat(CreatureStatsAttribs.HIT_COOLDOWN));
-		
 		double distance = Math.sqrt(Math.pow(this.getX() - target.getX(), 2) + Math.pow(this.getY() - target.getY(), 2)) - this.getRadius()
 			- target.getRadius();
 		if(distance > this.getCurrentStats().getStat(CreatureStatsAttribs.HIT_REACH))
@@ -481,7 +505,7 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		
 		if(this.level.getRNG().nextFloat() <= this.getCurrentStats().getStat(CreatureStatsAttribs.MISS_CHANCE))
 		{
-			this.level.getParticleSystem().addParticle(new ParticleFightText(Type.MISS, target.getX(), target.getY() + 0.5F),
+			this.level.getParticleSystem().addParticle(new ParticleFightText(Type.MISS, target.getX(), target.getY() + 0.5F, this),
 				new Splash());
 			return;
 		}
@@ -500,6 +524,39 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		target.damage(event.getDamage(), event.getDamageType(), this, false);
 		
 		this.fireEvent(new CreatureHitTargetPostEvent(EVENT_ID_HIT_TARGET_POST, this, target, damageType, damage));
+	}
+	
+	public void attack()
+	{
+		if(this.getCurrentStats().getStat(CreatureStatsAttribs.HIT_COOLDOWN) > 0.0D)
+		{
+			return;
+		}
+		this.getCurrentStats().setStat(CreatureStatsAttribs.HIT_COOLDOWN, this.getMaxStats().getStat(CreatureStatsAttribs.HIT_COOLDOWN));
+		final float swingSpeed = 3.5F;
+		final float weaponWidth = 1F * 0.5F;
+		final float weaponHeight = 2.5F * 0.5F;
+		final float weaponTime = 0.25F;
+		final Point weaponOffset = this.getWeaponHoldOffset();
+		SwingOrientation swingDir = this.lookingDirection == LookingDirection.RIGHT ? SwingOrientation.RIGHT : SwingOrientation.LEFT;
+		Swing weaponMovement = new Swing(swingDir, swingSpeed);
+		this.level.getParticleSystem().addParticle(
+			new ParticleWeapon(ParticleWeapon.Type.SWORD, weaponWidth, weaponHeight, weaponTime, this.getX() + weaponOffset.x, this.getY() + weaponOffset.y, this),
+			weaponMovement);
+		
+		List<Entity> entitiesInRadius = this.level.getEntitiesInRadius(this.getX(), this.getY(), (float)this.getCurrentStats().getStat(CreatureStatsAttribs.HIT_REACH) + this.getRadius(), this);
+		for(Entity e : entitiesInRadius)
+		{
+			if(e instanceof Creature)
+			{
+				this.hit((Creature)e, DamageType.PHYSICAL);
+			}
+		}
+		
+		if(this.useAttackAnimation())
+		{
+			this.animationHandler.playAnimation(this.lookingDirection == LookingDirection.LEFT ? ANIM_NAME_ATTACK_L : ANIM_NAME_ATTACK_R, ANIM_PRIO_ATTACK, false);
+		}
 	}
 	
 	/**
@@ -545,4 +602,6 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	{
 		return this.isDead && this.deadTicks >= this.getDeadTicksBeforeDelete();
 	}
+	
+	public abstract Point getWeaponHoldOffset();
 }
