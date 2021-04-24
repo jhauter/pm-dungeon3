@@ -57,7 +57,7 @@ public class Demon extends Creature
 		stats.setStat(CreatureStatsAttribs.HEALTH, 6 + level);
 		stats.setStat(CreatureStatsAttribs.RESISTANCE_PHYS, level);
 		stats.setStat(CreatureStatsAttribs.RESISTANCE_MAGIC, level);
-		stats.setStat(CreatureStatsAttribs.MISS_CHANCE, 0.1D);
+		stats.setStat(CreatureStatsAttribs.MISS_CHANCE, 0.0D);
 		stats.setStat(CreatureStatsAttribs.CRIT_CHANCE, 0.1D);
 		stats.setStat(CreatureStatsAttribs.KNOCKBACK, 0.25D);
 		stats.setStat(CreatureStatsAttribs.KNOCKBACK_RES, 0.3D);
@@ -85,6 +85,16 @@ public class Demon extends Creature
 		{
 			Coordinate moveTarget = dungeon.getRandomLocationInDungeon();
 			this.currentMovement = dungeon.findPath(dungeon.getTileAt((int)this.getX(), (int)this.getY()), dungeon.getTileAt(moveTarget));
+		}
+	}
+	
+	@Override
+	protected void onEntityCollision(Entity otherEntity)
+	{
+		super.onEntityCollision(otherEntity);
+		if(otherEntity instanceof Player)
+		{
+			this.attack((Player)otherEntity);
 		}
 	}
 }
