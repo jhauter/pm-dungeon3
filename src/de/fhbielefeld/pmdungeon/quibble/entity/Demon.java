@@ -80,7 +80,6 @@ public class Demon extends Creature
 	protected void updateLogic()
 	{
 		super.updateLogic();
-		super.updateLogic();
 		DungeonWorld dungeon = this.level.getDungeon();
 		if(this.currentMovement == null || this.followPath(this.currentMovement))
 		{
