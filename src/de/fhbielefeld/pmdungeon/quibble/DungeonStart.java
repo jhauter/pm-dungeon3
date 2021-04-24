@@ -13,6 +13,7 @@ import de.fhbielefeld.pmdungeon.quibble.entity.Goblin;
 import de.fhbielefeld.pmdungeon.quibble.entity.Knight;
 import de.fhbielefeld.pmdungeon.quibble.entity.Player;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
+import de.fhbielefeld.pmdungeon.quibble.entity.event.CreatureHitTargetPostEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.CreatureStatChangeEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEventHandler;
@@ -157,6 +158,17 @@ public class DungeonStart extends MainController implements EntityEventHandler
 			if(statEvent.getStat() == CreatureStatsAttribs.HEALTH)
 			{
 				LoggingHandler.logger.log(Level.INFO, "Health [" + statEvent.getNewValue() + "/" + hero.getMaxHealth() + "]");
+			}
+			
+		}
+		else if(event.getEventID() == Creature.EVENT_ID_HIT_TARGET_POST)
+		{
+			final CreatureHitTargetPostEvent hitEvent = (CreatureHitTargetPostEvent)event;
+			if(hitEvent.getTarget().getCurrentHealth() <= 0.0D && hitEvent.getTarget().getDeadTicks() == 0)
+			{
+				//Dead ticks must be 0 so that this doesn't get triggered
+				//when the enemy is hit when it's already dead
+				LoggingHandler.logger.log(Level.INFO, "Killed " + hitEvent.getTarget().getClass().getSimpleName());
 			}
 			
 		}
