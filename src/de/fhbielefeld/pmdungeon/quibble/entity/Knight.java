@@ -18,15 +18,15 @@ public class Knight extends Player
 		super(x, y);
 		//Default idle animation will always be played if no other animation is being played
 		//This must be added or an exception will be thrown
-		this.animationHandler.addAsDefaultAnimation("idle_right", 4, 5, "assets/textures/entity/knight", "knight_m");
+		this.animationHandler.addAsDefaultAnimation(Creature.ANIM_NAME_IDLE_R, 4, 5, "assets/textures/entity/knight", "knight_m");
 		
 		//Other animations
-		this.animationHandler.addAnimation("idle_left", 4, 5, "assets/textures/entity/knight", "knight_m");
+		this.animationHandler.addAnimation(Creature.ANIM_NAME_IDLE_L, 4, 5, "assets/textures/entity/knight", "knight_m");
 		
-		this.animationHandler.addAnimation("run_right", 4, 2, "assets/textures/entity/knight", "knight_m");
-		this.animationHandler.addAnimation("run_left", 4, 2, "assets/textures/entity/knight", "knight_m");
-		this.animationHandler.addAnimation("hit_right", 1, 15, "assets/textures/entity/knight", "knight_m");
-		this.animationHandler.addAnimation("hit_left", 1, 15, "assets/textures/entity/knight", "knight_m");
+		this.animationHandler.addAnimation(Creature.ANIM_NAME_RUN_R, 4, 2, "assets/textures/entity/knight", "knight_m");
+		this.animationHandler.addAnimation(Creature.ANIM_NAME_RUN_L, 4, 2, "assets/textures/entity/knight", "knight_m");
+		this.animationHandler.addAnimation(Creature.ANIM_NAME_HIT_R, 1, 15, "assets/textures/entity/knight", "knight_m");
+		this.animationHandler.addAnimation(Creature.ANIM_NAME_HIT_L, 1, 15, "assets/textures/entity/knight", "knight_m");
 	}
 	
 	/**
