@@ -7,10 +7,13 @@ import com.badlogic.gdx.Gdx;
 
 import de.fhbielefeld.pmdungeon.desktop.DesktopLauncher;
 import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
+import de.fhbielefeld.pmdungeon.quibble.entity.Demon;
 import de.fhbielefeld.pmdungeon.quibble.entity.Entity;
+import de.fhbielefeld.pmdungeon.quibble.entity.Goblin;
 import de.fhbielefeld.pmdungeon.quibble.entity.Knight;
 import de.fhbielefeld.pmdungeon.quibble.entity.Player;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
+import de.fhbielefeld.pmdungeon.quibble.entity.event.CreatureHitTargetPostEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.CreatureStatChangeEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEventHandler;
@@ -20,6 +23,7 @@ import de.fhbielefeld.pmdungeon.quibble.particle.ParticleSystem;
 import de.fhbielefeld.pmdungeon.vorgaben.dungeonCreator.dungeonconverter.Coordinate;
 import de.fhbielefeld.pmdungeon.vorgaben.game.Controller.MainController;
 import de.fhbielefeld.pmdungeon.vorgaben.interfaces.IEntity;
+import de.fhbielefeld.pmdungeon.vorgaben.tools.Point;
 
 public class DungeonStart extends MainController implements EntityEventHandler
 {
@@ -71,6 +75,18 @@ public class DungeonStart extends MainController implements EntityEventHandler
 		this.entityController.getList().clear();
 		//Set current level from the level controller and entity controller
 		this.currentLevel = new DungeonLevel(this.levelController.getDungeon(), this.entityController);
+		
+		/**** Populate dungeon ****/
+		
+		for(int i = 0; i < 10; ++i)
+		{
+			final Point pos = this.currentLevel.getDungeon().getRandomPointInDungeon();
+			final Creature toSpawn = this.currentLevel.getRNG().nextInt(2) == 0 ? new Demon() : new Goblin();
+			toSpawn.setPosition(pos);
+			this.currentLevel.spawnEntity(toSpawn);
+		}
+		
+		/**************************/
 		
 		//Spawn the hero at the right spot
 		Coordinate startingPoint = this.levelController.getDungeon().getStartingLocation();
@@ -142,6 +158,17 @@ public class DungeonStart extends MainController implements EntityEventHandler
 			if(statEvent.getStat() == CreatureStatsAttribs.HEALTH)
 			{
 				LoggingHandler.logger.log(Level.INFO, "Health [" + statEvent.getNewValue() + "/" + hero.getMaxHealth() + "]");
+			}
+			
+		}
+		else if(event.getEventID() == Creature.EVENT_ID_HIT_TARGET_POST)
+		{
+			final CreatureHitTargetPostEvent hitEvent = (CreatureHitTargetPostEvent)event;
+			if(hitEvent.getTarget().getCurrentHealth() <= 0.0D && hitEvent.getTarget().getDeadTicks() == 0)
+			{
+				//Dead ticks must be 0 so that this doesn't get triggered
+				//when the enemy is hit when it's already dead
+				LoggingHandler.logger.log(Level.INFO, "Killed " + hitEvent.getTarget().getClass().getSimpleName());
 			}
 			
 		}

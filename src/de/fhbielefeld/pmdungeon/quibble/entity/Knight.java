@@ -18,15 +18,15 @@ public class Knight extends Player
 		super(x, y);
 		//Default idle animation will always be played if no other animation is being played
 		//This must be added or an exception will be thrown
-		this.animationHandler.addAsDefaultAnimation("idle_right", 4, 5, "assets/textures/entity/knight", "knight_m");
+		this.animationHandler.addAsDefaultAnimation(Creature.ANIM_NAME_IDLE_R, 4, 5, "assets/textures/entity/knight", "knight_m");
 		
 		//Other animations
-		this.animationHandler.addAnimation("idle_left", 4, 5, "assets/textures/entity/knight", "knight_m");
+		this.animationHandler.addAnimation(Creature.ANIM_NAME_IDLE_L, 4, 5, "assets/textures/entity/knight", "knight_m");
 		
-		this.animationHandler.addAnimation("run_right", 4, 2, "assets/textures/entity/knight", "knight_m");
-		this.animationHandler.addAnimation("run_left", 4, 2, "assets/textures/entity/knight", "knight_m");
-		this.animationHandler.addAnimation("hit_right", 1, 15, "assets/textures/entity/knight", "knight_m");
-		this.animationHandler.addAnimation("hit_left", 1, 15, "assets/textures/entity/knight", "knight_m");
+		this.animationHandler.addAnimation(Creature.ANIM_NAME_RUN_R, 4, 2, "assets/textures/entity/knight", "knight_m");
+		this.animationHandler.addAnimation(Creature.ANIM_NAME_RUN_L, 4, 2, "assets/textures/entity/knight", "knight_m");
+		this.animationHandler.addAnimation(Creature.ANIM_NAME_HIT_R, 1, 15, "assets/textures/entity/knight", "knight_m");
+		this.animationHandler.addAnimation(Creature.ANIM_NAME_HIT_L, 1, 15, "assets/textures/entity/knight", "knight_m");
 	}
 	
 	/**
@@ -54,12 +54,12 @@ public class Knight extends Player
 		stats.setStat(CreatureStatsAttribs.RESISTANCE_MAGIC, level);
 		stats.setStat(CreatureStatsAttribs.MISS_CHANCE, 0.1D);
 		stats.setStat(CreatureStatsAttribs.CRIT_CHANCE, 0.1D);
-		stats.setStat(CreatureStatsAttribs.KNOCKBACK, 0.25D);
+		stats.setStat(CreatureStatsAttribs.KNOCKBACK, 0.4D);
 		stats.setStat(CreatureStatsAttribs.KNOCKBACK_RES, 0.1D);
 		stats.setStat(CreatureStatsAttribs.DAMAGE_PHYS, 1.0D);
 		stats.setStat(CreatureStatsAttribs.DAMAGE_MAGIC, 1.0D);
 		stats.setStat(CreatureStatsAttribs.WALKING_SPEED, 0.1D);
-		stats.setStat(CreatureStatsAttribs.HIT_REACH, 0.4D);
+		stats.setStat(CreatureStatsAttribs.HIT_REACH, 0.6D);
 		stats.setStat(CreatureStatsAttribs.HIT_COOLDOWN, 15.0D);
 		return stats;
 	}

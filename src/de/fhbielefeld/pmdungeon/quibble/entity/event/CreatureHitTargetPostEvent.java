@@ -33,4 +33,10 @@ public class CreatureHitTargetPostEvent extends EntityEvent
 	{
 		return this.damage;
 	}
+	
+	@Override
+	public Creature getEntity()
+	{
+		return (Creature)super.getEntity();
+	}
 }

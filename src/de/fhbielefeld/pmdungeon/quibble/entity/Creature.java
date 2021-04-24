@@ -2,6 +2,7 @@ package de.fhbielefeld.pmdungeon.quibble.entity;
 
 import java.util.List;
 
+import com.badlogic.gdx.ai.pfa.GraphPath;
 import com.badlogic.gdx.math.Vector2;
 
 import de.fhbielefeld.pmdungeon.quibble.animation.AnimationStateHelper;
@@ -22,6 +23,7 @@ import de.fhbielefeld.pmdungeon.quibble.particle.ParticleWeapon;
 import de.fhbielefeld.pmdungeon.quibble.particle.Splash;
 import de.fhbielefeld.pmdungeon.quibble.particle.Swing;
 import de.fhbielefeld.pmdungeon.quibble.particle.Swing.SwingOrientation;
+import de.fhbielefeld.pmdungeon.vorgaben.dungeonCreator.tiles.Tile;
 import de.fhbielefeld.pmdungeon.vorgaben.tools.Point;
 
 public abstract class Creature extends Entity implements DamageSource, CreatureStatsEventListener
@@ -112,6 +114,10 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	private boolean beingMoved;
 	
 	private float beingMovedThreshold = 0.005F;
+	
+	private GraphPath<Tile> currentPath;
+	
+	private int currentPathIndex;
 	
 	/**
 	 * @param x x-coordinate
@@ -637,5 +643,29 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	public boolean showWeaponOnAttack()
 	{
 		return false;
+	}
+	
+	public boolean followPath(GraphPath<Tile> path)
+	{
+		int currentX = (int)this.getX();
+		int currentY = (int)this.getY();
+		if(this.currentPath != path)
+		{
+			this.currentPath = path;
+			this.currentPathIndex = 0;
+		}
+		else if(this.currentPathIndex < this.currentPath.getCount() - 1)
+		{
+			Tile pathTileTarget = this.currentPath.get(this.currentPathIndex);
+			if(currentX == pathTileTarget.getX() && currentY == pathTileTarget.getY())
+			{
+				++this.currentPathIndex;
+			}
+			else
+			{
+				this.walk((float)Math.toDegrees(Math.atan2(pathTileTarget.getY() + 0.5F - this.getY(), pathTileTarget.getX() + 0.5F - this.getX())));
+			}
+		}
+		return this.currentPathIndex == this.currentPath.getCount() - 1;
 	}
 }
