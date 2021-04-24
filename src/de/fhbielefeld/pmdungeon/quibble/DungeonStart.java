@@ -172,6 +172,8 @@ public class DungeonStart extends MainController implements EntityEventHandler
 				//Dead ticks must be 0 so that this doesn't get triggered
 				//when the enemy is hit when it's already dead
 				LoggingHandler.logger.log(Level.INFO, "Killed " + hitEvent.getTarget().getClass().getSimpleName());
+				hitEvent.getEntity().heal(1.0D);
+				LoggingHandler.logger.log(Level.INFO, "Healed by 1.0");
 			}
 			
 		}
