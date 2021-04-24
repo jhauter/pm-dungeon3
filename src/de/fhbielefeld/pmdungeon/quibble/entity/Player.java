@@ -88,7 +88,6 @@ public abstract class Player extends Creature implements InputListener
 			float angle = (float)Math.toDegrees(Math.atan2(dirY, dirX));
 			
 			this.walk(angle);
-			System.out.println(angle);
 			if(angle > 90 || angle < -90)
 			{
 				this.setLookingDirection(LookingDirection.LEFT);
