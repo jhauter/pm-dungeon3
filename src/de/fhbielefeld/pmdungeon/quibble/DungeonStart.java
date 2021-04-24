@@ -158,8 +158,11 @@ public class DungeonStart extends MainController implements EntityEventHandler
 			if(statEvent.getStat() == CreatureStatsAttribs.HEALTH)
 			{
 				LoggingHandler.logger.log(Level.INFO, "Health [" + statEvent.getNewValue() + "/" + hero.getMaxHealth() + "]");
+				if(statEvent.getNewValue() <= 0.0D)
+				{
+					LoggingHandler.logger.log(Level.INFO, "Game over!");
+				}
 			}
-			
 		}
 		else if(event.getEventID() == Creature.EVENT_ID_HIT_TARGET_POST)
 		{
