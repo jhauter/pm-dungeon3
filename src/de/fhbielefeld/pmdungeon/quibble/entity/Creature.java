@@ -1,5 +1,7 @@
 package de.fhbielefeld.pmdungeon.quibble.entity;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.badlogic.gdx.ai.pfa.GraphPath;
@@ -520,6 +522,10 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	 */
 	public void hit(Creature target, DamageType damageType)
 	{
+		if(this.isDead)
+		{
+			return;
+		}
 		double distance = Math.sqrt(Math.pow(this.getX() - target.getX(), 2) + Math.pow(this.getY() - target.getY(), 2)) - this.getRadius()
 			- target.getRadius();
 		if(distance > this.getCurrentStats().getStat(CreatureStatsAttribs.HIT_REACH))
@@ -557,8 +563,31 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		//Canceling target post event has no effect
 	}
 	
-	public void attack()
+	public void attack(Creature target)
 	{
+		this.attackEntities(Arrays.asList(target));
+	}
+	
+	public void attackAoE()
+	{
+		List<Entity> entitiesInRadius = this.level.getEntitiesInRadius(this.getX(), this.getY(), (float)this.getCurrentStats().getStat(CreatureStatsAttribs.HIT_REACH) + this.getRadius(), this);
+		List<Creature> creatures = new ArrayList<Creature>();
+		for(Entity e : entitiesInRadius)
+		{
+			if(e instanceof Creature)
+			{
+				creatures.add((Creature)e);
+			}
+		}
+		this.attackEntities(creatures);
+	}
+	
+	public void attackEntities(List<Creature> targets)
+	{
+		if(this.isDead)
+		{
+			return;
+		}
 		if(this.getCurrentStats().getStat(CreatureStatsAttribs.HIT_COOLDOWN) > 0.0D)
 		{
 			return;
@@ -579,13 +608,9 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 				weaponMovement);
 		}
 		
-		List<Entity> entitiesInRadius = this.level.getEntitiesInRadius(this.getX(), this.getY(), (float)this.getCurrentStats().getStat(CreatureStatsAttribs.HIT_REACH) + this.getRadius(), this);
-		for(Entity e : entitiesInRadius)
+		for(Creature e : targets)
 		{
-			if(e instanceof Creature)
-			{
-				this.hit((Creature)e, DamageType.PHYSICAL);
-			}
+			this.hit(e, DamageType.PHYSICAL);
 		}
 		
 		if(this.useAttackAnimation())

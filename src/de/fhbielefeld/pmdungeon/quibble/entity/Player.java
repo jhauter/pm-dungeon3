@@ -44,7 +44,7 @@ public abstract class Player extends Creature implements InputListener
 		
 		if(input == DungeonInput.HIT)
 		{
-			this.attack();
+			this.attackAoE();
 			LoggingHandler.logger.log(Level.FINE, "Mouse input: attack");
 		}
 	}
