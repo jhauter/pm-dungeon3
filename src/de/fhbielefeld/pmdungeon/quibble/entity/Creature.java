@@ -455,6 +455,16 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		return this.getMaxStats().getStat(CreatureStatsAttribs.HEALTH);
 	}
 	
+	public void heal(double amount)
+	{
+		double newHealth = this.getCurrentHealth() + amount;
+		if(newHealth > this.getMaxHealth())
+		{
+			newHealth = this.getCurrentHealth();
+		}
+		this.getCurrentStats().setStat(CreatureStatsAttribs.HEALTH, newHealth);
+	}
+	
 	public void damage(double damage, DamageType damageType, DamageSource damageSource, boolean ignoreInvincibleTicks)
 	{
 		if(!ignoreInvincibleTicks && this.isInvulnerable())
