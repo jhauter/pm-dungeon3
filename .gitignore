@@ -11,3 +11,4 @@
 
 #logdata
 log.txt
+*.log
