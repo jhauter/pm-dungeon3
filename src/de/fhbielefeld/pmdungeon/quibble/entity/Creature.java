@@ -272,6 +272,17 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	}
 	
 	/**
+	 * Whether this entity should use a hit animation when it gets hit.
+	 * This method must be overridden to change this behavior.
+	 * The default for this method is false.
+	 * @return whether this entity should use a hit animation
+	 */
+	protected boolean useHitAnimation()
+	{
+		return false;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
@@ -478,7 +489,10 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		this.invulnerableTicks = this.getInvulnerabilityTicksWhenHit();
 		
 		this.spawnDamageParticles(event.getDamageActual());
-		this.animationHandler.playAnimation(this.lookingDirection == LookingDirection.LEFT ? ANIM_NAME_HIT_L : ANIM_NAME_HIT_R, ANIM_PRIO_HIT, false);
+		if(this.useHitAnimation())
+		{
+			this.animationHandler.playAnimation(this.lookingDirection == LookingDirection.LEFT ? ANIM_NAME_HIT_L : ANIM_NAME_HIT_R, ANIM_PRIO_HIT, false);
+		}
 		
 		//Death is handled in onStatValueChange()
 	}

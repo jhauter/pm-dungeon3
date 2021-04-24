@@ -76,6 +76,12 @@ public class Knight extends Player
 		return true;
 	}
 	
+	@Override
+	protected boolean useHitAnimation()
+	{
+		return true;
+	}
+	
 	/************** DEMO **************
 	
 	@Override
