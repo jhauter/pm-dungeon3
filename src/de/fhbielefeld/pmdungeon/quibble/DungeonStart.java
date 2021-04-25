@@ -17,6 +17,7 @@ import de.fhbielefeld.pmdungeon.quibble.entity.event.CreatureHitTargetPostEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.CreatureStatChangeEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEventHandler;
+import de.fhbielefeld.pmdungeon.quibble.file.ResourceHandler;
 import de.fhbielefeld.pmdungeon.quibble.input.DungeonInputHandler;
 import de.fhbielefeld.pmdungeon.quibble.input.InputHandler;
 import de.fhbielefeld.pmdungeon.quibble.particle.ParticleSystem;
@@ -103,6 +104,8 @@ public class DungeonStart extends MainController implements EntityEventHandler
 	protected void beginFrame()
 	{
 		super.beginFrame();
+		
+		ResourceHandler.processQueue();
 		
 		//Don't call notify listeners here but internally.
 		//updateHandler() should not return anything.
