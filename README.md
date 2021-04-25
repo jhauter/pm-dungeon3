@@ -1,5 +1,5 @@
 ---
-title:  'Lerntagebuch zur Bearbeitung von Blatt 01
+title:  'Lerntagebuch zur Bearbeitung von Blatt 02
 author:
 - Andreas Wegner (andreas.wegner@fh-bielefeld.de)
 - Malte Kanders (malte_theodor.kanders@fh-bielefeld.de)
@@ -38,14 +38,17 @@ sowie [Praktikumsblatt "Lerntagebuch"](pm_praktikum.html#lerntagebuch).
 Bitte hier die zu lösende Aufgabe kurz in eigenen Worten beschreiben.
 -->
 
-Die gegebenen Ressourcen in die eigene IDE einbetten.
-Danach die Dokumentation durchlesen und sich in die API einfinden.
-Gegenfalls die JavaDoc als Hilfe nehmen.
-Einen eigenen ersten Helden erstellen und diesen zum Laufen bringen.
-Dem Helden werden entsprechende Textures und Animationen hinzufügen.
-Gegebenenfalls eigene Textures suchen.
+Für die Aufgabe von Blatt 2 soll zunächst ein Logger erstellt werden, der uns bei der Ausgabe von Konsolenmeldungen unterstützt.
+Es soll immer bei bestimmten Ereignissen eine Logmeldung ausgegeben werden, zum Beispiel beim betreten eines neuen Levels.
+Aber auch wenn neue Sachen hinzukommen, soll das Logging nachgezogen werden. Natürlich muss eine Logmeldung die wesentlichen Eigenschaften
+beinhalten, wie das Logging-Level und der Zeitstempel.
 
-In das Git System einfinden und damit vertraut machen.
+In unserem Dungeon sollen mindestens zwei neue Monsterarten vorkommen, die verschiedene Attribute besitzen. Sie sollen nicht nur herumstehen,
+sondern sich auch selbstständig bewegen.
+
+Zu guter letzt soll ein Kampfsystem eingebaut werden, damit man mit den Monstern auch kämpfen kann. Dieses Kampfsystem sollte so funktionieren,
+wie man es von einem Spiel erwarten würde. Jede Einheit hat Lebenspunkte, welche durch Schaden reduziert werden können. Der Spieler kann den Monstern
+schaden hinzufügen, in dem er sie angreift oder Schaden nehmen, in dem er sie berührt. Es gibt Statuswerte, die bestimmen, wie erfolgreich ein Angriff ist, oder wie sehr man zurückgestoßen wird. Außerdem sollen sich die Leben auch regenerieren können.
 
 
 # Ansatz und Modellierung
@@ -58,23 +61,25 @@ Bitte hier den Lösungsansatz kurz beschreiben:
 -   Worauf müssen Sie konkret achten?
 -->
 
-Die bereitgestellten Dateien herunterladen und diese extrahieren.
-Diese sollen als Dateien in die IDE eingepflegt werden und gegebenenfalls
-Einstellungen konfiguriert.
-Die passenden Texturen hinzugefügt, um sich mit der Dokumentation in die API
-einzufinden
-Mithilfe der Dokumentation dann die ersten Schritte des Helden unternehmen.
-Der erste eigene Held wird in den Dungeon implementiert, „Hello Dungeon“.
-Als Letztes sollen die Animationen des Helden eingefügt und erweitert werden.
-Der Held soll zwischen Lauf- und Idle- Animationen unterscheiden und auch nach links
-laufen können.
+Zu erst haben wir uns um den Logger gekümmert. Diesen kann man üblicherweise nach dem Singleton-Pattern umsetzen.
 
-Ein Grundgerüst mithilfe von einem Klassendiagramm aufbauen.
-Dafür an spätere Implementationen denken.
-Es soll damit verhindert, das kein replizierter Code geschrieben wird oder es zu Fehlern
-kommt, die nur mit aufwendigem Refactorn zu beheben sind.
-Gegebenenfalls Design Pattern für bestimmte Methoden um „Clean Code“ zu erstellen.
-Dies verhindert ebenfalls nötiges Refactorn.
+Wir brauchten auf jeden Fall zu erst eine Möglichkeit der Kollisionserkennung zwischen Entities. Praktisch wäre eine Klasse, die
+Werkzeuge beinhalten, um Kollisionserkennung zu vereinfachen,
+
+Für das Kampfsystem haben wir uns überlegt, nicht nur eine Variable für Lebenspunkte in unsere Creature
+Klasse zu schreiben, sondern gleich ein Array für mehrere Statuswerte, die wir im Laufe der Entwicklung erweitern können.
+
+Am schlausten wäre es, wenn wir in unserer Creature Klasse eine Methode erstellen, die allein für Angriffe verantwortlich ist,
+welche man dann überall sehr einfach aufrufen kann, um einen Angriff zu starten.
+Wir müssen auch beachten, dass Monster und Spieler nach einem Treffer kurz unverwundbar sein sollten, damit das Spiel nicht frustrierend wird.
+Dazu sind mehrere Zählervariablen in den Creatures nötig. Auch ein Zufallsgenerator muss eingebaut werden, um zufällig verfehlen zu können.
+
+Wir fanden dass Partikel, die z.B. den Schaden anzeigen hilfreich wären, da es sie auch in anderen Spielen gibt.
+Leider bietet die PM-Dungeon-API keine bekannt Möglichkeit dafür, die Vernünftig aussehen würde,
+also müssen wir selbst auf LibGDX zugreifen, um unsere Partikel zu zeichnen.
+
+Damit man jetzt noch Logmeldungen ausgebeben kann, wenn der Spieler oder ein Monster stirbt, wäre ein Eventsystem für Entities ganz gut,
+welches man nach dem Observer-Pattern gut umsetzen könnte. Damit wären wir auch für ein zukünftiges Questsystem gerüstet.
 
 
 # Umsetzung
@@ -87,23 +92,25 @@ Bitte hier die Umsetzung der Lösung kurz beschreiben:
 -   was war das Ergebnis?
 -->
 
-Das Dokument und die Vorkehrungen wurden nach Beschreibung und Tutorials abgearbeitet.
-In GitLab wurden die Mitglieder hinzugefügt und die Java Projekte vereinheitlicht.
-Erste Tests mit GitLab wurden umgesetzt und so erprobt.
-Beispielsweise wurde ein Ordner von einem nicht Admin als Pull Request hinzugefügt.
-Die Readme verändert und Commits geschrieben.
+Der java.util.logging.Logger hat glücklicherweise alle grundgelegenen Dinge schon implementiert. Wir mussten nur noch die Formatierung der
+Logmeldungen selbst übernehmen. Für das schreiben der Logmeldungen in eine Datei, gibt es auch schon eine vorgefertigte Klasse namens FileHandler.
 
-Aus der UML kristallisierte sich eine
-Grund Entity Klasse, ein InputListener und ein Animationsloader.
-Diese Stellen nachher das Gerüst für Bewegung, das Laden der Animationen, sowie
-für bewegte, sowie unbewegte Objekte, dar.
-Des Weiteren werden schon Aufgabenfelder verteilt, die mithilfe der UML sichtbar werden.
-Jeder Entwickler wird so bereits ein Spezialist für ein Feld, dieser muss sicherstellen das seine Methoden von den Teammitgliedern verstanden und benutzt werden können!
-Die ersten Implementationen werden umgesetzt.
+Als nächsten wollten wir das Kampfsystem umsetzen. Die Kollision zwischen Entites konnten wir einfach in die IEntity.update() Methode einbauen.
+Für fortgeschrittenere Kollisionserkennung haben wir auch eine BoundingBox Klasse erstellt. Dadurch erhalten die Entities auch Hitboxen.
 
-Tutorials, Selbstlernen = 4 Stunden.
-Meeting am 13.04.21 von 13 Uhr - 22 Uhr.
-Feinarbeiten und Eigenarbeiten ~
+Um nun tatsächlich Angriffe der Monster uns des Spielers auszuführen, haben wir Methoden erstellt, die das übernehmen.
+Diese beinhalten gleich die Schadensberechnung und die Animationen dafür. Um das Kampfverhalten etwas natürlich zu gestalten, gibt es mehrere Zähler
+in Monstern die für Unverwundbarkeit nach dem Treffer und Abklingzeit nach dem Treffer verantwortlich sind.
+Da viele Zähler für Verwirrung sorgen können, wurden sie auch von entsprechenden Methoden berechnet.
+
+Um das Partikelproblem anzugehen, haben wir uns LibGDX angeschaut und waren dann in der Lage selbst zu zeichnen.
+Dadurch konnten wir tolle Partikeleffekte visualisieren. Das Partikelsystem ist so aufgebaut, wie das Entitysystem. Jeder Partikel
+ist in einer Liste und es werden jedes Frame deren update() und draw() Methoden aufgerufen.
+
+Für die Arbeit haben wir kein Datum vereinbart, sondern haben uns im Laufe der Woche öfters im Discord getroffen und zusammen daran gearbeitet.
+Wir können die Zeit im Nachhinein schlecht einschätzen, aber für uns alle zusammengerechnet sind es sicher über 40 Stunden gewesen.
+
+Als Ergebnis haben wir nun ein Spiel, in dem es sich relativ angenehm kämpfen lässt. Das Spiel ist nun viel lebhafter als vorher.
 
 # Postmortem
 
@@ -115,13 +122,12 @@ kritisch zurück:
 -   Wie haben Sie die Probleme letztlich gelöst?
 -->
 
-Umsetzung der zusammenarbeit mit Git funktioniert unglaublich gut und vereinfacht die Zusammenarbeit.
-Es hakt an manchen Stellen, da Git noch neu ist, aber ist es erstmal konfiguriert klappt das
-Arbeiten damit wunderbar.
-Gemerged wurden größere Projektabschnitte über eine Online Sitzung, um etwaige Probleme und Verbesserungen anzusprechen.
-Große relevante Probleme bei der Umsetzung der Aufgabe traten nicht auf.
-Vorgehensweise aus meiner Sicht: Sehr gut, durch die Vorbereitung und dem aufteilen der Aufgaben kam sich niemand in die 
-Quere. Während dem Verteilen der Aufgaben wurde bereits Funktionalität bestimmter Klassen/Packages skizziert.
-Bei einer späteren Sitzung wurden diese dann dem jeweiligen anderem auch präsentiert, damit jeder vom gesamten ein 
-Eindruck hat.
+In Hinblick auf die Codequalität können wir definitiv zufrieden sein, finden wir.
+Wir haben für die meisten Sachen versucht, abgekapselte Systeme zu programmieren, was auf jeden Fall bei
+der Fehleranfälligkeit hilft, und vor allem dabei hilft, Struktur in den Code zu bringen.
+Auch mussten wir lernen, dass es gerade bei der Arbeit mit Git hilfreich ist, abgekapselte Systeme zu haben,
+da dadurch nicht so viele bereits vorhandene Dateien bearbeitet werden müssen, was sehr bei Merge Requests hilft.
+Wir haben allerdings auch vieles gemacht, was gar nicht gefordert war.
+Es hat zwar Spaß gemacht, diese nicht geforderten Elemente einzubauen, aber es hat wirklich viel Zeit geraubt.
+Vor daher würden wir wohl versuchen, es wieder herunter zu schrauben. Aber wir haben dadurch sicher viel gelernt.
 
