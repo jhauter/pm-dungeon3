@@ -47,7 +47,7 @@ public class Goblin extends Creature
 	@Override
 	protected BoundingBox getInitBoundingBox()
 	{
-		return new BoundingBox(-0.35F, -0.5F, 0.7F, 1.0F);
+		return new BoundingBox(-0.25F, -0.4F, 0.5F, 0.8F);
 	}
 
 	@Override
