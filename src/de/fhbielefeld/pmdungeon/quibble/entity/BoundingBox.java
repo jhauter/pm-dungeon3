@@ -81,6 +81,9 @@ public class BoundingBox
 		return new BoundingBox(this.x - x * 0.5F, this.y - y * 0.5F, this.width + x * 2.0F, this.height + y * 2.0F);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String toString()
 	{

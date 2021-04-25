@@ -93,6 +93,9 @@ public class DungeonLevel
 		return this.newEntityBuffer.isEmpty();
 	}
 	
+	/**
+	 * @return the particle system
+	 */
 	public ParticleSystem getParticleSystem()
 	{
 		return this.particleSystem;
@@ -107,17 +110,30 @@ public class DungeonLevel
 		return this.entityController.getList().size();
 	}
 	
+	/**
+	 * Returns the entity at the specified index in the entity list of this level.
+	 * @param index index of entity 
+	 * @return the entity at that index
+	 */
 	public Entity getEntity(int index)
 	{
 		//We can cast because we only add "our" entity
 		return (Entity)this.entityController.getList().get(index);
 	}
 	
+	/**
+	 * @return the <code>Random</code> instance of this level
+	 */
 	public Random getRNG()
 	{
 		return this.rng;
 	}
 	
+	/**
+	 * Returns a list of all entities whose bounding boxes overlap with the specified area.
+	 * @param area area that specifies which entities should be returned
+	 * @return entities in the specified area
+	 */
 	public List<Entity> getEntitiesInArea(BoundingBox area)
 	{
 		List<IEntity> entityList = this.entityController.getList();
@@ -134,6 +150,14 @@ public class DungeonLevel
 		return entitiesInArea;
 	}
 	
+	/**
+	 * Returns a list of all entities in a radius around the specified coordinate.
+	 * @param x the x coordinate
+	 * @param y the y coordinate
+	 * @param radius the radius around the specified coordinate
+	 * @param exclude entities to exclude when they are inside the radius
+	 * @return entities in the specified radius
+	 */
 	public List<Entity> getEntitiesInRadius(float x, float y, float radius, Entity... exclude)
 	{
 		List<IEntity> entityList = this.entityController.getList();

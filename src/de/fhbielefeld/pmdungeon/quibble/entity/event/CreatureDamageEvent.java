@@ -17,6 +17,17 @@ public class CreatureDamageEvent extends EntityEvent
 	private float knockbackX;
 	private float knockbackY;
 	
+	/**
+	 * Constructs a <code>CreatureDamageEvent</code> with the specified attributes.
+	 * @param eventID the event ID
+	 * @param entity the entity that is taking damage
+	 * @param dmgSource the damage source (which can be an entity)
+	 * @param type the damage type
+	 * @param dmgRaw the raw damage before calculations with stats
+	 * @param dmgReal the real damage after calculations with stats
+	 * @param kbX the knockback force along the x axis
+	 * @param kbY the knockback force along the y axis
+	 */
 	public CreatureDamageEvent(int eventID, Creature entity, DamageSource dmgSource, DamageType type, double dmgRaw, double dmgReal, float kbX, float kbY)
 	{
 		super(eventID, entity);
@@ -28,21 +39,33 @@ public class CreatureDamageEvent extends EntityEvent
 		this.knockbackY = kbY;
 	}
 	
+	/**
+	 * @return the damage source (which can be an entity)
+	 */
 	public DamageSource getDamageSource()
 	{
 		return this.damageSource;
 	}
 	
+	/**
+	 * @return the type of damage for this event
+	 */
 	public DamageType getDamageType()
 	{
 		return damageType;
 	}
 	
+	/**
+	 * @return the raw damage before calculations with stats
+	 */
 	public double getDamageRaw()
 	{
 		return damageRaw;
 	}
 	
+	/**
+	 * @return the real damage after calculations with stats
+	 */
 	public double getDamageActual()
 	{
 		return damageActual;
@@ -53,6 +76,10 @@ public class CreatureDamageEvent extends EntityEvent
 		this.damageActual = damageActual;
 	}
 	
+	/**
+	 * The knockback force with which the hit entity should be knocked back with.
+	 * @return the knockback force along the x axis
+	 */
 	public float getKnockbackX()
 	{
 		return knockbackX;
@@ -63,6 +90,10 @@ public class CreatureDamageEvent extends EntityEvent
 		this.knockbackX = knockbackX;
 	}
 	
+	/**
+	 * The knockback force with which the hit entity should be knocked back with.
+	 * @return the knockback force along the x axis
+	 */
 	public float getKnockbackY()
 	{
 		return knockbackY;
@@ -73,6 +104,9 @@ public class CreatureDamageEvent extends EntityEvent
 		this.knockbackY = knockbackY;
 	}
 	
+	/**
+	 * @return the entity that is taking damage
+	 */
 	@Override
 	public Creature getEntity()
 	{

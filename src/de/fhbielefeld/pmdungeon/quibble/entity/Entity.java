@@ -18,7 +18,14 @@ import de.fhbielefeld.pmdungeon.vorgaben.tools.Point;
 
 public abstract class Entity implements IEntity, IAnimatable, ParticleSource
 {
+	/**
+	 * Event ID for entity spawn events.
+	 */
 	public static final int EVENT_ID_SPAWN = EntityEvent.genEventID();
+	
+	/**
+	 * Event ID for entity despawn events.
+	 */
 	public static final int EVENT_ID_DESPAWN = EntityEvent.genEventID();
 	
 	private long ticks;
@@ -98,6 +105,9 @@ public abstract class Entity implements IEntity, IAnimatable, ParticleSource
 		return this.loadedResources;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public final Point getPosition()
 	{
@@ -191,18 +201,27 @@ public abstract class Entity implements IEntity, IAnimatable, ParticleSource
 		return this.ticks;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Animation getActiveAnimation()
 	{
 		return this.animationHandler.getCurrentAnimation();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean deleteable()
 	{
-		return false;
+		return false; //This method does not work so we have a workaround
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public final void update()
 	{
@@ -445,17 +464,31 @@ public abstract class Entity implements IEntity, IAnimatable, ParticleSource
 		return false;
 	}
 	
+	/**
+	 * Actual deletable(). Once this returns true, the entity will despawn.
+	 * @return whether this entity should despawn until the next frame
+	 */
 	public boolean deleteableWorkaround()
 	{
 		return false;
 	}
 	
+	/**
+	 * Fires an entity event and notifies all event listeners registered on this entity.
+	 * @param event the event object to pass to the listeners
+	 * @return the exact same argument that was passes for convenience
+	 */
 	public EntityEvent fireEvent(EntityEvent event)
 	{
 		this.eventHandlers.forEach(handler -> handler.handleEvent(event));
 		return event;
 	}
 	
+	/**
+	 * Adds an event listener to this entity which will be notified when the entity fires an event.
+	 * @param h the listener to add
+	 * @throws IllegalArgumentException if the specified listener has already been added
+	 */
 	public void addEntityEventHandler(EntityEventHandler h)
 	{
 		if(this.eventHandlers.contains(h))
@@ -465,6 +498,11 @@ public abstract class Entity implements IEntity, IAnimatable, ParticleSource
 		this.eventHandlers.add(h);
 	}
 	
+	/**
+	 * Removes a previously added event listener.
+	 * If the specified listener is not actually added, this does nothing.
+	 * @param h the listener to remove
+	 */
 	public void removeEntityEventHandler(EntityEventHandler h)
 	{
 		this.eventHandlers.remove(h);

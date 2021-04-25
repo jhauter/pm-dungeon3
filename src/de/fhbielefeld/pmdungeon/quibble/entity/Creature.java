@@ -30,9 +30,24 @@ import de.fhbielefeld.pmdungeon.vorgaben.tools.Point;
 
 public abstract class Creature extends Entity implements DamageSource, CreatureStatsEventListener
 {
+	/**
+	 * Event ID for <code>CreatureStatChangeEvent</code>.
+	 */
 	public static final int EVENT_ID_STAT_CHANGE = EntityEvent.genEventID();
+	
+	/**
+	 * Event ID for <code>CreatureDamageEvent</code>.
+	 */
 	public static final int EVENT_ID_TAKE_DAMAGE = EntityEvent.genEventID();
+	
+	/**
+	 * Event ID for <code>CreatureHitTargetEvent</code>.
+	 */
 	public static final int EVENT_ID_HIT_TARGET = EntityEvent.genEventID();
+	
+	/**
+	 * Event ID for <code>CreatureHitTargetPostEvent</code>.
+	 */
 	public static final int EVENT_ID_HIT_TARGET_POST = EntityEvent.genEventID();
 	
 	private static final int ANIM_SWITCH_IDLE_L = 0;
@@ -227,11 +242,21 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		return !this.isDead && !this.beingMoved;
 	}
 	
+	/**
+	 * Returns whether this creature is being moved and cannot move on its own.
+	 * For example when it is moved by knockback force.
+	 * @return whether this creature is being moved and connot move on its own
+	 */
 	public boolean isBeingMoved()
 	{
 		return this.beingMoved;
 	}
 	
+	/**
+	 * Marks this creature as being moved. In this state creatures cannot move on their own.
+	 * This state in only reset when the velocity² is less or equal than <code>beingMovedThreshold</code>.
+	 * (<code>beingMovedThreshold</code> is not yet changeable)
+	 */
 	public void setBeingMoved()
 	{
 		this.beingMoved = true;
@@ -445,16 +470,29 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		return this.invulnerableTicks > 0;
 	}
 	
+	/**
+	 * Returns the current health of the creature.
+	 * @return current health
+	 */
 	public double getCurrentHealth()
 	{
 		return this.getCurrentStats().getStat(CreatureStatsAttribs.HEALTH);
 	}
 	
+	/**
+	 * Returns the maximum health of the creature.
+	 * @return max. health
+	 */
 	public double getMaxHealth()
 	{
 		return this.getMaxStats().getStat(CreatureStatsAttribs.HEALTH);
 	}
 	
+	/**
+	 * Increases the health of the creature by the specified amount.
+	 * The health cannot be in increased over maximum health.
+	 * @param amount the amount to increase health by
+	 */
 	public void heal(double amount)
 	{
 		double newHealth = this.getCurrentHealth() + amount;
@@ -465,6 +503,16 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		this.getCurrentStats().setStat(CreatureStatsAttribs.HEALTH, newHealth);
 	}
 	
+	/**
+	 * Causes damage to this creature. The damage value is altered according to the stats of the creature.
+	 * The creature is knocked back according to its stats and the stats of the damage source.
+	 * Creatures that take damage are invincible for a short amount of time.
+	 * @param damage the raw damage to inflict
+	 * @param damageType the damage type which determines how damage is calculated according to stats
+	 * @param damageSource the damage source (ex.: the entity that deals the damage)
+	 * @param ignoreInvincibleTicks whether the entity should take damage even though
+	 * it is actually invincible due to it being hit recently
+	 */
 	public void damage(double damage, DamageType damageType, DamageSource damageSource, boolean ignoreInvincibleTicks)
 	{
 		if(!ignoreInvincibleTicks && this.isInvulnerable())
@@ -527,8 +575,11 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	}
 	
 	/**
-	 * 
-	 * @param target
+	 * Makes this creature hit another creature.
+	 * The damage, knockback, miss chance and other factors are all determined by this creature's stats.
+	 * If the target is out of reach then the hit will not succeed.
+	 * @param target the target creature to hit
+	 * @param damageType the type of damage to use (usually physical damage)
 	 */
 	public void hit(Creature target, DamageType damageType)
 	{
@@ -573,11 +624,19 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		//Canceling target post event has no effect
 	}
 	
+	/**
+	 * Attacks only a single entity.
+	 * @see #attackEntities(List)
+	 */
 	public void attack(Creature target)
 	{
 		this.attackEntities(Arrays.asList(target));
 	}
 	
+	/**
+	 * Attacks all entities within the radius determined by this creatures hit reach stat.
+	 * @see #attackEntities(List)
+	 */
 	public void attackAoE()
 	{
 		List<Entity> entitiesInRadius = this.level.getEntitiesInRadius(this.getX(), this.getY(), (float)this.getCurrentStats().getStat(CreatureStatsAttribs.HIT_REACH) + this.getRadius(), this);
@@ -592,6 +651,10 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		this.attackEntities(creatures);
 	}
 	
+	/**
+	 * Makes this creature hit all specified entities and also takes care of the attack/weapon animation.
+	 * @param targets list containing all entities to hit
+	 */
 	public void attackEntities(List<Creature> targets)
 	{
 		if(this.isDead)
@@ -656,6 +719,9 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		return 30;
 	}
 	
+	/**
+	 * Whether this entity has been marked as dead by losing all health
+	 */
 	public boolean isDead()
 	{
 		return this.isDead;
@@ -673,13 +739,31 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		return this.isDead && this.deadTicks >= this.getDeadTicksBeforeDelete();
 	}
 	
+	/**
+	 * @return the point at which the weapon should be rendered if this creature uses weapons
+	 */
 	public abstract Point getWeaponHoldOffset();
 	
+	/**
+	 * @return whether an animated weapon should be shown when this creature attacks
+	 */
 	public boolean showWeaponOnAttack()
 	{
 		return false;
 	}
 	
+	/**
+	 * Makes the creature walk along the specified path.
+	 * This method needs to be called every frame until the end of the path is reached.
+	 * Make sure to pass only the same reference to this method until the end of the patch is reached.
+	 * If this method detects a different path reference then it will start to follow the new path reference
+	 * from the beginning.<br><br>
+	 * The method indicates that the end of the path has been reached by returning <code>true</code>.
+	 * If this method is called after <code>true</code> has been returned, this method will do nothing and keep
+	 * returning <code>true</code>.
+	 * @param path the path to follow
+	 * @return whether the end of the path has been reached
+	 */
 	public boolean followPath(GraphPath<Tile> path)
 	{
 		int currentX = (int)this.getX();

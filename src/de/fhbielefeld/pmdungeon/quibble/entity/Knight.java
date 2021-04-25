@@ -39,12 +39,18 @@ public class Knight extends Player
 		this(0.0F, 0.0F);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	protected BoundingBox getInitBoundingBox()
 	{
 		return new BoundingBox(-0.35F, -0.5F, 0.7F, 1.0F);
 	}
-
+	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	protected CreatureStats getBaseStatsForLevel(int level)
 	{
@@ -63,37 +69,31 @@ public class Knight extends Player
 		stats.setStat(CreatureStatsAttribs.HIT_COOLDOWN, 15.0D);
 		return stats;
 	}
-
+	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Point getWeaponHoldOffset()
 	{
 		return new Point(0.0F, 1.25F);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean showWeaponOnAttack()
 	{
 		return true;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	protected boolean useHitAnimation()
 	{
 		return true;
 	}
-	
-	/************** DEMO **************
-	
-	@Override
-	public void updateAnimationState()
-	{
-		//Hitting space will play a hit animation and take over the running animation
-		if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE))
-		{
-			this.animationHandler.playAnimation("hit_right", 10, false);
-		}
-		super.updateAnimationState();
-	}
-	
-	**********************************/
 }

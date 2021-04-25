@@ -9,7 +9,7 @@ import de.fhbielefeld.pmdungeon.quibble.input.InputListener;
 public abstract class Player extends Creature implements InputListener
 {
 	private boolean triggeredNextLevel;
-
+	
 	private float controlMinX;
 	private float controlMaxX;
 	private float controlMinY;
@@ -71,6 +71,9 @@ public abstract class Player extends Creature implements InputListener
 		return this.triggeredNextLevel;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	protected void updateLogic()
 	{
@@ -103,6 +106,9 @@ public abstract class Player extends Creature implements InputListener
 		}
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	protected void updateEnd()
 	{

@@ -74,6 +74,9 @@ public class RNGTable
 		return 0;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String toString()
 	{

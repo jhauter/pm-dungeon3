@@ -44,12 +44,18 @@ public class Demon extends Creature
 		this(0.0F, 0.0F);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	protected BoundingBox getInitBoundingBox()
 	{
 		return new BoundingBox(-0.35F, -0.5F, 0.7F, 1.0F);
 	}
-
+	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	protected CreatureStats getBaseStatsForLevel(int level)
 	{
@@ -68,7 +74,10 @@ public class Demon extends Creature
 		stats.setStat(CreatureStatsAttribs.HIT_COOLDOWN, 15.0D);
 		return stats;
 	}
-
+	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Point getWeaponHoldOffset()
 	{
@@ -76,10 +85,15 @@ public class Demon extends Creature
 		return null;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	protected void updateLogic()
 	{
 		super.updateLogic();
+		
+		//Always finds a new tile to move to
 		DungeonWorld dungeon = this.level.getDungeon();
 		if(this.currentMovement == null || this.followPath(this.currentMovement))
 		{
@@ -88,11 +102,14 @@ public class Demon extends Creature
 		}
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	protected void onEntityCollision(Entity otherEntity)
 	{
 		super.onEntityCollision(otherEntity);
-		if(otherEntity instanceof Player)
+		if(otherEntity instanceof Player) //Attack player when touched
 		{
 			this.attack((Player)otherEntity);
 		}
