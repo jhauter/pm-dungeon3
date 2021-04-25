@@ -782,7 +782,16 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 			}
 			else
 			{
-				this.walk((float)Math.toDegrees(Math.atan2(pathTileTarget.getY() + 0.5F - this.getY(), pathTileTarget.getX() + 0.5F - this.getX())));
+				float angle = (float)Math.toDegrees(Math.atan2(pathTileTarget.getY() + 0.5F - this.getY(), pathTileTarget.getX() + 0.5F - this.getX()));
+				this.walk(angle);
+				if(angle > 90 || angle < -90)
+				{
+					this.setLookingDirection(LookingDirection.LEFT);
+				}
+				else if(angle < 90 && angle > -90)
+				{
+					this.setLookingDirection(LookingDirection.RIGHT);
+				}
 			}
 		}
 		return this.currentPathIndex == this.currentPath.getCount() - 1;
