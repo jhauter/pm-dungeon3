@@ -8,11 +8,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 
 import de.fhbielefeld.pmdungeon.quibble.LoggingHandler;
+import de.fhbielefeld.pmdungeon.quibble.file.DungeonResource;
+import de.fhbielefeld.pmdungeon.quibble.file.ResourceHandler;
+import de.fhbielefeld.pmdungeon.quibble.file.ResourceType;
 import de.fhbielefeld.pmdungeon.vorgaben.graphic.Animation;
 
 public class AnimationHandlerImpl implements AnimationHandler
@@ -160,6 +161,7 @@ public class AnimationHandlerImpl implements AnimationHandler
 	private LoadedAnimation loadAnimation(AnimationInfo animInfo, StringBuilder pathBuilder, List<Texture> frames)
 	{
 		Texture currentTexture;
+		DungeonResource<Texture> texRes;
 		for(int n = 0; n < animInfo.numFrames; ++n)
 		{
 			pathBuilder.append(animInfo.pathToDir);
@@ -172,17 +174,16 @@ public class AnimationHandlerImpl implements AnimationHandler
 			pathBuilder.append(n);
 			pathBuilder.append('.');
 			pathBuilder.append(AnimationHandler.FILENAME_EXT);
-			try
-			{
-				currentTexture = new Texture(pathBuilder.toString());
-			}
-			catch(GdxRuntimeException e) //failure to load throws a GdxRuntimeException
+			
+			texRes = ResourceHandler.requestResourceInstantly(pathBuilder.toString(), ResourceType.TEXTURE);
+			if(texRes.hasError())
 			{
 				this.loadedAnimations.clear(); //clear list to allow retry to load
-				LoggingHandler.logger.log(Level.SEVERE, "Error", e);
-				Gdx.app.log("Error", e.getMessage());
+				//No need to log here because the ResourceHandler already logs
 				return null;
 			}
+			
+			currentTexture = new Texture(pathBuilder.toString());
 			frames.add(currentTexture);
 			pathBuilder.setLength(0);
 		}
