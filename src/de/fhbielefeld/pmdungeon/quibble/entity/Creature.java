@@ -18,6 +18,9 @@ import de.fhbielefeld.pmdungeon.quibble.entity.event.CreatureHitTargetEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.CreatureHitTargetPostEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.CreatureStatChangeEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEvent;
+import de.fhbielefeld.pmdungeon.quibble.inventory.DefaultInventory;
+import de.fhbielefeld.pmdungeon.quibble.inventory.Inventory;
+import de.fhbielefeld.pmdungeon.quibble.inventory.InventoryItem;
 import de.fhbielefeld.pmdungeon.quibble.particle.Levitate;
 import de.fhbielefeld.pmdungeon.quibble.particle.ParticleFightText;
 import de.fhbielefeld.pmdungeon.quibble.particle.ParticleFightText.Type;
@@ -136,6 +139,10 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	
 	private int currentPathIndex;
 	
+	private Inventory inventory;
+	
+	private Inventory equippedItems;
+	
 	/**
 	 * @param x x-coordinate
 	 * @param y y-coordinate
@@ -153,6 +160,10 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		this.currentStats = this.maxStats.addCopy(new CreatureStats());
 		this.currentStats.setEventListener(this);
 		//==============================
+		
+		
+		this.inventory = new DefaultInventory(this.getInventorySlots());
+		this.equippedItems = new DefaultInventory(this.getEquipmentSlots());
 		
 		if(this.useDefaultAnimation())
 		{
@@ -795,5 +806,62 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 			}
 		}
 		return this.currentPathIndex == this.currentPath.getCount() - 1;
+	}
+	
+	public final Inventory getInventory()
+	{
+		return this.inventory;
+	}
+	
+	public final Inventory getEquippedItems()
+	{
+		return this.equippedItems;
+	}
+	
+	public int getInventorySlots()
+	{
+		return 0;
+	}
+	
+	public int getEquipmentSlots()
+	{
+		return 0;
+	}
+	
+	public boolean equip(int invSlot)
+	{
+		return Inventory.transfer(this.getInventory(), invSlot, this.getEquippedItems());
+	}
+	
+	public void equipSwap(int invSlot, int equipSlot)
+	{
+		Inventory.swap(this.getInventory(), invSlot, this.getEquippedItems(), equipSlot);
+	}
+	
+	public boolean unequip(int equipSlot)
+	{
+		return Inventory.transfer(this.getEquippedItems(), equipSlot, this.getInventory());
+	}
+	
+	public boolean drop(int invSlot)
+	{
+		InventoryItem item = this.getInventory().removeItem(invSlot);
+		if(item == null)
+		{
+			return false;
+		}
+		//CREATE ITEM ENTITY
+		return true;
+	}
+
+	public boolean dropEquipment(int equipSlot)
+	{
+		InventoryItem item = this.getEquippedItems().removeItem(equipSlot);
+		if(item == null)
+		{
+			return false;
+		}
+		//CREATE ITEM ENTITY
+		return true;
 	}
 }
