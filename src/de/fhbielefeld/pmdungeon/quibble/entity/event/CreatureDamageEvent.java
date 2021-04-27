@@ -71,6 +71,10 @@ public class CreatureDamageEvent extends EntityEvent
 		return damageActual;
 	}
 	
+	/**
+	 * Overwrites the damage that has been calculated and will be dealt
+	 * @param damageActual the new actual damage
+	 */
 	public void setDamageActual(double damageActual)
 	{
 		this.damageActual = damageActual;
@@ -85,6 +89,10 @@ public class CreatureDamageEvent extends EntityEvent
 		return knockbackX;
 	}
 	
+	/**
+	 * Overwrites the knockback force in the x direction that will be applied on the entity.
+	 * @param knockbackX the new knockback force in the x direction
+	 */
 	public void setKnockbackX(float knockbackX)
 	{
 		this.knockbackX = knockbackX;
@@ -99,6 +107,10 @@ public class CreatureDamageEvent extends EntityEvent
 		return knockbackY;
 	}
 	
+	/**
+	 * Overwrites the knockback force in the y direction that will be applied on the entity.
+	 * @param knockbackY the new knockback force in the y direction
+	 */
 	public void setKnockbackY(float knockbackY)
 	{
 		this.knockbackY = knockbackY;

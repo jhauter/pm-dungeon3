@@ -17,6 +17,9 @@ public class ParticleSystem
 	
 	public static final Random RNG = new Random();
 	
+	/**
+	 * Loads all textures. Must be called before spawning particles.
+	 */
 	public static void loadTextures()
 	{
 		textureCrit = new TextureRegion(new Texture("assets/textures/particle/crit.png"));
@@ -30,11 +33,19 @@ public class ParticleSystem
 	
 	private List<Particle> particles;
 	
+	/**
+	 * Creates a particle system.
+	 */
 	public ParticleSystem()
 	{
 		this.particles = new ArrayList<Particle>();
 	}
 	
+	/**
+	 * Adds a particle to the system. The specified <code>ParticleMovement</code> will determine the movement.
+	 * @param particle the particle to add
+	 * @param movement the movement for the particle
+	 */
 	public void addParticle(Particle particle, ParticleMovement movement)
 	{
 		movement.originValues(particle.getSpawnX(), particle.getSpawnY());
@@ -42,6 +53,10 @@ public class ParticleSystem
 		this.particles.add(particle);
 	}
 	
+	/**
+	 * Updates all particles.
+	 * @param delta time in seconds that the last frame took
+	 */
 	public void update(float delta)
 	{
 		Particle currentParticle;
@@ -60,6 +75,11 @@ public class ParticleSystem
 		}
 	}
 	
+	/**
+	 * Draws all particles.
+	 * @param camX x position of the dungeon camera
+	 * @param camY y position of the dungeon camera
+	 */
 	public void draw(float camX, float camY)
 	{
 		float x, y, width, height, rot, srcOffsetX, srcOffsetY;
@@ -91,6 +111,9 @@ public class ParticleSystem
 		batch.flush();
 	}
 	
+	/**
+	 * Removes all particles from the system.
+	 */
 	public void clearParticles()
 	{
 		this.particles.clear();

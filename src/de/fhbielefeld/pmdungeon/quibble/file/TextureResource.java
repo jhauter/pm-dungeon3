@@ -9,29 +9,44 @@ public class TextureResource implements DungeonResource<Texture>
 	
 	private boolean error;
 	
+	/**
+	 * Creates a new <code>TextureResource</code> that represents a texture.
+	 */
 	protected TextureResource()
 	{
 		
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Texture getResource()
 	{
 		return this.texture;
 	}
-
+	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean isLoaded()
 	{
 		return this.texture != null;
 	}
-
+	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean hasError()
 	{
 		return this.error;
 	}
-
+	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void load(String path)
 	{
