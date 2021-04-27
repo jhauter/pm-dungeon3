@@ -5,6 +5,7 @@ import java.util.logging.Level;
 import de.fhbielefeld.pmdungeon.quibble.LoggingHandler;
 import de.fhbielefeld.pmdungeon.quibble.input.DungeonInput;
 import de.fhbielefeld.pmdungeon.quibble.input.InputListener;
+import de.fhbielefeld.pmdungeon.quibble.inventory.Inventory;
 
 public abstract class Player extends Creature implements InputListener
 {
@@ -46,6 +47,14 @@ public abstract class Player extends Creature implements InputListener
 		{
 			this.attackAoE();
 			LoggingHandler.logger.log(Level.FINE, "Mouse input: attack");
+		}
+		else if(input == DungeonInput.INV_LOG)
+		{
+			LoggingHandler.logger.log(Level.INFO, "Inventar: " + Inventory.inventoryString(getInventory()));
+		}
+		else if(input == DungeonInput.EQUIP_LOG)
+		{
+			LoggingHandler.logger.log(Level.INFO, "Ausrüstung: " + Inventory.inventoryString(getEquippedItems()));
 		}
 	}
 	

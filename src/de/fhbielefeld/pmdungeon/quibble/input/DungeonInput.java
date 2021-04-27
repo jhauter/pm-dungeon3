@@ -15,7 +15,9 @@ public enum DungeonInput {
 	UP_LEFT(() -> Gdx.input.isKeyPressed(Input.Keys.W) && Gdx.input.isKeyPressed(Input.Keys.A),true,-1.0F,1.0F),
 	DOWN_LEFT(() -> Gdx.input.isKeyPressed(Input.Keys.S) && Gdx.input.isKeyPressed(Input.Keys.A),true,-1.0F,-1.0F),
 	DOWN_RIGHT(() -> Gdx.input.isKeyPressed(Input.Keys.S) && Gdx.input.isKeyPressed(Input.Keys.D),true,1.0F,-1.0F),
-	HIT(() -> Gdx.input.isButtonJustPressed(Input.Buttons.LEFT),false,0.0F,0.0F);
+	HIT(() -> Gdx.input.isButtonJustPressed(Input.Buttons.LEFT),false,0.0F,0.0F),
+	INV_LOG(() -> Gdx.input.isKeyJustPressed(Input.Keys.I),false,0.0F,0.0F),
+	EQUIP_LOG(() -> Gdx.input.isKeyJustPressed(Input.Keys.O),false,0.0F,0.0F);
 	
 	private final Supplier<Boolean> inputCheck;
 	private final float axisScaleX;
