@@ -4,6 +4,9 @@ import java.util.function.Supplier;
 
 public enum ResourceType
 {
+	/**
+	 * Represents a textur resource.
+	 */
 	TEXTURE(TextureResource::new);
 	
 	private final Supplier<DungeonResource<?>> resourceClassGenerator;
@@ -13,7 +16,10 @@ public enum ResourceType
 		this.resourceClassGenerator = resourceClassGenerator;
 	}
 	
-	public DungeonResource<?> newResourceInstance()
+	/**
+	 * @return a new instance of the resource type
+	 */
+	protected DungeonResource<?> newResourceInstance()
 	{
 		return this.resourceClassGenerator.get();
 	}

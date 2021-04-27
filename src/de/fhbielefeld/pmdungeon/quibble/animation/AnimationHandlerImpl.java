@@ -99,12 +99,18 @@ public class AnimationHandlerImpl implements AnimationHandler
 		this.registeredAnimations.add(animInfo);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void addAnimation(String animName, int numFrames, int frameDuration, String pathToTexDir, String fileName)
 	{
 		this.addAnimation(new AnimationInfo(animName, numFrames, frameDuration, pathToTexDir, fileName));
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void addAsDefaultAnimation(String animName, int numFrames, int frameDuration, String pathToTexDir, String fileName)
 	{
@@ -113,6 +119,9 @@ public class AnimationHandlerImpl implements AnimationHandler
 		this.defaultAnimInfo = animInfo;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean loadAnimations()
 	{
@@ -191,6 +200,9 @@ public class AnimationHandlerImpl implements AnimationHandler
 		return new LoadedAnimation(anim, animInfo.numFrames, animInfo.frameDuration);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void playAnimation(String animName, int priority, boolean cyclic)
 	{
@@ -200,6 +212,9 @@ public class AnimationHandlerImpl implements AnimationHandler
 		anim.cyclicState = cyclic;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void frameUpdate()
 	{
@@ -258,6 +273,9 @@ public class AnimationHandlerImpl implements AnimationHandler
 		}
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Animation getCurrentAnimation()
 	{
