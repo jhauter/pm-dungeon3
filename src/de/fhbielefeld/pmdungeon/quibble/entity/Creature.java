@@ -117,11 +117,13 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	
 	private AnimationStateHelper defaultAnimationsHelper;
 	
-	private CreatureStats baseStats;
+	private final CreatureStats baseStats;
 	
-	private CreatureStats maxStats;
+	private final CreatureStats statsFromEquipped;
 	
-	private CreatureStats currentStats;
+	private final CreatureStats maxStats;
+	
+	private final CreatureStats currentStats;
 	
 	private int expLevel;
 	
@@ -154,16 +156,21 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		//Default looking direction should be right
 		this.lookingDirection = LookingDirection.RIGHT;
 		
-		//=====Improve this section=====
+		//=====Stats=====
 		this.baseStats = this.getBaseStatsForLevel(this.expLevel);
-		this.maxStats = this.calculateMaxStats();
-		this.currentStats = this.maxStats.addCopy(new CreatureStats());
+		this.statsFromEquipped = new CreatureStats();
+		this.maxStats = new CreatureStats(this.baseStats);
+		this.currentStats = new CreatureStats(this.maxStats);
 		this.currentStats.setEventListener(this);
 		//==============================
 		
 		
 		this.inventory = new DefaultInventory(this.getInventorySlots());
 		this.equippedItems = new DefaultInventory(this.getEquipmentSlots());
+		this.equippedItems.addInventoryListener((slot, oldItem, newItem) ->
+		{
+			this.updateMaxStats();
+		});
 		
 		if(this.useDefaultAnimation())
 		{
@@ -417,12 +424,39 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	}
 	
 	/**
-	 * No real implementation by now but can later be used when items and status effects are added
-	 * @return the base stats for now
+	 * Calculates the total stats of all equipped items.
+	 * @return the total stats of all equipped items
+	 */
+	public CreatureStats calculateStatsFromEquipped()
+	{
+		CreatureStats currentMax = new CreatureStats();
+		InventoryItem curItem;
+		for(int i = 0; i < this.equippedItems.getCapacity(); ++i)
+		{
+			curItem = this.equippedItems.getItem(i);
+			
+			if(curItem != null)
+			{
+				currentMax.addStats(curItem.getItemType().getItemStats());
+			}
+		}
+		return currentMax;
+	}
+	
+	/**
+	 * Calculates the max stats which are used for max. health, etc.
+	 * @return the base stats plus stats from equipped items
 	 */
 	public CreatureStats calculateMaxStats()
 	{
-		return this.baseStats;
+		return this.baseStats.addCopy(this.statsFromEquipped);
+	}
+	
+	public void updateMaxStats()
+	{
+		this.statsFromEquipped.setStats(this.calculateStatsFromEquipped());
+		this.maxStats.setStats(this.calculateMaxStats());
+		this.currentStats.newMax(this.maxStats);
 	}
 	
 	/**
@@ -436,7 +470,7 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	}
 	
 	/**
-	 * Returns the current stats which move between 0 and maxStats.
+	 * Returns the current stats which move between 0 (mostly) and maxStats.
 	 * There stats are the actual stat values that the creature has.
 	 * For example the health stat has its maximum value stored in maxStats.
 	 * The current health is stored in currentStats.
