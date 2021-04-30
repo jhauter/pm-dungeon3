@@ -1,18 +1,18 @@
 package de.fhbielefeld.pmdungeon.quibble.inventory;
 
-import de.fhbielefeld.pmdungeon.quibble.entity.items.ItemList;
+import de.fhbielefeld.pmdungeon.quibble.item.Item;
 
 public class DefaultInventoryItem implements InventoryItem
 {
-	private final ItemList type;
+	private final Item type;
 	
-	public DefaultInventoryItem(ItemList type)
+	public DefaultInventoryItem(Item type)
 	{
 		this.type = type;
 	}
 	
 	@Override
-	public ItemList getItemType()
+	public Item getItemType()
 	{
 		return this.type;
 	}

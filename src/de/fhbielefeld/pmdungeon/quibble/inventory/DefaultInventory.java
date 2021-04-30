@@ -1,12 +1,18 @@
 package de.fhbielefeld.pmdungeon.quibble.inventory;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class DefaultInventory implements Inventory
 {
 	private final InventoryItem[] items;
 	
+	private List<InventoryListener> inventoryListeners;
+	
 	public DefaultInventory(int capacity)
 	{
 		this.items = new InventoryItem[capacity];
+		this.inventoryListeners = new ArrayList<>();
 	}
 	
 	@Override
@@ -24,7 +30,10 @@ public class DefaultInventory implements Inventory
 	@Override
 	public void setItem(int index, InventoryItem itemType)
 	{
+		final InventoryItem old = this.items[index];
 		this.items[index] = itemType;
+		System.out.println(this.inventoryListeners.size());
+		this.inventoryListeners.forEach(c -> c.onInventoryChange(index, old, this.items[index]));
 	}
 	
 	@Override
@@ -35,7 +44,7 @@ public class DefaultInventory implements Inventory
 		{
 			return false;
 		}
-		this.items[emptySlot] = itemType;
+		this.setItem(emptySlot, itemType);
 		return true;
 	}
 
@@ -43,7 +52,7 @@ public class DefaultInventory implements Inventory
 	public InventoryItem removeItem(int index)
 	{
 		InventoryItem ret = this.items[index];
-		this.items[index] = null;
+		this.setItem(index, null);
 		return ret;
 	}
 
@@ -58,5 +67,21 @@ public class DefaultInventory implements Inventory
 			}
 		}
 		return -1;
+	}
+
+	@Override
+	public void addInventoryListener(InventoryListener listener)
+	{
+		if(this.inventoryListeners.contains(listener))
+		{
+			throw new IllegalArgumentException("this InventoryListener was already added");
+		}
+		this.inventoryListeners.add(listener);
+	}
+
+	@Override
+	public void removeInventoryListener(InventoryListener list)
+	{
+		this.inventoryListeners.remove(list);
 	}
 }

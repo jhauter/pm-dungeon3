@@ -14,6 +14,10 @@ public interface Inventory
 	
 	public int getEmptySlot();
 	
+	public void addInventoryListener(InventoryListener listener);
+	
+	public void removeInventoryListener(InventoryListener list);
+	
 	public static void swap(Inventory inv1, int index1, Inventory inv2, int index2)
 	{
 		InventoryItem item1 = inv1.getItem(index1);
@@ -43,7 +47,7 @@ public interface Inventory
 		for(int i = 0; i < size; ++i)
 		{
 			currentItem = inv.getItem(i);
-			builder.append(currentItem != null ? currentItem : "LEER");
+			builder.append(currentItem != null ? currentItem.getItemType().getDisplayName() : "NONE");
 			if(i != size - 1)
 			{
 				builder.append(", ");
