@@ -96,4 +96,16 @@ public class Knight extends Player
 	{
 		return true;
 	}
+	
+	@Override
+	public int getInventorySlots()
+	{
+		return 8;
+	}
+	
+	@Override
+	public int getEquipmentSlots()
+	{
+		return 3;
+	}
 }
