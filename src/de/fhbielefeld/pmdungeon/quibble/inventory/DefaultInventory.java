@@ -32,7 +32,6 @@ public class DefaultInventory implements Inventory
 	{
 		final InventoryItem old = this.items[index];
 		this.items[index] = itemType;
-		System.out.println(this.inventoryListeners.size());
 		this.inventoryListeners.forEach(c -> c.onInventoryChange(index, old, this.items[index]));
 	}
 	
