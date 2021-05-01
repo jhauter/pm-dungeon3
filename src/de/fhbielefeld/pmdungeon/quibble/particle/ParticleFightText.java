@@ -2,6 +2,10 @@ package de.fhbielefeld.pmdungeon.quibble.particle;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
+import de.fhbielefeld.pmdungeon.quibble.file.DungeonResource;
+import de.fhbielefeld.pmdungeon.quibble.file.ResourceHandler;
+import de.fhbielefeld.pmdungeon.quibble.file.ResourceType;
+
 public class ParticleFightText extends Particle
 {
 	public static enum Type
@@ -75,19 +79,19 @@ public class ParticleFightText extends Particle
 	 * {@inheritDoc}
 	 */
 	@Override
-	public TextureRegion getTexture()
+	public DungeonResource<TextureRegion> getTexture()
 	{
 		if(this.type == Type.CRIT)
 		{
-			return ParticleSystem.textureCrit;
+			return ResourceHandler.requestResourceInstantly("assets/textures/particle/crit.png", ResourceType.TEXTURE_REGION);
 		}
 		else if(this.type == Type.MISS)
 		{
-			return ParticleSystem.textureMiss;
+			return ResourceHandler.requestResourceInstantly("assets/textures/particle/miss.png", ResourceType.TEXTURE_REGION);
 		}
 		else
 		{
-			return ParticleSystem.textureNumbers[this.numberIndex];
+			return ResourceHandler.requestResourceInstantly("assets/textures/particle/" + this.numberIndex + ".png", ResourceType.TEXTURE_REGION);
 		}
 	}
 	

@@ -18,13 +18,14 @@ import de.fhbielefeld.pmdungeon.quibble.entity.event.CreatureHitTargetEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.CreatureHitTargetPostEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.CreatureStatChangeEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEvent;
+import de.fhbielefeld.pmdungeon.quibble.inventory.DefaultInventory;
+import de.fhbielefeld.pmdungeon.quibble.inventory.Inventory;
+import de.fhbielefeld.pmdungeon.quibble.inventory.InventoryItem;
+import de.fhbielefeld.pmdungeon.quibble.item.Item;
 import de.fhbielefeld.pmdungeon.quibble.particle.Levitate;
 import de.fhbielefeld.pmdungeon.quibble.particle.ParticleFightText;
 import de.fhbielefeld.pmdungeon.quibble.particle.ParticleFightText.Type;
-import de.fhbielefeld.pmdungeon.quibble.particle.ParticleWeapon;
 import de.fhbielefeld.pmdungeon.quibble.particle.Splash;
-import de.fhbielefeld.pmdungeon.quibble.particle.Swing;
-import de.fhbielefeld.pmdungeon.quibble.particle.Swing.SwingOrientation;
 import de.fhbielefeld.pmdungeon.vorgaben.dungeonCreator.tiles.Tile;
 import de.fhbielefeld.pmdungeon.vorgaben.tools.Point;
 
@@ -114,11 +115,13 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	
 	private AnimationStateHelper defaultAnimationsHelper;
 	
-	private CreatureStats baseStats;
+	private final CreatureStats baseStats;
 	
-	private CreatureStats maxStats;
+	private final CreatureStats statsFromEquipped;
 	
-	private CreatureStats currentStats;
+	private final CreatureStats maxStats;
+	
+	private final CreatureStats currentStats;
 	
 	private int expLevel;
 	
@@ -136,6 +139,10 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	
 	private int currentPathIndex;
 	
+	private Inventory<Item> inventory;
+	
+	private Inventory<Item> equippedItems;
+	
 	/**
 	 * @param x x-coordinate
 	 * @param y y-coordinate
@@ -147,12 +154,21 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		//Default looking direction should be right
 		this.lookingDirection = LookingDirection.RIGHT;
 		
-		//=====Improve this section=====
+		//=====Stats=====
 		this.baseStats = this.getBaseStatsForLevel(this.expLevel);
-		this.maxStats = this.calculateMaxStats();
-		this.currentStats = this.maxStats.addCopy(new CreatureStats());
+		this.statsFromEquipped = new CreatureStats();
+		this.maxStats = new CreatureStats(this.baseStats);
+		this.currentStats = new CreatureStats(this.maxStats);
 		this.currentStats.setEventListener(this);
 		//==============================
+		
+		
+		this.inventory = new DefaultInventory<Item>(this.getInventorySlots());
+		this.equippedItems = new DefaultInventory<Item>(this.getEquipmentSlots());
+		this.equippedItems.addInventoryListener((slot, oldItem, newItem) ->
+		{
+			this.updateMaxStats();
+		});
 		
 		if(this.useDefaultAnimation())
 		{
@@ -406,12 +422,44 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	}
 	
 	/**
-	 * No real implementation by now but can later be used when items and status effects are added
-	 * @return the base stats for now
+	 * Calculates the total stats of all equipped items.
+	 * @return the total stats of all equipped items
+	 */
+	public CreatureStats calculateStatsFromEquipped()
+	{
+		CreatureStats currentMax = new CreatureStats();
+		InventoryItem<Item> curItem;
+		for(int i = 0; i < this.equippedItems.getCapacity(); ++i)
+		{
+			curItem = this.equippedItems.getItem(i);
+			
+			if(curItem != null)
+			{
+				currentMax.addStats(curItem.getItemType().getItemStats());
+			}
+		}
+		return currentMax;
+	}
+	
+	/**
+	 * Calculates the max stats which are used for max. health, etc.
+	 * @return the base stats plus stats from equipped items
 	 */
 	public CreatureStats calculateMaxStats()
 	{
-		return this.baseStats;
+		return this.baseStats.addCopy(this.statsFromEquipped);
+	}
+	
+	/**
+	 * This method updates the max stats by calculating the stats gained from equipped items and adding
+	 * them to the base stats. The current stats are optionally filled up if the new max stats are greater than
+	 * the current stats. If the new max stats are less, then the current stats are cut down.
+	 */
+	public void updateMaxStats()
+	{
+		this.statsFromEquipped.setStats(this.calculateStatsFromEquipped());
+		this.maxStats.setStats(this.calculateMaxStats());
+		this.currentStats.newMax(this.maxStats);
 	}
 	
 	/**
@@ -425,7 +473,7 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	}
 	
 	/**
-	 * Returns the current stats which move between 0 and maxStats.
+	 * Returns the current stats which move between 0 (mostly) and maxStats.
 	 * There stats are the actual stat values that the creature has.
 	 * For example the health stat has its maximum value stored in maxStats.
 	 * The current health is stored in currentStats.
@@ -661,25 +709,11 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		{
 			return;
 		}
-		if(this.getCurrentStats().getStat(CreatureStatsAttribs.HIT_COOLDOWN) > 0.0D)
+		if(this.getHitCooldown() > 0.0D)
 		{
 			return;
 		}
 		this.getCurrentStats().setStat(CreatureStatsAttribs.HIT_COOLDOWN, this.getMaxStats().getStat(CreatureStatsAttribs.HIT_COOLDOWN));
-		
-		if(this.showWeaponOnAttack())
-		{
-			final float swingSpeed = 3.5F;
-			final float weaponWidth = 1F * 0.5F;
-			final float weaponHeight = 2.5F * 0.5F;
-			final float weaponTime = 0.25F;
-			final Point weaponOffset = this.getWeaponHoldOffset();
-			SwingOrientation swingDir = this.lookingDirection == LookingDirection.RIGHT ? SwingOrientation.RIGHT : SwingOrientation.LEFT;
-			Swing weaponMovement = new Swing(swingDir, swingSpeed);
-			this.level.getParticleSystem().addParticle(
-				new ParticleWeapon(ParticleWeapon.Type.SWORD, weaponWidth, weaponHeight, weaponTime, this.getX() + weaponOffset.x, this.getY() + weaponOffset.y, this),
-				weaponMovement);
-		}
 		
 		for(Creature e : targets)
 		{
@@ -690,6 +724,14 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		{
 			this.animationHandler.playAnimation(this.lookingDirection == LookingDirection.LEFT ? ANIM_NAME_ATTACK_L : ANIM_NAME_ATTACK_R, ANIM_PRIO_ATTACK, false);
 		}
+	}
+	
+	/**
+	 * @return the amount of ticks that has to pass until this creature can attack again
+	 */
+	public double getHitCooldown()
+	{
+		return this.getCurrentStats().getStat(CreatureStatsAttribs.HIT_COOLDOWN);
 	}
 	
 	/**
@@ -745,14 +787,6 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	public abstract Point getWeaponHoldOffset();
 	
 	/**
-	 * @return whether an animated weapon should be shown when this creature attacks
-	 */
-	public boolean showWeaponOnAttack()
-	{
-		return false;
-	}
-	
-	/**
 	 * Makes the creature walk along the specified path.
 	 * This method needs to be called every frame until the end of the path is reached.
 	 * Make sure to pass only the same reference to this method until the end of the patch is reached.
@@ -795,5 +829,127 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 			}
 		}
 		return this.currentPathIndex == this.currentPath.getCount() - 1;
+	}
+	
+	/**
+	 * @return the inventory of the creature
+	 */
+	public final Inventory<Item> getInventory()
+	{
+		return this.inventory;
+	}
+	
+	/**
+	 * Returns the equipped items inventory of the creature.
+	 * Items in this inventory affect the stats of the creature.
+	 * @return equipped items inventory
+	 */
+	public final Inventory<Item> getEquippedItems()
+	{
+		return this.equippedItems;
+	}
+	
+	/**
+	 * @return number of slots the inventory of this creature should have
+	 */
+	public int getInventorySlots()
+	{
+		return 0;
+	}
+	
+	/**
+	 * @return number of slots the equipment inventory of this creature should have
+	 */
+	public int getEquipmentSlots()
+	{
+		return 0;
+	}
+	
+	/**
+	 * Transfers the item in the specified inventory slot into a free equipment slot.
+	 * @param invSlot index of the inventory slot
+	 * @return whether the transfer was successful (whether there was a free equipment slot)
+	 */
+	public boolean equip(int invSlot)
+	{
+		return Inventory.transfer(this.getInventory(), invSlot, this.getEquippedItems());
+	}
+	
+	/**
+	 * Swaps the item in the specified inventory slot with the item in the specified equipment slot.
+	 * @param invSlot index of the inventory slot
+	 * @param equipSlot index of the equipment slot
+	 */
+	public void equipSwap(int invSlot, int equipSlot)
+	{
+		Inventory.swap(this.getInventory(), invSlot, this.getEquippedItems(), equipSlot);
+	}
+	
+	/**
+	 * Transfers the item in the specified equipment slot into a free inventory slot.
+	 * @param equipSlot index of the equipment slot
+	 * @return whether the transfer was successful (whether there was a free inventory slot)
+	 */
+	public boolean unequip(int equipSlot)
+	{
+		return Inventory.transfer(this.getEquippedItems(), equipSlot, this.getInventory());
+	}
+	
+	/**
+	 * Removes the item in the specified inventory slot and drops it on the ground, spawning
+	 * an item entity in the level that contains the dropped item.
+	 * If the specified inventory slot is empty, this does nothing.
+	 * @param invSlot index of the inventory slot
+	 * @return whether the specified inventory slot was not empty
+	 */
+	public boolean drop(int invSlot)
+	{
+		InventoryItem<Item> item = this.getInventory().removeItem(invSlot);
+		if(item == null)
+		{
+			return false;
+		}
+		//CREATE ITEM ENTITY
+		return true;
+	}
+	
+	/**
+	 * Removes the item in the specified equipment slot and drops it on the ground, spawning
+	 * an item entity in the level that contains the dropped item.
+	 * If the specified equipment slot is empty, this does nothing.
+	 * @param equipSlot index of the equipment slot
+	 * @return whether the specified equipment slot was not empty
+	 */
+	public boolean dropEquipment(int equipSlot)
+	{
+		InventoryItem<Item> item = this.getEquippedItems().removeItem(equipSlot);
+		if(item == null)
+		{
+			return false;
+		}
+		//CREATE ITEM ENTITY
+		return true;
+	}
+	
+	/**
+	 * Makes the creature use the item in the specified equipment slot.
+	 * In order to achieve this, the {@link Item#onUse(Creature)} method is called.
+	 * If the item can be consumed, the item will be removed from the slot.
+	 * If the specified equipment slot is empty, this will do nothing
+	 * @param slot index of the equipment slot
+	 */
+	public void useEquippedItem(int slot)
+	{
+		InventoryItem<Item> item = this.equippedItems.getItem(slot);
+		if(item == null)
+		{
+			return;
+		}
+		Item itemType = item.getItemType();
+		itemType.onUse(this);
+		if(itemType.canBeConsumed())
+		{
+			this.equippedItems.removeItem(slot);
+		}
 	}
 }

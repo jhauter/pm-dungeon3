@@ -83,17 +83,20 @@ public class Knight extends Player
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean showWeaponOnAttack()
+	protected boolean useHitAnimation()
 	{
 		return true;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
-	protected boolean useHitAnimation()
+	public int getInventorySlots()
 	{
-		return true;
+		return 8;
+	}
+	
+	@Override
+	public int getEquipmentSlots()
+	{
+		return 3;
 	}
 }
