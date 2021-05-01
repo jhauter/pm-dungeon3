@@ -2,10 +2,15 @@ package de.fhbielefeld.pmdungeon.quibble.entity;
 
 import java.util.logging.Level;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+
 import de.fhbielefeld.pmdungeon.quibble.LoggingHandler;
 import de.fhbielefeld.pmdungeon.quibble.input.DungeonInput;
 import de.fhbielefeld.pmdungeon.quibble.input.InputListener;
 import de.fhbielefeld.pmdungeon.quibble.inventory.Inventory;
+import de.fhbielefeld.pmdungeon.quibble.inventory.InventoryItem;
+import de.fhbielefeld.pmdungeon.quibble.item.Item;
 
 public abstract class Player extends Creature implements InputListener
 {
@@ -112,6 +117,42 @@ public abstract class Player extends Creature implements InputListener
 			//So that when you press up or down, the looking direction does not change
 			
 			LoggingHandler.logger.log(Level.FINE, "Movement input: " + angle + "deg");
+		}
+		
+		for(int i = 0; i < 9; ++i)
+		{
+			if(Gdx.input.isKeyJustPressed(Input.Keys.NUM_1 + i))
+			{
+				if(Gdx.input.isKeyPressed(Input.Keys.Q) && i < this.getInventorySlots())
+				{
+					InventoryItem<Item> droppedItem = this.getInventory().getItem(i);
+					if(this.drop(i) && droppedItem != null)
+					{
+						LoggingHandler.logger.log(Level.INFO, "Dropped item: " + droppedItem.getDisplayText());
+					}
+				}
+				else if(Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) && i < this.getInventorySlots())
+				{
+					InventoryItem<Item> equippedItem = this.getInventory().getItem(i);
+					if(this.equip(i) && equippedItem != null)
+					{
+						LoggingHandler.logger.log(Level.INFO, "Put item from inventory into equipment: " + equippedItem.getDisplayText());
+					}
+				}
+				else if(Gdx.input.isKeyPressed(Input.Keys.ALT_LEFT) && i < this.getEquipmentSlots())
+				{
+					InventoryItem<Item> unequippedItem = this.getEquippedItems().getItem(i);
+					if(this.unequip(i) && unequippedItem != null)
+					{
+						LoggingHandler.logger.log(Level.INFO, "Put item from eqipment into inventory: " + unequippedItem.getDisplayText());
+					}
+				}
+				else if(i < this.getEquipmentSlots())
+				{
+					this.useEquippedItem(i);
+					LoggingHandler.logger.log(Level.INFO, "Attempted to use item in eqip slot " + (i + 1));
+				}
+			}
 		}
 	}
 	
