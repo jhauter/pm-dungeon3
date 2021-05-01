@@ -20,7 +20,6 @@ import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEventHandler;
 import de.fhbielefeld.pmdungeon.quibble.file.ResourceHandler;
 import de.fhbielefeld.pmdungeon.quibble.input.DungeonInputHandler;
 import de.fhbielefeld.pmdungeon.quibble.input.InputHandler;
-import de.fhbielefeld.pmdungeon.quibble.particle.ParticleSystem;
 import de.fhbielefeld.pmdungeon.vorgaben.dungeonCreator.dungeonconverter.Coordinate;
 import de.fhbielefeld.pmdungeon.vorgaben.game.Controller.MainController;
 import de.fhbielefeld.pmdungeon.vorgaben.interfaces.IEntity;
@@ -62,7 +61,6 @@ public class DungeonStart extends MainController implements EntityEventHandler
 		this.myHero = new Knight();
 		this.myHero.addEntityEventHandler(this);
 		this.inputHandler.addInputListener(myHero);
-		ParticleSystem.loadTextures();
 		this.lastFrameTimeStamp = System.currentTimeMillis();
 		Gdx.app.getGraphics().setResizable(true);
 		LoggingHandler.logger.log(Level.INFO, "Setup done.");
