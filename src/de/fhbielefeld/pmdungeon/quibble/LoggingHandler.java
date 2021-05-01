@@ -123,11 +123,9 @@ public class LoggingHandler {
 			}
 			return date1.compareTo(date2);
 		});
-		System.out.println(logFiles);
 		
 		for(int i = MAX_LOG_FILES-1; i <logFiles.size(); i++) {
 			logFiles.get(i).delete();
-			System.out.println(logFiles.get(i));
 		}
 	}
 	
