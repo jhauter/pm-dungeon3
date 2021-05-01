@@ -83,15 +83,6 @@ public class Knight extends Player
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean showWeaponOnAttack()
-	{
-		return true;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
 	protected boolean useHitAnimation()
 	{
 		return true;
