@@ -7,7 +7,6 @@ import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
 import de.fhbielefeld.pmdungeon.vorgaben.dungeonCreator.DungeonWorld;
 import de.fhbielefeld.pmdungeon.vorgaben.dungeonCreator.dungeonconverter.Coordinate;
 import de.fhbielefeld.pmdungeon.vorgaben.dungeonCreator.tiles.Tile;
-import de.fhbielefeld.pmdungeon.vorgaben.tools.Point;
 
 public class Demon extends Creature
 {
@@ -73,16 +72,6 @@ public class Demon extends Creature
 		stats.setStat(CreatureStatsAttribs.HIT_REACH, 0.4D);
 		stats.setStat(CreatureStatsAttribs.HIT_COOLDOWN, 15.0D);
 		return stats;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Point getWeaponHoldOffset()
-	{
-		// TODO Auto-generated method stub
-		return null;
 	}
 	
 	/**

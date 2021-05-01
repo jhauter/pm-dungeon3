@@ -784,7 +784,10 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	/**
 	 * @return the point at which the weapon should be rendered if this creature uses weapons
 	 */
-	public abstract Point getWeaponHoldOffset();
+	public Point getWeaponHoldOffset()
+	{
+		return new Point(0, 0);
+	}
 	
 	/**
 	 * Makes the creature walk along the specified path.
