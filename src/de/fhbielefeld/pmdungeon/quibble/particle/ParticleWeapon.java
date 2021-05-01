@@ -2,24 +2,17 @@ package de.fhbielefeld.pmdungeon.quibble.particle;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
+import de.fhbielefeld.pmdungeon.quibble.file.DungeonResource;
+import de.fhbielefeld.pmdungeon.quibble.file.ResourceHandler;
+import de.fhbielefeld.pmdungeon.quibble.file.ResourceType;
+import de.fhbielefeld.pmdungeon.quibble.item.Item;
+import de.fhbielefeld.pmdungeon.quibble.item.ItemWeapon;
+
 public class ParticleWeapon extends Particle
 {
-	public static enum Type
-	{
-		/**
-		 * Displays a sword weapon.
-		 */
-		SWORD(ParticleSystem.textureSwordBlue);
-		
-		private final TextureRegion tex;
-		
-		private Type(TextureRegion tex)
-		{
-			this.tex = tex;
-		}
-	}
+	private static final String TEXTURE_FILE_EXT = ".png";
 	
-	private final Type type;
+	private final ItemWeapon type;
 	
 	private final float visibleTime;
 	
@@ -36,15 +29,15 @@ public class ParticleWeapon extends Particle
 	 * @param particleSource optional particle source that defines an object
 	 * with which this particle keep a constant offset with
 	 */
-	public ParticleWeapon(Type type, float width, float height, float visibeTime, float spawnX, float spawnY, ParticleSource particleSource)
+	public ParticleWeapon(ItemWeapon type, float spawnX, float spawnY, ParticleSource particleSource)
 	{
 		super(spawnX, spawnY, particleSource);
 		this.type = type;
 		this.originX = 0.5F;
 		this.originY = 0.0F;
-		this.visibleTime = visibeTime;
-		this.width = width;
-		this.height = height;
+		this.visibleTime = type.getVisibleTime();
+		this.width = type.getItemWidth();
+		this.height = type.getItemHeight();
 	}
 	
 	/**
@@ -60,9 +53,9 @@ public class ParticleWeapon extends Particle
 	 * {@inheritDoc}
 	 */
 	@Override
-	public TextureRegion getTexture()
+	public DungeonResource<TextureRegion> getTexture()
 	{
-		return this.type.tex;
+		return ResourceHandler.requestResourceInstantly(Item.ITEMS_TEXTURE_PATH + this.type.getTexture() + TEXTURE_FILE_EXT, ResourceType.TEXTURE_REGION);
 	}
 	
 	/**
