@@ -8,6 +8,10 @@ public class DefaultInventoryItem<T extends Item> implements InventoryItem<T>
 	
 	public DefaultInventoryItem(T type)
 	{
+		if(type == null)
+		{
+			throw new IllegalArgumentException("type of inventory items cannot be null");
+		}
 		this.type = type;
 	}
 	
@@ -15,5 +19,11 @@ public class DefaultInventoryItem<T extends Item> implements InventoryItem<T>
 	public T getItemType()
 	{
 		return this.type;
+	}
+	
+	@Override
+	public String getDispalayText()
+	{
+		return this.type.getDisplayName();
 	}
 }

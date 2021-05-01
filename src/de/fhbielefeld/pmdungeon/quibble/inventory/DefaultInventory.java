@@ -45,6 +45,21 @@ public class DefaultInventory<T extends Item> implements Inventory<T>
 	}
 	
 	@Override
+	@SuppressWarnings("unchecked")
+	public void setItem(int index, T itemType)
+	{
+		/*
+		 * This cannot be cast if the item creates an inventory item of the wrong type
+		 * Example:
+		 * 			The inventory can store <ItemWeapon>.
+		 * 			We use -> addItem(Item.SWORD)
+		 * 			The class for Item.SWORD has method createInventoryItem()
+		 * 			createInventoryItem() method does not return InventoryItem<ItemWeapon>
+		 */
+		this.setItem(index, (InventoryItem<T>)itemType.createInventoryItem());
+	}
+	
+	@Override
 	public boolean addItem(InventoryItem<T> itemType)
 	{
 		int emptySlot = this.getEmptySlot();
@@ -55,12 +70,27 @@ public class DefaultInventory<T extends Item> implements Inventory<T>
 		this.setItem(emptySlot, itemType);
 		return true;
 	}
+	
+	@Override
+	@SuppressWarnings("unchecked")
+	public boolean addItem(T itemType)
+	{
+		/*
+		 * This cannot be cast if the item creates an inventory item of the wrong type
+		 * Example:
+		 * 			The inventory can store <ItemWeapon>.
+		 * 			We use -> addItem(Item.SWORD)
+		 * 			The class for Item.SWORD has method createInventoryItem()
+		 * 			createInventoryItem() method does not return InventoryItem<ItemWeapon>
+		 */
+		return this.addItem((InventoryItem<T>)itemType.createInventoryItem());
+	}
 
 	@Override
 	public InventoryItem<T> removeItem(int index)
 	{
 		InventoryItem<T> ret = this.items.get(index);
-		this.setItem(index, null);
+		this.setItem(index, (InventoryItem<T>)null);
 		return ret;
 	}
 

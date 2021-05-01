@@ -10,7 +10,11 @@ public interface Inventory<T extends Item>
 	
 	public void setItem(int index, InventoryItem<T> itemType);
 	
+	public void setItem(int index, T itemType);
+	
 	public boolean addItem(InventoryItem<T> itemType);
+	
+	public boolean addItem(T itemType);
 	
 	public InventoryItem<T> removeItem(int index);
 	
@@ -36,7 +40,7 @@ public interface Inventory<T extends Item>
 			return false;
 		}
 		inv2.setItem(emptySlotInv2, inv1.getItem(index1));
-		inv1.setItem(index1, null);
+		inv1.setItem(index1, (InventoryItem<T>)null);
 		return true;
 	}
 	
@@ -49,7 +53,7 @@ public interface Inventory<T extends Item>
 		for(int i = 0; i < size; ++i)
 		{
 			currentItem = inv.getItem(i);
-			builder.append(currentItem != null ? currentItem.getItemType().getDisplayName() : "NONE");
+			builder.append(currentItem != null ? currentItem.getDispalayText() : "NONE");
 			if(i != size - 1)
 			{
 				builder.append(", ");
