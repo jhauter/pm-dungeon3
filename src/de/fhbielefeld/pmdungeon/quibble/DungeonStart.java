@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.logging.Level;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import de.fhbielefeld.pmdungeon.desktop.DesktopLauncher;
 import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
@@ -17,7 +19,9 @@ import de.fhbielefeld.pmdungeon.quibble.entity.event.CreatureHitTargetPostEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.CreatureStatChangeEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEventHandler;
+import de.fhbielefeld.pmdungeon.quibble.file.DungeonResource;
 import de.fhbielefeld.pmdungeon.quibble.file.ResourceHandler;
+import de.fhbielefeld.pmdungeon.quibble.file.ResourceType;
 import de.fhbielefeld.pmdungeon.quibble.input.DungeonInputHandler;
 import de.fhbielefeld.pmdungeon.quibble.input.InputHandler;
 import de.fhbielefeld.pmdungeon.vorgaben.dungeonCreator.dungeonconverter.Coordinate;
@@ -63,6 +67,7 @@ public class DungeonStart extends MainController implements EntityEventHandler
 		this.inputHandler.addInputListener(myHero);
 		this.lastFrameTimeStamp = System.currentTimeMillis();
 		Gdx.app.getGraphics().setResizable(true);
+		
 		LoggingHandler.logger.log(Level.INFO, "Setup done.");
 	}
 	
@@ -147,6 +152,14 @@ public class DungeonStart extends MainController implements EntityEventHandler
 		}
 		
 		this.currentLevel.getParticleSystem().draw(this.camera.position.x, this.camera.position.y);
+		
+		//Controls HUD
+		final DungeonResource<Texture> res = ResourceHandler.requestResourceInstantly("assets/textures/hud/controls.png", ResourceType.TEXTURE);
+		SpriteBatch batch = new SpriteBatch();
+		batch.begin();
+		batch.draw(res.getResource(), 0, 0);
+		batch.end();
+		batch.flush();
 	}
 	
 	@Override
