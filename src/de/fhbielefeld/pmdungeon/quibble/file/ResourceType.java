@@ -5,9 +5,14 @@ import java.util.function.Supplier;
 public enum ResourceType
 {
 	/**
-	 * Represents a textur resource.
+	 * Represents a texture resource.
 	 */
-	TEXTURE(TextureResource::new);
+	TEXTURE(TextureResource::new),
+	
+	/**
+	 * Represents a texture region resource.
+	 */
+	TEXTURE_REGION(TextureRegionResource::new);
 	
 	private final Supplier<DungeonResource<?>> resourceClassGenerator;
 	
