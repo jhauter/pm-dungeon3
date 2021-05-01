@@ -8,10 +8,13 @@ public class ItemHealingPotion extends Item
 {
 	private final double healAmount;
 	
-	public ItemHealingPotion(String displayName, double healAmount)
+	private final String texture;
+	
+	public ItemHealingPotion(String displayName, double healAmount, String texture)
 	{
 		super(displayName);
 		this.healAmount = healAmount;
+		this.texture = texture;
 	}
 	
 	@Override
@@ -29,7 +32,7 @@ public class ItemHealingPotion extends Item
 	@Override
 	public String getTexture()
 	{
-		return null;
+		return this.texture;
 	}
 	
 	@Override
