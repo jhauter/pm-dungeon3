@@ -10,6 +10,9 @@ public class ItemSwordBlue extends ItemWeaponMelee
 		super(name, itemWidth, itemHeight, swingSpeed, visibleTime, texture);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public CreatureStats getItemStats()
 	{

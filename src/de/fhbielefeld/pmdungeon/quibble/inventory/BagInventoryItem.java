@@ -6,20 +6,31 @@ public class BagInventoryItem<T extends Item, C extends Item> extends DefaultInv
 {
 	private Inventory<C> bagInventory;
 	
+	/**
+	 * Creates an <code>InventoryItem</code> that represents a bag that has its own inventory.
+	 * @param type the item type that represents the bag itself
+	 * @param bagCapacity the capacity of the bag
+	 */
 	public BagInventoryItem(T type, int bagCapacity)
 	{
 		super(type);
 		this.bagInventory = new DefaultInventory<>(bagCapacity);
 	}
 	
+	/**
+	 * @return the inventory of the bag
+	 */
 	public Inventory<C> getBagItems()
 	{
 		return this.bagInventory;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public String getDispalayText()
+	public String getDisplayText()
 	{
-		return super.getDispalayText() + Inventory.inventoryString(this.bagInventory);
+		return super.getDisplayText() + Inventory.inventoryString(this.bagInventory);
 	}
 }

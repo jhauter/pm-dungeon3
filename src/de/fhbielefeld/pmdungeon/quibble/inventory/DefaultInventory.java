@@ -13,6 +13,10 @@ public class DefaultInventory<T extends Item> implements Inventory<T>
 	
 	private List<InventoryListener<T>> inventoryListeners;
 	
+	/**
+	 * Creates a default inventory that has the given capacity.
+	 * @param capacity the capacity that this inventory should have
+	 */
 	public DefaultInventory(int capacity)
 	{
 		this.capacity = capacity;
@@ -24,18 +28,27 @@ public class DefaultInventory<T extends Item> implements Inventory<T>
 		this.inventoryListeners = new ArrayList<>();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int getCapacity()
 	{
 		return this.items.size();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public InventoryItem<T> getItem(int index)
 	{
 		return this.items.get(index);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void setItem(int index, InventoryItem<T> itemType)
 	{
@@ -44,6 +57,9 @@ public class DefaultInventory<T extends Item> implements Inventory<T>
 		this.inventoryListeners.forEach(c -> c.onInventoryChange(index, old, this.items.get(index)));
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	@SuppressWarnings("unchecked")
 	public void setItem(int index, T itemType)
@@ -59,6 +75,9 @@ public class DefaultInventory<T extends Item> implements Inventory<T>
 		this.setItem(index, (InventoryItem<T>)itemType.createInventoryItem());
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean addItem(InventoryItem<T> itemType)
 	{
@@ -71,6 +90,9 @@ public class DefaultInventory<T extends Item> implements Inventory<T>
 		return true;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	@SuppressWarnings("unchecked")
 	public boolean addItem(T itemType)
@@ -85,7 +107,10 @@ public class DefaultInventory<T extends Item> implements Inventory<T>
 		 */
 		return this.addItem((InventoryItem<T>)itemType.createInventoryItem());
 	}
-
+	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public InventoryItem<T> removeItem(int index)
 	{
@@ -93,7 +118,10 @@ public class DefaultInventory<T extends Item> implements Inventory<T>
 		this.setItem(index, (InventoryItem<T>)null);
 		return ret;
 	}
-
+	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int getEmptySlot()
 	{
@@ -106,7 +134,10 @@ public class DefaultInventory<T extends Item> implements Inventory<T>
 		}
 		return -1;
 	}
-
+	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void addInventoryListener(InventoryListener<T> listener)
 	{
@@ -116,7 +147,10 @@ public class DefaultInventory<T extends Item> implements Inventory<T>
 		}
 		this.inventoryListeners.add(listener);
 	}
-
+	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void removeInventoryListener(InventoryListener<T> list)
 	{

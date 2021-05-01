@@ -450,6 +450,11 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		return this.baseStats.addCopy(this.statsFromEquipped);
 	}
 	
+	/**
+	 * This method updates the max stats by calculating the stats gained from equipped items and adding
+	 * them to the base stats. The current stats are optionally filled up if the new max stats are greater than
+	 * the current stats. If the new max stats are less, then the current stats are cut down.
+	 */
 	public void updateMaxStats()
 	{
 		this.statsFromEquipped.setStats(this.calculateStatsFromEquipped());
@@ -826,41 +831,77 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		return this.currentPathIndex == this.currentPath.getCount() - 1;
 	}
 	
+	/**
+	 * @return the inventory of the creature
+	 */
 	public final Inventory<Item> getInventory()
 	{
 		return this.inventory;
 	}
 	
+	/**
+	 * Returns the equipped items inventory of the creature.
+	 * Items in this inventory affect the stats of the creature.
+	 * @return equipped items inventory
+	 */
 	public final Inventory<Item> getEquippedItems()
 	{
 		return this.equippedItems;
 	}
 	
+	/**
+	 * @return number of slots the inventory of this creature should have
+	 */
 	public int getInventorySlots()
 	{
 		return 0;
 	}
 	
+	/**
+	 * @return number of slots the equipment inventory of this creature should have
+	 */
 	public int getEquipmentSlots()
 	{
 		return 0;
 	}
 	
+	/**
+	 * Transfers the item in the specified inventory slot into a free equipment slot.
+	 * @param invSlot index of the inventory slot
+	 * @return whether the transfer was successful (whether there was a free equipment slot)
+	 */
 	public boolean equip(int invSlot)
 	{
 		return Inventory.transfer(this.getInventory(), invSlot, this.getEquippedItems());
 	}
 	
+	/**
+	 * Swaps the item in the specified inventory slot with the item in the specified equipment slot.
+	 * @param invSlot index of the inventory slot
+	 * @param equipSlot index of the equipment slot
+	 */
 	public void equipSwap(int invSlot, int equipSlot)
 	{
 		Inventory.swap(this.getInventory(), invSlot, this.getEquippedItems(), equipSlot);
 	}
 	
+	/**
+	 * Transfers the item in the specified equipment slot into a free inventory slot.
+	 * @param equipSlot index of the equipment slot
+	 * @return whether the transfer was successful (whether there was a free inventory slot)
+	 */
 	public boolean unequip(int equipSlot)
 	{
 		return Inventory.transfer(this.getEquippedItems(), equipSlot, this.getInventory());
 	}
 	
+	/**
+	 * Removes the item in the specified inventory slot and drops it on the ground, spawning
+	 * an item entity in the level that contains the dropped item.
+	 * If the specified inventory slot is empty, this does nothing.
+	 * @param invSlot index of the inventory slot
+	 * @return whether the specified inventory slot was not empty
+	 */
 	public boolean drop(int invSlot)
 	{
 		InventoryItem<Item> item = this.getInventory().removeItem(invSlot);
@@ -871,7 +912,14 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		//CREATE ITEM ENTITY
 		return true;
 	}
-
+	
+	/**
+	 * Removes the item in the specified equipment slot and drops it on the ground, spawning
+	 * an item entity in the level that contains the dropped item.
+	 * If the specified equipment slot is empty, this does nothing.
+	 * @param equipSlot index of the equipment slot
+	 * @return whether the specified equipment slot was not empty
+	 */
 	public boolean dropEquipment(int equipSlot)
 	{
 		InventoryItem<Item> item = this.getEquippedItems().removeItem(equipSlot);
@@ -883,6 +931,13 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		return true;
 	}
 	
+	/**
+	 * Makes the creature use the item in the specified equipment slot.
+	 * In order to achieve this, the {@link Item#onUse(Creature)} method is called.
+	 * If the item can be consumed, the item will be removed from the slot.
+	 * If the specified equipment slot is empty, this will do nothing
+	 * @param slot index of the equipment slot
+	 */
 	public void useEquippedItem(int slot)
 	{
 		InventoryItem<Item> item = this.equippedItems.getItem(slot);

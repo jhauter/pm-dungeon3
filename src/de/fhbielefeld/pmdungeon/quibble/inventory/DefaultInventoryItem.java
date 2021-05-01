@@ -6,6 +6,10 @@ public class DefaultInventoryItem<T extends Item> implements InventoryItem<T>
 {
 	private final T type;
 	
+	/**
+	 * Creates a default inventory item that can be used with inventories.
+	 * @param type the item type that this <code>DefaultInventoryItem</code> should represent
+	 */
 	public DefaultInventoryItem(T type)
 	{
 		if(type == null)
@@ -15,14 +19,20 @@ public class DefaultInventoryItem<T extends Item> implements InventoryItem<T>
 		this.type = type;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public T getItemType()
 	{
 		return this.type;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public String getDispalayText()
+	public String getDisplayText()
 	{
 		return this.type.getDisplayName();
 	}
