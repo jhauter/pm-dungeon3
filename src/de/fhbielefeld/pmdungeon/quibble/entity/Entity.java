@@ -507,4 +507,12 @@ public abstract class Entity implements IEntity, IAnimatable, ParticleSource
 	{
 		this.eventHandlers.remove(h);
 	}
+	
+	/**
+	 * @return the level this entity was spawned into
+	 */
+	public DungeonLevel getLevel()
+	{
+		return this.level;
+	}
 }
