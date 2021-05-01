@@ -21,13 +21,11 @@ import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEvent;
 import de.fhbielefeld.pmdungeon.quibble.inventory.DefaultInventory;
 import de.fhbielefeld.pmdungeon.quibble.inventory.Inventory;
 import de.fhbielefeld.pmdungeon.quibble.inventory.InventoryItem;
+import de.fhbielefeld.pmdungeon.quibble.item.Item;
 import de.fhbielefeld.pmdungeon.quibble.particle.Levitate;
 import de.fhbielefeld.pmdungeon.quibble.particle.ParticleFightText;
 import de.fhbielefeld.pmdungeon.quibble.particle.ParticleFightText.Type;
-import de.fhbielefeld.pmdungeon.quibble.particle.ParticleWeapon;
 import de.fhbielefeld.pmdungeon.quibble.particle.Splash;
-import de.fhbielefeld.pmdungeon.quibble.particle.Swing;
-import de.fhbielefeld.pmdungeon.quibble.particle.Swing.SwingOrientation;
 import de.fhbielefeld.pmdungeon.vorgaben.dungeonCreator.tiles.Tile;
 import de.fhbielefeld.pmdungeon.vorgaben.tools.Point;
 
@@ -706,25 +704,11 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		{
 			return;
 		}
-		if(this.getCurrentStats().getStat(CreatureStatsAttribs.HIT_COOLDOWN) > 0.0D)
+		if(this.getHitCooldown() > 0.0D)
 		{
 			return;
 		}
 		this.getCurrentStats().setStat(CreatureStatsAttribs.HIT_COOLDOWN, this.getMaxStats().getStat(CreatureStatsAttribs.HIT_COOLDOWN));
-		
-		if(this.showWeaponOnAttack())
-		{
-			final float swingSpeed = 3.5F;
-			final float weaponWidth = 1F * 0.5F;
-			final float weaponHeight = 2.5F * 0.5F;
-			final float weaponTime = 0.25F;
-			final Point weaponOffset = this.getWeaponHoldOffset();
-			SwingOrientation swingDir = this.lookingDirection == LookingDirection.RIGHT ? SwingOrientation.RIGHT : SwingOrientation.LEFT;
-			Swing weaponMovement = new Swing(swingDir, swingSpeed);
-			this.level.getParticleSystem().addParticle(
-				new ParticleWeapon(ParticleWeapon.Type.SWORD, weaponWidth, weaponHeight, weaponTime, this.getX() + weaponOffset.x, this.getY() + weaponOffset.y, this),
-				weaponMovement);
-		}
 		
 		for(Creature e : targets)
 		{
@@ -735,6 +719,14 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		{
 			this.animationHandler.playAnimation(this.lookingDirection == LookingDirection.LEFT ? ANIM_NAME_ATTACK_L : ANIM_NAME_ATTACK_R, ANIM_PRIO_ATTACK, false);
 		}
+	}
+	
+	/**
+	 * @return the amount of ticks that has to pass until this creature can attack again
+	 */
+	public double getHitCooldown()
+	{
+		return this.getCurrentStats().getStat(CreatureStatsAttribs.HIT_COOLDOWN);
 	}
 	
 	/**
@@ -788,14 +780,6 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	 * @return the point at which the weapon should be rendered if this creature uses weapons
 	 */
 	public abstract Point getWeaponHoldOffset();
-	
-	/**
-	 * @return whether an animated weapon should be shown when this creature attacks
-	 */
-	public boolean showWeaponOnAttack()
-	{
-		return false;
-	}
 	
 	/**
 	 * Makes the creature walk along the specified path.
@@ -897,5 +881,20 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		}
 		//CREATE ITEM ENTITY
 		return true;
+	}
+	
+	public void useEquippedItem(int slot)
+	{
+		InventoryItem item = this.equippedItems.getItem(slot);
+		if(item == null)
+		{
+			return;
+		}
+		Item itemType = item.getItemType();
+		itemType.onUse(this);
+		if(itemType.canBeConsumed())
+		{
+			this.equippedItems.removeItem(slot);
+		}
 	}
 }
