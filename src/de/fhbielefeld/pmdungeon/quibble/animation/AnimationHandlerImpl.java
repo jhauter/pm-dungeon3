@@ -1,6 +1,5 @@
 package de.fhbielefeld.pmdungeon.quibble.animation;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -23,16 +22,16 @@ public class AnimationHandlerImpl implements AnimationHandler
 		private final String name;
 		private final int numFrames;
 		private final int frameDuration;
-		private final String pathToDir;
 		private final String fileName;
+		private final int frameCountPos;
 		
-		public AnimationInfo(String name, int numFrames, int frameDuration, String pathToDir, String fileName)
+		public AnimationInfo(String name, int numFrames, int frameDuration, String fileName, int frameCountPos)
 		{
 			this.name = name;
 			this.numFrames = numFrames;
 			this.frameDuration = frameDuration;
-			this.pathToDir = pathToDir;
 			this.fileName = fileName;
+			this.frameCountPos = frameCountPos;
 		}
 	}
 	
@@ -103,18 +102,18 @@ public class AnimationHandlerImpl implements AnimationHandler
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void addAnimation(String animName, int numFrames, int frameDuration, String pathToTexDir, String fileName)
+	public void addAnimation(String animName, int numFrames, int frameDuration, String fileName, int frameCountPos)
 	{
-		this.addAnimation(new AnimationInfo(animName, numFrames, frameDuration, pathToTexDir, fileName));
+		this.addAnimation(new AnimationInfo(animName, numFrames, frameDuration, fileName, frameCountPos));
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void addAsDefaultAnimation(String animName, int numFrames, int frameDuration, String pathToTexDir, String fileName)
+	public void addAsDefaultAnimation(String animName, int numFrames, int frameDuration, String fileName, int frameCountPos)
 	{
-		AnimationInfo animInfo = new AnimationInfo(animName, numFrames, frameDuration, pathToTexDir, fileName);
+		AnimationInfo animInfo = new AnimationInfo(animName, numFrames, frameDuration, fileName, frameCountPos);
 		this.addAnimation(animInfo);
 		this.defaultAnimInfo = animInfo;
 	}
@@ -128,13 +127,13 @@ public class AnimationHandlerImpl implements AnimationHandler
 		if(this.isLoaded)
 		{
 			IllegalStateException e = new IllegalStateException("animations have already been loaded");
-			LoggingHandler.logger.log(Level.SEVERE, "animations have already been loaded", e);
+			LoggingHandler.logger.log(Level.SEVERE, e.getMessage(), e);
 			throw e;			
 		}
 		if(this.defaultAnimInfo == null) //This must be second as defaultAnimation is set to null after loading
 		{
 			IllegalStateException e = new IllegalStateException("a default animation must be added");
-			LoggingHandler.logger.log(Level.SEVERE, "animations have already been loaded", e);
+			LoggingHandler.logger.log(Level.SEVERE, e.getMessage(), e);
 			throw e;
 		}
 		StringBuilder pathBuilder = new StringBuilder();
@@ -173,16 +172,8 @@ public class AnimationHandlerImpl implements AnimationHandler
 		DungeonResource<Texture> texRes;
 		for(int n = 0; n < animInfo.numFrames; ++n)
 		{
-			pathBuilder.append(animInfo.pathToDir);
-			pathBuilder.append(File.separator);
 			pathBuilder.append(animInfo.fileName);
-			pathBuilder.append('_');
-			pathBuilder.append(animInfo.name);
-			pathBuilder.append('_');
-			pathBuilder.append(AnimationHandler.FILENAME_SUFFIX);
-			pathBuilder.append(n);
-			pathBuilder.append('.');
-			pathBuilder.append(AnimationHandler.FILENAME_EXT);
+			pathBuilder.insert(pathBuilder.length() - animInfo.frameCountPos, n);
 			
 			texRes = ResourceHandler.requestResourceInstantly(pathBuilder.toString(), ResourceType.TEXTURE);
 			if(texRes.hasError())
