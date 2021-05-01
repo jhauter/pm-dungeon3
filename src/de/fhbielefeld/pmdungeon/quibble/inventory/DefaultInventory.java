@@ -11,7 +11,7 @@ public class DefaultInventory<T extends Item> implements Inventory<T>
 	
 	private final int capacity;
 	
-	private List<InventoryListener> inventoryListeners;
+	private List<InventoryListener<T>> inventoryListeners;
 	
 	public DefaultInventory(int capacity)
 	{
@@ -108,7 +108,7 @@ public class DefaultInventory<T extends Item> implements Inventory<T>
 	}
 
 	@Override
-	public void addInventoryListener(InventoryListener listener)
+	public void addInventoryListener(InventoryListener<T> listener)
 	{
 		if(this.inventoryListeners.contains(listener))
 		{
@@ -118,7 +118,7 @@ public class DefaultInventory<T extends Item> implements Inventory<T>
 	}
 
 	@Override
-	public void removeInventoryListener(InventoryListener list)
+	public void removeInventoryListener(InventoryListener<T> list)
 	{
 		this.inventoryListeners.remove(list);
 	}

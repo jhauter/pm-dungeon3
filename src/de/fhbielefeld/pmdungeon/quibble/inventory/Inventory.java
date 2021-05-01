@@ -20,9 +20,9 @@ public interface Inventory<T extends Item>
 	
 	public int getEmptySlot();
 	
-	public void addInventoryListener(InventoryListener listener);
+	public void addInventoryListener(InventoryListener<T> listener);
 	
-	public void removeInventoryListener(InventoryListener list);
+	public void removeInventoryListener(InventoryListener<T> list);
 	
 	public static <T extends Item> void swap(Inventory<T> inv1, int index1, Inventory<T> inv2, int index2)
 	{
