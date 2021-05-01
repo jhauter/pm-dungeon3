@@ -25,13 +25,13 @@ public class Goblin extends Creature
 		super(x, y);
 		//Default idle animation will always be played if no other animation is being played
 		//This must be added or an exception will be thrown
-		this.animationHandler.addAsDefaultAnimation(Creature.ANIM_NAME_IDLE_R, 4, 5, "assets/textures/entity/goblin", "goblin");
+		this.animationHandler.addAsDefaultAnimation(Creature.ANIM_NAME_IDLE_R, 4, 5, "assets/textures/entity/goblin/goblin_idle_right_anim_f.png", 4);
 		
 		//Other animations
-		this.animationHandler.addAnimation(Creature.ANIM_NAME_IDLE_L, 4, 5, "assets/textures/entity/goblin", "goblin");
+		this.animationHandler.addAnimation(Creature.ANIM_NAME_IDLE_L, 4, 5, "assets/textures/entity/goblin/goblin_idle_left_anim_f.png", 4);
 		
-		this.animationHandler.addAnimation(Creature.ANIM_NAME_RUN_R, 4, 2, "assets/textures/entity/goblin", "goblin");
-		this.animationHandler.addAnimation(Creature.ANIM_NAME_RUN_L, 4, 2, "assets/textures/entity/goblin", "goblin");
+		this.animationHandler.addAnimation(Creature.ANIM_NAME_RUN_R, 4, 2, "assets/textures/entity/goblin/goblin_run_right_anim_f.png", 4);
+		this.animationHandler.addAnimation(Creature.ANIM_NAME_RUN_L, 4, 2, "assets/textures/entity/goblin/goblin_run_left_anim_f.png", 4);
 	}
 	
 	/**
