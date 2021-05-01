@@ -2,7 +2,7 @@ package de.fhbielefeld.pmdungeon.quibble.inventory;
 
 import de.fhbielefeld.pmdungeon.quibble.item.Item;
 
-public interface InventoryItem
+public interface InventoryItem<T extends Item>
 {
-	public Item getItemType();
+	public T getItemType();
 }

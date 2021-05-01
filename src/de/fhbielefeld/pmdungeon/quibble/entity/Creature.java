@@ -139,9 +139,9 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	
 	private int currentPathIndex;
 	
-	private Inventory inventory;
+	private Inventory<Item> inventory;
 	
-	private Inventory equippedItems;
+	private Inventory<Item> equippedItems;
 	
 	/**
 	 * @param x x-coordinate
@@ -163,8 +163,8 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		//==============================
 		
 		
-		this.inventory = new DefaultInventory(this.getInventorySlots());
-		this.equippedItems = new DefaultInventory(this.getEquipmentSlots());
+		this.inventory = new DefaultInventory<Item>(this.getInventorySlots());
+		this.equippedItems = new DefaultInventory<Item>(this.getEquipmentSlots());
 		this.equippedItems.addInventoryListener((slot, oldItem, newItem) ->
 		{
 			this.updateMaxStats();
@@ -428,7 +428,7 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	public CreatureStats calculateStatsFromEquipped()
 	{
 		CreatureStats currentMax = new CreatureStats();
-		InventoryItem curItem;
+		InventoryItem<Item> curItem;
 		for(int i = 0; i < this.equippedItems.getCapacity(); ++i)
 		{
 			curItem = this.equippedItems.getItem(i);
@@ -826,12 +826,12 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		return this.currentPathIndex == this.currentPath.getCount() - 1;
 	}
 	
-	public final Inventory getInventory()
+	public final Inventory<Item> getInventory()
 	{
 		return this.inventory;
 	}
 	
-	public final Inventory getEquippedItems()
+	public final Inventory<Item> getEquippedItems()
 	{
 		return this.equippedItems;
 	}
@@ -863,7 +863,7 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	
 	public boolean drop(int invSlot)
 	{
-		InventoryItem item = this.getInventory().removeItem(invSlot);
+		InventoryItem<Item> item = this.getInventory().removeItem(invSlot);
 		if(item == null)
 		{
 			return false;
@@ -874,7 +874,7 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 
 	public boolean dropEquipment(int equipSlot)
 	{
-		InventoryItem item = this.getEquippedItems().removeItem(equipSlot);
+		InventoryItem<Item> item = this.getEquippedItems().removeItem(equipSlot);
 		if(item == null)
 		{
 			return false;
@@ -885,7 +885,7 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	
 	public void useEquippedItem(int slot)
 	{
-		InventoryItem item = this.equippedItems.getItem(slot);
+		InventoryItem<Item> item = this.equippedItems.getItem(slot);
 		if(item == null)
 		{
 			return;

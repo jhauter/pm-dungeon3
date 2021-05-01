@@ -3,40 +3,49 @@ package de.fhbielefeld.pmdungeon.quibble.inventory;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DefaultInventory implements Inventory
+import de.fhbielefeld.pmdungeon.quibble.item.Item;
+
+public class DefaultInventory<T extends Item> implements Inventory<T>
 {
-	private final InventoryItem[] items;
+	private final ArrayList<InventoryItem<T>> items;
+	
+	private final int capacity;
 	
 	private List<InventoryListener> inventoryListeners;
 	
 	public DefaultInventory(int capacity)
 	{
-		this.items = new InventoryItem[capacity];
+		this.capacity = capacity;
+		this.items = new ArrayList<InventoryItem<T>>(capacity);
+		for(int i = 0; i < capacity; ++i)
+		{
+			this.items.add(null);
+		}
 		this.inventoryListeners = new ArrayList<>();
 	}
 	
 	@Override
 	public int getCapacity()
 	{
-		return this.items.length;
+		return this.items.size();
 	}
 	
 	@Override
-	public InventoryItem getItem(int index)
+	public InventoryItem<T> getItem(int index)
 	{
-		return this.items[index];
+		return this.items.get(index);
 	}
 	
 	@Override
-	public void setItem(int index, InventoryItem itemType)
+	public void setItem(int index, InventoryItem<T> itemType)
 	{
-		final InventoryItem old = this.items[index];
-		this.items[index] = itemType;
-		this.inventoryListeners.forEach(c -> c.onInventoryChange(index, old, this.items[index]));
+		final InventoryItem<T> old = this.items.get(index);
+		this.items.set(index, itemType);
+		this.inventoryListeners.forEach(c -> c.onInventoryChange(index, old, this.items.get(index)));
 	}
 	
 	@Override
-	public boolean addItem(InventoryItem itemType)
+	public boolean addItem(InventoryItem<T> itemType)
 	{
 		int emptySlot = this.getEmptySlot();
 		if(emptySlot == -1)
@@ -48,9 +57,9 @@ public class DefaultInventory implements Inventory
 	}
 
 	@Override
-	public InventoryItem removeItem(int index)
+	public InventoryItem<T> removeItem(int index)
 	{
-		InventoryItem ret = this.items[index];
+		InventoryItem<T> ret = this.items.get(index);
 		this.setItem(index, null);
 		return ret;
 	}
@@ -58,9 +67,9 @@ public class DefaultInventory implements Inventory
 	@Override
 	public int getEmptySlot()
 	{
-		for(int i = 0; i < this.items.length; ++i)
+		for(int i = 0; i < this.capacity; ++i)
 		{
-			if(this.items[i] == null)
+			if(this.items.get(i) == null)
 			{
 				return i;
 			}
