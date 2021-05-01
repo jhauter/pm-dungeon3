@@ -9,6 +9,7 @@
 **/*.vpp.lck
 /bin/
 
-#logdata
+# log files
 log.txt
 *.log
+*.lck
