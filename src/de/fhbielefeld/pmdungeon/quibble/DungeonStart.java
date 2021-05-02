@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import de.fhbielefeld.pmdungeon.desktop.DesktopLauncher;
+import de.fhbielefeld.pmdungeon.quibble.chest.GoldenChest;
 import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
 import de.fhbielefeld.pmdungeon.quibble.entity.Demon;
 import de.fhbielefeld.pmdungeon.quibble.entity.Entity;
@@ -97,11 +98,24 @@ public class DungeonStart extends MainController implements EntityEventHandler
 		this.myHero.setPosition(startingPoint.getX(), startingPoint.getY());
 		
 		this.currentLevel.spawnEntity(this.myHero);
+		
+		/**
+		 * Spawn Chest's
+		 */
+		final int  num = currentLevel.getRNG().nextInt(1) + 1;
+		for (int i = 0; i < num; i++) {
+			final Point pos2 = this.currentLevel.getDungeon().getRandomPointInDungeon();
+//			goldenChest = new GoldenChest(pos2.x, pos2.y);
+			this.currentLevel.spawnEntity(new GoldenChest(pos2.x, pos2.y));
+			LoggingHandler.logger.log(Level.INFO, "New Chest added.");
+		}
+		
 		//Set the camera to follow the hero
 		this.camera.follow(this.myHero);
 		LoggingHandler.logger.log(Level.INFO, "New level loaded.");
 	}
 	
+
 	@Override
 	protected void beginFrame()
 	{
