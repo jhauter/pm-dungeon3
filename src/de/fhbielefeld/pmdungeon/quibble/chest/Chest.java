@@ -30,6 +30,11 @@ public abstract class Chest extends Entity {
 		this.isOpen = true;
 	}
 	
+	public boolean isOpen()
+	{
+		return this.isOpen;
+	}
+	
 	@Override
 	protected void updateAnimationState() {
 		super.updateAnimationState();

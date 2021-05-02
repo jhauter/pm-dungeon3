@@ -151,6 +151,18 @@ public abstract class Player extends Creature implements InputListener
 						LoggingHandler.logger.log(Level.INFO, "Put item from eqipment into inventory: " + unequippedItem.getDisplayText());
 					}
 				}
+				else if(Gdx.input.isKeyPressed(Input.Keys.E))
+				{
+					Chest chest = this.getClosestChest();
+					if(chest != null && i < chest.getInv().getCapacity() && chest.isOpen())
+					{
+						InventoryItem<Item> chestItem = chest.getInv().getItem(i);
+						if(chestItem != null && Inventory.transfer(chest.getInv(), i, this.getInventory()))
+						{
+							LoggingHandler.logger.log(Level.INFO, "Took item from chest into inventory: " + chestItem.getDisplayText());
+						}
+					}
+				}
 				else if(i < this.getEquipmentSlots())
 				{
 					this.useEquippedItem(i);
@@ -161,24 +173,44 @@ public abstract class Player extends Creature implements InputListener
 		
 		if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE))
 		{
-			List<Entity> l = this.getLevel().getEntitiesInRadius(getX(), getY(), 1);
-			for (int i = 0; i < l.size(); i++) {
-				if(l.get(i) instanceof Chest) {
-					l.get(i).animationHandler.playAnimation("Open_Gold", 4, false  );
-					((Chest) l.get(i)).setOpen();
-					((Chest) l.get(i)).animationHandler.playAnimation("Open", Integer.MAX_VALUE, true);
-			
-					LoggingHandler.logger.log(Level.INFO, Inventory.inventoryString(((Chest)l.get(i)).getInv()));
-					break;
-				}
-				else if(l.get(i) instanceof ItemDrop) {
-					final ItemDrop drop = (ItemDrop)l.get(i);
-					drop.setPickedUp();
-					this.getInventory().addItem(drop.getItem());
-					break;
-				}
+			Chest chest = this.getClosestChest();
+			if(chest != null)
+			{
+				chest.animationHandler.playAnimation("Open_Gold", 4, false );
+				chest.setOpen();
+		
+				LoggingHandler.logger.log(Level.INFO, Inventory.inventoryString(chest.getInv()));
+			}
+			ItemDrop drop = this.getClosestItemDrop();
+			if(drop != null)
+			{
+				drop.setPickedUp();
+				this.getInventory().addItem(drop.getItem());
+				LoggingHandler.logger.log(Level.INFO, "Picked up: " + drop.getItem().getDisplayText());
 			}
 		}
+	}
+	
+	private Chest getClosestChest()
+	{
+		List<Entity> l = this.getLevel().getEntitiesInRadius(getX(), getY(), 1);
+		for (int i = 0; i < l.size(); i++) {
+			if(l.get(i) instanceof Chest) {
+				return (Chest)l.get(i);
+			}
+		}
+		return null;
+	}
+	
+	private ItemDrop getClosestItemDrop()
+	{
+		List<Entity> l = this.getLevel().getEntitiesInRadius(getX(), getY(), 1);
+		for (int i = 0; i < l.size(); i++) {
+			if(l.get(i) instanceof ItemDrop) {
+				return (ItemDrop)l.get(i);
+			}
+		}
+		return null;
 	}
 	
 	/**
