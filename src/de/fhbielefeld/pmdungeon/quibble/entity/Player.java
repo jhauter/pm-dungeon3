@@ -6,7 +6,6 @@ import java.util.logging.Level;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 
-import de.fhbielefeld.pmdungeon.quibble.DungeonStart;
 import de.fhbielefeld.pmdungeon.quibble.LoggingHandler;
 import de.fhbielefeld.pmdungeon.quibble.chest.Chest;
 import de.fhbielefeld.pmdungeon.quibble.chest.GoldenChest;
@@ -15,6 +14,7 @@ import de.fhbielefeld.pmdungeon.quibble.input.InputListener;
 import de.fhbielefeld.pmdungeon.quibble.inventory.Inventory;
 import de.fhbielefeld.pmdungeon.quibble.inventory.InventoryItem;
 import de.fhbielefeld.pmdungeon.quibble.item.Item;
+import de.fhbielefeld.pmdungeon.quibble.item.ItemSpeedPotion;
 
 public abstract class Player extends Creature implements InputListener
 {
@@ -32,6 +32,7 @@ public abstract class Player extends Creature implements InputListener
 	public Player(float x, float y)
 	{
 		super(x, y);
+		getEquippedItems().addItem(new ItemSpeedPotion("SpeedPotion", y, ANIM_NAME_ATTACK_L));
 	}
 	
 	/**
@@ -174,6 +175,7 @@ public abstract class Player extends Creature implements InputListener
 						System.out.println(l.get(j).toString());
 					}
 				}
+				break;
 			}
 		}
 	}
