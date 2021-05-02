@@ -2,6 +2,7 @@ package de.fhbielefeld.pmdungeon.quibble.item;
 
 import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
 import de.fhbielefeld.pmdungeon.quibble.entity.LookingDirection;
+import de.fhbielefeld.pmdungeon.quibble.item.visitor.ItemVisitor;
 import de.fhbielefeld.pmdungeon.quibble.particle.ParticleMovement;
 import de.fhbielefeld.pmdungeon.quibble.particle.Swing;
 import de.fhbielefeld.pmdungeon.quibble.particle.Swing.SwingOrientation;
@@ -67,5 +68,11 @@ public class ItemWeaponMelee extends ItemWeapon
 	public float getSwingSpeed()
 	{
 		return swingSpeed;
+	}
+
+	@Override
+	public void accept(ItemVisitor visitor)
+	{
+		visitor.visit(this);
 	}
 }

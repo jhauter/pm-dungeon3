@@ -55,11 +55,13 @@ public abstract class Player extends Creature implements InputListener
 		}
 		else if(input == DungeonInput.INV_LOG)
 		{
-			LoggingHandler.logger.log(Level.INFO, "Inventar: " + Inventory.inventoryString(getInventory()));
+			LoggingHandler.logger.log(Level.INFO, "Inventory: " + Inventory.inventoryString(getInventory()));
+//			Inventory.inventoryVisitor(this.getInventory(), new ItemInvLogVisitor());
 		}
 		else if(input == DungeonInput.EQUIP_LOG)
 		{
-			LoggingHandler.logger.log(Level.INFO, "Ausrüstung: " + Inventory.inventoryString(getEquippedItems()));
+			LoggingHandler.logger.log(Level.INFO, "Equipment: " + Inventory.inventoryString(getEquippedItems()));
+//			Inventory.inventoryVisitor(this.getEquippedItems(), new ItemEquipLogVisitor());
 		}
 	}
 	
@@ -153,6 +155,11 @@ public abstract class Player extends Creature implements InputListener
 					LoggingHandler.logger.log(Level.INFO, "Attempted to use item in eqip slot " + (i + 1));
 				}
 			}
+		}
+		
+		if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE))
+		{
+			this.level.spawnEntity(new ItemDrop(Item.POTION_RED_BIG.createInventoryItem(), this.getX(), this.getY()));
 		}
 	}
 	

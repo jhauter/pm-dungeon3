@@ -1,12 +1,11 @@
 package de.fhbielefeld.pmdungeon.quibble.item;
 
 import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
+import de.fhbielefeld.pmdungeon.quibble.item.visitor.ItemVisitor;
 
-public class ItemHealingPotion extends Item
+public class ItemHealingPotion extends ItemPotion
 {
 	private final double healAmount;
-	
-	private final String texture;
 	
 	/**
 	 * Creates a healing potion item.
@@ -16,9 +15,8 @@ public class ItemHealingPotion extends Item
 	 */
 	public ItemHealingPotion(String displayName, double healAmount, String texture)
 	{
-		super(displayName);
+		super(displayName, texture);
 		this.healAmount = healAmount;
-		this.texture = texture;
 	}
 	
 	/**
@@ -29,22 +27,10 @@ public class ItemHealingPotion extends Item
 	{
 		user.heal(this.healAmount);
 	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
+
 	@Override
-	public boolean canBeConsumed()
+	public void accept(ItemVisitor visitor)
 	{
-		return true;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getTexture()
-	{
-		return this.texture;
+		visitor.visit(this);
 	}
 }
