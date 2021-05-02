@@ -1,6 +1,6 @@
 package de.fhbielefeld.pmdungeon.quibble.item;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
@@ -11,6 +11,25 @@ import de.fhbielefeld.pmdungeon.quibble.item.visitor.ItemVisitor;
 
 public abstract class Item
 {
+	private static List<Item> registeredItems = new ArrayList<Item>();
+	
+	/**
+	 * @return the amount of items in the game
+	 */
+	public static int getNumItems()
+	{
+		return registeredItems.size();
+	}
+	
+	/**
+	 * @param index the index of the item
+	 * @return returns the item at the specified index
+	 */
+	public static Item getItem(int index)
+	{
+		return registeredItems.get(index);
+	}
+	
 	public static final String ITEMS_TEXTURE_PATH = "assets/textures/items/";
 	
 	public static final ItemHealingPotion POTION_RED_BIG = new ItemHealingPotion("Healing Potion", 5.0D, "pot_red_big");
@@ -28,6 +47,7 @@ public abstract class Item
 	protected Item(String name)
 	{
 		this.displayName = name;
+		Item.registeredItems.add(this);
 	}
 	
 	/**
