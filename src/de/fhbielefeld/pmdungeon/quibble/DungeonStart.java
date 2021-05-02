@@ -25,6 +25,7 @@ import de.fhbielefeld.pmdungeon.quibble.file.ResourceHandler;
 import de.fhbielefeld.pmdungeon.quibble.file.ResourceType;
 import de.fhbielefeld.pmdungeon.quibble.input.DungeonInputHandler;
 import de.fhbielefeld.pmdungeon.quibble.input.InputHandler;
+import de.fhbielefeld.pmdungeon.quibble.item.Item;
 import de.fhbielefeld.pmdungeon.vorgaben.dungeonCreator.dungeonconverter.Coordinate;
 import de.fhbielefeld.pmdungeon.vorgaben.game.Controller.MainController;
 import de.fhbielefeld.pmdungeon.vorgaben.interfaces.IEntity;
@@ -64,6 +65,7 @@ public class DungeonStart extends MainController implements EntityEventHandler
 	{
 		super.setup();
 		this.myHero = new Knight();
+		this.myHero.getEquippedItems().addItem(Item.SWORD_BLUE);
 		this.myHero.addEntityEventHandler(this);
 		this.inputHandler.addInputListener(myHero);
 		this.lastFrameTimeStamp = System.currentTimeMillis();
