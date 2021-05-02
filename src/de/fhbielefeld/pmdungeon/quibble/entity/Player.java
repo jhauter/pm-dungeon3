@@ -8,13 +8,11 @@ import com.badlogic.gdx.Input;
 
 import de.fhbielefeld.pmdungeon.quibble.LoggingHandler;
 import de.fhbielefeld.pmdungeon.quibble.chest.Chest;
-import de.fhbielefeld.pmdungeon.quibble.chest.GoldenChest;
 import de.fhbielefeld.pmdungeon.quibble.input.DungeonInput;
 import de.fhbielefeld.pmdungeon.quibble.input.InputListener;
 import de.fhbielefeld.pmdungeon.quibble.inventory.Inventory;
 import de.fhbielefeld.pmdungeon.quibble.inventory.InventoryItem;
 import de.fhbielefeld.pmdungeon.quibble.item.Item;
-import de.fhbielefeld.pmdungeon.quibble.item.ItemSpeedPotion;
 
 public abstract class Player extends Creature implements InputListener
 {
@@ -167,14 +165,12 @@ public abstract class Player extends Creature implements InputListener
 			for (int i = 0; i < l.size(); i++) {
 				if(l.get(i) instanceof Chest) {
 					l.get(i).animationHandler.playAnimation("Open_Gold", 4, false  );
-					((GoldenChest) l.get(i)).setOpen();
-					((GoldenChest) l.get(i)).animationHandler.playAnimation("Open", Integer.MAX_VALUE, true);
+					((Chest) l.get(i)).setOpen();
+					((Chest) l.get(i)).animationHandler.playAnimation("Open", Integer.MAX_VALUE, true);
 			
-					for (int j = 0; j < ((GoldenChest) l.get(i)).getInv().getCapacity(); j++) {
-						System.out.println(l.get(j).toString());
-					}
+					LoggingHandler.logger.log(Level.INFO, Inventory.inventoryString(((Chest)l.get(i)).getInv()));
+					break;
 				}
-				break;
 			}
 		}
 	}
