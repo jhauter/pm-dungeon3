@@ -167,7 +167,6 @@ public abstract class Player extends Creature implements InputListener
 					l.get(i).animationHandler.playAnimation("Open_Gold", 4, false  );
 					((Chest) l.get(i)).setOpen();
 					((Chest) l.get(i)).animationHandler.playAnimation("Open", Integer.MAX_VALUE, true);
-			
 					LoggingHandler.logger.log(Level.INFO, Inventory.inventoryString(((Chest)l.get(i)).getInv()));
 					break;
 				}
