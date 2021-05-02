@@ -173,7 +173,10 @@ public class AnimationHandlerImpl implements AnimationHandler
 		for(int n = 0; n < animInfo.numFrames; ++n)
 		{
 			pathBuilder.append(animInfo.fileName);
-			pathBuilder.insert(pathBuilder.length() - animInfo.frameCountPos, n);
+			if(animInfo.frameCountPos != -1)
+			{
+				pathBuilder.insert(pathBuilder.length() - animInfo.frameCountPos, n);
+			}
 			
 			texRes = ResourceHandler.requestResourceInstantly(pathBuilder.toString(), ResourceType.TEXTURE);
 			if(texRes.hasError())

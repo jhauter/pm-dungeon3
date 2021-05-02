@@ -21,6 +21,7 @@ public interface AnimationHandler
 	 * @param frameDuration how long a single frame will be displayed in the animation
 	 * @param fileName the complete file path with the frame count number omitted
 	 * @param frameCountPos the position of the frame count number, counting from the back of the path string
+	 * (<code>-1</code> does not insert a number and should only be used with <code>numFrames = 1</code>)
 	 * @throws IllegalArgumentException if an animation with the same <code>animName</code>
 	 * has already been registered
 	 */
@@ -36,6 +37,7 @@ public interface AnimationHandler
 	 * @param frameDuration how long a single frame will be displayed in the animation
 	 * @param fileName the complete file path with the frame count number omitted
 	 * @param frameCountPos the position of the frame count number, counting from the back of the path string
+	 * (<code>-1</code> does not insert a number and should only be used with <code>numFrames = 1</code>)
 	 * @throws IllegalArgumentException if an animation with the same <code>animName</code>
 	 * has already been registered
 	 * @see AnimationHandler#addAnimation(String, int, String, String)
