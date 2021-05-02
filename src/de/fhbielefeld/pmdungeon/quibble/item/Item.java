@@ -1,5 +1,8 @@
 package de.fhbielefeld.pmdungeon.quibble.item;
 
+import java.util.Arrays;
+import java.util.List;
+
 import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
 import de.fhbielefeld.pmdungeon.quibble.inventory.DefaultInventoryItem;
@@ -14,6 +17,7 @@ public abstract class Item
 	public static final ItemHealingPotion POTION_RED_SMALL = new ItemHealingPotion("Small Healing Potion", 2.0D, "pot_red_small");
 	public static final ItemWeaponMelee SWORD_BLUE = new ItemSwordBlue("Blue Sword", 0.5F, 1.25F, 3.5F, 0.25F, "sword_blue");
 	public static final ItemBag<Item> BAG_DEFAULT = new ItemBag<Item>("Bag", 4, "bag_default");
+	public static List<Item> ITEMS = Arrays.asList(Item.POTION_RED_BIG, Item.POTION_RED_SMALL, Item.SWORD_BLUE);
 	
 	private final String displayName;
 	

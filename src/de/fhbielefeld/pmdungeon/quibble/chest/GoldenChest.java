@@ -13,22 +13,44 @@ import de.fhbielefeld.pmdungeon.quibble.item.ItemHealingPotion;
 public class GoldenChest extends Chest {
 
 	private final Random r = new Random();
-	private final String CHEST_EMPTY_OPEN = "chest_empty_open_anim_";
-	private final String CHEST_FULL_OPEN = "chest_full_open_anim_";
-	private final String CHEST_MIMIC_OPEN = "chest_mimic_open_anim_";
-	private Inventory<Item> inv;
+
+	Inventory<Item> inv;
+	public Inventory<Item> getInv() {
+		return inv;
+	}
+
 	Item ItemHealingBig = new ItemHealingPotion("Healing Potion", 10, "pot_red_big");
 	Item ItemHealingSmall = new ItemHealingPotion("Healing Potion", 5, "pot_red_Small");
-//	Item ItemBlueSword = "BlueSword";
+	
 	
 	List<Item> ItemList = Arrays.asList(ItemHealingBig, ItemHealingSmall);
 	HashMap<String, Item> ItemMap = new HashMap<>();
 
-	GoldenChest(){
-		int random = r.nextInt(ItemList.size());
-		Item i = ItemList.get(random);
-		Inventory<Item> inv = new DefaultInventory<>(r.nextInt(2));
-		inv.addItem(i);
+	public GoldenChest(float x, float y){
+		super(x, y);
+		
+		this.animationHandler.addAsDefaultAnimation("", 1, 1, Chest.TEXTURE_PATH_CHEST + "/chest_gold_empty_open_anim/chest_empty_open_anim_f.png", 4);
+		this.animationHandler.addAnimation("Open_Gold", 3, 5, Chest.TEXTURE_PATH_CHEST + "/chest_gold_empty_open_anim/chest_empty_open_anim_f.png", 4);
+		this.animationHandler.addAnimation("Open", 1, 2, Chest.TEXTURE_PATH_CHEST + "/chest_gold_empty_open_anim/chest_empty_open_anim_f2.png", -1);
+		fillInventory();
+	}
 	
+	private void fillInventory() {
+		int random = r.nextInt(Item.ITEMS.size());
+		Item i = Item.ITEMS.get(random);
+		inv = new DefaultInventory<>(r.nextInt(2));
+		inv.addItem(i);
+	}
+	
+	public void setOpen() {
+		this.isOpen = true;
+//		this.animationHandler.playAnimation("Open", Integer.MAX_VALUE, true);
+	}
+	
+	@Override
+	protected void updateAnimationState() {
+		super.updateAnimationState();
+		if (isOpen)
+			this.animationHandler.playAnimation("Open", 2, true);
 	}
 }
