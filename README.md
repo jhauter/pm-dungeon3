@@ -1,5 +1,5 @@
 ---
-title:  'Lerntagebuch zur Bearbeitung von Blatt 02
+title:  'Lerntagebuch zur Bearbeitung von Blatt 03
 author:
 - Andreas Wegner (andreas.wegner@fh-bielefeld.de)
 - Malte Kanders (malte_theodor.kanders@fh-bielefeld.de)
@@ -38,17 +38,10 @@ sowie [Praktikumsblatt "Lerntagebuch"](pm_praktikum.html#lerntagebuch).
 Bitte hier die zu lösende Aufgabe kurz in eigenen Worten beschreiben.
 -->
 
-Für die Aufgabe von Blatt 2 soll zunächst ein Logger erstellt werden, der uns bei der Ausgabe von Konsolenmeldungen unterstützt.
-Es soll immer bei bestimmten Ereignissen eine Logmeldung ausgegeben werden, zum Beispiel beim betreten eines neuen Levels.
-Aber auch wenn neue Sachen hinzukommen, soll das Logging nachgezogen werden. Natürlich muss eine Logmeldung die wesentlichen Eigenschaften
-beinhalten, wie das Logging-Level und der Zeitstempel.
-
-In unserem Dungeon sollen mindestens zwei neue Monsterarten vorkommen, die verschiedene Attribute besitzen. Sie sollen nicht nur herumstehen,
-sondern sich auch selbstständig bewegen.
-
-Zu guter letzt soll ein Kampfsystem eingebaut werden, damit man mit den Monstern auch kämpfen kann. Dieses Kampfsystem sollte so funktionieren,
-wie man es von einem Spiel erwarten würde. Jede Einheit hat Lebenspunkte, welche durch Schaden reduziert werden können. Der Spieler kann den Monstern
-schaden hinzufügen, in dem er sie angreift oder Schaden nehmen, in dem er sie berührt. Es gibt Statuswerte, die bestimmen, wie erfolgreich ein Angriff ist, oder wie sehr man zurückgestoßen wird. Außerdem sollen sich die Leben auch regenerieren können.
+Wir sollten Heiltränke implementieren, sowie Waffen und Zaubersprüche, die ins Inventar gelegt werden können und auch wieder fallen gelassen werden können. Das Invertar soll per
+Tastendruck geloggt werden. Unser Held kann aktiv Monster angreifen und besiegen. Verschiedene Items sollen unterschiedliche Wirkungen haben.
+Im Dungeon sollen Schatzkisten verteilt sein, die zufällige Items beinhalten, welche man herausnehmen kann. Außerdem soll es Taschen geben, welche man ins Inventar legen kann, 
+die wiederum Items eines bestimmten Typen beinhalten können.
 
 
 # Ansatz und Modellierung
@@ -61,25 +54,30 @@ Bitte hier den Lösungsansatz kurz beschreiben:
 -   Worauf müssen Sie konkret achten?
 -->
 
-Zu erst haben wir uns um den Logger gekümmert. Diesen kann man üblicherweise nach dem Singleton-Pattern umsetzen.
+Bei der Umsetzung der Items sollte besonders auf den OOP-Gedanken Wert gelegt werden. Außerdem sollte beim Loggen des Inventares das Visitor-Pattern genutzt werden.
+Zu erst haben wir erkannt, dass es 3 verschiedene Arten gibt, in denen Items im Spiel auftreten können:
 
-Wir brauchten auf jeden Fall zu erst eine Möglichkeit der Kollisionserkennung zwischen Entities. Praktisch wäre eine Klasse, die
-Werkzeuge beinhalten, um Kollisionserkennung zu vereinfachen,
+* als Drop im Dungeon
+* als Item-Instanz im Inventar
+* als einzigartiger Datensatz pro Item im Spiel
 
-Für das Kampfsystem haben wir uns überlegt, nicht nur eine Variable für Lebenspunkte in unsere Creature
-Klasse zu schreiben, sondern gleich ein Array für mehrere Statuswerte, die wir im Laufe der Entwicklung erweitern können.
+Unser Ansatz ist es also eine `Item`-Klasse zu erstellen, die statische Referenzen zu im Spiel registrierten Items enthält.
+Diese statischen Objekte haben Callback-Methoden, die zum Beispiel immer ausgeführt werden, wenn ein Wesen ein Item benutzt.
 
-Am schlausten wäre es, wenn wir in unserer Creature Klasse eine Methode erstellen, die allein für Angriffe verantwortlich ist,
-welche man dann überall sehr einfach aufrufen kann, um einen Angriff zu starten.
-Wir müssen auch beachten, dass Monster und Spieler nach einem Treffer kurz unverwundbar sein sollten, damit das Spiel nicht frustrierend wird.
-Dazu sind mehrere Zählervariablen in den Creatures nötig. Auch ein Zufallsgenerator muss eingebaut werden, um zufällig verfehlen zu können.
+Da wir bei Taschen Generics benutzen sollen, hilft dies auch dabei, die entsprechenden Item-Typen für die Generics zu definieren.
+Die Item-Instanzen im inventar stellen wir mit dem Interface `InventoryItem` dar, welche zu Inventaren hinzugefügt werden können,
+die wir mit dem Interface `Inventory` dar stellen. Diese beiden Interfaces sind generische Typen, da sie auch als Inventare für Truhen und Taschen genutzt werden sollen,
+welche ebenfalls generisch sind. Dadurch, dass Items im Inventar eigene Instanzen sind, ist es möglich, für die Taschen eine eigene Unterklasse zu erstellen,
+welche ein eigenes Inventar besitzt. So hat man praktisch Inventare in Inventaren.
 
-Wir fanden dass Partikel, die z.B. den Schaden anzeigen hilfreich wären, da es sie auch in anderen Spielen gibt.
-Leider bietet die PM-Dungeon-API keine bekannt Möglichkeit dafür, die Vernünftig aussehen würde,
-also müssen wir selbst auf LibGDX zugreifen, um unsere Partikel zu zeichnen.
+Nützlich ist dieser Ansatz auch bei der Erstellung von den Drop-Entities, da diese bloß eine einzige Klasse benötigen, welche nur eine `InventoryItem`-Instanz
+besitzen. Diese `InventoryItem`-Instanz ist dann sozusagen das Item, das auf dem Boden liegt. Das Entity ist dabei sozusagen ein Wrapper. Und das funktioniert
+dann sogar für Taschen, in denen Items drin sind.
 
-Damit man jetzt noch Logmeldungen ausgebeben kann, wenn der Spieler oder ein Monster stirbt, wäre ein Eventsystem für Entities ganz gut,
-welches man nach dem Observer-Pattern gut umsetzen könnte. Damit wären wir auch für ein zukünftiges Questsystem gerüstet.
+Als letztes bleiben noch die Truhen, welche wir als Entity mit einem Inventar erstellen können. Unser am Anfang ersteller `AnimationHandler` hilft
+uns hierbei, eine schöne "öffnen"-Animation anzuzeigen.
+
+Die Steuerung, mit welcher der Spieler mit dem Inventar und Truhen interagieren kann, bauen wir in die `Player`-Klasse ein, die eine Oberklasse vom Helden ist.
 
 
 # Umsetzung
@@ -92,25 +90,10 @@ Bitte hier die Umsetzung der Lösung kurz beschreiben:
 -   was war das Ergebnis?
 -->
 
-Der java.util.logging.Logger hat glücklicherweise alle grundgelegenen Dinge schon implementiert. Wir mussten nur noch die Formatierung der
-Logmeldungen selbst übernehmen. Für das schreiben der Logmeldungen in eine Datei, gibt es auch schon eine vorgefertigte Klasse namens FileHandler.
-
-Als nächsten wollten wir das Kampfsystem umsetzen. Die Kollision zwischen Entites konnten wir einfach in die IEntity.update() Methode einbauen.
-Für fortgeschrittenere Kollisionserkennung haben wir auch eine BoundingBox Klasse erstellt. Dadurch erhalten die Entities auch Hitboxen.
-
-Um nun tatsächlich Angriffe der Monster uns des Spielers auszuführen, haben wir Methoden erstellt, die das übernehmen.
-Diese beinhalten gleich die Schadensberechnung und die Animationen dafür. Um das Kampfverhalten etwas natürlich zu gestalten, gibt es mehrere Zähler
-in Monstern die für Unverwundbarkeit nach dem Treffer und Abklingzeit nach dem Treffer verantwortlich sind.
-Da viele Zähler für Verwirrung sorgen können, wurden sie auch von entsprechenden Methoden berechnet.
-
-Um das Partikelproblem anzugehen, haben wir uns LibGDX angeschaut und waren dann in der Lage selbst zu zeichnen.
-Dadurch konnten wir tolle Partikeleffekte visualisieren. Das Partikelsystem ist so aufgebaut, wie das Entitysystem. Jeder Partikel
-ist in einer Liste und es werden jedes Frame deren update() und draw() Methoden aufgerufen.
-
-Für die Arbeit haben wir kein Datum vereinbart, sondern haben uns im Laufe der Woche öfters im Discord getroffen und zusammen daran gearbeitet.
-Wir können die Zeit im Nachhinein schlecht einschätzen, aber für uns alle zusammengerechnet sind es sicher über 40 Stunden gewesen.
-
-Als Ergebnis haben wir nun ein Spiel, in dem es sich relativ angenehm kämpfen lässt. Das Spiel ist nun viel lebhafter als vorher.
+Die Umsetzung hat insgesamt schätzungsweise 20 Stunden gedauert.
+Wir haben an vereinzelten Tagen der ganzen Woche gearbeitet und nicht nur in einem bestimmten Zeitraum.
+Zu erst haben wir die statischen Items und deren Verhalten eingebaut, da diese die Grundlage sind.
+Danach haben wir das Inventar erstellt und zum Schluss die Item-Drops und Truhen.
 
 # Postmortem
 
@@ -122,12 +105,5 @@ kritisch zurück:
 -   Wie haben Sie die Probleme letztlich gelöst?
 -->
 
-In Hinblick auf die Codequalität können wir definitiv zufrieden sein, finden wir.
-Wir haben für die meisten Sachen versucht, abgekapselte Systeme zu programmieren, was auf jeden Fall bei
-der Fehleranfälligkeit hilft, und vor allem dabei hilft, Struktur in den Code zu bringen.
-Auch mussten wir lernen, dass es gerade bei der Arbeit mit Git hilfreich ist, abgekapselte Systeme zu haben,
-da dadurch nicht so viele bereits vorhandene Dateien bearbeitet werden müssen, was sehr bei Merge Requests hilft.
-Wir haben allerdings auch vieles gemacht, was gar nicht gefordert war.
-Es hat zwar Spaß gemacht, diese nicht geforderten Elemente einzubauen, aber es hat wirklich viel Zeit geraubt.
-Vor daher würden wir wohl versuchen, es wieder herunter zu schrauben. Aber wir haben dadurch sicher viel gelernt.
-
+Es hat im Großen und Ganzen gut funktioniert. Nur die Generics haben an manchen Stellen Schwierigkeiten bereiten,
+da es ungewohnt war, in so einem Umfang mit ihnen zu arbeiten.

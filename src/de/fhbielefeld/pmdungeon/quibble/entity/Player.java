@@ -1,10 +1,18 @@
 package de.fhbielefeld.pmdungeon.quibble.entity;
 
+import java.util.List;
 import java.util.logging.Level;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+
 import de.fhbielefeld.pmdungeon.quibble.LoggingHandler;
+import de.fhbielefeld.pmdungeon.quibble.chest.Chest;
 import de.fhbielefeld.pmdungeon.quibble.input.DungeonInput;
 import de.fhbielefeld.pmdungeon.quibble.input.InputListener;
+import de.fhbielefeld.pmdungeon.quibble.inventory.Inventory;
+import de.fhbielefeld.pmdungeon.quibble.inventory.InventoryItem;
+import de.fhbielefeld.pmdungeon.quibble.item.Item;
 
 public abstract class Player extends Creature implements InputListener
 {
@@ -42,10 +50,15 @@ public abstract class Player extends Creature implements InputListener
 		this.controlMinY = Math.min(this.controlMinY, input.getAxisScaleY());
 		this.controlMaxY = Math.max(this.controlMaxY, input.getAxisScaleY());
 		
-		if(input == DungeonInput.HIT)
+		if(input == DungeonInput.INV_LOG)
 		{
-			this.attackAoE();
-			LoggingHandler.logger.log(Level.FINE, "Mouse input: attack");
+			LoggingHandler.logger.log(Level.INFO, "Inventory: " + Inventory.inventoryString(getInventory()));
+//			Inventory.inventoryVisitor(this.getInventory(), new ItemInvLogVisitor());
+		}
+		else if(input == DungeonInput.EQUIP_LOG)
+		{
+			LoggingHandler.logger.log(Level.INFO, "Equipment: " + Inventory.inventoryString(getEquippedItems()));
+//			Inventory.inventoryVisitor(this.getEquippedItems(), new ItemEquipLogVisitor());
 		}
 	}
 	
@@ -104,6 +117,95 @@ public abstract class Player extends Creature implements InputListener
 			
 			LoggingHandler.logger.log(Level.FINE, "Movement input: " + angle + "deg");
 		}
+		
+		for(int i = 0; i < 9; ++i)
+		{
+			if(Gdx.input.isKeyJustPressed(Input.Keys.NUM_1 + i))
+			{
+				if(Gdx.input.isKeyPressed(Input.Keys.Q) && i < this.getInventorySlots())
+				{
+					InventoryItem<Item> droppedItem = this.getInventory().getItem(i);
+					if(this.drop(i) && droppedItem != null)
+					{
+						LoggingHandler.logger.log(Level.INFO, "Dropped item: " + droppedItem.getDisplayText());
+					}
+				}
+				else if(Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) && i < this.getInventorySlots())
+				{
+					InventoryItem<Item> equippedItem = this.getInventory().getItem(i);
+					if(this.equip(i) && equippedItem != null)
+					{
+						LoggingHandler.logger.log(Level.INFO, "Put item from inventory into equipment: " + equippedItem.getDisplayText());
+					}
+				}
+				else if(Gdx.input.isKeyPressed(Input.Keys.ALT_LEFT) && i < this.getEquipmentSlots())
+				{
+					InventoryItem<Item> unequippedItem = this.getEquippedItems().getItem(i);
+					if(this.unequip(i) && unequippedItem != null)
+					{
+						LoggingHandler.logger.log(Level.INFO, "Put item from eqipment into inventory: " + unequippedItem.getDisplayText());
+					}
+				}
+				else if(Gdx.input.isKeyPressed(Input.Keys.E))
+				{
+					Chest chest = this.getClosestChest();
+					if(chest != null && i < chest.getInv().getCapacity() && chest.isOpen())
+					{
+						InventoryItem<Item> chestItem = chest.getInv().getItem(i);
+						if(chestItem != null && Inventory.transfer(chest.getInv(), i, this.getInventory()))
+						{
+							LoggingHandler.logger.log(Level.INFO, "Took item from chest into inventory: " + chestItem.getDisplayText());
+						}
+					}
+				}
+				else if(i < this.getEquipmentSlots())
+				{
+					this.useEquippedItem(i);
+					LoggingHandler.logger.log(Level.INFO, "Attempted to use item in eqip slot " + (i + 1));
+				}
+			}
+		}
+		
+		if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE))
+		{
+			Chest chest = this.getClosestChest();
+			if(chest != null)
+			{
+				chest.animationHandler.playAnimation("Open_Gold", 4, false );
+				chest.setOpen();
+		
+				LoggingHandler.logger.log(Level.INFO, Inventory.inventoryString(chest.getInv()));
+			}
+			ItemDrop drop = this.getClosestItemDrop();
+			if(drop != null)
+			{
+				drop.setPickedUp();
+				this.getInventory().addItem(drop.getItem());
+				LoggingHandler.logger.log(Level.INFO, "Picked up: " + drop.getItem().getDisplayText());
+			}
+		}
+	}
+	
+	private Chest getClosestChest()
+	{
+		List<Entity> l = this.getLevel().getEntitiesInRadius(getX(), getY(), 1);
+		for (int i = 0; i < l.size(); i++) {
+			if(l.get(i) instanceof Chest) {
+				return (Chest)l.get(i);
+			}
+		}
+		return null;
+	}
+	
+	private ItemDrop getClosestItemDrop()
+	{
+		List<Entity> l = this.getLevel().getEntitiesInRadius(getX(), getY(), 1);
+		for (int i = 0; i < l.size(); i++) {
+			if(l.get(i) instanceof ItemDrop) {
+				return (ItemDrop)l.get(i);
+			}
+		}
+		return null;
 	}
 	
 	/**

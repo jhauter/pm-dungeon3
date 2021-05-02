@@ -19,5 +19,11 @@ public abstract class DamageType
 	 */
 	public abstract double getDamageAgainst(double sourceDamage, CreatureStats stats);
 	
+	/**
+	 * Returns the stat that is used to calculate the damage type.
+	 * For example, return <code>CreatureStatsAttribs.DAMAGE_PHYS</code> if this <code>DamageType</code>
+	 * represents physical damage.
+	 * @return the stat used to calculate the damage value
+	 */
 	public abstract CreatureStatsAttribs getSourceDamageStat();
 }

@@ -17,6 +17,19 @@ public class CreatureStats
 	}
 	
 	/**
+	 * Creates a stat values array copied from the parameter.
+	 * @param copyFrom the creature stats from which to copy the values
+	 */
+	public CreatureStats(CreatureStats copyFrom)
+	{
+		this();
+		for(int i = 0; i < this.stats.length; ++i)
+		{
+			this.stats[i] = copyFrom.stats[i];
+		}
+	}
+	
+	/**
 	 * Sets the value of the specified stat
 	 * @param stat the stat to change
 	 * @param value the new value
@@ -35,6 +48,19 @@ public class CreatureStats
 		else
 		{
 			this.stats[stat.ordinal()] = value;
+		}
+	}
+	
+	/**
+	 * Sets all stat values to match the <code>CreatureStats</code> argument.
+	 * @param stat the stat values to copy values from
+	 */
+	public void setStats(CreatureStats stats)
+	{
+		CreatureStatsAttribs[] values = CreatureStatsAttribs.values();
+		for(int i = 0; i < this.stats.length; ++i)
+		{
+			this.setStat(values[i], stats.stats[i]);
 		}
 	}
 	
@@ -60,6 +86,22 @@ public class CreatureStats
 		}
 	}
 	
+
+	
+	/**
+	 * Adds all values of the specified <code>CreatureStats</code> to the corresponding values
+	 * of this <code>CreatureStats</code>.
+	 * @param stats the stat containing the values to add to this <code>CreatureStats</code>
+	 */
+	public void addStats(CreatureStats stats)
+	{
+		CreatureStatsAttribs[] values = CreatureStatsAttribs.values();
+		for(int i = 0; i < this.stats.length; ++i)
+		{
+			this.addStat(values[i], stats.stats[i]);
+		}
+	}
+	
 	/**
 	 * Returns current the value of the specified stat
 	 * @param stat the stat whose value to return
@@ -71,7 +113,7 @@ public class CreatureStats
 	}
 	
 	/**
-	 * Creates a copy of this <code>CreatureStats</code> and add all stat values of the argument
+	 * Creates a copy of this <code>CreatureStats</code> and adds all stat values of the argument
 	 * to the corresponding stat values of the copy of this <code>CreatureStats</code>.
 	 * @param stats <code>CreatureStats</code> whose values should be added to the copied stats
 	 * @return the copied <code>CreatureStats</code> to which the values were added
@@ -84,6 +126,37 @@ public class CreatureStats
 			copy.stats[i] = this.stats[i] + stats.stats[i];
 		}
 		return copy;
+	}
+	
+	/**
+	 * Checks for every stat values if its greater than the corresponding stat value of the provided argument
+	 * and if this is true, sets the stat value to match the stat value of the argument.
+	 * @param stats the stat values to limit this <code>CreatureStats</code>'s stat values to
+	 */
+	public void limit(CreatureStats stats)
+	{
+		for(int i = 0; i < this.stats.length; ++i)
+		{
+			if(this.stats[i] > stats.stats[i])
+			{
+				this.setStat(CreatureStatsAttribs.values()[i], stats.stats[i]);
+			}
+		}
+	}
+	
+	public void newMax(CreatureStats newMax)
+	{
+		for(int i = 0; i < this.stats.length; ++i)
+		{
+			if(this.stats[i] > newMax.stats[i])
+			{
+				this.setStat(CreatureStatsAttribs.values()[i], newMax.stats[i]);
+			}
+			else if(this.stats[i] < newMax.stats[i] && CreatureStatsAttribs.values()[i].fillIfNewMax())
+			{
+				this.setStat(CreatureStatsAttribs.values()[i], newMax.stats[i]);
+			}
+		}
 	}
 	
 	/**
@@ -105,5 +178,18 @@ public class CreatureStats
 		final CreatureStatsEvent event =  new CreatureStatsEvent(stat, oldVal, newVal);
 		this.listener.onStatValueChange(event);
 		return event;
+	}
+	
+	@Override
+	public String toString()
+	{
+		StringBuilder b = new StringBuilder("CreatureStats[");
+		CreatureStatsAttribs[] values = CreatureStatsAttribs.values();
+		for(int i = 0; i < this.stats.length; ++i)
+		{
+			b.append(values[i].name() + ": " + this.stats[i] + (i != this.stats.length - 1 ? ", " : ""));
+		}
+		b.append("]");
+		return b.toString();
 	}
 }

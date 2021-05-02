@@ -5,24 +5,10 @@ import de.fhbielefeld.pmdungeon.vorgaben.graphic.Animation;
 public interface AnimationHandler
 {
 	/**
-	 * String that is inserted into the file path according to documentation of {@link #addAnimation(String, int, int, String, String)}.
-	 */
-	public static final String FILENAME_SUFFIX = "anim_f";
-	
-	/**
-	 * File extension of the texture files.
-	 */
-	public static final String FILENAME_EXT = "png";
-	
-	/**
 	 * Registers a new animation for this animation handler.
 	 * Each animation is a set of textures which is assigned a name.
 	 * The number of textures is specified by <code>numFrames</code>.
 	 * Every frame of the animation will last <code>frameDuration</code> frames.
-	 * The nth texture file of this set is expected to be at the following file path:
-	 * 
-	 * <br>
-	 * <blockquote><code>&ltpathToTexDir&gt;/&ltfileName&gt;_&ltanimName&gt;_&ltFILENAME_SUFFIX&gt;&lt;n&gt;.&ltFILENAME_EXT&gt;</code></blockquote>
 	 * 
 	 * This method stores the supplied parameters internally.
 	 * The files can be loaded by calling <code>loadAnimations()</code>.
@@ -33,28 +19,30 @@ public interface AnimationHandler
 	 * @param animName the name of the animation (names are case sensitive)
 	 * @param numFrames number of textures in this animation
 	 * @param frameDuration how long a single frame will be displayed in the animation
-	 * @param pathToTexDir path to folder which contains the textures
-	 * @param fileName part of the animation file format (see above)
+	 * @param fileName the complete file path with the frame count number omitted
+	 * @param frameCountPos the position of the frame count number, counting from the back of the path string
+	 * (<code>-1</code> does not insert a number and should only be used with <code>numFrames = 1</code>)
 	 * @throws IllegalArgumentException if an animation with the same <code>animName</code>
 	 * has already been registered
 	 */
-	public void addAnimation(String animName, int numFrames, int frameDuration, String pathToTexDir, String fileName);
+	public void addAnimation(String animName, int numFrames, int frameDuration, String fileName, int frameCountPos);
 	
 	/**
 	 * Sets the default animation which should be fallen back to if no other animation is currently playing.
 	 * This needs to be set, otherwise no animation is allowed to be played.
 	 * If a default animation has already been set, the previous default animation will become a regular
 	 * animation and the the newly added default animation will become the default animation.
-	 * @param animName the name of the animation
+	 * @param animName the name of the animation (names are case sensitive)
 	 * @param numFrames number of textures in this animation
 	 * @param frameDuration how long a single frame will be displayed in the animation
-	 * @param pathToTexDir path to folder which contains the textures
-	 * @param fileName part of the animation file format (see above)
+	 * @param fileName the complete file path with the frame count number omitted
+	 * @param frameCountPos the position of the frame count number, counting from the back of the path string
+	 * (<code>-1</code> does not insert a number and should only be used with <code>numFrames = 1</code>)
 	 * @throws IllegalArgumentException if an animation with the same <code>animName</code>
 	 * has already been registered
 	 * @see AnimationHandler#addAnimation(String, int, String, String)
 	 */
-	public void addAsDefaultAnimation(String animName, int numFrames, int frameDuration, String pathToTexDir, String fileName);
+	public void addAsDefaultAnimation(String animName, int numFrames, int frameDuration, String fileName, int frameCountPos);
 	
 	/**
 	 * Tries to load all textures of all registered animations from the file system.
