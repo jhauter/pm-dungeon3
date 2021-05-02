@@ -2,6 +2,7 @@ package de.fhbielefeld.pmdungeon.quibble.item;
 
 import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
 import de.fhbielefeld.pmdungeon.quibble.inventory.BagInventoryItem;
+import de.fhbielefeld.pmdungeon.quibble.item.visitor.ItemVisitor;
 
 /**
  * This class is used to register a bag item in the game. This is not an actual bag.
@@ -71,5 +72,11 @@ public class ItemBag<C extends Item> extends Item
 	public BagInventoryItem<ItemBag<C>, C> createInventoryItem()
 	{
 		return new BagInventoryItem<ItemBag<C>, C>(this, this.bagCapacity);
+	}
+
+	@Override
+	public void accept(ItemVisitor visitor)
+	{
+		visitor.visit(this);
 	}
 }
