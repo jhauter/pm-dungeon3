@@ -50,12 +50,7 @@ public abstract class Player extends Creature implements InputListener
 		this.controlMinY = Math.min(this.controlMinY, input.getAxisScaleY());
 		this.controlMaxY = Math.max(this.controlMaxY, input.getAxisScaleY());
 		
-		if(input == DungeonInput.HIT)
-		{
-			this.attackAoE();
-			LoggingHandler.logger.log(Level.FINE, "Mouse input: attack");
-		}
-		else if(input == DungeonInput.INV_LOG)
+		if(input == DungeonInput.INV_LOG)
 		{
 			LoggingHandler.logger.log(Level.INFO, "Inventory: " + Inventory.inventoryString(getInventory()));
 //			Inventory.inventoryVisitor(this.getInventory(), new ItemInvLogVisitor());
