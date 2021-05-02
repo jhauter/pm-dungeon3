@@ -25,7 +25,12 @@ public class GoldenChest extends Chest {
 	
 	List<Item> ItemList = Arrays.asList(ItemHealingBig, ItemHealingSmall);
 	HashMap<String, Item> ItemMap = new HashMap<>();
-
+	
+	/**
+	 * Creates a new Golden Chest at the certain Point
+	 * @param x value for position
+	 * @param y value for position
+	 */
 	public GoldenChest(float x, float y){
 		super(x, y);
 		
@@ -36,15 +41,14 @@ public class GoldenChest extends Chest {
 	}
 	
 	private void fillInventory() {
-		int random = r.nextInt(Item.ITEMS.size());
-		Item i = Item.ITEMS.get(random);
-		inv = new DefaultInventory<>(r.nextInt(2));
-		inv.addItem(i);
+	
 	}
 	
+	/**
+	 * if activated the chest was opened once and this chest will show a open chest Texture.
+	 */
 	public void setOpen() {
 		this.isOpen = true;
-//		this.animationHandler.playAnimation("Open", Integer.MAX_VALUE, true);
 	}
 	
 	@Override
