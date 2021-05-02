@@ -912,7 +912,7 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		{
 			return false;
 		}
-		//CREATE ITEM ENTITY
+		this.level.spawnEntity(new ItemDrop(item, this.getX(), this.getY()));
 		return true;
 	}
 	
@@ -930,7 +930,7 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		{
 			return false;
 		}
-		//CREATE ITEM ENTITY
+		this.level.spawnEntity(new ItemDrop(item, this.getX(), this.getY()));
 		return true;
 	}
 	
