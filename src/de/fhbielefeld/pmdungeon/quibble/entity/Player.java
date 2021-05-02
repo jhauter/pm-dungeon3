@@ -32,7 +32,6 @@ public abstract class Player extends Creature implements InputListener
 	public Player(float x, float y)
 	{
 		super(x, y);
-		getEquippedItems().addItem(new ItemSpeedPotion("SpeedPotion", y, ANIM_NAME_ATTACK_L));
 	}
 	
 	/**
