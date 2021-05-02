@@ -1,5 +1,8 @@
 package de.fhbielefeld.pmdungeon.quibble.chest;
 
+import java.util.Iterator;
+import java.util.Random;
+
 import de.fhbielefeld.pmdungeon.quibble.entity.Entity;
 import de.fhbielefeld.pmdungeon.quibble.inventory.DefaultInventory;
 import de.fhbielefeld.pmdungeon.quibble.inventory.Inventory;
@@ -17,6 +20,17 @@ public abstract class Chest extends Entity {
 	public Chest(float x, float y) {
 		super(x, y);
 		this.inv = new DefaultInventory<>(5);
+		fillChest();
+	}
+	
+	private void fillChest() {
+		Random r = new Random();
+		int i = r.nextInt(4) + 1;
+		
+		for (int j2 = 0; j2 < i; j2++) {
+			int j = r.nextInt(Item.getNumItems());
+			inv.addItem(Item.getItem(j));
+		}
 	}
 	
 	public Inventory<Item> getInv() {
@@ -28,6 +42,11 @@ public abstract class Chest extends Entity {
 	 */
 	public void setOpen() {
 		this.isOpen = true;
+	}
+	
+	public boolean isOpen()
+	{
+		return this.isOpen;
 	}
 	
 	@Override
