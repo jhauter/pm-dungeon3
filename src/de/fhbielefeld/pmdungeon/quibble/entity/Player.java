@@ -171,6 +171,12 @@ public abstract class Player extends Creature implements InputListener
 					LoggingHandler.logger.log(Level.INFO, Inventory.inventoryString(((Chest)l.get(i)).getInv()));
 					break;
 				}
+				else if(l.get(i) instanceof ItemDrop) {
+					final ItemDrop drop = (ItemDrop)l.get(i);
+					drop.setPickedUp();
+					this.getInventory().addItem(drop.getItem());
+					break;
+				}
 			}
 		}
 	}
