@@ -97,7 +97,6 @@ public class DungeonStart extends MainController implements EntityEventHandler
 		this.myHero.setPosition(startingPoint.getX(), startingPoint.getY());
 		
 		this.currentLevel.spawnEntity(this.myHero);
-		
 		//Set the camera to follow the hero
 		this.camera.follow(this.myHero);
 		LoggingHandler.logger.log(Level.INFO, "New level loaded.");
