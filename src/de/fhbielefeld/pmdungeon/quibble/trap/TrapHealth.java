@@ -3,6 +3,8 @@ package de.fhbielefeld.pmdungeon.quibble.trap;
 import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
 import de.fhbielefeld.pmdungeon.quibble.entity.Entity;
 import de.fhbielefeld.pmdungeon.quibble.entity.Player;
+import de.fhbielefeld.pmdungeon.quibble.entity.battle.DamageSource;
+import de.fhbielefeld.pmdungeon.quibble.entity.battle.DamageType;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.CreatureHitTargetEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.CreatureHitTargetPostEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEvent;
@@ -38,10 +40,8 @@ public class TrapHealth extends Trap {
 	public void onActivated(Creature c) {
 		super.onEntityCollision(c);
 		if (c instanceof Player) {
-			System.out.println("H");
-			CreatureHitTargetEvent event = (CreatureHitTargetEvent) this
-					.fireEvent(new CreatureHitTargetPostEvent(EntityEvent.genEventID(), c, c, null, damageAmount));
-			
+			c.damage(damageAmount, DamageType.PHYSICAL, (DamageSource) this, true);
+
 		}
 	}
 
