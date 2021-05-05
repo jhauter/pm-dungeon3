@@ -1,13 +1,12 @@
 package de.fhbielefeld.pmdungeon.quibble.trap;
 
+import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
 import de.fhbielefeld.pmdungeon.quibble.entity.Entity;
 import de.fhbielefeld.pmdungeon.quibble.entity.Player;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
-import de.fhbielefeld.pmdungeon.quibble.entity.battle.DamageType;
+import de.fhbielefeld.pmdungeon.vorgaben.tools.Point;
 
-public class TrapHealth extends Trap {
-
-	private final double damageAmount;
+public class TrapTeleport extends Trap {
 
 	/**
 	 * Creates a trap that used to damage Creatures
@@ -17,10 +16,9 @@ public class TrapHealth extends Trap {
 	 * @param damageAmount    the damage a Creature will get
 	 * @param activationLimit if false, the trap will stay activ
 	 */
-	public TrapHealth(float x, float y, double damageAmount, boolean noActivationLimit) {
+	public TrapTeleport(float x, float y, boolean noActivationLimit) {
 		super(x, y, noActivationLimit);
-		this.damageAmount = damageAmount;
-		this.animationHandler.addAsDefaultAnimation("", 1, 1, Trap.TRAP_TEXTURE_PATH + "trapPink.png", 4);
+		this.animationHandler.addAsDefaultAnimation("", 1, 1, Trap.TRAP_TEXTURE_PATH + "trapBlue.png", 4);
 		this.noActivationLimit = noActivationLimit;
 	}
 
@@ -33,17 +31,17 @@ public class TrapHealth extends Trap {
 	 * @param activationLimit will set a Number how often this Trap will get
 	 *                        activated
 	 */
-	public TrapHealth(float x, float y, double damageAmount, int activationLimit) {
+	public TrapTeleport(float x, float y, int activationLimit) {
 		super(x, y, activationLimit);
-		this.damageAmount = damageAmount;
-		this.animationHandler.addAsDefaultAnimation("", 1, 1, Trap.TRAP_TEXTURE_PATH + "trapPink.png", 4);
+		this.animationHandler.addAsDefaultAnimation("", 1, 1, Trap.TRAP_TEXTURE_PATH + "trapBlue.png", 4);
 		this.activationLimit = activationLimit;
 	}
 
 	@Override
 	public void isActiv(Entity e) {
 		if (e instanceof Player) {
-			((Player) e).damage(damageAmount, DamageType.PHYSICAL, this, false);
+			Point p = this.level.getDungeon().getRandomPointInDungeon();
+			((Creature) e).setPosition(p);
 			this.coolDown = 44;
 			setActivationLimit(activationLimit-1);
 			this.activated = true;
