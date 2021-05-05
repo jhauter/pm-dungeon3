@@ -90,8 +90,8 @@ public abstract class Trap extends Entity implements DamageSource {
 
 	@Override
 	public boolean isInvisible() {
-//		if (!(activ))sa
-//			return true;
+		if (!(activ))
+			return true;
 		return false;
 	}
 
