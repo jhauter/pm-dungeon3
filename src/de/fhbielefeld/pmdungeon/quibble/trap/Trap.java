@@ -1,31 +1,32 @@
 package de.fhbielefeld.pmdungeon.quibble.trap;
 
 import de.fhbielefeld.pmdungeon.quibble.entity.Entity;
-import de.fhbielefeld.pmdungeon.quibble.entity.Player;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.DamageSource;
 
 public abstract class Trap extends Entity implements DamageSource {
-	// Path to the Folder for the Trap Textures
-	public static final String TRAPS_TEXTURE_PATH = "assets/textures/traps/";
 
-	protected String texture;
-	protected boolean activ;
-	protected boolean invisible;
-	protected boolean isActivationLimit = true;
+	protected boolean noActivationLimit;
+
 	protected boolean depleted;
+	
+	protected boolean activated;
+
 	protected int activationLimit;
 
+	protected int coolDown;
+	
 	/**
 	 * Creates a trap on a certain position
 	 * 
 	 * @param x               the x value of the current level
 	 * @param y               the y value of the current level
 	 * @param texture         the displayed texture for the trap
-	 * @param activationLimit if there is a limit or not
+	 * @param activationLimit true if a trap doesn't has a ActivationLimit
 	 */
-	public Trap(float x, float y, boolean isActivationLimit) {
+	public Trap(float x, float y, boolean noActivationLimit) {
 		super(x, y);
+		this.noActivationLimit = noActivationLimit;
 	}
 
 	/**
@@ -35,22 +36,20 @@ public abstract class Trap extends Entity implements DamageSource {
 	 * @param y               the y value of the current level
 	 * @param texture         the displayed texture for the trap
 	 * @param activationLimit will set a Number how often this Trap will get
-	 *                        activated
+	 *                        activated till its depleted
 	 */
 	public Trap(float x, float y, int activationLimit) {
 		super(x, y);
+		this.activationLimit = activationLimit;
 	}
 
 	@Override
 	protected void onEntityCollision(Entity otherEntity) {
 		super.onEntityCollision(otherEntity);
-		isInvisible();
-		if (depleted())
+		if (coolDown > 0)
 			return;
-		else if (otherEntity instanceof Player) {
+		else if (coolDown <= 0) {
 			isActiv(otherEntity);
-			setActivationLimit(activationLimit - 1);
-			activ = true;
 		}
 	}
 
@@ -62,7 +61,7 @@ public abstract class Trap extends Entity implements DamageSource {
 	public abstract void isActiv(Entity e);
 
 	/**
-	 * Will inform the Trap that it is on the ActivationLimit if it is set.
+	 * Is Called if activation limit is reached
 	 * 
 	 * @return
 	 */
@@ -71,34 +70,40 @@ public abstract class Trap extends Entity implements DamageSource {
 	}
 
 	/**
-	 * If an ActivationLimit is set, this Method will determine the Amount.
+	 * Set the Number of activations
 	 * 
 	 * @param i limit of Activation
 	 */
 	public void setActivationLimit(int i) {
 		this.activationLimit = i;
-		if (activationLimit <= 0 && isActivationLimit) {
-			depleted = true;
-		}
-	}
-
-	public CreatureStats getTrapStats() {
-
-		// Everything is initialized to 0.0
-		return new CreatureStats();
 	}
 
 	@Override
 	public boolean isInvisible() {
-		if (!(activ))
+		if (!(activated))
 			return true;
 		return false;
 	}
 
 	@Override
 	public boolean deleteableWorkaround() {
-		if(depleted)
+		if (depleted)
 			return true;
 		return false;
 	}
+
+	@Override
+	public abstract CreatureStats getCurrentStats();
+
+	@Override
+	protected void updateLogic() {
+		// TODO Auto-generated method stub
+		super.updateLogic();
+		if (coolDown > 0)
+			coolDown--;
+		
+		if(activationLimit <= 0 && (!(noActivationLimit))) 
+			depleted = true;
+	}
+
 }

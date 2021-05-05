@@ -1,7 +1,7 @@
 package de.fhbielefeld.pmdungeon.quibble.trap;
 
-import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
 import de.fhbielefeld.pmdungeon.quibble.entity.Entity;
+import de.fhbielefeld.pmdungeon.quibble.entity.Player;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.DamageType;
 
@@ -17,13 +17,13 @@ public class TrapHealth extends Trap {
 	 * @param damageAmount    the damage a Creature will get
 	 * @param activationLimit if false, the trap will stay activ
 	 */
-	public TrapHealth(float x, float y, double damageAmount, boolean isActivationlimit) {
-		super(x, y, isActivationlimit);
+	public TrapHealth(float x, float y, double damageAmount, boolean noActivationLimit) {
+		super(x, y, noActivationLimit);
 		this.damageAmount = damageAmount;
-		this.animationHandler.addAsDefaultAnimation("", 1, 1, Trap.TRAPS_TEXTURE_PATH + "trapBlue.png", 4);
-		this.isActivationLimit = isActivationlimit;
+		this.animationHandler.addAsDefaultAnimation("", 1, 1, TrapOutdated.TRAPS_TEXTURE_PATH + "trapBlue.png", 4);
+		this.noActivationLimit = noActivationLimit;
 	}
-	
+
 	/**
 	 * Creates a trap that used to damage Creatures
 	 * 
@@ -36,18 +36,26 @@ public class TrapHealth extends Trap {
 	public TrapHealth(float x, float y, double damageAmount, int activationLimit) {
 		super(x, y, activationLimit);
 		this.damageAmount = damageAmount;
-		this.animationHandler.addAsDefaultAnimation("", 1, 1, Trap.TRAPS_TEXTURE_PATH + "trapBlue.png", 4);
+		this.animationHandler.addAsDefaultAnimation("", 1, 1, TrapOutdated.TRAPS_TEXTURE_PATH + "trapBlue.png", 4);
 		this.activationLimit = activationLimit;
 	}
 
 	@Override
-	public CreatureStats getCurrentStats() {
-		return getTrapStats();
+	public void isActiv(Entity e) {
+		if (e instanceof Player) {
+			((Player) e).damage(damageAmount, DamageType.PHYSICAL, this, false);
+			getCurrentStats();
+			this.coolDown = 44;
+			setActivationLimit(activationLimit-1);
+			this.activated = true;
+		}
 	}
 
 	@Override
-	public void isActiv(Entity e) {
-		((Creature) e).damage(damageAmount, DamageType.PHYSICAL, this, true);
+	public CreatureStats getCurrentStats() {
+		CreatureStats stats = new CreatureStats();
+		
+		return stats;
 	}
 
 }
