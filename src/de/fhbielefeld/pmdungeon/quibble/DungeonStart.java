@@ -181,6 +181,7 @@ public class DungeonStart extends MainController implements EntityEventHandler
 		batch.draw(res.getResource(), 0, 0);
 		batch.end();
 		batch.flush();
+		
 	}
 	
 	@Override
