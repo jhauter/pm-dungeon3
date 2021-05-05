@@ -12,6 +12,8 @@ public abstract class Trap extends Entity implements DamageSource {
 	protected String texture;
 	protected boolean activ;
 	protected boolean invisible;
+	protected boolean isActivationLimit = true;
+	protected boolean depleted;
 	protected int activationLimit;
 
 	/**
@@ -20,29 +22,40 @@ public abstract class Trap extends Entity implements DamageSource {
 	 * @param x               the x value of the current level
 	 * @param y               the y value of the current level
 	 * @param texture         the displayed texture for the trap
-	 * @param activationLimit will set a Number how often this Trap will get
-	 *                        activated if no activation Limit is required, set -1
+	 * @param activationLimit if there is a limit or not
 	 */
-	public Trap(float x, float y, int activationLimit, boolean invisible) {
+	public Trap(float x, float y, boolean isActivationLimit) {
+		super(x, y);
+	}
+
+	/**
+	 * Creates a trap on a certain position
+	 * 
+	 * @param x               the x value of the current level
+	 * @param y               the y value of the current level
+	 * @param texture         the displayed texture for the trap
+	 * @param activationLimit will set a Number how often this Trap will get
+	 *                        activated
+	 */
+	public Trap(float x, float y, int activationLimit) {
 		super(x, y);
 	}
 
 	@Override
 	protected void onEntityCollision(Entity otherEntity) {
 		super.onEntityCollision(otherEntity);
-		if (activ)
+		if (depleted())
 			return;
 		else if (otherEntity instanceof Player) {
-			setActivationLimit(activationLimit - 1);
 			isActiv(otherEntity);
+			setActivationLimit(activationLimit -1);
 		}
 	}
 
 	/**
-	 * If the Trap is activ
+	 * If the Trap is active
 	 * 
 	 * @param e The Entity which will be effect
-	 * @return if the trap's effect still on
 	 */
 	public abstract void isActiv(Entity e);
 
@@ -51,7 +64,9 @@ public abstract class Trap extends Entity implements DamageSource {
 	 * 
 	 * @return
 	 */
-	public abstract boolean depleted();
+	public boolean depleted() {
+		return depleted;
+	}
 
 	/**
 	 * If an ActivationLimit is set, this Method will determine the Amount.
@@ -60,8 +75,8 @@ public abstract class Trap extends Entity implements DamageSource {
 	 */
 	public void setActivationLimit(int i) {
 		this.activationLimit = i;
-		if (activationLimit <= 0) {
-			activ = true;
+		if (activationLimit < 0 && isActivationLimit) {
+			depleted = true;
 		}
 	}
 
