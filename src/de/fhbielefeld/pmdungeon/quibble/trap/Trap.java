@@ -5,6 +5,8 @@ import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.DamageSource;
 
 public abstract class Trap extends Entity implements DamageSource {
+	
+	public final static String TRAP_TEXTURE_PATH= "assets/textures/traps/";
 
 	protected boolean noActivationLimit;
 

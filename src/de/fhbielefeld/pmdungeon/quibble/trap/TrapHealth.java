@@ -20,7 +20,7 @@ public class TrapHealth extends Trap {
 	public TrapHealth(float x, float y, double damageAmount, boolean noActivationLimit) {
 		super(x, y, noActivationLimit);
 		this.damageAmount = damageAmount;
-		this.animationHandler.addAsDefaultAnimation("", 1, 1, TrapOutdated.TRAPS_TEXTURE_PATH + "trapBlue.png", 4);
+		this.animationHandler.addAsDefaultAnimation("", 1, 1, Trap.TRAP_TEXTURE_PATH + "trapPink.png", 4);
 		this.noActivationLimit = noActivationLimit;
 	}
 
@@ -36,7 +36,7 @@ public class TrapHealth extends Trap {
 	public TrapHealth(float x, float y, double damageAmount, int activationLimit) {
 		super(x, y, activationLimit);
 		this.damageAmount = damageAmount;
-		this.animationHandler.addAsDefaultAnimation("", 1, 1, TrapOutdated.TRAPS_TEXTURE_PATH + "trapBlue.png", 4);
+		this.animationHandler.addAsDefaultAnimation("", 1, 1, Trap.TRAP_TEXTURE_PATH + "trapPink.png", 4);
 		this.activationLimit = activationLimit;
 	}
 
