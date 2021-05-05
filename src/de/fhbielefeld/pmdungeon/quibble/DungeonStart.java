@@ -1,6 +1,8 @@
 package de.fhbielefeld.pmdungeon.quibble;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 
 import com.badlogic.gdx.Gdx;
@@ -20,18 +22,25 @@ import de.fhbielefeld.pmdungeon.quibble.entity.event.CreatureHitTargetPostEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.CreatureStatChangeEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEventHandler;
+import de.fhbielefeld.pmdungeon.quibble.entity.event.PlayerOpenChestEvent;
 import de.fhbielefeld.pmdungeon.quibble.file.DungeonResource;
 import de.fhbielefeld.pmdungeon.quibble.file.ResourceHandler;
 import de.fhbielefeld.pmdungeon.quibble.file.ResourceType;
+import de.fhbielefeld.pmdungeon.quibble.hud.HUDGroup;
+import de.fhbielefeld.pmdungeon.quibble.hud.HUDManager;
+import de.fhbielefeld.pmdungeon.quibble.hud.InventoryItemHUD;
+import de.fhbielefeld.pmdungeon.quibble.input.DungeonInput;
 import de.fhbielefeld.pmdungeon.quibble.input.DungeonInputHandler;
 import de.fhbielefeld.pmdungeon.quibble.input.InputHandler;
+import de.fhbielefeld.pmdungeon.quibble.input.InputListener;
+import de.fhbielefeld.pmdungeon.quibble.inventory.Inventory;
 import de.fhbielefeld.pmdungeon.quibble.item.Item;
 import de.fhbielefeld.pmdungeon.vorgaben.dungeonCreator.dungeonconverter.Coordinate;
 import de.fhbielefeld.pmdungeon.vorgaben.game.Controller.MainController;
 import de.fhbielefeld.pmdungeon.vorgaben.interfaces.IEntity;
 import de.fhbielefeld.pmdungeon.vorgaben.tools.Point;
 
-public class DungeonStart extends MainController implements EntityEventHandler
+public class DungeonStart extends MainController implements EntityEventHandler, InputListener
 {
 	public static void main(String[] args)
 	{
@@ -54,9 +63,14 @@ public class DungeonStart extends MainController implements EntityEventHandler
 	
 	private long lastFrameTimeStamp;
 	
+	private HUDManager hudManager;
+	
+	private Map<String, HUDGroup> shownHUDGroups;
+	
 	public DungeonStart()
 	{
 		this.inputHandler = new DungeonInputHandler();
+		this.shownHUDGroups = new HashMap<>();
 		LoggingHandler.logger.setLevel(Level.CONFIG);
 	}
 	
@@ -68,6 +82,8 @@ public class DungeonStart extends MainController implements EntityEventHandler
 		this.myHero.getEquippedItems().addItem(Item.SWORD_BLUE);
 		this.myHero.addEntityEventHandler(this);
 		this.inputHandler.addInputListener(myHero);
+		this.inputHandler.addInputListener(this);
+		this.hudManager = new HUDManager();
 		this.lastFrameTimeStamp = System.currentTimeMillis();
 		Gdx.app.getGraphics().setResizable(true);
 		
@@ -100,6 +116,9 @@ public class DungeonStart extends MainController implements EntityEventHandler
 		this.myHero.setPosition(startingPoint.getX(), startingPoint.getY());
 		
 		this.currentLevel.spawnEntity(this.myHero);
+
+		this.showInventory("inv", this.myHero.getInventory(), 32, 92);
+		this.showInventory("eqip", this.myHero.getEquippedItems(), 250, 16);
 		
 		/**
 		 * Spawn Chest's
@@ -125,8 +144,6 @@ public class DungeonStart extends MainController implements EntityEventHandler
 		
 		ResourceHandler.processQueue();
 		
-		//Don't call notify listeners here but internally.
-		//updateHandler() should not return anything.
 		this.inputHandler.updateHandler();
 		
 		//Check the triggeredNextLevel flag of the player
@@ -165,6 +182,8 @@ public class DungeonStart extends MainController implements EntityEventHandler
 				--i;
 			}
 		}
+		
+		this.hudManager.update();
 		
 		this.currentLevel.getParticleSystem().draw(this.camera.position.x, this.camera.position.y);
 		
@@ -206,6 +225,49 @@ public class DungeonStart extends MainController implements EntityEventHandler
 			}
 			
 		}
-		
+		else if(event.getEventID() == PlayerOpenChestEvent.EVENT_ID)
+		{
+			final PlayerOpenChestEvent chestEvent = (PlayerOpenChestEvent)event;
+			
+			this.showInventory("chest", chestEvent.getChest().getInv(), 32, 300);
+		}
+	}
+	
+	private void showInventory(String id, Inventory<Item> inv, int x, int y)
+	{
+		this.closeInventory(id);
+		HUDGroup g = this.generateInventoryHUD(inv, x, y);
+		this.hudManager.addGroup(g);
+		this.shownHUDGroups.put(id, g);
+	}
+	
+	private void closeInventory(String id)
+	{
+		HUDGroup g = this.shownHUDGroups.get(id);
+		if(g != null)
+		{
+			this.hudManager.removeGroup(g);
+			this.hudManager.setElementOnMouse(null);
+		}
+	}
+	
+	private HUDGroup generateInventoryHUD(Inventory<Item> inv, int x, int y)
+	{
+		HUDGroup g = new HUDGroup();
+		this.hudManager.setElementOnMouse(null);
+		for(int i = 0; i < inv.getCapacity(); ++i)
+		{
+			g.addHUDElement(new InventoryItemHUD(inv, i, i * 72 + x, y));
+		}
+		return g;
+	}
+
+	@Override
+	public void onInputRecieved(DungeonInput key)
+	{
+		if(key == DungeonInput.CLOSE)
+		{
+			this.closeInventory("chest");
+		}
 	}
 }
