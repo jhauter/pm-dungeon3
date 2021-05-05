@@ -44,11 +44,13 @@ public abstract class Trap extends Entity implements DamageSource {
 	@Override
 	protected void onEntityCollision(Entity otherEntity) {
 		super.onEntityCollision(otherEntity);
+		isInvisible();
 		if (depleted())
 			return;
 		else if (otherEntity instanceof Player) {
 			isActiv(otherEntity);
-			setActivationLimit(activationLimit -1);
+			setActivationLimit(activationLimit - 1);
+			activ = true;
 		}
 	}
 
@@ -75,7 +77,7 @@ public abstract class Trap extends Entity implements DamageSource {
 	 */
 	public void setActivationLimit(int i) {
 		this.activationLimit = i;
-		if (activationLimit < 0 && isActivationLimit) {
+		if (activationLimit <= 0 && isActivationLimit) {
 			depleted = true;
 		}
 	}
@@ -84,5 +86,19 @@ public abstract class Trap extends Entity implements DamageSource {
 
 		// Everything is initialized to 0.0
 		return new CreatureStats();
+	}
+
+	@Override
+	public boolean isInvisible() {
+//		if (!(activ))sa
+//			return true;
+		return false;
+	}
+
+	@Override
+	public boolean deleteableWorkaround() {
+		if(depleted)
+			return true;
+		return false;
 	}
 }
