@@ -117,7 +117,7 @@ public class DungeonStart extends MainController implements EntityEventHandler
 		 * Placing Random Traps
 		 */
 		final Point pos3 = this.currentLevel.getDungeon().getRandomPointInDungeon();
-		this.currentLevel.spawnEntity(new TrapTeleport(pos3.x, pos3.y, false));
+		this.currentLevel.spawnEntity(new TrapTeleport(pos3.x, pos3.y, true));
 		
 		//Set the camera to follow the hero
 		this.camera.follow(this.myHero);

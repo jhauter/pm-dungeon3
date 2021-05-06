@@ -32,6 +32,6 @@ public class ItemSightPotion extends ItemPotion
 	@Override
 	public void accept(ItemVisitor visitor)
 	{
-		visitor.visit(this);
+//		visitor.visit(this);
 	}
 }

@@ -8,6 +8,8 @@ public abstract class Trap extends Entity implements DamageSource {
 	
 	public final static String TRAP_TEXTURE_PATH= "assets/textures/traps/";
 
+	public static boolean PlayerEffect;
+
 	protected boolean noActivationLimit;
 
 	protected boolean depleted;
@@ -82,7 +84,7 @@ public abstract class Trap extends Entity implements DamageSource {
 
 	@Override
 	public boolean isInvisible() {
-		if (!(activated))
+		if (!(activated) || PlayerEffect == false)
 			return true;
 		return false;
 	}
@@ -104,8 +106,10 @@ public abstract class Trap extends Entity implements DamageSource {
 		if (coolDown > 0)
 			coolDown--;
 		
-		if(activationLimit <= 0 && (!(noActivationLimit))) 
+		if(activationLimit < 0 && (!(noActivationLimit))) 
 			depleted = true;
+		
+		System.out.println(isInvisible());
 	}
 
 }
