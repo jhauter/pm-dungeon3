@@ -36,7 +36,7 @@ public class TrapTeleport extends Trap {
 		this.animationHandler.addAsDefaultAnimation("", 1, 1, Trap.TRAP_TEXTURE_PATH + "trapBlue.png", 4);
 		this.activationLimit = activationLimit;
 	}
-
+	
 	@Override
 	public void isActiv(Entity e) {
 		if (e instanceof Player) {
