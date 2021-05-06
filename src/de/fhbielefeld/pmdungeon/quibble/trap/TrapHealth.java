@@ -3,9 +3,10 @@ package de.fhbielefeld.pmdungeon.quibble.trap;
 import de.fhbielefeld.pmdungeon.quibble.entity.Entity;
 import de.fhbielefeld.pmdungeon.quibble.entity.Player;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
+import de.fhbielefeld.pmdungeon.quibble.entity.battle.DamageSource;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.DamageType;
 
-public class TrapHealth extends Trap {
+public class TrapHealth extends Trap implements DamageSource{
 
 	private final double damageAmount;
 
@@ -46,7 +47,7 @@ public class TrapHealth extends Trap {
 			((Player) e).damage(damageAmount, DamageType.PHYSICAL, this, false);
 			this.coolDown = 44;
 			setActivationLimit(activationLimit-1);
-			this.activated = true;
+			this.visible = true;
 		}
 	}
 

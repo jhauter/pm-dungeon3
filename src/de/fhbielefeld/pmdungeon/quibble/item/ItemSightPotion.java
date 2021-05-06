@@ -9,14 +9,13 @@ import de.fhbielefeld.pmdungeon.quibble.trap.Trap;
 
 public class ItemSightPotion extends ItemPotion
 {
-	private final double timeOfSight;
 	
-	private Trap tmp;
+	private final double timeOfSight;
 	
 	/**
 	 * Creates a healing potion item.
 	 * @param displayName user friendly display name
-	 * @param healAmount the amount this potion should heal
+	 * @param timeOfSight time invisible Objects are visible
 	 * @param texture texture that is used to render the item
 	 */
 	public ItemSightPotion(String displayName, double timeOfSight, String texture)
@@ -34,9 +33,8 @@ public class ItemSightPotion extends ItemPotion
 		
 		List<Entity> t = (List<Entity>) user.getLevel().getEntitiesInRadius(5, 5, 9999, user);
 		for (Entity entity : t) {
-			tmp = (Trap) entity;
 			if( entity instanceof Trap) {
-				((Trap)entity).setActivated(true);;
+				((Trap)entity).setVisible(true, this.timeOfSight);;
 			}
 		}
 	}
@@ -46,6 +44,6 @@ public class ItemSightPotion extends ItemPotion
 	@Override
 	public void accept(ItemVisitor visitor)
 	{
-//		visitor.visit(this);
+		visitor.visit(this);
 	}
 }

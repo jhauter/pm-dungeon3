@@ -3,7 +3,6 @@ package de.fhbielefeld.pmdungeon.quibble.trap;
 import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
 import de.fhbielefeld.pmdungeon.quibble.entity.Entity;
 import de.fhbielefeld.pmdungeon.quibble.entity.Player;
-import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
 import de.fhbielefeld.pmdungeon.vorgaben.tools.Point;
 
 public class TrapTeleport extends Trap {
@@ -44,15 +43,7 @@ public class TrapTeleport extends Trap {
 			((Creature) e).setPosition(p);
 			this.coolDown = 44;
 			setActivationLimit(activationLimit-1);
-			this.activated = true;
+			this.visible = true;
 		}
 	}
-
-	@Override
-	public CreatureStats getCurrentStats() {
-		CreatureStats stats = new CreatureStats();
-		
-		return stats;
-	}
-
 }

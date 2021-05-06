@@ -1,23 +1,23 @@
 package de.fhbielefeld.pmdungeon.quibble.trap;
 
 import de.fhbielefeld.pmdungeon.quibble.entity.Entity;
-import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
-import de.fhbielefeld.pmdungeon.quibble.entity.battle.DamageSource;
 
-public abstract class Trap extends Entity implements DamageSource {
-	
-	public final static String TRAP_TEXTURE_PATH= "assets/textures/traps/";
+public abstract class Trap extends Entity {
+
+	public final static String TRAP_TEXTURE_PATH = "assets/textures/traps/";
 
 	protected boolean noActivationLimit;
 
 	protected boolean depleted;
-	
-	protected boolean activated;
+
+	protected boolean visible;
+
+	private double ticksTillInvisible;
 
 	protected int activationLimit;
 
 	protected int coolDown;
-	
+
 	/**
 	 * Creates a trap on a certain position
 	 * 
@@ -82,7 +82,7 @@ public abstract class Trap extends Entity implements DamageSource {
 
 	@Override
 	public boolean isInvisible() {
-		return activated;
+		return (!(visible));
 	}
 
 	@Override
@@ -91,26 +91,38 @@ public abstract class Trap extends Entity implements DamageSource {
 	}
 
 	@Override
-	public abstract CreatureStats getCurrentStats();
-
-	@Override
 	protected void updateLogic() {
 		super.updateLogic();
 		if (coolDown > 0)
 			coolDown--;
-		
-		if(activationLimit < 0 && (!(noActivationLimit))) 
+
+		if (activationLimit < 0 && (!(noActivationLimit)))
 			depleted = true;
-		
-		System.out.println(isInvisible());
+
+		if (ticksTillInvisible > 0) {
+			ticksTillInvisible--;
+			if (ticksTillInvisible == 0) {
+				visible = false;
+			}
+		}
 	}
 	
 	/**
 	 * 
-	 * @param b true for visible traps
+	 * @param b           true for visible traps
 	 */
-	public void setActivated(boolean b) {
-		this.activated = b;
+	public void setVisible(boolean b) {
+		this.visible = b;
+	}
+
+	/**
+	 * 
+	 * @param b           true for visible traps
+	 * @param timeOfSight Time until the trap becomes invisible again
+	 */
+	public void setVisible(boolean b, double timeOfSight) {
+		this.visible = b;
+		this.ticksTillInvisible = timeOfSight;
 	}
 
 }
