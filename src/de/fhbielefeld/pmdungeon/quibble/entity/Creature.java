@@ -13,6 +13,7 @@ import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsEventListener;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.DamageSource;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.DamageType;
+import de.fhbielefeld.pmdungeon.quibble.entity.effect.StatusEffect;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.CreatureDamageEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.CreatureHitTargetEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.CreatureHitTargetPostEvent;
@@ -143,6 +144,8 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	
 	private Inventory<Item> equippedItems;
 	
+	private List<StatusEffect> statusEffects;
+	
 	/**
 	 * @param x x-coordinate
 	 * @param y y-coordinate
@@ -161,6 +164,8 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		this.currentStats = new CreatureStats(this.maxStats);
 		this.currentStats.setEventListener(this);
 		//==============================
+		
+		this.statusEffects = new ArrayList<>();
 		
 		
 		this.inventory = new DefaultInventory<Item>(this.getInventorySlots());
@@ -358,6 +363,29 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		{
 			this.getCurrentStats().addStat(CreatureStatsAttribs.HIT_COOLDOWN, -1.0D);
 		}
+		
+		StatusEffect currentEffect;
+		for(int i = 0; i < this.statusEffects.size(); ++i)
+		{
+			currentEffect = this.statusEffects.get(i);
+			if(this.statusEffects.get(i).isRemovable())
+			{
+				this.statusEffects.remove(i);
+				currentEffect.onRemove();
+				this.updateMaxStats();
+				--i;
+			}
+			else
+			{
+				currentEffect = this.statusEffects.get(i);
+				currentEffect.update();
+			}
+		}
+		
+		if(!this.statusEffects.isEmpty())
+		{
+			this.updateMaxStats();
+		}
 	}
 	
 	/**
@@ -441,13 +469,23 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		return currentMax;
 	}
 	
+	public void applyStatsFromStatusEffects(CreatureStats prevStats)
+	{
+		for(StatusEffect effect : this.statusEffects)
+		{
+			prevStats.setStats(effect.getStatsModification(prevStats));
+		}
+	}
+	
 	/**
 	 * Calculates the max stats which are used for max. health, etc.
 	 * @return the base stats plus stats from equipped items
 	 */
 	public CreatureStats calculateMaxStats()
 	{
-		return this.baseStats.addCopy(this.statsFromEquipped);
+		CreatureStats equippedItemsStats = this.baseStats.addCopy(this.statsFromEquipped);
+		this.applyStatsFromStatusEffects(equippedItemsStats);
+		return equippedItemsStats;
 	}
 	
 	/**
@@ -954,5 +992,22 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		{
 			this.equippedItems.removeItem(slot);
 		}
+	}
+	
+	/**
+	 * Adds a status effect to the creature. Status effects have a set duration after which they disappear.
+	 * While the status effect is on the creature, its update method is executed continuously.
+	 * Status effects can alter the creature's stats.
+	 * @param effect the status effect to be added
+	 * @param durationTicks the duration in ticks until the effect should be removed
+	 */
+	public final void addStatusEffect(StatusEffect effect, int durationTicks)
+	{
+		if(this.statusEffects.contains(effect))
+		{
+			throw new IllegalArgumentException("Cannot add the same effect instance more than once");
+		}
+		this.statusEffects.add(effect);
+		effect.setRemainingTicks(durationTicks);
 	}
 }
