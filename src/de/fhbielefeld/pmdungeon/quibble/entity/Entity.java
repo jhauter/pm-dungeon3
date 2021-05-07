@@ -3,6 +3,7 @@ package de.fhbielefeld.pmdungeon.quibble.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
 import de.fhbielefeld.pmdungeon.quibble.DungeonLevel;
@@ -297,7 +298,7 @@ public abstract class Entity implements IEntity, IAnimatable, ParticleSource
 		
 		this.animationHandler.frameUpdate();
 		
-		if(!this.isInvisible())
+		if(!this.isInvisible() && this.useDefaultDrawing())
 		{
 			final Point drawingOffsetOverride = this.getDrawingOffsetOverride();
 			if(drawingOffsetOverride != null)
@@ -471,6 +472,28 @@ public abstract class Entity implements IEntity, IAnimatable, ParticleSource
 	public boolean deleteableWorkaround()
 	{
 		return false;
+	}
+	
+	/**
+	 * This method can be overridden to do custom rendering on entities by using a <code>SpriteBatch</code>.
+	 * In order to disable the default rendering, {@link #useDefaultDrawing()} must be overridden.
+	 * @param batch the batch that is used for custom rendering on all entities
+	 */
+	public void doCustomRendering(SpriteBatch batch, float x, float y)
+	{
+		
+	}
+	
+	/**
+	 * Returns whether the entity will be drawn by using the PM-Dungeon API.
+	 * This can be disabled by overriding this method.
+	 * By disabling this method, the entity will not be drawn at all and
+	 * the user is entirely responsible for drawing the entity at the right position.
+	 * @return whether the default drawing for this entity should be used
+	 */
+	public boolean useDefaultDrawing()
+	{
+		return true;
 	}
 	
 	/**
