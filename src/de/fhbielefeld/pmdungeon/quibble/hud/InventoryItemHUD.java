@@ -19,10 +19,10 @@ public class InventoryItemHUD extends HUDElement
 	
 	private int unclickableTicks;
 	
-	public InventoryItemHUD(Inventory<Item> inv, int slot, int x, int y)
+	public InventoryItemHUD(Inventory<Item> inv, int slot, int x, int y, int w, int h)
 	{
 		super(x, y);
-		this.setSize(64, 64);
+		this.setSize(w, h);
 		this.invRef = inv;
 		this.invSlot = slot;
 	}

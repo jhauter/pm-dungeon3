@@ -33,6 +33,7 @@ import de.fhbielefeld.pmdungeon.quibble.input.DungeonInput;
 import de.fhbielefeld.pmdungeon.quibble.input.DungeonInputHandler;
 import de.fhbielefeld.pmdungeon.quibble.input.InputHandler;
 import de.fhbielefeld.pmdungeon.quibble.input.InputListener;
+import de.fhbielefeld.pmdungeon.quibble.inventory.BagInventoryItem;
 import de.fhbielefeld.pmdungeon.quibble.inventory.Inventory;
 import de.fhbielefeld.pmdungeon.quibble.item.Item;
 import de.fhbielefeld.pmdungeon.vorgaben.dungeonCreator.dungeonconverter.Coordinate;
@@ -116,9 +117,18 @@ public class DungeonStart extends MainController implements EntityEventHandler, 
 		this.myHero.setPosition(startingPoint.getX(), startingPoint.getY());
 		
 		this.currentLevel.spawnEntity(this.myHero);
+		
+		
+		BagInventoryItem<Item, Item> bag =  Item.BAG_DEFAULT.createInventoryItem();
+		bag.getBagItems().addItem(Item.POTION_RED_BIG);
+		bag.getBagItems().addItem(Item.SWORD_BLUE);
+		bag.getBagItems().addItem(Item.POTION_YELLOW_BIG);
+		this.myHero.getEquippedItems().addItem(bag);
+		
 
 		this.showInventory("inv", this.myHero.getInventory(), 32, 92);
 		this.showInventory("eqip", this.myHero.getEquippedItems(), 250, 16);
+		
 		
 		/**
 		 * Spawn Chest's
@@ -251,13 +261,32 @@ public class DungeonStart extends MainController implements EntityEventHandler, 
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	private HUDGroup generateInventoryHUD(Inventory<Item> inv, int x, int y)
 	{
 		HUDGroup g = new HUDGroup();
 		this.hudManager.setElementOnMouse(null);
+		int nextItemX = x;
 		for(int i = 0; i < inv.getCapacity(); ++i)
 		{
-			g.addHUDElement(new InventoryItemHUD(inv, i, i * 72 + x, y));
+			if(inv.getItem(i) instanceof BagInventoryItem<?, ?>)
+			{
+				g.addHUDElement(new InventoryItemHUD(inv, i, nextItemX, y, 64, 64));
+				nextItemX += 72;
+				
+				BagInventoryItem<?, ?> bag = (BagInventoryItem<?, ?>)inv.getItem(i);
+				Inventory<?> bagItems = bag.getBagItems();
+				for(int j = 0; j < bagItems.getCapacity(); ++j)
+				{
+					g.addHUDElement(new InventoryItemHUD((Inventory<Item>)bagItems, j, nextItemX, y + 32 * (j % 2), 32, 32));
+					nextItemX += 36 * (j % 2);
+				}
+			}
+			else
+			{
+				g.addHUDElement(new InventoryItemHUD(inv, i, nextItemX, y, 64, 64));
+				nextItemX += 72;
+			}
 		}
 		return g;
 	}
