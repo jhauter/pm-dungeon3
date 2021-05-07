@@ -26,6 +26,7 @@ import de.fhbielefeld.pmdungeon.quibble.file.ResourceType;
 import de.fhbielefeld.pmdungeon.quibble.input.DungeonInputHandler;
 import de.fhbielefeld.pmdungeon.quibble.input.InputHandler;
 import de.fhbielefeld.pmdungeon.quibble.item.Item;
+import de.fhbielefeld.pmdungeon.quibble.particle.DrawingUtil;
 import de.fhbielefeld.pmdungeon.vorgaben.dungeonCreator.dungeonconverter.Coordinate;
 import de.fhbielefeld.pmdungeon.vorgaben.game.Controller.MainController;
 import de.fhbielefeld.pmdungeon.vorgaben.interfaces.IEntity;
@@ -154,8 +155,12 @@ public class DungeonStart extends MainController implements EntityEventHandler
 			this.currentLevel.flushEntityBuffer();
 		}
 		
+		SpriteBatch entityCustomRenderBatch = new SpriteBatch();
 		List<IEntity> entityList = this.entityController.getList();
 		Entity currentEntity;
+		
+		entityCustomRenderBatch.begin();
+		
 		for(int i = 0; i < entityList.size(); ++i)
 		{
 			currentEntity = (Entity)entityList.get(i);
@@ -164,7 +169,15 @@ public class DungeonStart extends MainController implements EntityEventHandler
 				entityList.remove(i);
 				--i;
 			}
+			else if(!currentEntity.isInvisible())
+			{
+				currentEntity.doCustomRendering(entityCustomRenderBatch,
+					DrawingUtil.dungeonToScreenXCam(currentEntity.getX(), this.camera.position.x),
+					DrawingUtil.dungeonToScreenYCam(currentEntity.getY(), this.camera.position.y));
+			}
 		}
+		entityCustomRenderBatch.end();
+		entityCustomRenderBatch.flush();
 		
 		this.currentLevel.getParticleSystem().draw(this.camera.position.x, this.camera.position.y);
 		
