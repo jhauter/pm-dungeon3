@@ -2,7 +2,6 @@ package de.fhbielefeld.pmdungeon.quibble.entity;
 
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
-import de.fhbielefeld.pmdungeon.quibble.item.Item;
 import de.fhbielefeld.pmdungeon.vorgaben.tools.Point;
 
 public class Knight extends Player
@@ -92,7 +91,7 @@ public class Knight extends Player
 	@Override
 	public int getInventorySlots()
 	{
-		return 8;
+		return 5;
 	}
 	
 	@Override
