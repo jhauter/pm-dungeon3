@@ -1,6 +1,5 @@
 package de.fhbielefeld.pmdungeon.quibble.chest;
 
-import java.util.Iterator;
 import java.util.Random;
 
 import de.fhbielefeld.pmdungeon.quibble.entity.Entity;
