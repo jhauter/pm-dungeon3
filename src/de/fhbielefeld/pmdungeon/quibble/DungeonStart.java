@@ -39,7 +39,8 @@ import de.fhbielefeld.pmdungeon.quibble.input.InputListener;
 import de.fhbielefeld.pmdungeon.quibble.inventory.BagInventoryItem;
 import de.fhbielefeld.pmdungeon.quibble.inventory.Inventory;
 import de.fhbielefeld.pmdungeon.quibble.item.Item;
-import de.fhbielefeld.pmdungeon.quibble.trap.TrapTeleport;
+import de.fhbielefeld.pmdungeon.quibble.particle.DrawingUtil;
+import de.fhbielefeld.pmdungeon.quibble.trap.TrapHealth;
 import de.fhbielefeld.pmdungeon.quibble.trap.TrapTeleport;
 import de.fhbielefeld.pmdungeon.vorgaben.dungeonCreator.dungeonconverter.Coordinate;
 import de.fhbielefeld.pmdungeon.vorgaben.game.Controller.MainController;
@@ -174,7 +175,7 @@ public class DungeonStart extends MainController implements EntityEventHandler, 
 		 * Placing Random Traps
 		 */
 		final Point pos3 = this.currentLevel.getDungeon().getRandomPointInDungeon();
-		this.currentLevel.spawnEntity(new TrapTeleport(pos3.x, pos3.y, true));
+		this.currentLevel.spawnEntity(currentLevel.getRNG().nextInt(1) == 0 ? new TrapTeleport(pos3.x, pos3.y, true) : new TrapHealth(pos3.x, pos3.y, 2, true));
 		
 		//Set the camera to follow the hero
 		this.camera.follow(this.myHero);
