@@ -8,6 +8,7 @@ import com.badlogic.gdx.Input;
 
 import de.fhbielefeld.pmdungeon.quibble.LoggingHandler;
 import de.fhbielefeld.pmdungeon.quibble.chest.Chest;
+import de.fhbielefeld.pmdungeon.quibble.entity.event.PlayerOpenChestEvent;
 import de.fhbielefeld.pmdungeon.quibble.input.DungeonInput;
 import de.fhbielefeld.pmdungeon.quibble.input.InputListener;
 import de.fhbielefeld.pmdungeon.quibble.inventory.Inventory;
@@ -171,10 +172,15 @@ public abstract class Player extends Creature implements InputListener
 			Chest chest = this.getClosestChest();
 			if(chest != null)
 			{
-				chest.animationHandler.playAnimation("Open_Gold", 4, false );
-				chest.setOpen();
-		
-				LoggingHandler.logger.log(Level.INFO, Inventory.inventoryString(chest.getInv()));
+				PlayerOpenChestEvent chestEvent = (PlayerOpenChestEvent)this.fireEvent(new PlayerOpenChestEvent(PlayerOpenChestEvent.EVENT_ID, this, chest));
+				
+				if(!chestEvent.isCancelled())
+				{
+					chest.animationHandler.playAnimation("Open_Gold", 4, false);
+					chest.setOpen();
+			
+					LoggingHandler.logger.log(Level.INFO, Inventory.inventoryString(chest.getInv()));
+				}
 			}
 			ItemDrop drop = this.getClosestItemDrop();
 			if(drop != null)
