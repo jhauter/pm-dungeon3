@@ -29,6 +29,7 @@ import de.fhbielefeld.pmdungeon.quibble.file.ResourceHandler;
 import de.fhbielefeld.pmdungeon.quibble.hud.ExpBarHUD;
 import de.fhbielefeld.pmdungeon.quibble.hud.HUDGroup;
 import de.fhbielefeld.pmdungeon.quibble.hud.HUDManager;
+import de.fhbielefeld.pmdungeon.quibble.hud.HealthDisplayHUD;
 import de.fhbielefeld.pmdungeon.quibble.hud.InventoryHUDSwitchListener;
 import de.fhbielefeld.pmdungeon.quibble.hud.InventoryItemHUD;
 import de.fhbielefeld.pmdungeon.quibble.input.DungeonInput;
@@ -79,8 +80,10 @@ public class DungeonStart extends MainController implements EntityEventHandler, 
 	private HUDManager hudManager;
 	
 	private ExpBarHUD expBarHUD;
+	private HealthDisplayHUD healthHUD;
 	
 	private Label expLabel;
+	private Label healthLabel;
 	
 	private Map<String, HUDGroup> shownHUDGroups;
 	private Map<String, Label> shownLabels;
@@ -105,10 +108,12 @@ public class DungeonStart extends MainController implements EntityEventHandler, 
 		this.myHero.getInventory().addInventoryListener(this.invSwitchNormal);
 		this.myHero.getEquippedItems().addInventoryListener(this.invSwitchEquip);
 		this.expBarHUD = new ExpBarHUD(this.myHero, 16, 432);
+		this.healthHUD = new HealthDisplayHUD(this.myHero, 16, 368);
 		this.inputHandler.addInputListener(myHero);
 		this.inputHandler.addInputListener(this);
 		this.hudManager = new HUDManager();
 		this.hudManager.addElement(this.expBarHUD);
+		this.hudManager.addElement(this.healthHUD);
 		this.lastFrameTimeStamp = System.currentTimeMillis();
 		Gdx.app.getGraphics().setResizable(false);
 		
@@ -142,20 +147,16 @@ public class DungeonStart extends MainController implements EntityEventHandler, 
 		
 		this.currentLevel.spawnEntity(this.myHero);
 		
-		
-		BagInventoryItem<Item, Item> bag =  Item.BAG_DEFAULT.createInventoryItem();
-		bag.getBagItems().addItem(Item.POTION_RED_BIG);
-		bag.getBagItems().addItem(Item.SWORD_BLUE);
-		bag.getBagItems().addItem(Item.POTION_YELLOW_BIG);
-		this.myHero.getEquippedItems().addItem(bag);
-		
-		
 		this.invSwitchNormal.show();
 		this.invSwitchEquip.show();
 		
 		if(this.expLabel == null)
 		{
 			this.expLabel = this.textHUD.drawText("Level: 0", FONT_ARIAL, Color.WHITE, 24, 200, 64, 16, 432);
+		}
+		if(this.healthLabel == null)
+		{
+			this.healthLabel = this.textHUD.drawText("Health", FONT_ARIAL, Color.WHITE, 24, 200, 64, 16, 384);
 		}
 		
 		/**
