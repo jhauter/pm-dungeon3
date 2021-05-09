@@ -94,7 +94,7 @@ public class Knight extends Player
 	@Override
 	public int getInventorySlots()
 	{
-		return 8;
+		return 5;
 	}
 	
 	@Override
