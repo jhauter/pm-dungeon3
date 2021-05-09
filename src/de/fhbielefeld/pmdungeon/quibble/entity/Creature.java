@@ -13,7 +13,9 @@ import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsEventListener;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.DamageSource;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.DamageType;
+import de.fhbielefeld.pmdungeon.quibble.entity.effect.StatusEffect;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.CreatureDamageEvent;
+import de.fhbielefeld.pmdungeon.quibble.entity.event.CreatureExpEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.CreatureHitTargetEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.CreatureHitTargetPostEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.CreatureStatChangeEvent;
@@ -50,6 +52,11 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	 * Event ID for <code>CreatureHitTargetPostEvent</code>.
 	 */
 	public static final int EVENT_ID_HIT_TARGET_POST = EntityEvent.genEventID();
+	
+	/**
+	 * Event ID for <code>CreatureExpEvent</code>.
+	 */
+	public static final int EVENT_ID_EXP_CHANGE = EntityEvent.genEventID();
 	
 	private static final int ANIM_SWITCH_IDLE_L = 0;
 	private static final int ANIM_SWITCH_IDLE_R = 1;
@@ -143,6 +150,8 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	
 	private Inventory<Item> equippedItems;
 	
+	private List<StatusEffect> statusEffects;
+	
 	/**
 	 * @param x x-coordinate
 	 * @param y y-coordinate
@@ -161,6 +170,8 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		this.currentStats = new CreatureStats(this.maxStats);
 		this.currentStats.setEventListener(this);
 		//==============================
+		
+		this.statusEffects = new ArrayList<>();
 		
 		
 		this.inventory = new DefaultInventory<Item>(this.getInventorySlots());
@@ -358,6 +369,29 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		{
 			this.getCurrentStats().addStat(CreatureStatsAttribs.HIT_COOLDOWN, -1.0D);
 		}
+		
+		StatusEffect currentEffect;
+		for(int i = 0; i < this.statusEffects.size(); ++i)
+		{
+			currentEffect = this.statusEffects.get(i);
+			if(this.statusEffects.get(i).isRemovable())
+			{
+				this.statusEffects.remove(i);
+				currentEffect.onRemove();
+				this.updateMaxStats();
+				--i;
+			}
+			else
+			{
+				currentEffect = this.statusEffects.get(i);
+				currentEffect.update();
+			}
+		}
+		
+		if(!this.statusEffects.isEmpty())
+		{
+			this.updateMaxStats();
+		}
 	}
 	
 	/**
@@ -441,13 +475,24 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		return currentMax;
 	}
 	
+	public void applyStatsFromStatusEffects(CreatureStats prevStats)
+	{
+		for(StatusEffect effect : this.statusEffects)
+		{
+			prevStats.setStats(effect.getStatsModification(prevStats));
+		}
+	}
+	
 	/**
 	 * Calculates the max stats which are used for max. health, etc.
 	 * @return the base stats plus stats from equipped items
 	 */
 	public CreatureStats calculateMaxStats()
 	{
-		return this.baseStats.addCopy(this.statsFromEquipped);
+		this.baseStats.setStats(this.getBaseStatsForLevel(this.expLevelFunction(this.expLevel)));
+		CreatureStats equippedItemsStats = this.baseStats.addCopy(this.statsFromEquipped);
+		this.applyStatsFromStatusEffects(equippedItemsStats);
+		return equippedItemsStats;
 	}
 	
 	/**
@@ -631,7 +676,7 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	 */
 	public void hit(Creature target, DamageType damageType)
 	{
-		if(this.isDead)
+		if(this.isDead || target.isDead)
 		{
 			return;
 		}
@@ -670,6 +715,11 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		
 		this.fireEvent(new CreatureHitTargetPostEvent(EVENT_ID_HIT_TARGET_POST, this, target, damageType, damage));
 		//Canceling target post event has no effect
+		
+		if(target.isDead)
+		{
+			this.rewardExp(target.getExpDrop());
+		}
 	}
 	
 	/**
@@ -954,5 +1004,76 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		{
 			this.equippedItems.removeItem(slot);
 		}
+	}
+	
+	/**
+	 * Adds a status effect to the creature. Status effects have a set duration after which they disappear.
+	 * While the status effect is on the creature, its update method is executed continuously.
+	 * Status effects can alter the creature's stats.
+	 * @param effect the status effect to be added
+	 * @param durationTicks the duration in ticks until the effect should be removed
+	 */
+	public final void addStatusEffect(StatusEffect effect, int durationTicks)
+	{
+		if(this.statusEffects.contains(effect))
+		{
+			throw new IllegalArgumentException("Cannot add the same effect instance more than once");
+		}
+		this.statusEffects.add(effect);
+		effect.setRemainingTicks(durationTicks);
+	}
+	
+	/**
+	 * Can be overridden to change the number of exp killing this creature is rewarded.
+	 * @return the number of exp killing this creature is rewarded
+	 */
+	public int getExpDrop()
+	{
+		return 0;
+	}
+	
+	/**
+	 * Function used to calculate the level from the total exp.
+	 * @param totalExp the total exp
+	 * @return the level that this creature would have with the given total exp
+	 */
+	public int expLevelFunction(int totalExp)
+	{
+		return (int)(totalExp * 0.1);
+	}
+	
+	/**
+	 * Function used to calculate the required exp for every level
+	 * @param expLevel the level
+	 * @return the total exp required to reach the given level
+	 */
+	public int totalExpFunction(int expLevel)
+	{
+		return expLevel * 10;
+	}
+	
+	public void setTotalExp(int exp)
+	{
+		CreatureExpEvent event = (CreatureExpEvent)this.fireEvent(new CreatureExpEvent(EVENT_ID_EXP_CHANGE, this, this.expLevel, exp));
+		if(!event.isCancelled())
+		{
+			this.expLevel = event.getNewTotalExp();
+			this.updateMaxStats();
+		}
+	}
+	
+	public int getTotalExp()
+	{
+		return this.expLevel;
+	}
+	
+	public void rewardExp(int exp)
+	{
+		this.setTotalExp(this.expLevel + exp);
+	}
+	
+	public int getCurrentExpLevel()
+	{
+		return this.expLevelFunction(this.expLevel);
 	}
 }

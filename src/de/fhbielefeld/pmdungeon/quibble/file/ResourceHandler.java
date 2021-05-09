@@ -14,15 +14,45 @@ public class ResourceHandler
 	{
 		private final String path;
 		private final DungeonResource<?> resourceInstance;
+		private final ResourceType resType;
 		
-		public LoadingData(String path, DungeonResource<?> resourceInstance)
+		public LoadingData(String path, DungeonResource<?> resourceInstance, ResourceType type)
 		{
 			this.path = path;
 			this.resourceInstance = resourceInstance;
+			this.resType = type;
 		}
 	}
 	
-	private static Map<String, DungeonResource<?>> resources = new HashMap<>();
+	private static class ResourceMap
+	{
+		private Map<ResourceType, Map<String, DungeonResource<?>>> resources = new HashMap<>();
+		
+		private DungeonResource<?> getResource(String path, ResourceType type)
+		{
+			Map<String, DungeonResource<?>> resMap = this.resources.get(type);
+			if(resMap == null)
+			{
+				resMap = new HashMap<>();
+				this.resources.put(type, resMap);
+				return null;
+			}
+			return resMap.get(path);
+		}
+		
+		private void putResource(String path, ResourceType type, DungeonResource<?> res)
+		{
+			Map<String, DungeonResource<?>> resMap = this.resources.get(type);
+			if(resMap == null)
+			{
+				resMap = new HashMap<>();
+				this.resources.put(type, resMap);
+			}
+			resMap.put(path, res);
+		}
+	}
+	
+	private static ResourceMap resourceMap = new ResourceMap();
 	
 	private static Deque<LoadingData> loadingQueue = new ArrayDeque<>();
 	
@@ -42,13 +72,13 @@ public class ResourceHandler
 	@SuppressWarnings("unchecked")
 	public static <T> DungeonResource<T> requestResource(String path, ResourceType type)
 	{
-		DungeonResource<?> res = resources.get(path);
+		DungeonResource<?> res = resourceMap.getResource(path, type);
 		if(res != null)
 		{
 			return (DungeonResource<T>)res;
 		}
 		res = type.newResourceInstance();
-		loadingQueue.push(new LoadingData(path, res));
+		loadingQueue.push(new LoadingData(path, res, type));
 		return (DungeonResource<T>)res;
 	}
 	
@@ -66,24 +96,25 @@ public class ResourceHandler
 	@SuppressWarnings("unchecked")
 	public static <T> DungeonResource<T> requestResourceInstantly(String path, ResourceType type)
 	{
-		DungeonResource<?> res = resources.get(path);
+		DungeonResource<?> res = resourceMap.getResource(path, type);
 		if(res != null)
 		{
 			return (DungeonResource<T>)res;
 		}
 		res = type.newResourceInstance();
-		loadResource(res, path);
+		loadResource(res, path, type);
 		return (DungeonResource<T>)res;
 	}
 	
 	/**
 	 * Checks whether a resource on the specified path has been loaded yet.
 	 * @param id the path
+	 * @param type the type of the resource to check for
 	 * @return whether the specified resource has been loaded yet
 	 */
-	public static boolean isLoaded(String id)
+	public static boolean isLoaded(String id, ResourceType type)
 	{
-		DungeonResource<?> res = resources.get(id);
+		DungeonResource<?> res = resourceMap.getResource(id, type);
 		if(res != null)
 		{
 			return res.isLoaded();
@@ -100,11 +131,11 @@ public class ResourceHandler
 		while(!loadingQueue.isEmpty())
 		{
 			currentObj = loadingQueue.pop();
-			loadResource(currentObj.resourceInstance, currentObj.path);
+			loadResource(currentObj.resourceInstance, currentObj.path, currentObj.resType);
 		}
 	}
 	
-	private static void loadResource(DungeonResource<?> resourceInstance, String path)
+	private static void loadResource(DungeonResource<?> resourceInstance, String path, ResourceType type)
 	{
 		try
 		{
@@ -115,6 +146,6 @@ public class ResourceHandler
 			LoggingHandler.logger.log(Level.SEVERE, "Failed to load a resource: " + e);
 		}
 		//Put it in, even if exceptions are thrown because programs can get the resource and check with hasError()
-		resources.put(path, resourceInstance);
+		resourceMap.putResource(path, type, resourceInstance);
 	}
 }
