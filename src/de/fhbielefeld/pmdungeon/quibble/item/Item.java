@@ -38,7 +38,7 @@ public abstract class Item
 	public static final ItemSpeedPotion POTION_YELLOW_Small = new ItemSpeedPotion("Small Healing Potion", 0.2D, "pot_yellow_small");
 	public static final ItemWeaponMelee SWORD_BLUE = new ItemSwordBlue("Blue Sword", 1.25F, 1.25F, 3.5F, 0.25F, "sword_blue");
 	public static final ItemWeaponMelee SWORD_KATANA = new ItemKatana("Katana", 0.25F, 1.25F, 3.5F, 0.25F, "katana");
-	public static final ItemBag<Item> BAG_DEFAULT = new ItemBag<Item>("Bag", 4, "bag");
+	public static final ItemBag<Item> BAG_DEFAULT = new ItemBag<Item>("Bag", 3, "bag");
 	
 	private final String displayName;
 	

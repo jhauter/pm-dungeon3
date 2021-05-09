@@ -69,9 +69,9 @@ public class ItemBag<C extends Item> extends Item
 	 * {@inheritDoc}
 	 */
 	@Override
-	public BagInventoryItem<ItemBag<C>, C> createInventoryItem()
+	public BagInventoryItem<Item, C> createInventoryItem()
 	{
-		return new BagInventoryItem<ItemBag<C>, C>(this, this.bagCapacity);
+		return new BagInventoryItem<Item, C>(this, this.bagCapacity);
 	}
 
 	@Override
