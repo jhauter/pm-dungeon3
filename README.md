@@ -1,5 +1,5 @@
 ---
-title:  'Lerntagebuch zur Bearbeitung von Blatt 03
+title:  'Lerntagebuch zur Bearbeitung von Blatt 04
 author:
 - Andreas Wegner (andreas.wegner@fh-bielefeld.de)
 - Malte Kanders (malte_theodor.kanders@fh-bielefeld.de)
@@ -38,10 +38,11 @@ sowie [Praktikumsblatt "Lerntagebuch"](pm_praktikum.html#lerntagebuch).
 Bitte hier die zu lösende Aufgabe kurz in eigenen Worten beschreiben.
 -->
 
-Wir sollten Heiltränke implementieren, sowie Waffen und Zaubersprüche, die ins Inventar gelegt werden können und auch wieder fallen gelassen werden können. Das Invertar soll per
-Tastendruck geloggt werden. Unser Held kann aktiv Monster angreifen und besiegen. Verschiedene Items sollen unterschiedliche Wirkungen haben.
-Im Dungeon sollen Schatzkisten verteilt sein, die zufällige Items beinhalten, welche man herausnehmen kann. Außerdem soll es Taschen geben, welche man ins Inventar legen kann, 
-die wiederum Items eines bestimmten Typen beinhalten können.
+Das Inventar soll als HUD grafisch dargestellt werden. Ebenso soll auch die Anzahl der Lebenspunkte des Spielers angezeigt werden.
+Der Spieler soll in der Lage sein, Erfahrungspunkte zu sammeln und Level aufzusteigen. Für das Aufsteigen von Level
+soll es Belohnungen und zusätzliche Fähigkeiten geben, wie zum Beispiel mehr Schaden.
+Es soll Fallen im Dungeon geben, die verschiedene Effekte auf den Spieler ausüben, wenn er drauftritt.
+Manche Fallen sollen nur durch Wirkung eines Trankes sichbar sein.
 
 
 # Ansatz und Modellierung
@@ -54,30 +55,28 @@ Bitte hier den Lösungsansatz kurz beschreiben:
 -   Worauf müssen Sie konkret achten?
 -->
 
-Bei der Umsetzung der Items sollte besonders auf den OOP-Gedanken Wert gelegt werden. Außerdem sollte beim Loggen des Inventares das Visitor-Pattern genutzt werden.
-Zu erst haben wir erkannt, dass es 3 verschiedene Arten gibt, in denen Items im Spiel auftreten können:
+Um das Inventar anzuzeigen, soll das HUD verwendet werden. Dies besteht aus einer Reihe von Objekten, die jeweils
+einen Gegenstand im Inventar anzeigen. Wenn sich das Inventar ändert, zum Beispiel durch herausnehmen eines Gegenstandes,
+muss das HUD aktualisiert werden. Dazu nehmen wir ein EventListener-Modell, nach welchem das Inventar das HUD benachrichtigt,
+wenn im Inventar eine änderung stattfindet. Das HUD passt sich dann entsprechend an.
+Die Lebenspunkte und Erfahrung können wir auch mit HUD-Objekten anzeigen lassen.
+In diesem Fall machen wir die HUD-Objekte aber aktiv, im vergleich zum Inventar-HUD.
+Dafür greifen wir auf LibGDX zu und zeichnen die Herzen, die die Lebenspunkte darstellen, mit nur einem Objekt selbst.
+So ist kein Observer-Pattern nötig und die Grafik aktualisiert sich von alleine.
+Das selbe Vorgehen benutzen wir bei der Anzeige der Erfahrungspunkte.
 
-* als Drop im Dungeon
-* als Item-Instanz im Inventar
-* als einzigartiger Datensatz pro Item im Spiel
+Um ein Erfahrungspunktesystem zu implementieren, haben wir uns überlegt, sollte jede Kreatur
+eine Variable bekommen, die die kompletten Erfahrungspunkte zählt. Es gibt keine Variable, welche das aktuelle Level speichert.
+Das aktuelle Level wird mithilfe einer Funktion berechnet, die aus den kompletten Erfahrungspunkten das aktuelle Level berechnet.
+Somit kann man theoretisch unendlich viele Level aufsteigen, ohne diese vorher zu konfigurieren.
+Außerdem ist es möglich, die kompletten Erfahrungspunkte auf einen beliebigen Wert zu setzen,
+ohne dass irgendwelche Zähler durcheinander kommen.
+Die Statuswerte jeder Kreatur sind abhängig von dem Level der Kreatur. Somit lassen sich leicht
+bestimmte Statuswerte bei einem Levelaufstieg erhöhen.
 
-Unser Ansatz ist es also eine `Item`-Klasse zu erstellen, die statische Referenzen zu im Spiel registrierten Items enthält.
-Diese statischen Objekte haben Callback-Methoden, die zum Beispiel immer ausgeführt werden, wenn ein Wesen ein Item benutzt.
-
-Da wir bei Taschen Generics benutzen sollen, hilft dies auch dabei, die entsprechenden Item-Typen für die Generics zu definieren.
-Die Item-Instanzen im inventar stellen wir mit dem Interface `InventoryItem` dar, welche zu Inventaren hinzugefügt werden können,
-die wir mit dem Interface `Inventory` dar stellen. Diese beiden Interfaces sind generische Typen, da sie auch als Inventare für Truhen und Taschen genutzt werden sollen,
-welche ebenfalls generisch sind. Dadurch, dass Items im Inventar eigene Instanzen sind, ist es möglich, für die Taschen eine eigene Unterklasse zu erstellen,
-welche ein eigenes Inventar besitzt. So hat man praktisch Inventare in Inventaren.
-
-Nützlich ist dieser Ansatz auch bei der Erstellung von den Drop-Entities, da diese bloß eine einzige Klasse benötigen, welche nur eine `InventoryItem`-Instanz
-besitzen. Diese `InventoryItem`-Instanz ist dann sozusagen das Item, das auf dem Boden liegt. Das Entity ist dabei sozusagen ein Wrapper. Und das funktioniert
-dann sogar für Taschen, in denen Items drin sind.
-
-Als letztes bleiben noch die Truhen, welche wir als Entity mit einem Inventar erstellen können. Unser am Anfang ersteller `AnimationHandler` hilft
-uns hierbei, eine schöne "öffnen"-Animation anzuzeigen.
-
-Die Steuerung, mit welcher der Spieler mit dem Inventar und Truhen interagieren kann, bauen wir in die `Player`-Klasse ein, die eine Oberklasse vom Helden ist.
+Fallen sind bei uns ein eigener Entity-Zweig. Sie nutzen die eingebaute Kollisionserkennung,
+um zu erkennen, wenn ein Spieler auf sie tritt. Die Effekte einer Falle werden nach dem OOP-Prinzip,
+in den Unterklassen der Fallen festgehalten.
 
 
 # Umsetzung
@@ -90,10 +89,13 @@ Bitte hier die Umsetzung der Lösung kurz beschreiben:
 -   was war das Ergebnis?
 -->
 
-Die Umsetzung hat insgesamt schätzungsweise 20 Stunden gedauert.
-Wir haben an vereinzelten Tagen der ganzen Woche gearbeitet und nicht nur in einem bestimmten Zeitraum.
-Zu erst haben wir die statischen Items und deren Verhalten eingebaut, da diese die Grundlage sind.
-Danach haben wir das Inventar erstellt und zum Schluss die Item-Drops und Truhen.
+Wir haben wieder in etwa 20 Stunden insgesamt gebracht, was aber nur eine Schätzung
+ist, da wir die Zeit nicht zählen.
+Auch haben wir wieder vereinzelt im Laufe der Woche gearbeitet, anstatt uns auf besonderen
+Tagen zu verabreden.
+Die Aufgaben aus diesem Blatt konnte man ziemlich unabhängig voneinander machen,
+weshalb wir die Aufgaben gut aufteilen konnten, so dass wir alles gleichzeitig machen konnten
+und am Ende zusammentragen konnten.
 
 # Postmortem
 
@@ -105,5 +107,9 @@ kritisch zurück:
 -   Wie haben Sie die Probleme letztlich gelöst?
 -->
 
-Es hat im Großen und Ganzen gut funktioniert. Nur die Generics haben an manchen Stellen Schwierigkeiten bereiten,
-da es ungewohnt war, in so einem Umfang mit ihnen zu arbeiten.
+Alles hat ganz gut funktioniert und mache der Grafiken sehen überraschend gut aus.
+Wir mussten zum ersten mal mit der Text-API arbeiten, über welche wir immer noch
+etwas lernen müssen, wie sie funktioniert.
+Auch durch das arbeiten mit Git entstehen manchmal Schwierigkeiten, da
+wir alle Git-Neulinge sind. Aber durch etwas Recherche konnten viele Probleme
+geöst werden. 

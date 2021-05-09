@@ -28,6 +28,8 @@ public class Knight extends Player
 		this.animationHandler.addAnimation(Creature.ANIM_NAME_RUN_L, 4, 2, "assets/textures/entity/knight/knight_m_run_left_anim_f.png", 4);
 		this.animationHandler.addAnimation(Creature.ANIM_NAME_HIT_R, 1, 15, "assets/textures/entity/knight/knight_m_hit_right_anim_f.png", 4);
 		this.animationHandler.addAnimation(Creature.ANIM_NAME_HIT_L, 1, 15, "assets/textures/entity/knight/knight_m_hit_left_anim_f.png", 4);
+		
+		this.getEquippedItems().addItem(Item.POTION_SIGHT_BIG);
 	}
 	
 	/**
@@ -63,9 +65,9 @@ public class Knight extends Player
 		stats.setStat(CreatureStatsAttribs.CRIT_CHANCE, 0.1D);
 		stats.setStat(CreatureStatsAttribs.KNOCKBACK, 0.4D);
 		stats.setStat(CreatureStatsAttribs.KNOCKBACK_RES, 0.1D);
-		stats.setStat(CreatureStatsAttribs.DAMAGE_PHYS, 1.0D);
+		stats.setStat(CreatureStatsAttribs.DAMAGE_PHYS, 1.0D + level);
 		stats.setStat(CreatureStatsAttribs.DAMAGE_MAGIC, 1.0D);
-		stats.setStat(CreatureStatsAttribs.WALKING_SPEED, 0.1D);
+		stats.setStat(CreatureStatsAttribs.WALKING_SPEED, 0.1D + level * 0.025D);
 		stats.setStat(CreatureStatsAttribs.HIT_REACH, 0.6D);
 		stats.setStat(CreatureStatsAttribs.HIT_COOLDOWN, 15.0D);
 		return stats;
