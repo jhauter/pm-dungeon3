@@ -19,18 +19,32 @@ public class InventoryItemHUD extends HUDElement
 	
 	private int unclickableTicks;
 	
-	public InventoryItemHUD(Inventory<Item> inv, int slot, int x, int y, int w, int h)
+	private final boolean isInsideBag;
+	
+	public InventoryItemHUD(Inventory<Item> inv, int slot, int x, int y, int w, int h, boolean inBag)
 	{
 		super(x, y);
 		this.setSize(w, h);
 		this.invRef = inv;
 		this.invSlot = slot;
+		this.isInsideBag = inBag;
+		this.unclickableTicks = 5;
+	}
+	
+	public InventoryItemHUD(Inventory<Item> inv, int slot, int x, int y, int w, int h)
+	{
+		this(inv, slot, x, y, w, h, false);
 	}
 
 	@Override
 	public String getTexturePath()
 	{
 		return "assets/textures/hud/slot.png";
+	}
+	
+	public boolean isInsideBag()
+	{
+		return this.isInsideBag;
 	}
 	
 	@Override
@@ -46,6 +60,7 @@ public class InventoryItemHUD extends HUDElement
 			hudManager.setElementOnMouse(new InventoryItemMouseHUD(this));
 			this.showAsEmptySlot = true;
 		}
+		this.unclickableTicks = 5;
 	}
 	
 	public Inventory<Item> getInventoryReference()
@@ -61,6 +76,11 @@ public class InventoryItemHUD extends HUDElement
 	public void setShowAsEmpty(boolean b)
 	{
 		this.showAsEmptySlot = b;
+	}
+	
+	public void setUnclickableTicks(int t)
+	{
+		this.unclickableTicks = t;
 	}
 	
 	@Override

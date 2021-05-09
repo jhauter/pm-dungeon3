@@ -1,5 +1,6 @@
 package de.fhbielefeld.pmdungeon.quibble.hud;
 
+import de.fhbielefeld.pmdungeon.quibble.inventory.BagInventoryItem;
 import de.fhbielefeld.pmdungeon.quibble.inventory.Inventory;
 import de.fhbielefeld.pmdungeon.quibble.inventory.InventoryItem;
 import de.fhbielefeld.pmdungeon.quibble.item.Item;
@@ -37,14 +38,28 @@ public class InventoryItemMouseHUD extends HUDElement
 			return;
 		}
 		InventoryItemHUD slotClickedOn = (InventoryItemHUD)clickedOn;
+		if(this.sourceSlot.getInventoryReference().getItem(this.sourceSlot.getInventorySlot()) instanceof BagInventoryItem<?, ?>)
+		{
+			//if its in a bag, dont do anything
+			if(slotClickedOn.isInsideBag())
+			{
+				return;
+			}
+		}
+
+		boolean isTargetABag = slotClickedOn.getInventoryReference().getItem(slotClickedOn.getInventorySlot()) instanceof BagInventoryItem<?, ?>;
+		if(this.sourceSlot.isInsideBag() && isTargetABag)
+		{
+			return;
+		}
+		
 		if(slotClickedOn != this.sourceSlot)//not clicked the same slot from where the item was taken
 		{
 			Inventory.swap(this.sourceSlot.getInventoryReference(), this.sourceSlot.getInventorySlot(),
 				slotClickedOn.getInventoryReference(), slotClickedOn.getInventorySlot());
 		}
 		this.markAsRemovable();
-		
-//		slotClickedOn.unclickableTicks = 1;
+		slotClickedOn.setUnclickableTicks(5);
 	}
 	
 	@Override
