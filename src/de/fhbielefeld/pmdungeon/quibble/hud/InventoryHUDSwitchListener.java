@@ -16,13 +16,16 @@ public class InventoryHUDSwitchListener implements InventoryListener<Item>
 	
 	private final int displayX, displayY;
 	
-	public InventoryHUDSwitchListener(DungeonStart mainRef, String invID, Inventory<Item> inv, int x, int y)
+	private final String invName;
+	
+	public InventoryHUDSwitchListener(DungeonStart mainRef, String invID, Inventory<Item> inv, String name, int x, int y)
 	{
 		this.mainRef = mainRef;
 		this.inventoryID = invID;
 		this.inventory = inv;
 		this.displayX = x;
 		this.displayY = y;
+		this.invName = name;
 	}
 	
 	@Override
@@ -33,6 +36,6 @@ public class InventoryHUDSwitchListener implements InventoryListener<Item>
 	
 	public void show()
 	{
-		this.mainRef.showInventory(this.inventoryID, this.inventory, this.displayX, this.displayY);
+		this.mainRef.showInventory(this.inventoryID, this.inventory, this.invName, this.displayX, this.displayY);
 	}
 }

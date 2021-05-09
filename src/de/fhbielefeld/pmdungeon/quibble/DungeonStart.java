@@ -6,6 +6,9 @@ import java.util.Map;
 import java.util.logging.Level;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 
 import de.fhbielefeld.pmdungeon.desktop.DesktopLauncher;
 import de.fhbielefeld.pmdungeon.quibble.chest.GoldenChest;
@@ -72,11 +75,13 @@ public class DungeonStart extends MainController implements EntityEventHandler, 
 	private HUDManager hudManager;
 	
 	private Map<String, HUDGroup> shownHUDGroups;
+	private Map<String, Label> shownLabels;
 	
 	public DungeonStart()
 	{
 		this.inputHandler = new DungeonInputHandler();
 		this.shownHUDGroups = new HashMap<>();
+		this.shownLabels = new HashMap<>();
 		LoggingHandler.logger.setLevel(Level.CONFIG);
 	}
 	
@@ -87,8 +92,8 @@ public class DungeonStart extends MainController implements EntityEventHandler, 
 		this.myHero = new Knight();
 		this.myHero.getEquippedItems().addItem(Item.SWORD_BLUE);
 		this.myHero.addEntityEventHandler(this);
-		this.invSwitchNormal = new InventoryHUDSwitchListener(this, INV_NAME_DEFAULT, this.myHero.getInventory(), 32, 92);
-		this.invSwitchEquip = new InventoryHUDSwitchListener(this, INV_NAME_EQUIP, this.myHero.getEquippedItems(), 32, 16);
+		this.invSwitchNormal = new InventoryHUDSwitchListener(this, INV_NAME_DEFAULT, this.myHero.getInventory(), "Inventory", 16, 176);
+		this.invSwitchEquip = new InventoryHUDSwitchListener(this, INV_NAME_EQUIP, this.myHero.getEquippedItems(), "Equipment", 16, 76);
 		this.myHero.getInventory().addInventoryListener(this.invSwitchNormal);
 		this.myHero.getEquippedItems().addInventoryListener(this.invSwitchEquip);
 		this.inputHandler.addInputListener(myHero);
@@ -251,16 +256,19 @@ public class DungeonStart extends MainController implements EntityEventHandler, 
 		{
 			final PlayerOpenChestEvent chestEvent = (PlayerOpenChestEvent)event;
 			
-			this.showInventory(INV_NAME_CHEST, chestEvent.getChest().getInv(), 32, 300);
+			this.showInventory(INV_NAME_CHEST, chestEvent.getChest().getInv(), "Chest", 16, 288);
 		}
 	}
 	
-	public void showInventory(String id, Inventory<Item> inv, int x, int y)
+	public void showInventory(String id, Inventory<Item> inv, String name, int x, int y)
 	{
 		this.closeInventory(id);
-		HUDGroup g = this.generateInventoryHUD(inv, x, y);
+		HUDGroup g = this.generateInventoryHUD(inv, x, y - 60);
 		this.hudManager.addGroup(g);
 		this.shownHUDGroups.put(id, g);
+		
+		System.out.println(id);
+		this.shownLabels.put(id, this.textHUD.drawText(name, "assets/textures/font/arial.ttf", Color.WHITE, 24, 200, 32, x, y));
 	}
 	
 	public void closeInventory(String id)
@@ -270,6 +278,12 @@ public class DungeonStart extends MainController implements EntityEventHandler, 
 		{
 			this.hudManager.removeGroup(g);
 			this.hudManager.setElementOnMouse(null);
+		}
+		if(this.shownLabels.get(id) != null)
+		{
+			this.textHUD.removeText(this.shownLabels.get(id));
+			System.out.println(id);
+			this.shownLabels.remove(id);
 		}
 	}
 	
