@@ -19,12 +19,14 @@ import de.fhbielefeld.pmdungeon.quibble.entity.Goblin;
 import de.fhbielefeld.pmdungeon.quibble.entity.Knight;
 import de.fhbielefeld.pmdungeon.quibble.entity.Player;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
+import de.fhbielefeld.pmdungeon.quibble.entity.event.CreatureExpEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.CreatureHitTargetPostEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.CreatureStatChangeEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEventHandler;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.PlayerOpenChestEvent;
 import de.fhbielefeld.pmdungeon.quibble.file.ResourceHandler;
+import de.fhbielefeld.pmdungeon.quibble.hud.ExpBarHUD;
 import de.fhbielefeld.pmdungeon.quibble.hud.HUDGroup;
 import de.fhbielefeld.pmdungeon.quibble.hud.HUDManager;
 import de.fhbielefeld.pmdungeon.quibble.hud.InventoryHUDSwitchListener;
@@ -56,6 +58,8 @@ public class DungeonStart extends MainController implements EntityEventHandler, 
 	public static final String INV_NAME_DEFAULT = "inv";
 	public static final String INV_NAME_EQUIP = "equip";
 	public static final String INV_NAME_CHEST = "chest";
+	
+	public static final String FONT_ARIAL = "assets/textures/font/arial.ttf";
 
 	private InventoryHUDSwitchListener invSwitchNormal;
 	private InventoryHUDSwitchListener invSwitchEquip;
@@ -73,6 +77,10 @@ public class DungeonStart extends MainController implements EntityEventHandler, 
 	private long lastFrameTimeStamp;
 	
 	private HUDManager hudManager;
+	
+	private ExpBarHUD expBarHUD;
+	
+	private Label expLabel;
 	
 	private Map<String, HUDGroup> shownHUDGroups;
 	private Map<String, Label> shownLabels;
@@ -96,11 +104,13 @@ public class DungeonStart extends MainController implements EntityEventHandler, 
 		this.invSwitchEquip = new InventoryHUDSwitchListener(this, INV_NAME_EQUIP, this.myHero.getEquippedItems(), "Equipment", 16, 76);
 		this.myHero.getInventory().addInventoryListener(this.invSwitchNormal);
 		this.myHero.getEquippedItems().addInventoryListener(this.invSwitchEquip);
+		this.expBarHUD = new ExpBarHUD(this.myHero, 16, 432);
 		this.inputHandler.addInputListener(myHero);
 		this.inputHandler.addInputListener(this);
 		this.hudManager = new HUDManager();
+		this.hudManager.addElement(this.expBarHUD);
 		this.lastFrameTimeStamp = System.currentTimeMillis();
-		Gdx.app.getGraphics().setResizable(true);
+		Gdx.app.getGraphics().setResizable(false);
 		
 		LoggingHandler.logger.log(Level.INFO, "Setup done.");
 	}
@@ -142,6 +152,11 @@ public class DungeonStart extends MainController implements EntityEventHandler, 
 		
 		this.invSwitchNormal.show();
 		this.invSwitchEquip.show();
+		
+		if(this.expLabel == null)
+		{
+			this.expLabel = this.textHUD.drawText("Level: 0", FONT_ARIAL, Color.WHITE, 24, 200, 64, 16, 432);
+		}
 		
 		/**
 		 * Spawn Chest's
@@ -258,6 +273,18 @@ public class DungeonStart extends MainController implements EntityEventHandler, 
 			
 			this.showInventory(INV_NAME_CHEST, chestEvent.getChest().getInv(), "Chest", 16, 288);
 		}
+		else if(event.getEventID() == Creature.EVENT_ID_EXP_CHANGE)
+		{
+			final CreatureExpEvent expEvent = (CreatureExpEvent)event;
+
+			int oldLevel = expEvent.getEntity().expLevelFunction(expEvent.getPreviousTotalExp());
+			int newLevel = expEvent.getEntity().expLevelFunction(expEvent.getNewTotalExp());
+			if(newLevel > oldLevel)
+			{
+				LoggingHandler.logger.log(Level.INFO, "New Level: " + newLevel);
+				this.expLabel.setText("Level: " + newLevel);
+			}
+		}
 	}
 	
 	public void showInventory(String id, Inventory<Item> inv, String name, int x, int y)
@@ -268,7 +295,7 @@ public class DungeonStart extends MainController implements EntityEventHandler, 
 		this.shownHUDGroups.put(id, g);
 		
 		System.out.println(id);
-		this.shownLabels.put(id, this.textHUD.drawText(name, "assets/textures/font/arial.ttf", Color.WHITE, 24, 200, 32, x, y));
+		this.shownLabels.put(id, this.textHUD.drawText(name, FONT_ARIAL, Color.WHITE, 24, 200, 32, x, y));
 	}
 	
 	public void closeInventory(String id)
