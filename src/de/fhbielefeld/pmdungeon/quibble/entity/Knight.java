@@ -62,9 +62,9 @@ public class Knight extends Player
 		stats.setStat(CreatureStatsAttribs.CRIT_CHANCE, 0.1D);
 		stats.setStat(CreatureStatsAttribs.KNOCKBACK, 0.4D);
 		stats.setStat(CreatureStatsAttribs.KNOCKBACK_RES, 0.1D);
-		stats.setStat(CreatureStatsAttribs.DAMAGE_PHYS, 1.0D);
+		stats.setStat(CreatureStatsAttribs.DAMAGE_PHYS, 1.0D + level);
 		stats.setStat(CreatureStatsAttribs.DAMAGE_MAGIC, 1.0D);
-		stats.setStat(CreatureStatsAttribs.WALKING_SPEED, 0.1D);
+		stats.setStat(CreatureStatsAttribs.WALKING_SPEED, 0.1D + level * 0.025D);
 		stats.setStat(CreatureStatsAttribs.HIT_REACH, 0.6D);
 		stats.setStat(CreatureStatsAttribs.HIT_COOLDOWN, 15.0D);
 		return stats;
