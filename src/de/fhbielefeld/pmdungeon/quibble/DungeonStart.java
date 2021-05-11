@@ -119,6 +119,9 @@ public class DungeonStart extends MainController implements EntityEventHandler, 
 		this.lastFrameTimeStamp = System.currentTimeMillis();
 		Gdx.app.getGraphics().setResizable(false);
 		
+		this.expLabel = this.textHUD.drawText("Level: 0", FONT_ARIAL, Color.WHITE, 24, 200, 64, 16, 432);
+		this.healthLabel = this.textHUD.drawText("Health", FONT_ARIAL, Color.WHITE, 24, 200, 64, 16, 384);
+		
 		LoggingHandler.logger.log(Level.INFO, "Setup done.");
 	}
 	
@@ -151,15 +154,6 @@ public class DungeonStart extends MainController implements EntityEventHandler, 
 		
 		this.invSwitchNormal.show();
 		this.invSwitchEquip.show();
-		
-		if(this.expLabel == null)
-		{
-			this.expLabel = this.textHUD.drawText("Level: 0", FONT_ARIAL, Color.WHITE, 24, 200, 64, 16, 432);
-		}
-		if(this.healthLabel == null)
-		{
-			this.healthLabel = this.textHUD.drawText("Health", FONT_ARIAL, Color.WHITE, 24, 200, 64, 16, 384);
-		}
 		
 		/**
 		 * Spawn Chest's
@@ -302,8 +296,16 @@ public class DungeonStart extends MainController implements EntityEventHandler, 
 		this.hudManager.addGroup(g);
 		this.shownHUDGroups.put(id, g);
 		
-		System.out.println(id);
-		this.shownLabels.put(id, this.textHUD.drawText(name, FONT_ARIAL, Color.WHITE, 24, 200, 32, x, y));
+		Label label = this.shownLabels.get(id);
+		if(label == null)
+		{
+			label = this.textHUD.drawText(name, FONT_ARIAL, Color.WHITE, 24, 200, 32, x, y);
+			this.shownLabels.put(id, label);
+		}
+		else
+		{
+			label.setText(name);
+		}
 	}
 	
 	public void closeInventory(String id)
@@ -314,11 +316,10 @@ public class DungeonStart extends MainController implements EntityEventHandler, 
 			this.hudManager.removeGroup(g);
 			this.hudManager.setElementOnMouse(null);
 		}
-		if(this.shownLabels.get(id) != null)
+		Label label = this.shownLabels.get(id);
+		if(label != null)
 		{
-			this.textHUD.removeText(this.shownLabels.get(id));
-			System.out.println(id);
-			this.shownLabels.remove(id);
+			label.setText("");
 		}
 	}
 	
