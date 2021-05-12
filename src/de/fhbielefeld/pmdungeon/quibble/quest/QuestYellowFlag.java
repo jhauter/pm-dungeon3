@@ -13,24 +13,27 @@ public class QuestYellowFlag extends Quest implements EntityEventHandler {
 
 	@Override
 	public void handleEvent(EntityEvent event) {
-		// TODO Auto-generated method stub
 	}
 
 	@Override
 	public String getTask() {
-		return "Level dich auf Level 5";
+		return "Level up to Level 3";
 	}
 
 	@Override
-	public void onComplete(Creature c) {
-		// TODO Auto-generated method stub
-
+	public String onWork() {
+		return null;
 	}
 
 	@Override
-	public void onWork(Creature c) {
-		// TODO Auto-generated method stub
+	public String onComplete() {
+		return null;
+	}
 
+	@Override
+	public void onReward(Creature c) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
