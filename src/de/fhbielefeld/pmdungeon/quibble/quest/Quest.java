@@ -8,6 +8,7 @@ public abstract class Quest {
 	public final static String ACCEPT_DECLINE = "To Accept press J to Decline press N";
 
 	public static final QuestYellowFlag QUEST_YELLOW_FLAG = new QuestYellowFlag("Level Quest", "yellow_flag");
+	
 
 	protected boolean isAccept;
 	protected boolean isActive;

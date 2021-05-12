@@ -170,7 +170,7 @@ public abstract class Player extends Creature implements InputListener {
 			QuestMannequin quest = getClosestQuest();
 			if (quest != null) {
 				PlayerInteractQuestEvent questEvent = (PlayerInteractQuestEvent) this
-						.fireEvent(new PlayerInteractQuestEvent(PlayerInteractQuestEvent.EVENT_ID, this, quest));
+						.fireEvent(new PlayerInteractQuestEvent(PlayerInteractQuestEvent.EVENT_ID, this, quest.getQuest()));
 				if(!questEvent.isCancelled()) {
 					quest.setActive(true);
 					LoggingHandler.logger.log(Level.INFO, quest.getQuest().getTask());

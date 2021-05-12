@@ -8,14 +8,14 @@ public class PlayerInteractQuestEvent extends EntityEvent{
 	
 	public static final int EVENT_ID = EntityEvent.genEventID();
 	
-	private final QuestMannequin quest;
+	private final Quest quest;
 
-	public PlayerInteractQuestEvent(int eventID, Player player, QuestMannequin quest) {
+	public PlayerInteractQuestEvent(int eventID, Player player, Quest quest) {
 		super(eventID, player);
 		this.quest = quest;
 	}
 
-	public QuestMannequin getQuest() {
+	public Quest getQuest() {
 		return this.quest;
 	}
 	

@@ -284,6 +284,7 @@ public class DungeonStart extends MainController implements EntityEventHandler, 
 		else if(event.getEventID() == PlayerInteractQuestEvent.EVENT_ID)
 		{
 			final PlayerInteractQuestEvent questEvent = (PlayerInteractQuestEvent)event;
+			
 		}
 		else if(event.getEventID() == Creature.EVENT_ID_EXP_CHANGE)
 		{
