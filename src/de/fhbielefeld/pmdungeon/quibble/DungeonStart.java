@@ -24,6 +24,7 @@ import de.fhbielefeld.pmdungeon.quibble.entity.event.CreatureHitTargetPostEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.CreatureStatChangeEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEventHandler;
+import de.fhbielefeld.pmdungeon.quibble.entity.event.PlayerInteractQuestEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.PlayerOpenChestEvent;
 import de.fhbielefeld.pmdungeon.quibble.file.ResourceHandler;
 import de.fhbielefeld.pmdungeon.quibble.hud.ExpBarHUD;
@@ -279,6 +280,10 @@ public class DungeonStart extends MainController implements EntityEventHandler, 
 			final PlayerOpenChestEvent chestEvent = (PlayerOpenChestEvent)event;
 			
 			this.showInventory(INV_NAME_CHEST, chestEvent.getChest().getInv(), "Chest", 16, 288);
+		}
+		else if(event.getEventID() == PlayerInteractQuestEvent.EVENT_ID)
+		{
+			final PlayerInteractQuestEvent questEvent = (PlayerInteractQuestEvent)event;
 		}
 		else if(event.getEventID() == Creature.EVENT_ID_EXP_CHANGE)
 		{

@@ -8,12 +8,14 @@ import com.badlogic.gdx.Input;
 
 import de.fhbielefeld.pmdungeon.quibble.LoggingHandler;
 import de.fhbielefeld.pmdungeon.quibble.chest.Chest;
+import de.fhbielefeld.pmdungeon.quibble.entity.event.PlayerInteractQuestEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.PlayerOpenChestEvent;
 import de.fhbielefeld.pmdungeon.quibble.input.DungeonInput;
 import de.fhbielefeld.pmdungeon.quibble.input.InputListener;
 import de.fhbielefeld.pmdungeon.quibble.inventory.Inventory;
 import de.fhbielefeld.pmdungeon.quibble.inventory.InventoryItem;
 import de.fhbielefeld.pmdungeon.quibble.item.Item;
+import de.fhbielefeld.pmdungeon.quibble.quest.Quest;
 import de.fhbielefeld.pmdungeon.quibble.quest.QuestMannequin;
 
 public abstract class Player extends Creature implements InputListener {
@@ -167,7 +169,13 @@ public abstract class Player extends Creature implements InputListener {
 		if (Gdx.input.isKeyJustPressed(Input.Keys.Q)) {
 			QuestMannequin quest = getClosestQuest();
 			if (quest != null) {
-				
+				PlayerInteractQuestEvent questEvent = (PlayerInteractQuestEvent) this
+						.fireEvent(new PlayerInteractQuestEvent(PlayerInteractQuestEvent.EVENT_ID, this, quest));
+				if(!questEvent.isCancelled()) {
+					quest.setActive(true);
+					LoggingHandler.logger.log(Level.INFO, quest.getQuest().getTask());
+					LoggingHandler.logger.log(Level.INFO, Quest.ACCEPT_DECLINE);
+				}
 			}
 		}
 	}
