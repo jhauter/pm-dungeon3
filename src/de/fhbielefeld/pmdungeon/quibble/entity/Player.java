@@ -1,5 +1,6 @@
 package de.fhbielefeld.pmdungeon.quibble.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -8,7 +9,6 @@ import com.badlogic.gdx.Input;
 
 import de.fhbielefeld.pmdungeon.quibble.LoggingHandler;
 import de.fhbielefeld.pmdungeon.quibble.chest.Chest;
-import de.fhbielefeld.pmdungeon.quibble.entity.event.PlayerInteractQuestEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.PlayerOpenChestEvent;
 import de.fhbielefeld.pmdungeon.quibble.input.DungeonInput;
 import de.fhbielefeld.pmdungeon.quibble.input.InputListener;
@@ -25,6 +25,8 @@ public abstract class Player extends Creature implements InputListener {
 	private float controlMaxX;
 	private float controlMinY;
 	private float controlMaxY;
+
+	private List<Quest> quests = new ArrayList<Quest>();
 
 	/**
 	 * @param x x-coordinate
@@ -169,14 +171,22 @@ public abstract class Player extends Creature implements InputListener {
 		if (Gdx.input.isKeyJustPressed(Input.Keys.Q)) {
 			QuestMannequin quest = getClosestQuest();
 			if (quest != null) {
-				PlayerInteractQuestEvent questEvent = (PlayerInteractQuestEvent) this
-						.fireEvent(new PlayerInteractQuestEvent(PlayerInteractQuestEvent.EVENT_ID, this, quest.getQuest()));
-				if(!questEvent.isCancelled()) {
-					quest.setActive(true);
-					LoggingHandler.logger.log(Level.INFO, quest.getQuest().getTask());
-					LoggingHandler.logger.log(Level.INFO, Quest.ACCEPT_DECLINE);
-				}
+				quest.setActive(true, this);
+				LoggingHandler.logger.log(Level.INFO, quest.getQuest().getTask());
+				LoggingHandler.logger.log(Level.INFO, Quest.ACCEPT_DECLINE);
 			}
+		}
+		
+		if(Gdx.input.isKeyJustPressed(Input.Keys.N)) {
+			for (Quest quest : quests) {
+				System.out.println(quest.getTask());
+				System.out.println(quest.onWork());
+				System.out.println(quest.onReward());
+			}
+		}
+		
+		for (Quest quest : quests) {
+			quest.onReward(this);
 		}
 	}
 
@@ -222,5 +232,9 @@ public abstract class Player extends Creature implements InputListener {
 		this.controlMaxX = 0.0F;
 		this.controlMinY = 0.0F;
 		this.controlMaxY = 0.0F;
+	}
+
+	public void addQuest(Quest quest) {
+		this.quests.add(quest);
 	}
 }
