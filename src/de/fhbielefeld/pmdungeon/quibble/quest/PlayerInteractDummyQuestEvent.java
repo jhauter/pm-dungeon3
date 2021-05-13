@@ -36,5 +36,9 @@ public class PlayerInteractDummyQuestEvent extends EntityEvent {
 			Quest newQuest = new RQuestDungeonLevel("DungeonLevelQuest", player, Item.SWORD_KATANA);
 			this.player.addQuest(newQuest);
 		}
+		if(quest.equals(Quest.QUEST_RED_FLAG)) {
+			Quest newQuest = new RQuestKillMonster("KillQuest", player, 5, 20);
+			this.player.addQuest(newQuest);
+		}
 	}
 }

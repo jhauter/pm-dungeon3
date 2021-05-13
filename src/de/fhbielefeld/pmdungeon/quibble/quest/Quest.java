@@ -1,6 +1,5 @@
 package de.fhbielefeld.pmdungeon.quibble.quest;
 
-import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
 import de.fhbielefeld.pmdungeon.quibble.entity.Player;
 
 public abstract class Quest implements OnRewardListener {
@@ -11,6 +10,8 @@ public abstract class Quest implements OnRewardListener {
 
 	public static final Quest QUEST_YELLOW_FLAG = new RQuestLevelUp("Level Quest", "yellow_flag");
 	public static final Quest QUEST_BLUE_FLAG = new RQuestDungeonLevel("Dungeon Level", "blue_flag");
+	public static final Quest QUEST_RED_FLAG = new RQuestKillMonster("KillQuest", "red_flag");
+	
 
 	protected boolean isAccept;
 	protected boolean isActive;
