@@ -2,7 +2,7 @@ package de.fhbielefeld.pmdungeon.quibble.quest;
 
 import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
 
-public abstract class Quest {
+public abstract class Quest implements OnRewardListener {
 
 	public final static String QUEST_TEXTURE_PATH = "assets/textures/quest/";
 	public final static String ACCEPT_DECLINE = "To Accept press J to Decline press N";

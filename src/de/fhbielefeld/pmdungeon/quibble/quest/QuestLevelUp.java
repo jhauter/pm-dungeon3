@@ -2,11 +2,8 @@ package de.fhbielefeld.pmdungeon.quibble.quest;
 
 import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
 import de.fhbielefeld.pmdungeon.quibble.entity.Player;
-import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEvent;
-import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEventHandler;
-import de.fhbielefeld.pmdungeon.quibble.entity.event.QuestLevelUpEvent;
 
-public class QuestLevelUp extends Quest implements EntityEventHandler {
+public class QuestLevelUp extends Quest {
 
 	private Player player;
 	private int levelToReach;
@@ -19,12 +16,6 @@ public class QuestLevelUp extends Quest implements EntityEventHandler {
 		super(questName, onReward);
 		this.player = p;
 		this.levelToReach = levelToReach;
-	}
-	
-
-	@Override
-	public void handleEvent(EntityEvent event) {
-		
 	}
 
 	@Override
@@ -47,9 +38,7 @@ public class QuestLevelUp extends Quest implements EntityEventHandler {
 	public void onReward(Creature c) {
 		int level = this.player.totalExpFunction(this.player.getCurrentExpLevel()) / 10;
 		if(level == levelToReach) {
-			QuestLevelUpEvent qe = new QuestLevelUpEvent(999, player, this.onReward());
-			qe.onReached();
-			
+			player.rewardExp(onReward());
 		}
 	}
 
