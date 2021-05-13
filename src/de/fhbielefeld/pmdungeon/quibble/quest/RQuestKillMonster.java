@@ -7,10 +7,12 @@ public class RQuestKillMonster extends Quest {
 
 	private int killed;
 	private int toKill;
+	private int counter;
 
-	public RQuestKillMonster(String questName, Player p, int onReward, int toKill) {
+	public RQuestKillMonster(String questName, Player p, int toKill, int onReward) {
 		super(questName, p, onReward);
-		this.toKill = toKill;
+		this.killed = p.getKilledEntitys();
+		this.toKill = toKill + killed;
 	}
 
 	public RQuestKillMonster(String questName, String texture) {
@@ -19,12 +21,12 @@ public class RQuestKillMonster extends Quest {
 
 	@Override
 	public String getTask() {
-		return "Reach next Stage";
+		return "Kill " + toKill + " Monsters";
 	}
 
 	@Override
 	public String onWork() {
-		return killed + "/" + toKill;
+		return counter + "/" + toKill;
 	}
 
 	@Override
@@ -34,9 +36,13 @@ public class RQuestKillMonster extends Quest {
 
 	@Override
 	public void onReward(Player player) {
-		if (player.triggeredNextLevel()) {
-			Item i = (Item) onReward();
-			player.getEquippedItems().addItem(i);
+		if(killed < player.getKilledEntitys()) {
+			counter ++;
+			killed = player.getKilledEntitys();
+		}
+		if(counter == toKill) {
+			player.rewardExp((int) onReward());
+			counter ++;
 		}
 	}
 

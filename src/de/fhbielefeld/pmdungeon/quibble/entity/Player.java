@@ -21,6 +21,8 @@ import de.fhbielefeld.pmdungeon.quibble.quest.QuestHandler;
 
 public abstract class Player extends Creature implements InputListener, OnRewardListener {
 	private boolean triggeredNextLevel;
+	
+	private int killedEntitys;
 
 	private float controlMinX;
 	private float controlMaxX;
@@ -228,4 +230,17 @@ public abstract class Player extends Creature implements InputListener, OnReward
 	public void addQuest(Quest quest) {
 		questHandler.addInputListener(quest);
 	}
+	
+	public void removeQuest(Quest quest) {
+		questHandler.removeInputListener(quest);
+	}
+
+	public int getKilledEntitys() {
+		return killedEntitys;
+	}
+
+	public void setKilledEntitys(int killedEntitys) {
+		this.killedEntitys = killedEntitys;
+	}
+	
 }

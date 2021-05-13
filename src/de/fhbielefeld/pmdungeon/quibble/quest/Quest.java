@@ -43,8 +43,8 @@ public abstract class Quest implements OnRewardListener {
 	/**
 	 * whether a quest has been accepted and has now become active
 	 */
-	protected void setActive() {
-		this.isActive = true;
+	protected void setActive(boolean b) {
+		this.isActive = b;
 	}
 
 	/**

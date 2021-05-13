@@ -12,11 +12,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 
 import de.fhbielefeld.pmdungeon.desktop.DesktopLauncher;
 import de.fhbielefeld.pmdungeon.quibble.chest.GoldenChest;
+import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
 import de.fhbielefeld.pmdungeon.quibble.entity.Demon;
 import de.fhbielefeld.pmdungeon.quibble.entity.Entity;
 import de.fhbielefeld.pmdungeon.quibble.entity.Goblin;
 import de.fhbielefeld.pmdungeon.quibble.entity.Knight;
-import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
 import de.fhbielefeld.pmdungeon.quibble.entity.Player;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.CreatureExpEvent;
@@ -270,6 +270,9 @@ public class DungeonStart extends MainController implements EntityEventHandler, 
 				//Dead ticks must be 0 so that this doesn't get triggered
 				//when the enemy is hit when it's already dead
 				LoggingHandler.logger.log(Level.INFO, "Killed " + hitEvent.getTarget().getClass().getSimpleName());
+				
+				myHero.setKilledEntitys(myHero.getKilledEntitys() +1);
+				
 				hitEvent.getEntity().heal(1.0D);
 				LoggingHandler.logger.log(Level.INFO, "Healed by 1.0");
 			}

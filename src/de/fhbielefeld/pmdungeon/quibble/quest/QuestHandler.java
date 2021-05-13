@@ -31,22 +31,16 @@ public class QuestHandler implements IQuestHandler {
 
 	@Override
 	public void notifyListeners(Player c) {
-		
-		if(Gdx.input.isKeyJustPressed(Input.Keys.N)) {
-			for (OnRewardListener l : listener) {
-				if(l instanceof Quest) {
-					((Quest) l).getTask();
-					((Quest) l).onWork();
-					((Quest) l).onComplete();
-				}
-			}
-		}
 		listener.forEach(l -> l.onReward(c));
 	}
 
 	@Override
 	public void updateHandler() {
 		
+	}
+	
+	public List<OnRewardListener> getListener(){
+		return listener;
 	}
 
 }
