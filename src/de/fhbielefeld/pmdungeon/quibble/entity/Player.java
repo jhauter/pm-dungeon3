@@ -178,7 +178,6 @@ public abstract class Player extends Creature implements InputListener, OnReward
 				LoggingHandler.logger.log(Level.INFO, Quest.ACCEPT_DECLINE);
 			}
 		}
-		
 		questHandler.notifyListeners(this);
 	}
 

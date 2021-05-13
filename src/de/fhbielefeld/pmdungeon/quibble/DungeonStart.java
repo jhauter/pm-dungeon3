@@ -12,11 +12,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 
 import de.fhbielefeld.pmdungeon.desktop.DesktopLauncher;
 import de.fhbielefeld.pmdungeon.quibble.chest.GoldenChest;
-import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
 import de.fhbielefeld.pmdungeon.quibble.entity.Demon;
 import de.fhbielefeld.pmdungeon.quibble.entity.Entity;
 import de.fhbielefeld.pmdungeon.quibble.entity.Goblin;
 import de.fhbielefeld.pmdungeon.quibble.entity.Knight;
+import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
 import de.fhbielefeld.pmdungeon.quibble.entity.Player;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.CreatureExpEvent;
@@ -43,7 +43,6 @@ import de.fhbielefeld.pmdungeon.quibble.particle.DrawingUtil;
 import de.fhbielefeld.pmdungeon.quibble.quest.PlayerInteractDummyQuestEvent;
 import de.fhbielefeld.pmdungeon.quibble.quest.Quest;
 import de.fhbielefeld.pmdungeon.quibble.quest.QuestDummy;
-import de.fhbielefeld.pmdungeon.quibble.quest.QuestLevelUp;
 import de.fhbielefeld.pmdungeon.quibble.trap.TrapHealth;
 import de.fhbielefeld.pmdungeon.quibble.trap.TrapTeleport;
 import de.fhbielefeld.pmdungeon.vorgaben.dungeonCreator.dungeonconverter.Coordinate;
@@ -176,7 +175,7 @@ public class DungeonStart extends MainController implements EntityEventHandler, 
 		this.currentLevel.spawnEntity(currentLevel.getRNG().nextInt(2) == 0 ? new TrapTeleport(pos3.x, pos3.y, true) : new TrapHealth(pos3.x, pos3.y, 2, true));
 		
 		final Point pos4 = this.currentLevel.getDungeon().getRandomPointInDungeon();
-		this.currentLevel.spawnEntity(new QuestDummy(Quest.QUEST_YELLOW_FLAG, pos4.x, pos4.y));
+		this.currentLevel.spawnEntity(new QuestDummy(Quest.QUEST_BLUE_FLAG, pos4.x, pos4.y));
 		
 		//Set the camera to follow the hero
 		this.camera.follow(this.myHero);

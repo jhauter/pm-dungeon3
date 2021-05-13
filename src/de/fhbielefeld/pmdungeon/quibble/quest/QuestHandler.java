@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+
 import de.fhbielefeld.pmdungeon.quibble.LoggingHandler;
-import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
+import de.fhbielefeld.pmdungeon.quibble.entity.Player;
 
 public class QuestHandler implements IQuestHandler {
 
@@ -27,7 +30,17 @@ public class QuestHandler implements IQuestHandler {
 	}
 
 	@Override
-	public void notifyListeners(Creature c) {
+	public void notifyListeners(Player c) {
+		
+		if(Gdx.input.isKeyJustPressed(Input.Keys.N)) {
+			for (OnRewardListener l : listener) {
+				if(l instanceof Quest) {
+					((Quest) l).getTask();
+					((Quest) l).onWork();
+					((Quest) l).onComplete();
+				}
+			}
+		}
 		listener.forEach(l -> l.onReward(c));
 	}
 

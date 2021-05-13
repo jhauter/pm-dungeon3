@@ -28,7 +28,7 @@ public class PlayerInteractDummyQuestEvent extends EntityEvent {
 	public void setQuest() {
 		if (quest.equals(Quest.QUEST_YELLOW_FLAG)) {
 			int level = this.player.totalExpFunction(this.player.getCurrentExpLevel()) / 10;
-			QuestLevelUp newQuest = new QuestLevelUp("LevelQuest", player, level + 1, 20);
+			Quest newQuest = new QuestLevelUp("LevelQuest", player, level + 1, 20);
 			this.player.addQuest(newQuest);
 		}
 	}

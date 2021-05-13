@@ -1,6 +1,5 @@
 package de.fhbielefeld.pmdungeon.quibble.quest;
 
-import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
 import de.fhbielefeld.pmdungeon.quibble.entity.Player;
 
 public class QuestLevelUp extends Quest {
@@ -13,7 +12,7 @@ public class QuestLevelUp extends Quest {
 	}
 
 	public QuestLevelUp(String questName, Player p, int levelToReach, int onReward) {
-		super(questName, onReward);
+		super(questName, p, onReward);
 		this.player = p;
 		this.levelToReach = levelToReach;
 	}
@@ -31,14 +30,14 @@ public class QuestLevelUp extends Quest {
 
 	@Override
 	public String onComplete() {
-		return "You will gein " + this.onReward();
+		return QUEST_REACH + this.onReward();
 	}
 
 	@Override
-	public void onReward(Creature c) {
+	public void onReward(Player p) {
 		int level = this.player.totalExpFunction(this.player.getCurrentExpLevel()) / 10;
 		if(level == levelToReach) {
-			player.rewardExp(onReward());
+			player.rewardExp((int) onReward());
 		}
 	}
 

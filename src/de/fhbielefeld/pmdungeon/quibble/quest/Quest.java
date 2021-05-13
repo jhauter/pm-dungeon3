@@ -1,22 +1,26 @@
 package de.fhbielefeld.pmdungeon.quibble.quest;
 
 import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
+import de.fhbielefeld.pmdungeon.quibble.entity.Player;
 
 public abstract class Quest implements OnRewardListener {
 
 	public final static String QUEST_TEXTURE_PATH = "assets/textures/quest/";
 	public final static String ACCEPT_DECLINE = "To Accept press J to Decline press N";
+	public final static String QUEST_REACH = "You will gain: ";
 
-	public static final QuestLevelUp QUEST_YELLOW_FLAG = new QuestLevelUp("Level Quest", "yellow_flag");
-	
+	public static final Quest QUEST_YELLOW_FLAG = new QuestLevelUp("Level Quest", "yellow_flag");
+	public static final Quest QUEST_BLUE_FLAG = new QuestDungeonLevel("Dungeon Level", "blue_flag");
 
 	protected boolean isAccept;
 	protected boolean isActive;
 
 	private String texture;
 	private String questName;
-	
-	private int onReward;
+
+	private Player player;
+
+	private Object onReward;
 
 	/**
 	 * Abstract real logic Quest
@@ -28,10 +32,11 @@ public abstract class Quest implements OnRewardListener {
 		this.texture = texture;
 		this.questName = questName;
 	}
-	
-	public Quest(String questName, int onReward) {
+
+	public Quest(String questName, Player p, Object onReward2) {
 		this.questName = questName;
-		this.onReward = onReward;
+		this.onReward = onReward2;
+		this.player = p;
 	}
 
 	/**
@@ -62,7 +67,7 @@ public abstract class Quest implements OnRewardListener {
 	public abstract String onWork();
 
 	/**
-	 * 
+	 * Use <code>QUEST_REACH</code> + <code>onReward</code>
 	 * @return A string that represents what reward the quest will give
 	 */
 	public abstract String onComplete();
@@ -71,7 +76,7 @@ public abstract class Quest implements OnRewardListener {
 	 * 
 	 * @param c Creature to receive the specific reward
 	 */
-	public abstract void onReward(Creature c);
+	public abstract void onReward(Player player);
 
 	/**
 	 * 
@@ -83,13 +88,17 @@ public abstract class Quest implements OnRewardListener {
 
 	/**
 	 * 
-	 * @return name of a Quest 
+	 * @return name of a Quest
 	 */
 	public final String getQuestName() {
 		return this.questName;
 	}
-	
-	public final int onReward() {
+
+	public final Object onReward() {
 		return this.onReward;
+	}
+
+	public Player getPlayer() {
+		return player;
 	}
 }

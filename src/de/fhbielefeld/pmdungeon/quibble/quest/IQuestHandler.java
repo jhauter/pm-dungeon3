@@ -1,6 +1,6 @@
 package de.fhbielefeld.pmdungeon.quibble.quest;
 
-import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
+import de.fhbielefeld.pmdungeon.quibble.entity.Player;
 
 public interface IQuestHandler {
 	
@@ -20,9 +20,9 @@ public interface IQuestHandler {
 	
 	/**
 	 * Notifies all listeners about an input event. This should only be called internally.
-	 * @param c the creature which will be effected by a reward
+	 * @param c the player which will be effected by a reward
 	 */
-	public void notifyListeners(Creature c);
+	public void notifyListeners(Player p);
 	
 	/*
 	 * Called once per frame and retrieves the state of registered buttons and fires events accordingly.
