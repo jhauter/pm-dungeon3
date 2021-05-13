@@ -7,14 +7,16 @@ public abstract class Quest {
 	public final static String QUEST_TEXTURE_PATH = "assets/textures/quest/";
 	public final static String ACCEPT_DECLINE = "To Accept press J to Decline press N";
 
-	public static final QuestYellowFlag QUEST_YELLOW_FLAG = new QuestYellowFlag("Level Quest", "yellow_flag");
+	public static final QuestLevelUp QUEST_YELLOW_FLAG = new QuestLevelUp("Level Quest", "yellow_flag");
 	
 
 	protected boolean isAccept;
 	protected boolean isActive;
 
-	private final String texture;
-	private final String questName;
+	private String texture;
+	private String questName;
+	
+	private int onReward;
 
 	/**
 	 * Abstract real logic Quest
@@ -25,6 +27,11 @@ public abstract class Quest {
 	public Quest(String questName, String texture) {
 		this.texture = texture;
 		this.questName = questName;
+	}
+	
+	public Quest(String questName, int onReward) {
+		this.questName = questName;
+		this.onReward = onReward;
 	}
 
 	/**
@@ -80,5 +87,9 @@ public abstract class Quest {
 	 */
 	public final String getQuestName() {
 		return this.questName;
+	}
+	
+	public final int onReward() {
+		return this.onReward;
 	}
 }
