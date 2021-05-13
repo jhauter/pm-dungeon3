@@ -9,8 +9,8 @@ public abstract class Quest implements OnRewardListener {
 	public final static String ACCEPT_DECLINE = "To Accept press J to Decline press N";
 	public final static String QUEST_REACH = "You will gain: ";
 
-	public static final Quest QUEST_YELLOW_FLAG = new QuestLevelUp("Level Quest", "yellow_flag");
-	public static final Quest QUEST_BLUE_FLAG = new QuestDungeonLevel("Dungeon Level", "blue_flag");
+	public static final Quest QUEST_YELLOW_FLAG = new RQuestLevelUp("Level Quest", "yellow_flag");
+	public static final Quest QUEST_BLUE_FLAG = new RQuestDungeonLevel("Dungeon Level", "blue_flag");
 
 	protected boolean isAccept;
 	protected boolean isActive;

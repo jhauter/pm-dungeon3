@@ -2,6 +2,7 @@ package de.fhbielefeld.pmdungeon.quibble.quest;
 
 import de.fhbielefeld.pmdungeon.quibble.entity.Player;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEvent;
+import de.fhbielefeld.pmdungeon.quibble.item.Item;
 
 public class PlayerInteractDummyQuestEvent extends EntityEvent {
 
@@ -28,7 +29,11 @@ public class PlayerInteractDummyQuestEvent extends EntityEvent {
 	public void setQuest() {
 		if (quest.equals(Quest.QUEST_YELLOW_FLAG)) {
 			int level = this.player.totalExpFunction(this.player.getCurrentExpLevel()) / 10;
-			Quest newQuest = new QuestLevelUp("LevelQuest", player, level + 1, 20);
+			Quest newQuest = new RQuestLevelUp("LevelQuest", player, level + 1, 20);
+			this.player.addQuest(newQuest);
+		}
+		if(quest.equals(Quest.QUEST_BLUE_FLAG)) {
+			Quest newQuest = new RQuestDungeonLevel("DungeonLevelQuest", player, Item.SWORD_KATANA);
 			this.player.addQuest(newQuest);
 		}
 	}

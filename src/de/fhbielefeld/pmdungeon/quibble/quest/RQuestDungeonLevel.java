@@ -1,20 +1,18 @@
 package de.fhbielefeld.pmdungeon.quibble.quest;
 
-import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
 import de.fhbielefeld.pmdungeon.quibble.entity.Player;
-import de.fhbielefeld.pmdungeon.quibble.inventory.InventoryItem;
 import de.fhbielefeld.pmdungeon.quibble.item.Item;
 
-public class QuestDungeonLevel extends Quest {
-	
+public class RQuestDungeonLevel extends Quest {
+
 	private int currentDungeonStage;
 
-	public QuestDungeonLevel(String questName, Player p, Item onReward) {
+	public RQuestDungeonLevel(String questName, Player p, Item onReward) {
 		super(questName, p, onReward);
 		// TODO Auto-generated constructor stub
 	}
 
-		public QuestDungeonLevel(String questName, String texture) {
+	public RQuestDungeonLevel(String questName, String texture) {
 		super(questName, texture);
 	}
 
@@ -35,7 +33,10 @@ public class QuestDungeonLevel extends Quest {
 
 	@Override
 	public void onReward(Player player) {
-		player.getInventory().addItem((InventoryItem<Item>) onReward());
+		if (player.triggeredNextLevel()) {
+			Item i = (Item) onReward();
+			player.getEquippedItems().addItem(i);
+		}
 	}
 
 }

@@ -104,7 +104,7 @@ public class Knight extends Player
 	}
 
 	@Override
-	public void onReward(Creature c) {
+	public void onReward(Player p) {
 	
 	}
 }

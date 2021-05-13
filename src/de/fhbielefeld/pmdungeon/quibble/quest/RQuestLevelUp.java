@@ -2,16 +2,16 @@ package de.fhbielefeld.pmdungeon.quibble.quest;
 
 import de.fhbielefeld.pmdungeon.quibble.entity.Player;
 
-public class QuestLevelUp extends Quest {
+public class RQuestLevelUp extends Quest {
 
 	private Player player;
 	private int levelToReach;
 
-	public QuestLevelUp(String questName, String texture) {
+	public RQuestLevelUp(String questName, String texture) {
 		super(questName, texture);
 	}
 
-	public QuestLevelUp(String questName, Player p, int levelToReach, int onReward) {
+	public RQuestLevelUp(String questName, Player p, int levelToReach, int onReward) {
 		super(questName, p, onReward);
 		this.player = p;
 		this.levelToReach = levelToReach;
