@@ -5,7 +5,6 @@ import com.badlogic.gdx.Input;
 
 import de.fhbielefeld.pmdungeon.quibble.entity.Entity;
 import de.fhbielefeld.pmdungeon.quibble.entity.Player;
-import de.fhbielefeld.pmdungeon.quibble.entity.event.PlayerInteractDummyQuestEvent;
 
 public class QuestDummy extends Entity {
 

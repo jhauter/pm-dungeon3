@@ -1,8 +1,7 @@
-package de.fhbielefeld.pmdungeon.quibble.entity.event;
+package de.fhbielefeld.pmdungeon.quibble.quest;
 
 import de.fhbielefeld.pmdungeon.quibble.entity.Player;
-import de.fhbielefeld.pmdungeon.quibble.quest.Quest;
-import de.fhbielefeld.pmdungeon.quibble.quest.QuestLevelUp;
+import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEvent;
 
 public class PlayerInteractDummyQuestEvent extends EntityEvent {
 

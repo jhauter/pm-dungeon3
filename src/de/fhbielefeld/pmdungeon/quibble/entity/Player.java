@@ -1,6 +1,5 @@
 package de.fhbielefeld.pmdungeon.quibble.entity;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -15,10 +14,12 @@ import de.fhbielefeld.pmdungeon.quibble.input.InputListener;
 import de.fhbielefeld.pmdungeon.quibble.inventory.Inventory;
 import de.fhbielefeld.pmdungeon.quibble.inventory.InventoryItem;
 import de.fhbielefeld.pmdungeon.quibble.item.Item;
+import de.fhbielefeld.pmdungeon.quibble.quest.OnRewardListener;
 import de.fhbielefeld.pmdungeon.quibble.quest.Quest;
 import de.fhbielefeld.pmdungeon.quibble.quest.QuestDummy;
+import de.fhbielefeld.pmdungeon.quibble.quest.QuestHandler;
 
-public abstract class Player extends Creature implements InputListener {
+public abstract class Player extends Creature implements InputListener, OnRewardListener {
 	private boolean triggeredNextLevel;
 
 	private float controlMinX;
@@ -26,7 +27,7 @@ public abstract class Player extends Creature implements InputListener {
 	private float controlMinY;
 	private float controlMaxY;
 
-	private List<Quest> quests = new ArrayList<Quest>();
+	QuestHandler questHandler = new QuestHandler();
 
 	/**
 	 * @param x x-coordinate
@@ -34,6 +35,7 @@ public abstract class Player extends Creature implements InputListener {
 	 */
 	public Player(float x, float y) {
 		super(x, y);
+		questHandler.addInputListener(this);
 	}
 
 	/**
@@ -177,17 +179,7 @@ public abstract class Player extends Creature implements InputListener {
 			}
 		}
 		
-		if(Gdx.input.isKeyJustPressed(Input.Keys.N)) {
-			for (Quest quest : quests) {
-				System.out.println(quest.getTask());
-				System.out.println(quest.onWork());
-				System.out.println(quest.onReward());
-			}
-		}
-		
-		for (Quest quest : quests) {
-			quest.onReward(this);
-		}
+		questHandler.notifyListeners(this);
 	}
 
 	private QuestDummy getClosestQuest() {
@@ -235,6 +227,6 @@ public abstract class Player extends Creature implements InputListener {
 	}
 
 	public void addQuest(Quest quest) {
-		this.quests.add(quest);
+		questHandler.addInputListener(quest);
 	}
 }

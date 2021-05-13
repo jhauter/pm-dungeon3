@@ -102,4 +102,9 @@ public class Knight extends Player
 	{
 		return 3;
 	}
+
+	@Override
+	public void onReward(Creature c) {
+	
+	}
 }
