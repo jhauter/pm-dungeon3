@@ -42,7 +42,7 @@ public class RQuestKillMonster extends Quest {
 		}
 		if(counter == toKill) {
 			player.rewardExp((int) onReward());
-			counter ++;
+			player.removeQuest(this);
 		}
 	}
 
