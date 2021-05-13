@@ -24,7 +24,7 @@ import de.fhbielefeld.pmdungeon.quibble.entity.event.CreatureHitTargetPostEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.CreatureStatChangeEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEventHandler;
-import de.fhbielefeld.pmdungeon.quibble.entity.event.PlayerInteractQuestEvent;
+import de.fhbielefeld.pmdungeon.quibble.entity.event.PlayerInteractDummyQuestEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.PlayerOpenChestEvent;
 import de.fhbielefeld.pmdungeon.quibble.file.ResourceHandler;
 import de.fhbielefeld.pmdungeon.quibble.hud.ExpBarHUD;
@@ -42,7 +42,8 @@ import de.fhbielefeld.pmdungeon.quibble.inventory.Inventory;
 import de.fhbielefeld.pmdungeon.quibble.item.Item;
 import de.fhbielefeld.pmdungeon.quibble.particle.DrawingUtil;
 import de.fhbielefeld.pmdungeon.quibble.quest.Quest;
-import de.fhbielefeld.pmdungeon.quibble.quest.QuestMannequin;
+import de.fhbielefeld.pmdungeon.quibble.quest.QuestDummy;
+import de.fhbielefeld.pmdungeon.quibble.quest.QuestLevelUp;
 import de.fhbielefeld.pmdungeon.quibble.trap.TrapHealth;
 import de.fhbielefeld.pmdungeon.quibble.trap.TrapTeleport;
 import de.fhbielefeld.pmdungeon.vorgaben.dungeonCreator.dungeonconverter.Coordinate;
@@ -175,7 +176,7 @@ public class DungeonStart extends MainController implements EntityEventHandler, 
 		this.currentLevel.spawnEntity(currentLevel.getRNG().nextInt(2) == 0 ? new TrapTeleport(pos3.x, pos3.y, true) : new TrapHealth(pos3.x, pos3.y, 2, true));
 		
 		final Point pos4 = this.currentLevel.getDungeon().getRandomPointInDungeon();
-		this.currentLevel.spawnEntity(new QuestMannequin(Quest.QUEST_YELLOW_FLAG, pos4.x, pos4.y));
+		this.currentLevel.spawnEntity(new QuestDummy(Quest.QUEST_YELLOW_FLAG, pos4.x, pos4.y));
 		
 		//Set the camera to follow the hero
 		this.camera.follow(this.myHero);
@@ -281,9 +282,8 @@ public class DungeonStart extends MainController implements EntityEventHandler, 
 			
 			this.showInventory(INV_NAME_CHEST, chestEvent.getChest().getInv(), "Chest", 16, 288);
 		}
-		else if(event.getEventID() == PlayerInteractQuestEvent.EVENT_ID)
+		else if(event.getEventID() == PlayerInteractDummyQuestEvent.EVENT_ID)
 		{
-			final PlayerInteractQuestEvent questEvent = (PlayerInteractQuestEvent)event;
 			
 		}
 		else if(event.getEventID() == Creature.EVENT_ID_EXP_CHANGE)

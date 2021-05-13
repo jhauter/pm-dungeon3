@@ -4,13 +4,16 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 
 import de.fhbielefeld.pmdungeon.quibble.entity.Entity;
+import de.fhbielefeld.pmdungeon.quibble.entity.Player;
+import de.fhbielefeld.pmdungeon.quibble.entity.event.PlayerInteractDummyQuestEvent;
 
-public class QuestMannequin extends Entity {
+public class QuestDummy extends Entity {
 
 	private boolean isAccept;
 	private boolean isActive;
 
 	private final Quest quest;
+	private Player player;
 
 	/**
 	 * Will create a visible Quest Entity
@@ -19,7 +22,7 @@ public class QuestMannequin extends Entity {
 	 * @param x     x float of the Position
 	 * @param y     y float of the Position
 	 */
-	public QuestMannequin(Quest quest, float x, float y) {
+	public QuestDummy(Quest quest, float x, float y) {
 		super(x, y);
 		this.quest = quest;
 		this.animationHandler.addAsDefaultAnimation("default", 1, 1,
@@ -36,7 +39,9 @@ public class QuestMannequin extends Entity {
 		super.updateLogic();
 		if (isActive) {
 			if (Gdx.input.isKeyJustPressed(Input.Keys.J)) {
-				this.setAccept();
+				PlayerInteractDummyQuestEvent questEvent = (PlayerInteractDummyQuestEvent) this
+						.fireEvent(new PlayerInteractDummyQuestEvent(PlayerInteractDummyQuestEvent.EVENT_ID, this.player, quest));
+				questEvent.setQuest();
 			}
 			if (Gdx.input.isKeyJustPressed(Input.Keys.N)) {
 				setActive(false);
@@ -46,10 +51,16 @@ public class QuestMannequin extends Entity {
 
 	/**
 	 * Sets whether the quest can be accepted or rejected
+	 * 
 	 * @param isActive if true the quest can be decline or accept
 	 */
 	public void setActive(boolean isActive) {
 		this.isActive = isActive;
+	}
+
+	public void setActive(boolean isActive, Player p) {
+		this.isActive = isActive;
+		this.player = p;
 	}
 
 	/**
@@ -64,7 +75,6 @@ public class QuestMannequin extends Entity {
 	 * if set the quest becomes active and the doll disappears
 	 */
 	public void setAccept() {
-		this.quest.setActive();
 		this.isAccept = true;
 	}
 }

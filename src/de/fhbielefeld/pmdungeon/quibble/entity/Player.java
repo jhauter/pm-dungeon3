@@ -16,7 +16,7 @@ import de.fhbielefeld.pmdungeon.quibble.inventory.Inventory;
 import de.fhbielefeld.pmdungeon.quibble.inventory.InventoryItem;
 import de.fhbielefeld.pmdungeon.quibble.item.Item;
 import de.fhbielefeld.pmdungeon.quibble.quest.Quest;
-import de.fhbielefeld.pmdungeon.quibble.quest.QuestMannequin;
+import de.fhbielefeld.pmdungeon.quibble.quest.QuestDummy;
 
 public abstract class Player extends Creature implements InputListener {
 	private boolean triggeredNextLevel;
@@ -169,7 +169,7 @@ public abstract class Player extends Creature implements InputListener {
 		}
 
 		if (Gdx.input.isKeyJustPressed(Input.Keys.Q)) {
-			QuestMannequin quest = getClosestQuest();
+			QuestDummy quest = getClosestQuest();
 			if (quest != null) {
 				quest.setActive(true, this);
 				LoggingHandler.logger.log(Level.INFO, quest.getQuest().getTask());
@@ -190,11 +190,11 @@ public abstract class Player extends Creature implements InputListener {
 		}
 	}
 
-	private QuestMannequin getClosestQuest() {
+	private QuestDummy getClosestQuest() {
 		List<Entity> l = this.getLevel().getEntitiesInRadius(getX(), getY(), 1);
 		for (int i = 0; i < l.size(); i++) {
-			if (l.get(i) instanceof QuestMannequin) {
-				return (QuestMannequin) l.get(i);
+			if (l.get(i) instanceof QuestDummy) {
+				return (QuestDummy) l.get(i);
 			}
 		}
 		return null;
