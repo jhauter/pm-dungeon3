@@ -1,5 +1,6 @@
 package de.fhbielefeld.pmdungeon.quibble.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -14,12 +15,10 @@ import de.fhbielefeld.pmdungeon.quibble.input.InputListener;
 import de.fhbielefeld.pmdungeon.quibble.inventory.Inventory;
 import de.fhbielefeld.pmdungeon.quibble.inventory.InventoryItem;
 import de.fhbielefeld.pmdungeon.quibble.item.Item;
-import de.fhbielefeld.pmdungeon.quibble.quest.OnRewardListener;
 import de.fhbielefeld.pmdungeon.quibble.quest.Quest;
 import de.fhbielefeld.pmdungeon.quibble.quest.QuestDummy;
-import de.fhbielefeld.pmdungeon.quibble.quest.QuestHandler;
 
-public abstract class Player extends Creature implements InputListener, OnRewardListener {
+public abstract class Player extends Creature implements InputListener {
 	private boolean triggeredNextLevel;
 	
 	private int killedEntitys;
@@ -29,7 +28,7 @@ public abstract class Player extends Creature implements InputListener, OnReward
 	private float controlMinY;
 	private float controlMaxY;
 
-	QuestHandler questHandler = new QuestHandler();
+	List<Quest> quests = new ArrayList<Quest>();
 
 	/**
 	 * @param x x-coordinate
@@ -37,7 +36,6 @@ public abstract class Player extends Creature implements InputListener, OnReward
 	 */
 	public Player(float x, float y) {
 		super(x, y);
-		questHandler.addInputListener(this);
 	}
 
 	/**
@@ -150,6 +148,17 @@ public abstract class Player extends Creature implements InputListener, OnReward
 				}
 			}
 		}
+		
+		for (int i = 0; i < quests.size(); i++) {
+			if(quests.get(i).isCompleted()) {
+				this.quests.get(i).onReward(this);
+				this.quests.set(i, this.quests.get(this.quests.size() -1));
+				
+				this.quests.remove(this.quests.size() -1);
+				i--;
+			}
+			
+		}
 
 		if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
 			Chest chest = this.getClosestChest();
@@ -171,16 +180,7 @@ public abstract class Player extends Creature implements InputListener, OnReward
 				LoggingHandler.logger.log(Level.INFO, "Picked up: " + drop.getItem().getDisplayText());
 			}
 		}
-
-		if (Gdx.input.isKeyJustPressed(Input.Keys.Q)) {
-			QuestDummy quest = getClosestQuest();
-			if (quest != null) {
-				quest.setActive(true, this);
-				LoggingHandler.logger.log(Level.INFO, quest.getQuest().getTask());
-				LoggingHandler.logger.log(Level.INFO, Quest.ACCEPT_DECLINE);
-			}
-		}
-		questHandler.notifyListeners(this);
+		
 	}
 
 	private QuestDummy getClosestQuest() {
@@ -227,20 +227,22 @@ public abstract class Player extends Creature implements InputListener, OnReward
 		this.controlMaxY = 0.0F;
 	}
 
-	public void addQuest(Quest quest) {
-		questHandler.addInputListener(quest);
-	}
-	
-	public void removeQuest(Quest quest) {
-		questHandler.removeInputListener(quest);
-	}
-
 	public int getKilledEntitys() {
 		return killedEntitys;
 	}
 
 	public void setKilledEntitys(int killedEntitys) {
 		this.killedEntitys = killedEntitys;
+	}
+	
+	public void addQuest(Quest quest) {
+		this.quests.add(quest);
+		this.addEntityEventHandler(quest);
+	}
+	
+	public void removeQuest(Quest quest) {
+		this.quests.remove(quest);
+		this.removeEntityEventHandler(quest);
 	}
 	
 }

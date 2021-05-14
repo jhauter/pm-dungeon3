@@ -1,15 +1,12 @@
 package de.fhbielefeld.pmdungeon.quibble.quest;
 
 import de.fhbielefeld.pmdungeon.quibble.entity.Player;
+import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEvent;
 
 public class RQuestLevelUp extends Quest {
 
 	private Player player;
 	private int levelToReach;
-
-	public RQuestLevelUp(String questName, String texture) {
-		super(questName, texture);
-	}
 
 	public RQuestLevelUp(String questName, Player p, int levelToReach, int onReward) {
 		super(questName, p, onReward);
@@ -34,11 +31,15 @@ public class RQuestLevelUp extends Quest {
 	}
 
 	@Override
+	public void handleEvent(EntityEvent event) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
 	public void onReward(Player p) {
-		int level = this.player.totalExpFunction(this.player.getCurrentExpLevel()) / 10;
-		if(level == levelToReach) {
-			player.rewardExp((int) onReward());
-		}
+		// TODO Auto-generated method stub
+		
 	}
 
 }

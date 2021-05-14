@@ -1,6 +1,7 @@
 package de.fhbielefeld.pmdungeon.quibble.quest;
 
 import de.fhbielefeld.pmdungeon.quibble.entity.Player;
+import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEvent;
 import de.fhbielefeld.pmdungeon.quibble.item.Item;
 
 public class RQuestDungeonLevel extends Quest {
@@ -10,10 +11,6 @@ public class RQuestDungeonLevel extends Quest {
 	public RQuestDungeonLevel(String questName, Player p, Item onReward) {
 		super(questName, p, onReward);
 		// TODO Auto-generated constructor stub
-	}
-
-	public RQuestDungeonLevel(String questName, String texture) {
-		super(questName, texture);
 	}
 
 	@Override
@@ -32,11 +29,13 @@ public class RQuestDungeonLevel extends Quest {
 	}
 
 	@Override
-	public void onReward(Player player) {
-		if (player.triggeredNextLevel()) {
-			Item i = (Item) onReward();
-			player.getEquippedItems().addItem(i);
-		}
+	public void handleEvent(EntityEvent event) {
+		
 	}
 
+	@Override
+	public void onReward(Player p) {
+		// TODO Auto-generated method stub
+		
+	}
 }
