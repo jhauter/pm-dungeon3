@@ -7,18 +7,17 @@ import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
 import de.fhbielefeld.pmdungeon.quibble.entity.Player;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.CreatureHitTargetPostEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEvent;
+import de.fhbielefeld.pmdungeon.quibble.item.Item;
 
 public class RQuestKillMonster extends Quest {
-
-	private int killed;
+	
 	private int toKill;
 	private int counter;
-
-	public RQuestKillMonster(String questName, Player p, int toKill, int onReward) {
-		super(questName, p, onReward);
-		this.killed = p.getKilledEntitys();
-		this.toKill = toKill + killed;
-	}O
+	
+	public RQuestKillMonster(String questName, Player p, Item itemOnReward, int expOnReward, int toKill) {
+		super(questName, p, itemOnReward, expOnReward);
+		this.toKill = toKill;
+	}
 
 	@Override
 	public String getTask() {
@@ -31,11 +30,6 @@ public class RQuestKillMonster extends Quest {
 	}
 
 	@Override
-	public String onComplete() {
-		return QUEST_REACH + onReward();
-	}
-
-	@Override
 	public void handleEvent(EntityEvent event) {
 		if(event.getEventID() == Creature.EVENT_ID_HIT_TARGET_POST) {
 			final CreatureHitTargetPostEvent hitEvent = (CreatureHitTargetPostEvent)event;
@@ -43,14 +37,9 @@ public class RQuestKillMonster extends Quest {
 				this.counter ++;
 				if(counter == toKill) {
 					this.setCompleted(true);
+					LoggingHandler.logger.log(Level.INFO, "The quest " + this.getQuestName() + "was completed");
 				}
 			}
 		}
-	}
-
-	@Override
-	public void onReward(Player p) {
-		System.out.println(onReward());
-		p.rewardExp((int) onReward());
 	}
 }

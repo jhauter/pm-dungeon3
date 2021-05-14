@@ -174,7 +174,7 @@ public class DungeonStart extends MainController implements EntityEventHandler, 
 		this.currentLevel.spawnEntity(currentLevel.getRNG().nextInt(2) == 0 ? new TrapTeleport(pos3.x, pos3.y, true) : new TrapHealth(pos3.x, pos3.y, 2, true));
 		
 		final Point pos4 = this.currentLevel.getDungeon().getRandomPointInDungeon();
-		this.currentLevel.spawnEntity(new QuestDummy(QuestTypes.QUEST_RED_FLAG, pos4.x, pos4.y));
+		this.currentLevel.spawnEntity(new QuestDummy(QuestTypes.QUEST_YELLOW_FLAG, pos4.x, pos4.y));
 		
 		//Set the camera to follow the hero
 		this.camera.follow(this.myHero);

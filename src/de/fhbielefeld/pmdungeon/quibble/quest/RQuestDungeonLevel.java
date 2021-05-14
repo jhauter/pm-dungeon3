@@ -6,12 +6,12 @@ import de.fhbielefeld.pmdungeon.quibble.item.Item;
 
 public class RQuestDungeonLevel extends Quest {
 
+	public RQuestDungeonLevel(String questName, Player p, Item itemOnReward, int expOnReward) {
+		super(questName, p, itemOnReward, expOnReward);
+	}
+
 	private int currentDungeonStage;
 
-	public RQuestDungeonLevel(String questName, Player p, Item onReward) {
-		super(questName, p, onReward);
-		// TODO Auto-generated constructor stub
-	}
 
 	@Override
 	public String getTask() {
@@ -21,11 +21,6 @@ public class RQuestDungeonLevel extends Quest {
 	@Override
 	public String onWork() {
 		return "";
-	}
-
-	@Override
-	public String onComplete() {
-		return QUEST_REACH + onReward();
 	}
 
 	@Override

@@ -5,12 +5,13 @@ import java.util.logging.Level;
 import de.fhbielefeld.pmdungeon.quibble.LoggingHandler;
 import de.fhbielefeld.pmdungeon.quibble.entity.Player;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEventHandler;
+import de.fhbielefeld.pmdungeon.quibble.item.Item;
 
 public abstract class Quest implements EntityEventHandler {
 
 	public final static String QUEST_TEXTURE_PATH = "assets/textures/quest/";
 	public final static String ACCEPT_DECLINE = "To Accept press J to Decline press N";
-	public final static String QUEST_REACH = "You will gain: ";
+	public final static String QUEST_REACHED = "You will gain: ";
 
 	protected boolean isAccept;
 	protected boolean isActive;
@@ -21,11 +22,13 @@ public abstract class Quest implements EntityEventHandler {
 
 	private Player player;
 
-	private Object onReward;
+	private Item itemOnReward;
+	private int expOnReward;
 
-	public Quest(String questName, Player p, Object onReward) {
+	public Quest(String questName, Player p, Item itemOnReward, int expOnReward) {
 		this.questName = questName;
-		this.onReward = onReward;
+		this.itemOnReward = itemOnReward;
+		this.expOnReward = expOnReward;
 		this.player = p;
 		LoggingHandler.logger.log(Level.INFO, "The Quest: " + questName + " was accepted");
 	}
@@ -59,9 +62,17 @@ public abstract class Quest implements EntityEventHandler {
 
 	/**
 	 * Use <code>QUEST_REACH</code> + <code>onReward</code>
+	 * 
 	 * @return A string that represents what reward the quest will give
 	 */
-	public abstract String onComplete();
+	public String onComplete() {
+		if (this.getExpOnReward() > 0 && itemOnReward == null)
+			return QUEST_REACHED + this.getExpOnReward();
+		if (this.getExpOnReward() == 0 && itemOnReward != null)
+			return QUEST_REACHED + this.getExpOnReward() + " and " + getItemOnReward();
+		else
+			return QUEST_REACHED + " and " + getItemOnReward().getDisplayName();
+	}
 
 	/**
 	 * 
@@ -78,11 +89,11 @@ public abstract class Quest implements EntityEventHandler {
 	public final String getQuestName() {
 		return this.questName;
 	}
-	
-	public abstract void onReward(Player p);
 
-	public final Object onReward() {
-		return this.onReward;
+	public void onReward(Player p) {
+		p.rewardExp(expOnReward);
+		if (itemOnReward != null)
+			p.getEquippedItems().addItem(itemOnReward);
 	}
 
 	public Player getPlayer() {
@@ -95,5 +106,13 @@ public abstract class Quest implements EntityEventHandler {
 
 	public void setCompleted(boolean isCompleted) {
 		this.isCompleted = isCompleted;
+	}
+
+	public Item getItemOnReward() {
+		return itemOnReward;
+	}
+
+	public int getExpOnReward() {
+		return expOnReward;
 	}
 }

@@ -1,18 +1,28 @@
 package de.fhbielefeld.pmdungeon.quibble.quest;
 
+import java.util.logging.Level;
+
+import de.fhbielefeld.pmdungeon.quibble.LoggingHandler;
+import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
 import de.fhbielefeld.pmdungeon.quibble.entity.Player;
+import de.fhbielefeld.pmdungeon.quibble.entity.event.CreatureExpEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEvent;
+import de.fhbielefeld.pmdungeon.quibble.item.Item;
 
 public class RQuestLevelUp extends Quest {
 
+
+
 	private Player player;
 	private int levelToReach;
+	private int counter;
 
-	public RQuestLevelUp(String questName, Player p, int levelToReach, int onReward) {
-		super(questName, p, onReward);
+	public RQuestLevelUp(String questName, Player p, Item itemOnReward, int expOnReward, int levelToReach) {
+		super(questName, p, itemOnReward, expOnReward);
 		this.player = p;
 		this.levelToReach = levelToReach;
 	}
+
 
 	@Override
 	public String getTask() {
@@ -25,21 +35,20 @@ public class RQuestLevelUp extends Quest {
 		return level + "/" + levelToReach;
 	}
 
-	@Override
-	public String onComplete() {
-		return QUEST_REACH + this.onReward();
-	}
 
 	@Override
 	public void handleEvent(EntityEvent event) {
-		// TODO Auto-generated method stub
-		
-	}
+		if (event.getEventID() == Creature.EVENT_ID_EXP_CHANGE) {
+			final CreatureExpEvent expEvent = (CreatureExpEvent) event;
 
-	@Override
-	public void onReward(Player p) {
-		// TODO Auto-generated method stub
-		
+			int oldLevel = expEvent.getEntity().expLevelFunction(expEvent.getPreviousTotalExp());
+			int newLevel = expEvent.getEntity().expLevelFunction(expEvent.getNewTotalExp());
+			if (newLevel > oldLevel) {
+				counter++;
+				if(counter == levelToReach)
+					setCompleted(true);
+				LoggingHandler.logger.log(Level.INFO, "The quest " + this.getQuestName() + "was completed");
+			}
+		}
 	}
-
 }

@@ -1,4 +1,4 @@
-package de.fhbielefeld.pmdungeon.quibble.quest;
+	package de.fhbielefeld.pmdungeon.quibble.quest;
 
 public enum QuestTypes {
 

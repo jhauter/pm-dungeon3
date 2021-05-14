@@ -57,19 +57,18 @@ public class QuestDummy extends Entity {
 				Player player = (Player) otherEntity;
 				if (quest.equals(QuestTypes.QUEST_YELLOW_FLAG)) {
 					int level = player.totalExpFunction(player.getCurrentExpLevel()) / 10;
-					Quest newQuest = new RQuestLevelUp("LevelQuest", player, level + 1, 20);
+					Quest newQuest = new RQuestLevelUp(quest.questName, player, Item.POTION_RED_BIG, 20, level + 1);
 					player.addQuest(newQuest);
 					setDecided();
 				}
 				if (quest.equals(QuestTypes.QUEST_BLUE_FLAG)) {
-					Quest newQuest = new RQuestDungeonLevel("DungeonLevelQuest", player, Item.SWORD_KATANA);
+					Quest newQuest = new RQuestDungeonLevel(quest.questName, player, Item.SWORD_KATANA, 0);
 					player.addQuest(newQuest);
 					setDecided();
 				}
 				if (quest.equals(QuestTypes.QUEST_RED_FLAG)) {
-					Quest newQuest = new RQuestKillMonster("Kill Quest", player, 5, 20);
+					Quest newQuest = new RQuestKillMonster(quest.questName, player, null, 20, 5);
 					player.addQuest(newQuest);
-					System.out.println("HHH");
 					setDecided();
 				}
 			}
