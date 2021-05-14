@@ -1,20 +1,20 @@
 package de.fhbielefeld.pmdungeon.quibble.quest;
 
-import de.fhbielefeld.pmdungeon.quibble.entity.Player;
+import java.util.logging.Level;
 
-public abstract class Quest implements OnRewardListener {
+import de.fhbielefeld.pmdungeon.quibble.LoggingHandler;
+import de.fhbielefeld.pmdungeon.quibble.entity.Player;
+import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEventHandler;
+
+public abstract class Quest implements EntityEventHandler {
 
 	public final static String QUEST_TEXTURE_PATH = "assets/textures/quest/";
 	public final static String ACCEPT_DECLINE = "To Accept press J to Decline press N";
 	public final static String QUEST_REACH = "You will gain: ";
 
-	public static final Quest QUEST_YELLOW_FLAG = new RQuestLevelUp("Level Quest", "yellow_flag");
-	public static final Quest QUEST_BLUE_FLAG = new RQuestDungeonLevel("Dungeon Level", "blue_flag");
-	public static final Quest QUEST_RED_FLAG = new RQuestKillMonster("KillQuest", "red_flag");
-	
-
 	protected boolean isAccept;
 	protected boolean isActive;
+	private boolean isCompleted;
 
 	private String texture;
 	private String questName;
@@ -23,21 +23,11 @@ public abstract class Quest implements OnRewardListener {
 
 	private Object onReward;
 
-	/**
-	 * Abstract real logic Quest
-	 * 
-	 * @param questName name of a certain Quest
-	 * @param texture   the texture which should be used
-	 */
-	public Quest(String questName, String texture) {
-		this.texture = texture;
+	public Quest(String questName, Player p, Object onReward) {
 		this.questName = questName;
-	}
-
-	public Quest(String questName, Player p, Object onReward2) {
-		this.questName = questName;
-		this.onReward = onReward2;
+		this.onReward = onReward;
 		this.player = p;
+		LoggingHandler.logger.log(Level.INFO, "The Quest: " + questName + " was accepted");
 	}
 
 	/**
@@ -75,12 +65,6 @@ public abstract class Quest implements OnRewardListener {
 
 	/**
 	 * 
-	 * @param c Creature to receive the specific reward
-	 */
-	public abstract void onReward(Player player);
-
-	/**
-	 * 
 	 * @return the given Texture
 	 */
 	public final String getTexture() {
@@ -94,6 +78,8 @@ public abstract class Quest implements OnRewardListener {
 	public final String getQuestName() {
 		return this.questName;
 	}
+	
+	public abstract void onReward(Player p);
 
 	public final Object onReward() {
 		return this.onReward;
@@ -101,5 +87,13 @@ public abstract class Quest implements OnRewardListener {
 
 	public Player getPlayer() {
 		return player;
+	}
+
+	public boolean isCompleted() {
+		return isCompleted;
+	}
+
+	public void setCompleted(boolean isCompleted) {
+		this.isCompleted = isCompleted;
 	}
 }
