@@ -1,7 +1,5 @@
 package de.fhbielefeld.pmdungeon.quibble.quest;
 
-import static org.junit.Assert.fail;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,19 +11,18 @@ import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
 import de.fhbielefeld.pmdungeon.quibble.entity.Goblin;
 import de.fhbielefeld.pmdungeon.quibble.entity.Knight;
 import de.fhbielefeld.pmdungeon.quibble.entity.Player;
-import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.DamageType;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.CreatureHitTargetPostEvent;
-import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEvent;
+import junit.framework.TestCase;
 
-public class RQuestKillMonsterTest {
+public class RQuestKillMonsterTest extends TestCase {
 
 	private Player p;
 	private RQuestKillMonster quest;
 	Creature c;
 	List<Creature> cList;
-	
+
 	@Before
 	public void setUp() throws Exception {
 		p = new Knight();
@@ -44,16 +41,15 @@ public class RQuestKillMonsterTest {
 
 	@Test
 	public void test() {
-		if(quest.isCompleted()) {
+		if (quest.isCompleted()) {
 			fail("Test should not be completed here");
 		}
-		
+
 		for (int i = 0; i < quest.getToKill(); i++) {
-			p.fireEvent(new CreatureHitTargetPostEvent(Creature.EVENT_ID_HIT_TARGET_POST, p, c, DamageType.PHYSICAL, Double.MAX_VALUE));
+			p.fireEvent(new CreatureHitTargetPostEvent(Creature.EVENT_ID_HIT_TARGET_POST, p, c, DamageType.PHYSICAL,
+					Double.MAX_VALUE));
 		}
-		
-		if(!quest.isCompleted())
-		{
+		if (!quest.isCompleted()) {
 			fail("Test should be Ok if counter is the same as toKill ");
 		}
 	}

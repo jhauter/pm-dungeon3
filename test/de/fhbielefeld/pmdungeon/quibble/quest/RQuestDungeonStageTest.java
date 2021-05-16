@@ -1,7 +1,5 @@
 package de.fhbielefeld.pmdungeon.quibble.quest;
 
-import static org.junit.Assert.fail;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -9,13 +7,13 @@ import org.junit.Test;
 import de.fhbielefeld.pmdungeon.quibble.entity.Knight;
 import de.fhbielefeld.pmdungeon.quibble.entity.Player;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEvent;
+import junit.framework.TestCase;
 
-public class RQuestDungeonStageTest {
+public class RQuestDungeonStageTest extends TestCase {
 
 	private Player p;
 	private RQuestDungeonStage quest;
-	
-	
+
 	@Before
 	public void setUp() throws Exception {
 		p = new Knight();
@@ -32,7 +30,7 @@ public class RQuestDungeonStageTest {
 	@Test
 	public void test() {
 		this.p.fireEvent(new EntityEvent(Player.EVENT_ID_DUNGEON_LEVEL_CHANGED, p));
-		if(!quest.isCompleted()) {
+		if (!quest.isCompleted()) {
 			fail("Quest was completed even it should not");
 		}
 	}
