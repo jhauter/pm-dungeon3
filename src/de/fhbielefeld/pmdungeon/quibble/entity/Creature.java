@@ -58,6 +58,11 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	 */
 	public static final int EVENT_ID_EXP_CHANGE = EntityEvent.genEventID();
 	
+	/**
+	 * Event ID for <code>CreatureKilledEvent</code>.
+	 */
+	public static final int EVENT_KILLED_ENTITY = EntityEvent.genEventID();
+	
 	private static final int ANIM_SWITCH_IDLE_L = 0;
 	private static final int ANIM_SWITCH_IDLE_R = 1;
 	private static final int ANIM_SWITCH_RUN_L = 2;
