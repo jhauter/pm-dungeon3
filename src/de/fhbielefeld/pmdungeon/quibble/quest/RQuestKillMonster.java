@@ -58,4 +58,20 @@ public class RQuestKillMonster extends Quest {
 			}
 		}
 	}
+
+	public int getToKill() {
+		return toKill;
+	}
+
+	public void setToKill(int toKill) {
+		this.toKill = toKill;
+	}
+
+	public int getCounter() {
+		return counter;
+	}
+
+	public void setCounter(int counter) {
+		this.counter = counter;
+	}
 }
