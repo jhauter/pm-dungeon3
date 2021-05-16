@@ -1,9 +1,8 @@
 ---
-title:  'Lerntagebuch zur Bearbeitung von Blatt 04
+title:  'Lerntagebuch zur Bearbeitung von Blatt 05
 author:
 - Andreas Wegner (andreas.wegner@fh-bielefeld.de)
 - Malte Kanders (malte_theodor.kanders@fh-bielefeld.de)
-- Mathis Grabert (mathis.grabert@fh-bielefeld.de)
 ...
 
 <!--
@@ -38,11 +37,12 @@ sowie [Praktikumsblatt "Lerntagebuch"](pm_praktikum.html#lerntagebuch).
 Bitte hier die zu lösende Aufgabe kurz in eigenen Worten beschreiben.
 -->
 
-Das Inventar soll als HUD grafisch dargestellt werden. Ebenso soll auch die Anzahl der Lebenspunkte des Spielers angezeigt werden.
-Der Spieler soll in der Lage sein, Erfahrungspunkte zu sammeln und Level aufzusteigen. Für das Aufsteigen von Level
-soll es Belohnungen und zusätzliche Fähigkeiten geben, wie zum Beispiel mehr Schaden.
-Es soll Fallen im Dungeon geben, die verschiedene Effekte auf den Spieler ausüben, wenn er drauftritt.
-Manche Fallen sollen nur durch Wirkung eines Trankes sichbar sein.
+Es soll ein Quest System auf Basis des Observer Pattern hinzugefügt werden.
+Quest sind Aufgaben die erfüllt werden müssen um Belohnungen zu erhalten.
+Quest sollen geeignet dargestellt, sowie annehmbar oder ablehnbar sein.
+Angenommene Quest sind im HUD sichtbar.
+
+Desweiteren sollen Quest sinnvoll mit JUnit getestet werden.
 
 
 # Ansatz und Modellierung
@@ -55,28 +55,87 @@ Bitte hier den Lösungsansatz kurz beschreiben:
 -   Worauf müssen Sie konkret achten?
 -->
 
-Um das Inventar anzuzeigen, soll das HUD verwendet werden. Dies besteht aus einer Reihe von Objekten, die jeweils
-einen Gegenstand im Inventar anzeigen. Wenn sich das Inventar ändert, zum Beispiel durch herausnehmen eines Gegenstandes,
-muss das HUD aktualisiert werden. Dazu nehmen wir ein EventListener-Modell, nach welchem das Inventar das HUD benachrichtigt,
-wenn im Inventar eine änderung stattfindet. Das HUD passt sich dann entsprechend an.
-Die Lebenspunkte und Erfahrung können wir auch mit HUD-Objekten anzeigen lassen.
-In diesem Fall machen wir die HUD-Objekte aber aktiv, im vergleich zum Inventar-HUD.
-Dafür greifen wir auf LibGDX zu und zeichnen die Herzen, die die Lebenspunkte darstellen, mit nur einem Objekt selbst.
-So ist kein Observer-Pattern nötig und die Grafik aktualisiert sich von alleine.
-Das selbe Vorgehen benutzen wir bei der Anzeige der Erfahrungspunkte.
+Es sollen mehrere `Quest` implementiert werden die sich jedoch in der Aufgabe und Belohnung unterscheiden.
+Die Abstrakte Klasse Quest, soll den GrundbauPlan der neuen `Quest` vorgeben.
 
-Um ein Erfahrungspunktesystem zu implementieren, haben wir uns überlegt, sollte jede Kreatur
-eine Variable bekommen, die die kompletten Erfahrungspunkte zählt. Es gibt keine Variable, welche das aktuelle Level speichert.
-Das aktuelle Level wird mithilfe einer Funktion berechnet, die aus den kompletten Erfahrungspunkten das aktuelle Level berechnet.
-Somit kann man theoretisch unendlich viele Level aufsteigen, ohne diese vorher zu konfigurieren.
-Außerdem ist es möglich, die kompletten Erfahrungspunkte auf einen beliebigen Wert zu setzen,
-ohne dass irgendwelche Zähler durcheinander kommen.
-Die Statuswerte jeder Kreatur sind abhängig von dem Level der Kreatur. Somit lassen sich leicht
-bestimmte Statuswerte bei einem Levelaufstieg erhöhen.
+Quest bestehen so aus: 
+- `String questname`: Der Name der jeweiligen Quest
+- `Player player`: Der jeweilige Player der auch die Belohnungen bekommen soll.
+- `Item itemOnReward`: Falls die Quest ein Item zur Belohnung bereithält.
+- `int expOnReward`: Für den Fall das es als Belohnung Erfahrungspunkte gibt.
 
-Fallen sind bei uns ein eigener Entity-Zweig. Sie nutzen die eingebaute Kollisionserkennung,
-um zu erkennen, wenn ein Spieler auf sie tritt. Die Effekte einer Falle werden nach dem OOP-Prinzip,
-in den Unterklassen der Fallen festgehalten.
+Da jede Quest auch eine Belohnung bereithält, hat die abstrakte Klasse Quest auch die Mehthode `onReward(Player p)`.
+Diese gibt den Spieler Exp, ein Item oder beides, sobald der `boolean isCompleted` gesetzt wurde.
+
+Hinzukommen ein paar getter die dem HUD die Strings übergibt.
+-   `String  getTask`: Für die Aufgabe an sich.
+-   `String onWork`: Den Fortschritt der Quest.
+-   `String onComplete`: Die Belohnung der Quest.
+
+Ein wichtiger Boolean is der `isCompleted` boolean der ausgelöst wird sobald eine Quest erfüllt wurde.
+
+
+Beschreibung der eingefügten Quest:
+
+1. `RQuestDungeonStage`
+    -   Quest besteht darin, die Treppe zu erreichen und eine Stage weiter zu kommen.
+2.  `RQuestKillMonster`
+    -   Es gilt, eine gewisse Anzahl von Monster `(Creature)` zu töten.
+3.  `RQuestLevelUp`
+    -   In dieser Aufgabe muss der Held eine bestimmte Anzahl von Level aufsteigen.
+
+
+Um die Quest jetzt auch geeignet in das Level zu malen, erstellen wir eine Klasse `QuestDummy`.
+Der QuestDummy erbt von Entity und kann so von der Funktion
+`spawnEntity` in die Stage gemalt werden.
+Er ist die Klasse, mit dem der Spieler im Dungeon interagiert.
+Für die Darstellung haben wir ein Enum namens `QuestTypes`,
+welches den Namen und den Namen der Texture speichert.
+Hier wird im Konstruktor mithilfe des QuestType dann die richtige Textur zur richtigen Quest gemalt.
+
+Hier gibt es boolean die gesetzt werden sobald der Spieler mit der Falle interagiert.
+`boolean isActive`: Wird gesetzt wenn der Spieler eine Quest mit einer Taste aktiviert. Der Spieler erhält so Informationen über die spezifizierte Quest und auch die Möglichkeit an oder abzulehnen.
+`boolean decide`: Entfernt die Quest von der Stage, wenn angenommen oder abgelehnt.
+
+Interagieren kann der Held, wenn er auf der Flagge steht.
+Wir überschreiben hier die Methode `onEntityCollision(Entity otherEntity)`.
+Wenn der Spieler mit der Taste Q den `boolean isActive` aktiviert erhält er die Möglichkeit die Quest anzunehmen (mit J) oder abzulehnen (mit N).
+
+Je nachdem welchen Quest der Dummy darstellt, bekommt der Held so seine Aufgabe hinzugefügt.
+Die Quest wird im Player in eine Liste gespeichert.
+Sobald die `updateLogic()`-Methode merkt, dass einer der Quests des Spielers `isCompleted == true` hat, wird diese Quest aus der
+Liste des Spielers gelöscht. Das ist das selbe Prinzip wie bei `IEntity.deleteable()`.
+
+Jede Quest implementiert auch einen `EntityEventListener`.
+Dies ist der Listener unseres Observer Pattern, welches wir schon benutzen und hier ebenfalls Anwendung finden kann.
+Wird ein bestimmtes Event gefeuert, welches mit der passenden ID korreliert, wird die Methode `handleEvent` ausgeführt.
+Somit ist jede Quest auch ein Listerner, der bei Entity-Events benachrichtigt wird.
+Jedes Entity und damit auch der Spieler hat eine Liste von `EntityEventListener`, die alle `EntityEventListener` enthält,
+die bei einem Event benachrichtigt werden sollen.
+Jede Quest, die dem Spieler hinzugefügt wird, wird ihm auch als `EntityEventListener` hinzugefügt.
+Dadurch wird die `handleEvent()`-Methode der angenommenen Quests ausgeführt, sobald ein Event eines Entities stattfindet.
+Beispiele für Entity-Events:
+- der Spieler greift einen Gegner an
+- der Spieler bekommt Erfahrungspunkte
+- der Spieler betritt das nächste Dungeon-Level
+- Statuswerte des Spielers (z. B. Lebenspunkte) ändern sich
+
+Dies erlaubt jeder Quest, intern die Events des Spielers nachzuverfolgen. Sobald die Quest feststellt, dass
+die Aufgabe der Quest erfüllt wurde, wird die Quest als "fertig" markiert mit `setCompleted(true)`.
+Das austeilen der Belohnung findet im der `Player`-Klasse statt, wenn die Quest folglich aus der Liste entfernt wird.
+
+Ein sehr einfaches Beipsiel unseres `RQuestDungeonStage`:
+```java
+	@Override
+	public void handleEvent(EntityEvent event) {
+		//Ziel dieser Quest ist, die nächste Stage zu erreichen
+		if(event.getEventID() == Player.EVENT_ID_DUNGEON_LEVEL_CHANGED)
+		{
+			setCompleted(true);
+		}
+	}
+```
+
 
 
 # Umsetzung
@@ -89,13 +148,12 @@ Bitte hier die Umsetzung der Lösung kurz beschreiben:
 -   was war das Ergebnis?
 -->
 
-Wir haben wieder in etwa 20 Stunden insgesamt gebracht, was aber nur eine Schätzung
-ist, da wir die Zeit nicht zählen.
-Auch haben wir wieder vereinzelt im Laufe der Woche gearbeitet, anstatt uns auf besonderen
-Tagen zu verabreden.
-Die Aufgaben aus diesem Blatt konnte man ziemlich unabhängig voneinander machen,
-weshalb wir die Aufgaben gut aufteilen konnten, so dass wir alles gleichzeitig machen konnten
-und am Ende zusammentragen konnten.
+-	Erstellen des HUDs (2h) 12.05.
+-   Erstellen der ersten Quest (5h) 14.05.
+-   Korrektur und Feinarbeiten an den Quest (3h) 14.05.
+-   Implementierung und letzten Feinschliff der Quest (3h) 16.05.
+-   Merge und Einbau in das Hud (2h) 16.05.
+-   Erstellen der TestCases (2h) 16.05.
 
 # Postmortem
 
@@ -107,9 +165,9 @@ kritisch zurück:
 -   Wie haben Sie die Probleme letztlich gelöst?
 -->
 
-Alles hat ganz gut funktioniert und mache der Grafiken sehen überraschend gut aus.
-Wir mussten zum ersten mal mit der Text-API arbeiten, über welche wir immer noch
-etwas lernen müssen, wie sie funktioniert.
-Auch durch das arbeiten mit Git entstehen manchmal Schwierigkeiten, da
-wir alle Git-Neulinge sind. Aber durch etwas Recherche konnten viele Probleme
-geöst werden. 
+Das Erstellen der Lösung war diesmal nicht ein allzugroßer Aufwand. Erst war die Versuchung da, ein eigenes Observer Pattern allein für die Quest zu erstellen, aber die Möglichkeit auf das vorhandene EntityEvent ObserverPattern hat die Sache übersichtlich und leicht umsetzbar gemacht und so flog das 3. Observer-Pattern wieder raus.
+
+Die Tests fielen uns dagegen schwer von der Hand.
+Es hat noch keiner von uns mit ihnen gearbeitet und nachdem wir herausgefunden haben wie sie funktionieren, wussten wir einfach nicht was wir testen sollten.
+
+

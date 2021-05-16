@@ -25,6 +25,7 @@ import de.fhbielefeld.pmdungeon.quibble.entity.event.CreatureStatChangeEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEventHandler;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.PlayerOpenChestEvent;
+import de.fhbielefeld.pmdungeon.quibble.entity.event.PlayerQuestsChangedEvent;
 import de.fhbielefeld.pmdungeon.quibble.file.ResourceHandler;
 import de.fhbielefeld.pmdungeon.quibble.hud.ExpBarHUD;
 import de.fhbielefeld.pmdungeon.quibble.hud.HUDGroup;
@@ -32,6 +33,7 @@ import de.fhbielefeld.pmdungeon.quibble.hud.HUDManager;
 import de.fhbielefeld.pmdungeon.quibble.hud.HealthDisplayHUD;
 import de.fhbielefeld.pmdungeon.quibble.hud.InventoryHUDSwitchListener;
 import de.fhbielefeld.pmdungeon.quibble.hud.InventoryItemHUD;
+import de.fhbielefeld.pmdungeon.quibble.hud.QuestHUD;
 import de.fhbielefeld.pmdungeon.quibble.input.DungeonInput;
 import de.fhbielefeld.pmdungeon.quibble.input.DungeonInputHandler;
 import de.fhbielefeld.pmdungeon.quibble.input.InputHandler;
@@ -86,6 +88,8 @@ public class DungeonStart extends MainController implements EntityEventHandler, 
 	private ExpBarHUD expBarHUD;
 	private HealthDisplayHUD healthHUD;
 	
+	private QuestHUD questHUD;
+	
 	private Label expLabel;
 	private Label healthLabel;
 	
@@ -123,6 +127,10 @@ public class DungeonStart extends MainController implements EntityEventHandler, 
 		
 		this.expLabel = this.textHUD.drawText("Level: 0", FONT_ARIAL, Color.WHITE, 24, 200, 64, 16, 432);
 		this.healthLabel = this.textHUD.drawText("Health", FONT_ARIAL, Color.WHITE, 24, 200, 64, 16, 384);
+		
+		this.questHUD = new QuestHUD(400, 400, this.textHUD);
+		this.questHUD.setQuests(this.myHero.getQuestList());
+		this.hudManager.addElement(questHUD);
 		
 		LoggingHandler.logger.log(Level.INFO, "Setup done.");
 	}
@@ -270,8 +278,6 @@ public class DungeonStart extends MainController implements EntityEventHandler, 
 				//when the enemy is hit when it's already dead
 				LoggingHandler.logger.log(Level.INFO, "Killed " + hitEvent.getTarget().getClass().getSimpleName());
 				
-				myHero.setKilledEntitys(myHero.getKilledEntitys() +1);
-				
 				hitEvent.getEntity().heal(1.0D);
 				LoggingHandler.logger.log(Level.INFO, "Healed by 1.0");
 			}
@@ -283,7 +289,6 @@ public class DungeonStart extends MainController implements EntityEventHandler, 
 			
 			this.showInventory(INV_NAME_CHEST, chestEvent.getChest().getInv(), "Chest", 16, 288);
 		}
-		
 		else if(event.getEventID() == Creature.EVENT_ID_EXP_CHANGE)
 		{
 			final CreatureExpEvent expEvent = (CreatureExpEvent)event;
@@ -295,6 +300,10 @@ public class DungeonStart extends MainController implements EntityEventHandler, 
 				LoggingHandler.logger.log(Level.INFO, "New Level: " + newLevel);
 				this.expLabel.setText("Level: " + newLevel);
 			}
+		}
+		else if(event.getEventID() == PlayerQuestsChangedEvent.EVENT_ID)
+		{
+			this.questHUD.refreshQuests();
 		}
 	}
 	
