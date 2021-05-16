@@ -1,9 +1,8 @@
 ---
-title:  'Lerntagebuch zur Bearbeitung von Blatt 04
+title:  'Lerntagebuch zur Bearbeitung von Blatt 05
 author:
 - Andreas Wegner (andreas.wegner@fh-bielefeld.de)
 - Malte Kanders (malte_theodor.kanders@fh-bielefeld.de)
-- Mathis Grabert (mathis.grabert@fh-bielefeld.de)
 ...
 
 <!--
@@ -56,31 +55,32 @@ Bitte hier den Lösungsansatz kurz beschreiben:
 -   Worauf müssen Sie konkret achten?
 -->
 
-Es sollen mehrere `Quest`implementiert werden die sich jedoch in der Aufgabe und Belohnung unterscheiden.
+Es sollen mehrere `Quest` implementiert werden die sich jedoch in der Aufgabe und Belohnung unterscheiden.
 Die Abstrakte Klasse Quest, soll den GrundbauPlan der neuen `Quest` vorgeben.
 
-Quest bestehen so aus : 
-`String questname`: Der Name der jeweiligen Quest
-`Player player`: Der jeweilige Player der auch die Belohnungen bekommen soll.
-`Item itemOnReward`: Falls die Quest ein Item zur Belohnung bereithält.
-`int expOnReward`: Für den Fall das es als Belohnung Erfahrungspunkte gibt.
+Quest bestehen so aus: 
+- `String questname`: Der Name der jeweiligen Quest
+- `Player player`: Der jeweilige Player der auch die Belohnungen bekommen soll.
+- `Item itemOnReward`: Falls die Quest ein Item zur Belohnung bereithält.
+- `int expOnReward`: Für den Fall das es als Belohnung Erfahrungspunkte gibt.
 
 Da jede Quest auch eine Belohnung bereithält, hat die abstrakte Klasse Quest auch die Mehthode `onReward(Player p)`.
 Diese gibt den Spieler Exp, ein Item oder beides, sobald der `boolean isCompleted` gesetzt wurde.
 
 Hinzukommen ein paar getter die dem HUD die Strings übergibt.
--   `String  getTask` : Für die Aufgabe an sich.
--   `String onWork` : Den Fortschritt der Quest.
--   `String onComplete` : Die Belohnung der Quest.
+-   `String  getTask`: Für die Aufgabe an sich.
+-   `String onWork`: Den Fortschritt der Quest.
+-   `String onComplete`: Die Belohnung der Quest.
 
 Ein wichtiger Boolean is der `isCompleted` boolean der ausgelöst wird sobald eine Quest erfüllt wurde.
+
 
 Beschreibung der eingefügten Quest:
 
 1. `RQuestDungeonStage`
-    -   Quest besteht darin die Treppe zu erreichen und eine Stage weiter zu kommen.
+    -   Quest besteht darin, die Treppe zu erreichen und eine Stage weiter zu kommen.
 2.  `RQuestKillMonster`
-    -   Es gilt eine gewisse Anzahl von Monster `(Creature)` zu töten
+    -   Es gilt, eine gewisse Anzahl von Monster `(Creature)` zu töten.
 3.  `RQuestLevelUp`
     -   In dieser Aufgabe muss der Held eine bestimmte Anzahl von Level aufsteigen.
 
@@ -99,19 +99,36 @@ Hier gibt es boolean die gesetzt werden sobald der Spieler mit der Falle interag
 
 Interagieren kann der Held, wenn er auf der Flagge steht.
 Wir überschreiben hier die Methode `onEntityCollision(Entity otherEntity)`.
-Wenn der Spieler mit Q den `boolean isActive` aktiviert erhält er die Möglichkeit die Quest anzunehmen (mit J) oder abzulehnen (mit N).
+Wenn der Spieler mit der Taste Q den `boolean isActive` aktiviert erhält er die Möglichkeit die Quest anzunehmen (mit J) oder abzulehnen (mit N).
 
 Je nachdem welchen Quest der Dummy darstellt, bekommt der Held so seine Aufgabe hinzugefügt.
 Die Quest wird im Player in eine Liste gespeichert.
-Ist der `boolean isCompleted` gesetzt wird die Quest aus der Liste gelöscht.
+Sobald die `updateLogic()`-Methode merkt, dass einer der Quests des Spielers `isCompleted == true` hat, wird diese Quest aus der
+Liste des Spielers gelöscht. Das ist das selbe Prinzip wie bei `IEntity.deleteable()`.
+
 Jede Quest implementiert auch einen `EntityEventListener`.
 Dies ist der Listener unseres Observer Pattern, welches wir schon benutzen und hier ebenfalls Anwendung finden kann.
-Wird ein bestimmtes Event gefeuert, welches mit der passenden ID korreliert wird die Methode `handleEvent` ausgeführt.
+Wird ein bestimmtes Event gefeuert, welches mit der passenden ID korreliert, wird die Methode `handleEvent` ausgeführt.
+Somit ist jede Quest auch ein Listerner, der bei Entity-Events benachrichtigt wird.
+Jedes Entity und damit auch der Spieler hat eine Liste von `EntityEventListener`, die alle `EntityEventListener` enthält,
+die bei einem Event benachrichtigt werden sollen.
+Jede Quest, die dem Spieler hinzugefügt wird, wird ihm auch als `EntityEventListener` hinzugefügt.
+Dadurch wird die `handleEvent()`-Methode der angenommenen Quests ausgeführt, sobald ein Event eines Entities stattfindet.
+Beispiele für Entity-Events:
+- der Spieler greift einen Gegner an
+- der Spieler bekommt Erfahrungspunkte
+- der Spieler betritt das nächste Dungeon-Level
+- Statuswerte des Spielers (z. B. Lebenspunkte) ändern sich
+
+Dies erlaubt jeder Quest, intern die Events des Spielers nachzuverfolgen. Sobald die Quest feststellt, dass
+die Aufgabe der Quest erfüllt wurde, wird die Quest als "fertig" markiert mit `setCompleted(true)`.
+Das austeilen der Belohnung findet im der `Player`-Klasse statt, wenn die Quest folglich aus der Liste entfernt wird.
 
 Ein sehr einfaches Beipsiel unseres `RQuestDungeonStage`:
-```
+```java
 	@Override
 	public void handleEvent(EntityEvent event) {
+		//Ziel dieser Quest ist, die nächste Stage zu erreichen
 		if(event.getEventID() == Player.EVENT_ID_DUNGEON_LEVEL_CHANGED)
 		{
 			setCompleted(true);
@@ -131,11 +148,12 @@ Bitte hier die Umsetzung der Lösung kurz beschreiben:
 -   was war das Ergebnis?
 -->
 
--   Erstellen der ersten Quest (5h) 14.05
--   Korrektur und Feinarbeiten an den Quest(3h) 14.05
--   Implementierung und letzten Feinschliff der     Quest(3h)16.05
--   Merge und Einbau in das Hud (2h) 16.05
--   Erstellen der TestCases(2h) 16.05
+-	Erstellen des HUDs (2h) 12.05.
+-   Erstellen der ersten Quest (5h) 14.05.
+-   Korrektur und Feinarbeiten an den Quest (3h) 14.05.
+-   Implementierung und letzten Feinschliff der Quest (3h) 16.05.
+-   Merge und Einbau in das Hud (2h) 16.05.
+-   Erstellen der TestCases (2h) 16.05.
 
 # Postmortem
 
@@ -147,9 +165,9 @@ kritisch zurück:
 -   Wie haben Sie die Probleme letztlich gelöst?
 -->
 
-Das  erstellen der Lösung war diesmal nicht ein alzugroßer Aufwand. Erst war die Versuchung da, ein eigenes Observer Pattern allein für die Quest zu erstellen, aber die Möglichkeit auf das vorhandene EntityEvent ObserverPattern hat die Sache übersichtlich und leicht umsetzbar gemacht und so flog das 3. Observer wieder raus.
+Das Erstellen der Lösung war diesmal nicht ein allzugroßer Aufwand. Erst war die Versuchung da, ein eigenes Observer Pattern allein für die Quest zu erstellen, aber die Möglichkeit auf das vorhandene EntityEvent ObserverPattern hat die Sache übersichtlich und leicht umsetzbar gemacht und so flog das 3. Observer-Pattern wieder raus.
 
-Die Test fielen uns dagegen schwer von der Hand.
-Es hat noch keiner von uns mit ihnen gearbeitet und nachdem wir herausgefunden wie sie funktionieren, wussten wir einfach nicht was wir testen sollten.
+Die Tests fielen uns dagegen schwer von der Hand.
+Es hat noch keiner von uns mit ihnen gearbeitet und nachdem wir herausgefunden haben wie sie funktionieren, wussten wir einfach nicht was wir testen sollten.
 
 
