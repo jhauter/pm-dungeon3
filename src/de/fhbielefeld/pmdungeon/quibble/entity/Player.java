@@ -25,8 +25,6 @@ public abstract class Player extends Creature implements InputListener
 	
 	public static final int EVENT_ID_DUNGEON_LEVEL_CHANGED = EntityEvent.genEventID();
 	
-	private int killedEntitys;
-	
 	private float controlMinX;
 	private float controlMaxX;
 	private float controlMinY;
@@ -228,6 +226,9 @@ public abstract class Player extends Creature implements InputListener
 		
 	}
 	
+	/**
+	 * @return the closest chest
+	 */
 	private Chest getClosestChest()
 	{
 		List<Entity> l = this.getLevel().getEntitiesInRadius(getX(), getY(), 1);
@@ -241,6 +242,9 @@ public abstract class Player extends Creature implements InputListener
 		return null;
 	}
 	
+	/**
+	 * @return the closest dropped item entity
+	 */
 	private ItemDrop getClosestItemDrop()
 	{
 		List<Entity> l = this.getLevel().getEntitiesInRadius(getX(), getY(), 1);
@@ -269,16 +273,10 @@ public abstract class Player extends Creature implements InputListener
 		this.controlMaxY = 0.0F;
 	}
 	
-	public int getKilledEntitys()
-	{
-		return killedEntitys;
-	}
-	
-	public void setKilledEntitys(int killedEntitys)
-	{
-		this.killedEntitys = killedEntitys;
-	}
-	
+	/**
+	 * Adds a quest to the player that the player can complete
+	 * @param quest the quest to be added
+	 */
 	public void addQuest(Quest quest)
 	{
 		this.quests.add(quest);
@@ -286,6 +284,9 @@ public abstract class Player extends Creature implements InputListener
 		this.fireEvent(new PlayerQuestsChangedEvent(PlayerQuestsChangedEvent.EVENT_ID, this, quest));
 	}
 	
+	/**
+	 * @return all quests that the player currently has accepted
+	 */
 	public List<Quest> getQuestList()
 	{
 		return this.quests;

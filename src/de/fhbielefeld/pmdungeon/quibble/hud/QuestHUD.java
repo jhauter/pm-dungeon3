@@ -42,6 +42,12 @@ public class QuestHUD extends HUDElement
 	
 	private List<Quest> quests;
 	
+	/**
+	 * Creates a quest HUD that is able to display the quests that the player has accepted.
+	 * @param x the x-position of the HUD
+	 * @param y the y-position of the HUD
+	 * @param textHUD the TextStage object that is used to draw the text
+	 */
 	public QuestHUD(int x, int y, TextStage textHUD)
 	{
 		super(x, y);
@@ -49,6 +55,9 @@ public class QuestHUD extends HUDElement
 		this.labels = new ArrayList<>();
 	}
 	
+	/**
+	 * Needs to be called to notify the HUD that the quest list has been changed.
+	 */
 	public void refreshQuests()
 	{
 		this.labels.forEach(l -> l.setEmptyText());
@@ -66,17 +75,27 @@ public class QuestHUD extends HUDElement
 		}
 	}
 	
+	/**
+	 * Sets the quest list reference that the HUD uses to know which quests the player has
+	 * @param quests the player's quest list
+	 */
 	public void setQuests(List<Quest> quests)
 	{
 		this.quests = quests;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String getTexturePath()
 	{
 		return null;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void render(SpriteBatch batch, int renderX, int renderY)
 	{

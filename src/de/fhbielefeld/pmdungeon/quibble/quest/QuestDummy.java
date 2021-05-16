@@ -31,17 +31,26 @@ public class QuestDummy extends Entity {
 				Quest.QUEST_TEXTURE_PATH + quest.texture + ".png", -1);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean deleteable() {
 		return decide;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	protected void updateLogic() {
 		super.updateLogic();
 
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	protected void onEntityCollision(Entity otherEntity) {
 		super.onEntityCollision(otherEntity);
@@ -88,12 +97,6 @@ public class QuestDummy extends Entity {
 	public void setActive() {
 		this.isActive = true;
 	}
-	
-	/**
-	 * 
-	 * @return the actual real quest of the doll
-	 */
-
 
 	/**
 	 * if set the quest becomes active and the doll disappears

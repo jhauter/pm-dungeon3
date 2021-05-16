@@ -17,6 +17,14 @@ public class RQuestLevelUp extends Quest {
 	private int levelToReach;
 	private int counter;
 
+	
+	/**
+	 * Creates a quest object that can be completed by the player by reaching the next exp level.
+	 * @param questName the display name of the quest
+	 * @param p the player that should have the quest
+	 * @param itemOnReward the item that is rewarded when the quest is completed
+	 * @param expOnReward the exp that are rewarded when the quest is completed
+	 */
 	public RQuestLevelUp(String questName, Player p, Item itemOnReward, int expOnReward, int levelToReach) {
 		super(questName, p, itemOnReward, expOnReward);
 		this.player = p;
@@ -24,11 +32,17 @@ public class RQuestLevelUp extends Quest {
 	}
 
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String getTask() {
 		return "Level up to Level " + this.levelToReach;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String onWork() {
 		int level = this.player.totalExpFunction(this.player.getCurrentExpLevel()) / 10;
@@ -36,6 +50,9 @@ public class RQuestLevelUp extends Quest {
 	}
 
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void handleEvent(EntityEvent event) {
 		if (event.getEventID() == Creature.EVENT_ID_EXP_CHANGE) {

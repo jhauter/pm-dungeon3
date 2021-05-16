@@ -278,8 +278,6 @@ public class DungeonStart extends MainController implements EntityEventHandler, 
 				//when the enemy is hit when it's already dead
 				LoggingHandler.logger.log(Level.INFO, "Killed " + hitEvent.getTarget().getClass().getSimpleName());
 				
-				myHero.setKilledEntitys(myHero.getKilledEntitys() +1);
-				
 				hitEvent.getEntity().heal(1.0D);
 				LoggingHandler.logger.log(Level.INFO, "Healed by 1.0");
 			}
