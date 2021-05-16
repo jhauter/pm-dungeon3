@@ -167,14 +167,14 @@ public class DungeonStart extends MainController implements EntityEventHandler, 
 			LoggingHandler.logger.log(Level.INFO, "New Chest added.");
 		}
 		
-		/**
-		 * Placing Random Traps
-		 */
+		// Placing a new Trap
+		
 		final Point pos3 = this.currentLevel.getDungeon().getRandomPointInDungeon();
 		this.currentLevel.spawnEntity(currentLevel.getRNG().nextInt(2) == 0 ? new TrapTeleport(pos3.x, pos3.y, true) : new TrapHealth(pos3.x, pos3.y, 2, true));
-		
+	
 		final Point pos4 = this.currentLevel.getDungeon().getRandomPointInDungeon();
-		this.currentLevel.spawnEntity(new QuestDummy(QuestTypes.QUEST_YELLOW_FLAG, pos4.x, pos4.y));
+		QuestTypes type = QuestTypes.values()[this.currentLevel.getRNG().nextInt(QuestTypes.values().length)];
+		this.currentLevel.spawnEntity(new QuestDummy(type, pos4.x, pos4.y));
 		
 		//Set the camera to follow the hero
 		this.camera.follow(this.myHero);

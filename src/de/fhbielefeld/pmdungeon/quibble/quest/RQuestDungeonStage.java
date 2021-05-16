@@ -4,13 +4,11 @@ import de.fhbielefeld.pmdungeon.quibble.entity.Player;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEvent;
 import de.fhbielefeld.pmdungeon.quibble.item.Item;
 
-public class RQuestDungeonLevel extends Quest {
+public class RQuestDungeonStage extends Quest {
 
-	public RQuestDungeonLevel(String questName, Player p, Item itemOnReward, int expOnReward) {
+	public RQuestDungeonStage(String questName, Player p, Item itemOnReward, int expOnReward) {
 		super(questName, p, itemOnReward, expOnReward);
 	}
-
-	private int currentDungeonStage;
 
 
 	@Override
@@ -25,12 +23,9 @@ public class RQuestDungeonLevel extends Quest {
 
 	@Override
 	public void handleEvent(EntityEvent event) {
-		
-	}
-
-	@Override
-	public void onReward(Player p) {
-		// TODO Auto-generated method stub
-		
+		if(event.getEventID() == Player.EVENT_ID_DUNGEON_LEVEL_CHANGED)
+		{
+			setCompleted(true);
+		}
 	}
 }

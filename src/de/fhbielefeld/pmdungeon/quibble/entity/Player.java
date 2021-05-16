@@ -9,6 +9,7 @@ import com.badlogic.gdx.Input;
 
 import de.fhbielefeld.pmdungeon.quibble.LoggingHandler;
 import de.fhbielefeld.pmdungeon.quibble.chest.Chest;
+import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.PlayerOpenChestEvent;
 import de.fhbielefeld.pmdungeon.quibble.input.DungeonInput;
 import de.fhbielefeld.pmdungeon.quibble.input.InputListener;
@@ -20,6 +21,8 @@ import de.fhbielefeld.pmdungeon.quibble.quest.QuestDummy;
 
 public abstract class Player extends Creature implements InputListener {
 	private boolean triggeredNextLevel;
+	
+	public static final int EVENT_ID_DUNGEON_LEVEL_CHANGED = EntityEvent.genEventID();
 	
 	private int killedEntitys;
 
@@ -72,6 +75,7 @@ public abstract class Player extends Creature implements InputListener {
 		// IMPORTANT never forget to set this or else all levels will be loaded so
 		// quickly that you're at the end level immediately.
 		this.triggeredNextLevel = false;
+		this.fireEvent(new EntityEvent(Player.EVENT_ID_DUNGEON_LEVEL_CHANGED, this));
 	}
 
 	/**
@@ -181,16 +185,6 @@ public abstract class Player extends Creature implements InputListener {
 			}
 		}
 		
-	}
-
-	private QuestDummy getClosestQuest() {
-		List<Entity> l = this.getLevel().getEntitiesInRadius(getX(), getY(), 1);
-		for (int i = 0; i < l.size(); i++) {
-			if (l.get(i) instanceof QuestDummy) {
-				return (QuestDummy) l.get(i);
-			}
-		}
-		return null;
 	}
 
 	private Chest getClosestChest() {
