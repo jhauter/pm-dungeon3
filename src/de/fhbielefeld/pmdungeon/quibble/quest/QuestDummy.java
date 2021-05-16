@@ -55,22 +55,23 @@ public class QuestDummy extends Entity {
 		if (isActive) {
 			if (Gdx.input.isKeyJustPressed(Input.Keys.J)) {
 				Player player = (Player) otherEntity;
-				if (quest.equals(QuestTypes.QUEST_YELLOW_FLAG)) {
+				Quest newQuest = null;
+				if (quest == QuestTypes.QUEST_LEVEL_UP) {
 					int level = player.totalExpFunction(player.getCurrentExpLevel()) / 10;
-					Quest newQuest = new RQuestLevelUp(quest.questName, player, Item.POTION_RED_BIG, 20, level + 1);
-					player.addQuest(newQuest);
-					setDecided();
+					newQuest = new RQuestLevelUp(quest.questName, player, Item.POTION_RED_BIG, 20, level + 1);
 				}
-				if (quest.equals(QuestTypes.QUEST_BLUE_FLAG)) {
-					Quest newQuest = new RQuestDungeonLevel(quest.questName, player, Item.SWORD_KATANA, 0);
-					player.addQuest(newQuest);
-					setDecided();
+				else if (quest == QuestTypes.QUEST_NEXT_STAGE) {
+					newQuest = new RQuestDungeonStage(quest.questName, player, Item.SWORD_KATANA, 20);
 				}
-				if (quest.equals(QuestTypes.QUEST_RED_FLAG)) {
-					Quest newQuest = new RQuestKillMonster(quest.questName, player, null, 20, 5);
-					player.addQuest(newQuest);
-					setDecided();
+				else if (quest == QuestTypes.QUEST_KILL) {
+					newQuest = new RQuestKillMonster(quest.questName, player, null, 20, 5);
 				}
+				else
+				{
+					return;
+				}
+				player.addQuest(newQuest);
+				setDecided();
 			}
 			if (Gdx.input.isKeyJustPressed(Input.Keys.N)) {
 				setDecided();
