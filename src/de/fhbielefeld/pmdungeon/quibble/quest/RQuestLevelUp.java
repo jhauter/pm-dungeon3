@@ -45,9 +45,9 @@ public class RQuestLevelUp extends Quest {
 			int newLevel = expEvent.getEntity().expLevelFunction(expEvent.getNewTotalExp());
 			if (newLevel > oldLevel) {
 				counter++;
-				if(counter == levelToReach)
+				if(counter >= levelToReach)
 					setCompleted(true);
-				LoggingHandler.logger.log(Level.INFO, "The quest " + this.getQuestName() + "was completed");
+				LoggingHandler.logger.log(Level.INFO, "The quest " + this.getQuestName() + " was completed");
 			}
 		}
 	}

@@ -25,6 +25,7 @@ import de.fhbielefeld.pmdungeon.quibble.entity.event.CreatureStatChangeEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEventHandler;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.PlayerOpenChestEvent;
+import de.fhbielefeld.pmdungeon.quibble.entity.event.PlayerQuestsChangedEvent;
 import de.fhbielefeld.pmdungeon.quibble.file.ResourceHandler;
 import de.fhbielefeld.pmdungeon.quibble.hud.ExpBarHUD;
 import de.fhbielefeld.pmdungeon.quibble.hud.HUDGroup;
@@ -127,7 +128,9 @@ public class DungeonStart extends MainController implements EntityEventHandler, 
 		this.expLabel = this.textHUD.drawText("Level: 0", FONT_ARIAL, Color.WHITE, 24, 200, 64, 16, 432);
 		this.healthLabel = this.textHUD.drawText("Health", FONT_ARIAL, Color.WHITE, 24, 200, 64, 16, 384);
 		
-		this.questHUD = new QuestHUD(500, 400, this.textHUD);
+		this.questHUD = new QuestHUD(400, 400, this.textHUD);
+		this.questHUD.setQuests(this.myHero.getQuestList());
+		this.hudManager.addElement(questHUD);
 		
 		LoggingHandler.logger.log(Level.INFO, "Setup done.");
 	}
@@ -288,7 +291,6 @@ public class DungeonStart extends MainController implements EntityEventHandler, 
 			
 			this.showInventory(INV_NAME_CHEST, chestEvent.getChest().getInv(), "Chest", 16, 288);
 		}
-		
 		else if(event.getEventID() == Creature.EVENT_ID_EXP_CHANGE)
 		{
 			final CreatureExpEvent expEvent = (CreatureExpEvent)event;
@@ -300,6 +302,10 @@ public class DungeonStart extends MainController implements EntityEventHandler, 
 				LoggingHandler.logger.log(Level.INFO, "New Level: " + newLevel);
 				this.expLabel.setText("Level: " + newLevel);
 			}
+		}
+		else if(event.getEventID() == PlayerQuestsChangedEvent.EVENT_ID)
+		{
+			this.questHUD.refreshQuests();
 		}
 	}
 	

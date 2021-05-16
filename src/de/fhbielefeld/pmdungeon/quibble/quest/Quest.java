@@ -69,9 +69,9 @@ public abstract class Quest implements EntityEventHandler {
 		if (this.getExpOnReward() > 0 && itemOnReward == null)
 			return QUEST_REACHED + this.getExpOnReward();
 		if (this.getExpOnReward() == 0 && itemOnReward != null)
-			return QUEST_REACHED + this.getExpOnReward() + " and " + getItemOnReward();
+			return QUEST_REACHED + getItemOnReward();
 		else
-			return QUEST_REACHED + " and " + getItemOnReward().getDisplayName();
+			return QUEST_REACHED + this.getExpOnReward() + " and " + getItemOnReward().getDisplayName();
 	}
 
 	/**

@@ -11,73 +11,81 @@ import de.fhbielefeld.pmdungeon.quibble.LoggingHandler;
 import de.fhbielefeld.pmdungeon.quibble.chest.Chest;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.PlayerOpenChestEvent;
+import de.fhbielefeld.pmdungeon.quibble.entity.event.PlayerQuestsChangedEvent;
 import de.fhbielefeld.pmdungeon.quibble.input.DungeonInput;
 import de.fhbielefeld.pmdungeon.quibble.input.InputListener;
 import de.fhbielefeld.pmdungeon.quibble.inventory.Inventory;
 import de.fhbielefeld.pmdungeon.quibble.inventory.InventoryItem;
 import de.fhbielefeld.pmdungeon.quibble.item.Item;
 import de.fhbielefeld.pmdungeon.quibble.quest.Quest;
-import de.fhbielefeld.pmdungeon.quibble.quest.QuestDummy;
 
-public abstract class Player extends Creature implements InputListener {
+public abstract class Player extends Creature implements InputListener
+{
 	private boolean triggeredNextLevel;
 	
 	public static final int EVENT_ID_DUNGEON_LEVEL_CHANGED = EntityEvent.genEventID();
 	
 	private int killedEntitys;
-
+	
 	private float controlMinX;
 	private float controlMaxX;
 	private float controlMinY;
 	private float controlMaxY;
-
-	List<Quest> quests = new ArrayList<Quest>();
-
+	
+	private List<Quest> quests = new ArrayList<Quest>();
+	
 	/**
 	 * @param x x-coordinate
 	 * @param y y-coordinate
 	 */
-	public Player(float x, float y) {
+	public Player(float x, float y)
+	{
 		super(x, y);
 	}
-
+	
 	/**
 	 * Creates a player entity with a default position
 	 */
-	public Player() {
+	public Player()
+	{
 		this(0.0F, 0.0F);
 	}
-
+	
 	@Override
-	public void onInputRecieved(DungeonInput input) {
+	public void onInputRecieved(DungeonInput input)
+	{
 		// This logic is to make a player stand still if keys of opposite directions are
 		// pressed
-
+		
 		this.controlMinX = Math.min(this.controlMinX, input.getAxisScaleX());
 		this.controlMaxX = Math.max(this.controlMaxX, input.getAxisScaleX());
 		this.controlMinY = Math.min(this.controlMinY, input.getAxisScaleY());
 		this.controlMaxY = Math.max(this.controlMaxY, input.getAxisScaleY());
-
-		if (input == DungeonInput.INV_LOG) {
+		
+		if(input == DungeonInput.INV_LOG)
+		{
 			LoggingHandler.logger.log(Level.INFO, "Inventory: " + Inventory.inventoryString(getInventory()));
-//			Inventory.inventoryVisitor(this.getInventory(), new ItemInvLogVisitor());
-		} else if (input == DungeonInput.EQUIP_LOG) {
+			//			Inventory.inventoryVisitor(this.getInventory(), new ItemInvLogVisitor());
+		}
+		else if(input == DungeonInput.EQUIP_LOG)
+		{
 			LoggingHandler.logger.log(Level.INFO, "Equipment: " + Inventory.inventoryString(getEquippedItems()));
-//			Inventory.inventoryVisitor(this.getEquippedItems(), new ItemEquipLogVisitor());
+			//			Inventory.inventoryVisitor(this.getEquippedItems(), new ItemEquipLogVisitor());
 		}
 	}
-
+	
 	/**
 	 * This must be called to reset the <code>triggeredNextLevel</code> flag
 	 * directly after the next level has been loaded.
 	 */
-	public void onNextLevelEntered() {
+	public void onNextLevelEntered()
+	{
 		// IMPORTANT never forget to set this or else all levels will be loaded so
 		// quickly that you're at the end level immediately.
 		this.triggeredNextLevel = false;
 		this.fireEvent(new EntityEvent(Player.EVENT_ID_DUNGEON_LEVEL_CHANGED, this));
 	}
-
+	
 	/**
 	 * Whether the <code>triggeredNextLevel</code> flag is set. This is set when the
 	 * player steps on the ladder that leads to the next level and will cause the
@@ -85,100 +93,133 @@ public abstract class Player extends Creature implements InputListener {
 	 * 
 	 * @return the <code>triggeredNextLevel</code> flag
 	 */
-	public boolean triggeredNextLevel() {
+	public boolean triggeredNextLevel()
+	{
 		return this.triggeredNextLevel;
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected void updateLogic() {
+	protected void updateLogic()
+	{
 		super.updateLogic();
-		if (this.level.getDungeon().getNextLevelTrigger() == this.level.getDungeon()
-				.getTileAt((int) this.getPosition().x, (int) this.getPosition().y)) {
+		if(this.level.getDungeon().getNextLevelTrigger() == this.level.getDungeon()
+			.getTileAt((int)this.getPosition().x, (int)this.getPosition().y))
+		{
 			this.triggeredNextLevel = true;
 		}
-
+		
 		float dirX = (this.controlMaxX + this.controlMinX) * 0.5F;
 		float dirY = (this.controlMaxY + this.controlMinY) * 0.5F;
-
-		if (dirX != 0.0D || dirY != 0.0D) {
-			float angle = (float) Math.toDegrees(Math.atan2(dirY, dirX));
-
+		
+		if(dirX != 0.0D || dirY != 0.0D)
+		{
+			float angle = (float)Math.toDegrees(Math.atan2(dirY, dirX));
+			
 			this.walk(angle);
-			if (angle > 90 || angle < -90) {
+			if(angle > 90 || angle < -90)
+			{
 				this.setLookingDirection(LookingDirection.LEFT);
-			} else if (angle < 90 && angle > -90) {
+			}
+			else if(angle < 90 && angle > -90)
+			{
 				this.setLookingDirection(LookingDirection.RIGHT);
 			}
 			// if it is exactly 90 or -90 do nothing
 			// So that when you press up or down, the looking direction does not change
-
+			
 			LoggingHandler.logger.log(Level.FINE, "Movement input: " + angle + "deg");
 		}
-
-		for (int i = 0; i < 9; ++i) {
-			if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_1 + i)) {
-				if (Gdx.input.isKeyPressed(Input.Keys.Q) && i < this.getInventorySlots()) {
+		
+		for(int i = 0; i < 9; ++i)
+		{
+			if(Gdx.input.isKeyJustPressed(Input.Keys.NUM_1 + i))
+			{
+				if(Gdx.input.isKeyPressed(Input.Keys.Q) && i < this.getInventorySlots())
+				{
 					InventoryItem<Item> droppedItem = this.getInventory().getItem(i);
-					if (this.drop(i) && droppedItem != null) {
+					if(this.drop(i) && droppedItem != null)
+					{
 						LoggingHandler.logger.log(Level.INFO, "Dropped item: " + droppedItem.getDisplayText());
 					}
-				} else if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) && i < this.getInventorySlots()) {
+				}
+				else if(Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) && i < this.getInventorySlots())
+				{
 					InventoryItem<Item> equippedItem = this.getInventory().getItem(i);
-					if (this.equip(i) && equippedItem != null) {
+					if(this.equip(i) && equippedItem != null)
+					{
 						LoggingHandler.logger.log(Level.INFO,
-								"Put item from inventory into equipment: " + equippedItem.getDisplayText());
+							"Put item from inventory into equipment: " + equippedItem.getDisplayText());
 					}
-				} else if (Gdx.input.isKeyPressed(Input.Keys.ALT_LEFT) && i < this.getEquipmentSlots()) {
+				}
+				else if(Gdx.input.isKeyPressed(Input.Keys.ALT_LEFT) && i < this.getEquipmentSlots())
+				{
 					InventoryItem<Item> unequippedItem = this.getEquippedItems().getItem(i);
-					if (this.unequip(i) && unequippedItem != null) {
+					if(this.unequip(i) && unequippedItem != null)
+					{
 						LoggingHandler.logger.log(Level.INFO,
-								"Put item from eqipment into inventory: " + unequippedItem.getDisplayText());
+							"Put item from eqipment into inventory: " + unequippedItem.getDisplayText());
 					}
-				} else if (Gdx.input.isKeyPressed(Input.Keys.E)) {
+				}
+				else if(Gdx.input.isKeyPressed(Input.Keys.E))
+				{
 					Chest chest = this.getClosestChest();
-					if (chest != null && i < chest.getInv().getCapacity() && chest.isOpen()) {
+					if(chest != null && i < chest.getInv().getCapacity() && chest.isOpen())
+					{
 						InventoryItem<Item> chestItem = chest.getInv().getItem(i);
-						if (chestItem != null && Inventory.transfer(chest.getInv(), i, this.getInventory())) {
+						if(chestItem != null && Inventory.transfer(chest.getInv(), i, this.getInventory()))
+						{
 							LoggingHandler.logger.log(Level.INFO,
-									"Took item from chest into inventory: " + chestItem.getDisplayText());
+								"Took item from chest into inventory: " + chestItem.getDisplayText());
 						}
 					}
-				} else if (i < this.getEquipmentSlots()) {
+				}
+				else if(i < this.getEquipmentSlots())
+				{
 					this.useEquippedItem(i);
 					LoggingHandler.logger.log(Level.INFO, "Attempted to use item in eqip slot " + (i + 1));
 				}
 			}
 		}
 		
-		for (int i = 0; i < quests.size(); i++) {
-			if(quests.get(i).isCompleted()) {
-				this.quests.get(i).onReward(this);
-				this.quests.set(i, this.quests.get(this.quests.size() -1));
+		Quest cQuest;
+		for(int i = 0; i < quests.size(); i++)
+		{
+			cQuest = quests.get(i);
+			if(cQuest.isCompleted())
+			{
+				cQuest.onReward(this);
+				this.quests.set(i, this.quests.get(this.quests.size() - 1));
 				
-				this.quests.remove(this.quests.size() -1);
+				this.quests.remove(this.quests.size() - 1);
 				i--;
+				this.removeEntityEventHandler(cQuest);
+				this.fireEvent(new PlayerQuestsChangedEvent(PlayerQuestsChangedEvent.EVENT_ID, this, cQuest));
 			}
 			
 		}
-
-		if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+		
+		if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE))
+		{
 			Chest chest = this.getClosestChest();
-			if (chest != null) {
-				PlayerOpenChestEvent chestEvent = (PlayerOpenChestEvent) this
-						.fireEvent(new PlayerOpenChestEvent(PlayerOpenChestEvent.EVENT_ID, this, chest));
-
-				if (!chestEvent.isCancelled()) {
+			if(chest != null)
+			{
+				PlayerOpenChestEvent chestEvent = (PlayerOpenChestEvent)this
+					.fireEvent(new PlayerOpenChestEvent(PlayerOpenChestEvent.EVENT_ID, this, chest));
+				
+				if(!chestEvent.isCancelled())
+				{
 					chest.animationHandler.playAnimation("Open_Gold", 4, false);
 					chest.setOpen();
-
+					
 					LoggingHandler.logger.log(Level.INFO, Inventory.inventoryString(chest.getInv()));
 				}
 			}
 			ItemDrop drop = this.getClosestItemDrop();
-			if (drop != null) {
+			if(drop != null)
+			{
 				drop.setPickedUp();
 				this.getInventory().addItem(drop.getItem());
 				LoggingHandler.logger.log(Level.INFO, "Picked up: " + drop.getItem().getDisplayText());
@@ -186,57 +227,68 @@ public abstract class Player extends Creature implements InputListener {
 		}
 		
 	}
-
-	private Chest getClosestChest() {
+	
+	private Chest getClosestChest()
+	{
 		List<Entity> l = this.getLevel().getEntitiesInRadius(getX(), getY(), 1);
-		for (int i = 0; i < l.size(); i++) {
-			if (l.get(i) instanceof Chest) {
-				return (Chest) l.get(i);
+		for(int i = 0; i < l.size(); i++)
+		{
+			if(l.get(i) instanceof Chest)
+			{
+				return (Chest)l.get(i);
 			}
 		}
 		return null;
 	}
-
-	private ItemDrop getClosestItemDrop() {
+	
+	private ItemDrop getClosestItemDrop()
+	{
 		List<Entity> l = this.getLevel().getEntitiesInRadius(getX(), getY(), 1);
-		for (int i = 0; i < l.size(); i++) {
-			if (l.get(i) instanceof ItemDrop) {
-				return (ItemDrop) l.get(i);
+		for(int i = 0; i < l.size(); i++)
+		{
+			if(l.get(i) instanceof ItemDrop)
+			{
+				return (ItemDrop)l.get(i);
 			}
 		}
 		return null;
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected void updateEnd() {
+	protected void updateEnd()
+	{
 		super.updateEnd();
-
+		
 		// Clear the controls of this frame
 		this.controlMinX = 0.0F;
 		this.controlMaxX = 0.0F;
 		this.controlMinY = 0.0F;
 		this.controlMaxY = 0.0F;
 	}
-
-	public int getKilledEntitys() {
+	
+	public int getKilledEntitys()
+	{
 		return killedEntitys;
 	}
-
-	public void setKilledEntitys(int killedEntitys) {
+	
+	public void setKilledEntitys(int killedEntitys)
+	{
 		this.killedEntitys = killedEntitys;
 	}
 	
-	public void addQuest(Quest quest) {
+	public void addQuest(Quest quest)
+	{
 		this.quests.add(quest);
 		this.addEntityEventHandler(quest);
+		this.fireEvent(new PlayerQuestsChangedEvent(PlayerQuestsChangedEvent.EVENT_ID, this, quest));
 	}
 	
-	public void removeQuest(Quest quest) {
-		this.quests.remove(quest);
-		this.removeEntityEventHandler(quest);
+	public List<Quest> getQuestList()
+	{
+		return this.quests;
 	}
 	
 }
