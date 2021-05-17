@@ -2,6 +2,8 @@ package de.fhbielefeld.pmdungeon.quibble.entity;
 
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
+import de.fhbielefeld.pmdungeon.quibble.item.Item;
+import de.fhbielefeld.pmdungeon.vorgaben.tools.Point;
 
 public class Mage extends Player {
 	
@@ -16,6 +18,9 @@ public class Mage extends Player {
 		this.animationHandler.addAsDefaultAnimation(Creature.ANIM_NAME_RUN_L, 4, 5, "assets/textures/entity/mage/wizzard_m_run_left_anim_f.png", 4);
 		this.animationHandler.addAsDefaultAnimation(Creature.ANIM_NAME_HIT_R , 1, 15, "assets/textures/entity/mage/wizzard_m_hit_right_anim_f.png", 4);
 		this.animationHandler.addAsDefaultAnimation(Creature.ANIM_NAME_HIT_L, 1, 15, "assets/textures/entity/mage/wizzard_m_hit_left_anim_f.png", 4);
+	
+		getEquippedItems().addItem(Item.GREEN_MAGIC_STAFF);
+		getEquippedItems().addItem(Item.RED_MAGIC_STAFF);
 	}
 	
 	public Mage() {
@@ -42,6 +47,36 @@ public class Mage extends Player {
 		stats.setStat(CreatureStatsAttribs.HIT_REACH, 0.6D);
 		stats.setStat(CreatureStatsAttribs.HIT_COOLDOWN, 15.0D);
 		return stats;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Point getWeaponHoldOffset()
+	{
+		return new Point(0.0F, 1.25F);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected boolean useHitAnimation()
+	{
+		return true;
+	}
+	
+	@Override
+	public int getInventorySlots()
+	{
+		return 3;
+	}
+	
+	@Override
+	public int getEquipmentSlots()
+	{
+		return 2;
 	}
 
 }

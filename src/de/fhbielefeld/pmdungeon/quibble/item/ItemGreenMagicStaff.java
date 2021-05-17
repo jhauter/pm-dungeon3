@@ -17,7 +17,7 @@ public class ItemGreenMagicStaff extends ItemWeaponMelee
 	public CreatureStats getItemStats()
 	{
 		CreatureStats stats = new CreatureStats();
-		stats.setStat(CreatureStatsAttribs.DAMAGE_PHYS, 7.0D);
+		stats.setStat(CreatureStatsAttribs.DAMAGE_PHYS, 3.0D);
 		return stats;
 	}
 }

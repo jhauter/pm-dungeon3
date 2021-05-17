@@ -105,7 +105,7 @@ public class DungeonStart extends MainController implements EntityEventHandler, 
 	{
 		super.setup();
 		this.myHero = new Mage();
-		this.myHero.getEquippedItems().addItem(Item.SWORD_BLUE);
+//		this.myHero.getEquippedItems().addItem(Item.SWORD_BLUE);
 		this.myHero.addEntityEventHandler(this);
 		this.invSwitchNormal = new InventoryHUDSwitchListener(this, INV_NAME_DEFAULT, this.myHero.getInventory(), "Inventory", 16, 176);
 		this.invSwitchEquip = new InventoryHUDSwitchListener(this, INV_NAME_EQUIP, this.myHero.getEquippedItems(), "Equipment", 16, 76);
