@@ -39,7 +39,7 @@ public abstract class Item
 	public static final ItemSightPotion POTION_SIGHT_BIG = new ItemSightPotion("Big Sight Potion", 0.2D, "pot_green_big");
 	public static final ItemWeaponMelee SWORD_BLUE = new ItemSwordBlue("Blue Sword", 1.25F, 1.25F, 3.5F, 0.25F, "sword_blue");
 	public static final ItemWeaponMelee SWORD_KATANA = new ItemKatana("Katana", 0.25F, 1.25F, 3.5F, 0.25F, "katana");
-	public static final ItemWeaponMelee RED_MAGIC_STAFF = new ItemRedMagicStaff("Red Staff", 0.25F, 1.25F, 3.5F, 0.25F, "red_magic_staff");
+	public static final ItemWeaponMagic RED_MAGIC_STAFF = new ItemRedMagicStaff("Red Staff", 0.25F, 1.25F, 3.5F, 0.25F, "red_magic_staff");
 	public static final ItemWeaponMelee GREEN_MAGIC_STAFF = new ItemGreenMagicStaff("Green Staff", 0.15F, 1.25F, 3.5F, 0.25F, "green_magic_staff");
 	public static final ItemBag<Item> BAG_DEFAULT = new ItemBag<Item>("Bag", 3, "bag");
 	
