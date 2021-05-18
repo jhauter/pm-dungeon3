@@ -6,6 +6,7 @@ import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
 
 public class StatusEffectSpeed extends StatusEffect {
 
+	private Creature creature;
 	private double currentNewSpeed;
 
 	/**
@@ -15,6 +16,7 @@ public class StatusEffectSpeed extends StatusEffect {
 	 */
 	public StatusEffectSpeed(Creature creature, double currentNewSpeed) {
 		super(creature);
+		this.creature = creature;
 		this.currentNewSpeed = currentNewSpeed;
 	}
 

@@ -20,7 +20,9 @@ public class Mage extends Player {
 		this.animationHandler.addAsDefaultAnimation(Creature.ANIM_NAME_HIT_L, 1, 15, "assets/textures/entity/mage/wizzard_m_hit_left_anim_f.png", 4);
 	
 		getEquippedItems().addItem(Item.GREEN_MAGIC_STAFF);
-		getEquippedItems().addItem(Item.RED_MAGIC_STAFF);
+		getEquippedItems().addItem(Item.POTION_YELLOW_BIG);
+		
+		
 	}
 	
 	public Mage() {

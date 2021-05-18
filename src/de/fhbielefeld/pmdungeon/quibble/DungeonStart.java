@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.logging.Level;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -25,6 +26,9 @@ import de.fhbielefeld.pmdungeon.quibble.entity.event.CreatureStatChangeEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEventHandler;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.PlayerOpenChestEvent;
+import de.fhbielefeld.pmdungeon.quibble.entity.range_combat.RangedCombatUtils;
+import de.fhbielefeld.pmdungeon.quibble.entity.range_combat.SpellIceBlast;
+import de.fhbielefeld.pmdungeon.quibble.entity.range_combat.RangeCombatSystem;
 import de.fhbielefeld.pmdungeon.quibble.file.ResourceHandler;
 import de.fhbielefeld.pmdungeon.quibble.hud.ExpBarHUD;
 import de.fhbielefeld.pmdungeon.quibble.hud.HUDGroup;
@@ -70,6 +74,9 @@ public class DungeonStart extends MainController implements EntityEventHandler, 
 	private InventoryHUDSwitchListener invSwitchEquip;
 	
 	private Player myHero;
+	
+	private RangeCombatSystem spells;
+	private SpellIceBlast ice;
 	
 	private InputHandler inputHandler;
 	
@@ -179,6 +186,8 @@ public class DungeonStart extends MainController implements EntityEventHandler, 
 		//Set the camera to follow the hero
 		this.camera.follow(this.myHero);
 		LoggingHandler.logger.log(Level.INFO, "New level loaded.");
+		
+
 	}
 	
 
@@ -204,6 +213,8 @@ public class DungeonStart extends MainController implements EntityEventHandler, 
 		this.lastFrameTimeStamp = System.currentTimeMillis();
 	}
 	
+	float floatTime = 0f;
+	SpellIceBlast s;
 	@Override
 	protected void endFrame()
 	{
@@ -243,6 +254,14 @@ public class DungeonStart extends MainController implements EntityEventHandler, 
 		this.hudManager.update();
 		
 		this.currentLevel.getParticleSystem().draw(this.camera.position.x, this.camera.position.y);
+		
+		floatTime += Gdx.graphics.getDeltaTime();
+		if(Gdx.input.isKeyJustPressed(Input.Keys.M)) {
+			spells = new RangeCombatSystem(currentLevel, RangedCombatUtils.SPELL_ICE_BLAST, myHero);
+			spells.RangedCombat();
+			
+		}
+
 	}
 	
 	@Override
@@ -370,5 +389,9 @@ public class DungeonStart extends MainController implements EntityEventHandler, 
 		{
 			this.closeInventory(INV_NAME_CHEST);
 		}
+	}
+	
+	public float getCamaraPositionX() {
+		return this.camera.position.x;
 	}
 }
