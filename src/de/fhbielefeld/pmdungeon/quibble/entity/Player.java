@@ -17,7 +17,6 @@ import de.fhbielefeld.pmdungeon.quibble.inventory.Inventory;
 import de.fhbielefeld.pmdungeon.quibble.inventory.InventoryItem;
 import de.fhbielefeld.pmdungeon.quibble.item.Item;
 import de.fhbielefeld.pmdungeon.quibble.quest.Quest;
-import de.fhbielefeld.pmdungeon.quibble.quest.QuestDummy;
 
 public abstract class Player extends Creature implements InputListener {
 	private boolean triggeredNextLevel;

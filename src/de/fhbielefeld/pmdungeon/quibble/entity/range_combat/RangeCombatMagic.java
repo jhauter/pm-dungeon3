@@ -1,13 +1,13 @@
 package de.fhbielefeld.pmdungeon.quibble.entity.range_combat;
 
 
-import de.fhbielefeld.pmdungeon.quibble.entity.Player;
+import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.DamageType;
 
-public abstract class MagicalSpell extends RangedCombat {
+public abstract class RangeCombatMagic extends Projectile {
 
-	public MagicalSpell(float x, float y, Player player, double damageAmount) {
-		super(x, y, player, damageAmount);
+	public RangeCombatMagic(float x, float y, Creature creature) {
+		super(x, y, creature);
 		this.setPosition(x, y);
 	}
 	

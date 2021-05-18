@@ -2,11 +2,7 @@ package de.fhbielefeld.pmdungeon.quibble.entity.range_combat;
 
 import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
 import de.fhbielefeld.pmdungeon.quibble.entity.Entity;
-import de.fhbielefeld.pmdungeon.quibble.entity.Player;
-import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.DamageType;
-import de.fhbielefeld.pmdungeon.quibble.entity.event.CreatureHitTargetEvent;
-import de.fhbielefeld.pmdungeon.quibble.entity.event.CreatureHitTargetPostEvent;
 import de.fhbielefeld.pmdungeon.vorgaben.tools.Point;
 
 public abstract class Projectile extends Entity {
@@ -22,9 +18,6 @@ public abstract class Projectile extends Entity {
 	// The Point where the Projectile starts
 	private Point point;
 
-	// The amount of damage this weapon will make with a certain attribute
-	private CreatureStatsAttribs creatureStat;
-
 	private double damage;
 
 	/**
@@ -33,10 +26,8 @@ public abstract class Projectile extends Entity {
 	 * @param x            x start of the Projectile on x - Axis
 	 * @param y            y start of the Projectile on y - Axis
 	 * @param player       Creature who shoots an Projectile
-	 * @param damageAmount the amount of damage this will make, will be reduced by
-	 *                     time.
 	 */
-	public Projectile(float x, float y, Creature creature, double damageAmount) {
+	public Projectile(float x, float y, Creature creature) {
 		point = new Point(x, y);
 		this.creature = creature;
 
@@ -62,7 +53,7 @@ public abstract class Projectile extends Entity {
 	protected void onEntityCollision(Entity otherEntity) {
 		// it have to be check if it is an Creature cause the Chest etc are also Entity
 		// And the own weapon should not damage the player
-		if (otherEntity instanceof Creature && !(otherEntity instanceof Player)) {
+		if (otherEntity instanceof Creature) {
 			((Creature) otherEntity).damage(damage, getDamageType(), this.creature, false);
 			setDepleted();
 		}
@@ -74,7 +65,7 @@ public abstract class Projectile extends Entity {
 	 * @return damage this projectile should do
 	 */
 	public void setDamageAmount() {
-		double damage = getDamageFromStat();
+		damage = getDamageFromStat();
 	}
 
 	public abstract double getDamageFromStat();

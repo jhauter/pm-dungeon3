@@ -2,7 +2,7 @@ package de.fhbielefeld.pmdungeon.quibble.entity.range_combat;
 
 public enum RangedCombatUtils {
 	
-	SPELL_ICE_BLAST("Spell Ice Blast", RangedCombat.PROJECTILE_PATH + "iceBlast_right_anim_f.png");
+	SPELL_ICE_BLAST("Spell Ice Blast", Projectile.PROJECTILE_PATH + "iceBlast_right_anim_f.png");
 
 	String name;
 	String path;
