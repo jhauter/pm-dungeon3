@@ -33,5 +33,4 @@ public class SpellIceBlast extends ProjectileMagic {
 			LoggingHandler.logger.log(Level.INFO, ProjectileTypes.SPELL_ICE_BLAST.name + " has hit an Entity");
 		}
 	}
-
 }
