@@ -5,11 +5,10 @@ import java.util.logging.Level;
 import de.fhbielefeld.pmdungeon.quibble.LoggingHandler;
 import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
 import de.fhbielefeld.pmdungeon.quibble.entity.Entity;
-import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
 import de.fhbielefeld.pmdungeon.quibble.entity.effect.StatusEffectSpeed;
 import de.fhbielefeld.pmdungeon.vorgaben.tools.Point;
 
-public class SpellIceBlast extends RangeCombatMagic {
+public class SpellIceBlast extends ProjectileMagic {
 
 	/**
 	 * Creates a Spell called Ice Blast
@@ -33,11 +32,6 @@ public class SpellIceBlast extends RangeCombatMagic {
 			((Creature) otherEntity).addStatusEffect(new StatusEffectSpeed((Creature) otherEntity, 0.005), 100);
 			LoggingHandler.logger.log(Level.INFO, ProjectileTypes.SPELL_ICE_BLAST.name + " has hit an Entity");
 		}
-	}
-
-	@Override
-	public CreatureStatsAttribs getDamageFromStat() {
-		return CreatureStatsAttribs.DAMAGE_MAGIC;
 	}
 
 }
