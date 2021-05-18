@@ -3,47 +3,44 @@ package de.fhbielefeld.pmdungeon.quibble.entity.range_combat;
 import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
 import de.fhbielefeld.pmdungeon.quibble.entity.Entity;
 import de.fhbielefeld.pmdungeon.quibble.entity.Player;
+import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.DamageType;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.CreatureHitTargetEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.CreatureHitTargetPostEvent;
 import de.fhbielefeld.pmdungeon.vorgaben.tools.Point;
 
-public abstract class RangedCombat extends Entity {
+public abstract class Projectile extends Entity {
 
 	public static final String PROJECTILE_PATH = "assets/textures/projectiles/";
 
 	// Boolean to indicate if an Element should be deleted
 	private boolean isDepleted;
 
-	// Player which use the Combat System
-	private Player player;
+	// Creature which use the Combat System
+	private Creature creature;
 
 	// The Point where the Projectile starts
 	private Point point;
 
-	// The amount of damage this weapon will make
-	private double damageAmount;
+	// The amount of damage this weapon will make with a certain attribute
+	private CreatureStatsAttribs creatureStat;
 
-	// Used to reduce damage after time
-	private int ticks;
+	private double damage;
 
 	/**
 	 * A ranged Combat System for projectiles like Arrow or Spells
 	 * 
 	 * @param x            x start of the Projectile on x - Axis
 	 * @param y            y start of the Projectile on y - Axis
-	 * @param p            Player who shoots an Projectile
+	 * @param player       Creature who shoots an Projectile
 	 * @param damageAmount the amount of damage this will make, will be reduced by
 	 *                     time.
 	 */
-	public RangedCombat(float x, float y, Player player, double damageAmount) {
+	public Projectile(float x, float y, Creature creature, double damageAmount) {
 		point = new Point(x, y);
-		this.player = player;
+		this.creature = creature;
 
-		// Could be a variable to make it dynamic
-		this.ticks = 10;
-		// To increase at first and do decrease after time the damage
-		this.damageAmount = damageAmount + ticks / 5;
+		setDamageAmount();
 	}
 
 	/**
@@ -54,11 +51,10 @@ public abstract class RangedCombat extends Entity {
 
 	@Override
 	protected void updateLogic() {
-		if (ticks == 0)
+		if (getTicks() == 10)
 			setDepleted();
 		else {
-			ticks--;
-			damageAmount--;
+			damage--;
 		}
 	}
 
@@ -67,10 +63,21 @@ public abstract class RangedCombat extends Entity {
 		// it have to be check if it is an Creature cause the Chest etc are also Entity
 		// And the own weapon should not damage the player
 		if (otherEntity instanceof Creature && !(otherEntity instanceof Player)) {
-			((Creature) otherEntity).damage(damageAmount, getDamageType(), this.player, false);
+			((Creature) otherEntity).damage(damage, getDamageType(), this.creature, false);
 			setDepleted();
 		}
 	}
+
+	/**
+	 * 
+	 * @param stat Stat's to use to calculate damage Amount
+	 * @return damage this projectile should do
+	 */
+	public void setDamageAmount() {
+		double damage = getDamageFromStat();
+	}
+
+	public abstract double getDamageFromStat();
 
 	/**
 	 * 
@@ -93,8 +100,8 @@ public abstract class RangedCombat extends Entity {
 		return isDepleted;
 	}
 
-	public Player getPlayer() {
-		return player;
+	public Creature getCreature() {
+		return creature;
 	}
 
 }
