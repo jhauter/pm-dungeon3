@@ -3,12 +3,12 @@ package de.fhbielefeld.pmdungeon.quibble.entity.range_combat;
 
 import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.DamageType;
+import de.fhbielefeld.pmdungeon.vorgaben.tools.Point;
 
 public abstract class RangeCombatMagic extends Projectile {
 
-	public RangeCombatMagic(float x, float y, Creature creature) {
-		super(x, y, creature);
-		this.setPosition(x, y);
+	public RangeCombatMagic(Point point, Creature creature) {
+		super(point, creature);
 	}
 	
 	@Override

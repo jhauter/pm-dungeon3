@@ -4,14 +4,15 @@ import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
 import de.fhbielefeld.pmdungeon.quibble.entity.Entity;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
 import de.fhbielefeld.pmdungeon.quibble.entity.effect.StatusEffectSpeed;
+import de.fhbielefeld.pmdungeon.vorgaben.tools.Point;
 
 public class SpellIceBlast extends RangeCombatMagic {
 
-	public SpellIceBlast(float x, float y, Creature creature) {
-		super(x, y, creature);
+	public SpellIceBlast(Point point, Creature creature) {
+		super(point, creature);
 
-		this.animationHandler.addAsDefaultAnimation(RangedCombatUtils.SPELL_ICE_BLAST.name, 8, 5,
-				RangedCombatUtils.SPELL_ICE_BLAST.path, 4);
+		this.animationHandler.addAsDefaultAnimation(ProjectileTypes.SPELL_ICE_BLAST.name, 8, 5,
+				ProjectileTypes.SPELL_ICE_BLAST.path, 4);
 	}
 	
 	@Override

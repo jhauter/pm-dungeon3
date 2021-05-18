@@ -30,8 +30,9 @@ public abstract class Projectile extends Entity {
 	 * @param y            y start of the Projectile on y - Axis
 	 * @param player       Creature who shoots an Projectile
 	 */
-	public Projectile(float x, float y, Creature creature) {
-		point = new Point(x, y);
+	public Projectile(Point point, Creature creature) {
+		this.point = point;
+		this.setPosition(point);
 		this.creature = creature;
 
 		setDamageAmount();
@@ -104,6 +105,14 @@ public abstract class Projectile extends Entity {
 	 */
 	public Creature getCreature() {
 		return creature;
+	}
+
+	/**
+	 * 
+	 * @return point of the projectile
+	 */
+	public Point getPoint() {
+		return point;
 	}
 
 }

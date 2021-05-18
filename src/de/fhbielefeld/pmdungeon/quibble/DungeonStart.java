@@ -26,7 +26,7 @@ import de.fhbielefeld.pmdungeon.quibble.entity.event.CreatureStatChangeEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEventHandler;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.PlayerOpenChestEvent;
-import de.fhbielefeld.pmdungeon.quibble.entity.range_combat.RangedCombatUtils;
+import de.fhbielefeld.pmdungeon.quibble.entity.range_combat.ProjectileTypes;
 import de.fhbielefeld.pmdungeon.quibble.entity.range_combat.SpellIceBlast;
 import de.fhbielefeld.pmdungeon.quibble.entity.range_combat.RangeCombatSystem;
 import de.fhbielefeld.pmdungeon.quibble.file.ResourceHandler;
@@ -256,10 +256,11 @@ public class DungeonStart extends MainController implements EntityEventHandler, 
 		this.currentLevel.getParticleSystem().draw(this.camera.position.x, this.camera.position.y);
 		
 		floatTime += Gdx.graphics.getDeltaTime();
+		
+		spells = new RangeCombatSystem(currentLevel, myHero);
+		
 		if(Gdx.input.isKeyJustPressed(Input.Keys.M)) {
-			spells = new RangeCombatSystem(currentLevel, RangedCombatUtils.SPELL_ICE_BLAST, myHero);
-			spells.RangedCombat();
-			
+			spells.RangedCombat(ProjectileTypes.SPELL_ICE_BLAST);
 		}
 
 	}
