@@ -23,8 +23,8 @@ public class SpellIceBlast extends RangeCombatMagic {
 	}
 
 	@Override
-	public double getDamageFromStat() {
-		return this.getCreature().getCurrentStats().getStat(CreatureStatsAttribs.DAMAGE_MAGIC);
+	public CreatureStatsAttribs getDamageFromStat() {
+		return CreatureStatsAttribs.DAMAGE_MAGIC;
 	}
 	
 }

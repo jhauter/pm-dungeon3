@@ -2,6 +2,7 @@ package de.fhbielefeld.pmdungeon.quibble.entity.range_combat;
 
 import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
 import de.fhbielefeld.pmdungeon.quibble.entity.Entity;
+import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.DamageType;
 import de.fhbielefeld.pmdungeon.vorgaben.tools.Point;
 
@@ -18,6 +19,8 @@ public abstract class Projectile extends Entity {
 	// The Point where the Projectile starts
 	private Point point;
 
+	// Damage that is used for the certain projectile
+	// will be set by a CreatureStat
 	private double damage;
 
 	/**
@@ -65,10 +68,14 @@ public abstract class Projectile extends Entity {
 	 * @return damage this projectile should do
 	 */
 	public void setDamageAmount() {
-		damage = getDamageFromStat();
+		damage = creature.getCurrentStats().getStat(getDamageFromStat());
 	}
 
-	public abstract double getDamageFromStat();
+	/**
+	 * 
+	 * @return the CreatureStat to calculate the damage
+	 */
+	public abstract CreatureStatsAttribs getDamageFromStat();
 
 	/**
 	 * 
@@ -91,6 +98,10 @@ public abstract class Projectile extends Entity {
 		return isDepleted;
 	}
 
+	/**
+	 * 
+	 * @return Creature which want to use a Ranged Combat
+	 */
 	public Creature getCreature() {
 		return creature;
 	}
