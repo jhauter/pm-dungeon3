@@ -27,8 +27,8 @@ import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEventHandler;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.PlayerOpenChestEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.range_combat.ProjectileTypes;
-import de.fhbielefeld.pmdungeon.quibble.entity.range_combat.SpellIceBlast;
 import de.fhbielefeld.pmdungeon.quibble.entity.range_combat.RangeCombatSystem;
+import de.fhbielefeld.pmdungeon.quibble.entity.range_combat.SpellIceBlast;
 import de.fhbielefeld.pmdungeon.quibble.file.ResourceHandler;
 import de.fhbielefeld.pmdungeon.quibble.hud.ExpBarHUD;
 import de.fhbielefeld.pmdungeon.quibble.hud.HUDGroup;
@@ -76,7 +76,6 @@ public class DungeonStart extends MainController implements EntityEventHandler, 
 	private Player myHero;
 	
 	private RangeCombatSystem spells;
-	private SpellIceBlast ice;
 	
 	private InputHandler inputHandler;
 	
@@ -261,6 +260,7 @@ public class DungeonStart extends MainController implements EntityEventHandler, 
 		
 		if(Gdx.input.isKeyJustPressed(Input.Keys.M)) {
 			spells.RangedCombat(ProjectileTypes.SPELL_ICE_BLAST);
+			LoggingHandler.logger.log(Level.INFO, "Attempted to use the IceBlastSpell");
 		}
 
 	}

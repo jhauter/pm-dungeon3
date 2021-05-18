@@ -7,6 +7,11 @@ public enum ProjectileTypes {
 	String name;
 	String path;
 	
+	/**
+	 * Types of Range Combat projectile
+	 * @param name identification name of the projectile
+	 * @param path to render the projectile
+	 */
 	ProjectileTypes(String name, String path) {
 		this.name = name;
 		this.path = path;
