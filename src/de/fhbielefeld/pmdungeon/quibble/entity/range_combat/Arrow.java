@@ -7,6 +7,9 @@ public class Arrow extends ProjectilePhysical {
 
 	public Arrow(Point point, Creature creature) {
 		super(point, creature);
+		
+		this.animationHandler.addAsDefaultAnimation(ProjectileTypes.SHOT_ARROW.name, 1, 1,
+				ProjectileTypes.SHOT_ARROW.path, 4);
 	}
 
 }

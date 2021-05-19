@@ -45,13 +45,6 @@ public class RangeCombatSystem {
 		strategyMap.get(projectile).spawn();
 	}
 
-
-	private Map<ProjectileTypes, Strategy> createStrategy() {
-		HashMap<ProjectileTypes, Strategy> map = new HashMap<>();
-		map.put(ProjectileTypes.SPELL_ICE_BLAST, iceBlast);
-		return map;
-	}
-
 	/**
 	 * Convenience Method
 	 * 
@@ -86,11 +79,28 @@ public class RangeCombatSystem {
 		return speed;
 	}
 	
+	/**
+	 * Combined all Strategys to avoid if else statements
+	 * @return
+	 */
+	private Map<ProjectileTypes, Strategy> createStrategy() {
+		HashMap<ProjectileTypes, Strategy> map = new HashMap<>();
+		map.put(ProjectileTypes.SPELL_ICE_BLAST, iceBlast);
+		return map;
+	}
 	
+	/**
+	 * Strategy interface for <code>strategyMap<code>
+	 *
+	 */
 	static interface Strategy {
 		void spawn();
 	}
 
+	/**
+	 * Interface to Spawn IceBlast
+	 * If user holds a Magic Weapon on ItemSlot 1 (Index 0)
+	 */
 	Strategy iceBlast = new Strategy() {
 
 		@Override
