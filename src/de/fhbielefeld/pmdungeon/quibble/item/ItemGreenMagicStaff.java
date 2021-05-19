@@ -3,7 +3,7 @@ package de.fhbielefeld.pmdungeon.quibble.item;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
 
-public class ItemGreenMagicStaff extends ItemWeaponMelee
+public class ItemGreenMagicStaff extends ItemWeaponMagic
 {
 	protected ItemGreenMagicStaff(String name, float itemWidth, float itemHeight, float swingSpeed, float visibleTime, String texture)
 	{
