@@ -1,5 +1,8 @@
 package de.fhbielefeld.pmdungeon.quibble.entity.range_combat;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import de.fhbielefeld.pmdungeon.quibble.DungeonLevel;
 import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
 import de.fhbielefeld.pmdungeon.quibble.entity.LookingDirection;
@@ -15,11 +18,13 @@ public class RangeCombatSystem {
 	private float positionX;
 	private float positionY;
 
+	Map<ProjectileTypes, Strategy> strategyMap;
+
 	/**
-	 * Is used to Use the projectiles.
-	 * Projectiles are for Example:
+	 * Is used to Use the projectiles. Projectiles are for Example:
 	 * <code>SpellIceBlast<code>
-	 * @param level level to spawn the projectile
+	 * 
+	 * @param level    level to spawn the projectile
 	 * @param creature creature that use this projectile
 	 */
 	public RangeCombatSystem(DungeonLevel level, Creature creature) {
@@ -28,6 +33,7 @@ public class RangeCombatSystem {
 		positionX = creature.getPosition().x;
 		// else the Projectile will be little to low
 		positionY = creature.getPosition().y + 0.5f;
+		strategyMap = createStrategy();
 	}
 
 	/**
@@ -36,14 +42,14 @@ public class RangeCombatSystem {
 	 * @param projectile the projectile that will be used
 	 */
 	public void RangedCombat(ProjectileTypes projectile) {
-		if (projectile == ProjectileTypes.SPELL_ICE_BLAST) {
-			if (creature.getEquippedItems().getItem(0).getItemType() instanceof ItemWeaponMagic) {
-				util = new SpellIceBlast(setPoint(0.5f), creature);
-				creature.useEquippedItem(0);
-				util.setVelocityX(setVelocity(1));
-				level.spawnEntity(util);
-			}
-		}
+		strategyMap.get(projectile).spawn();
+	}
+
+
+	private Map<ProjectileTypes, Strategy> createStrategy() {
+		HashMap<ProjectileTypes, Strategy> map = new HashMap<>();
+		map.put(ProjectileTypes.SPELL_ICE_BLAST, iceBlast);
+		return map;
 	}
 
 	/**
@@ -79,5 +85,23 @@ public class RangeCombatSystem {
 			return -speed;
 		return speed;
 	}
+	
+	
+	static interface Strategy {
+		void spawn();
+	}
+
+	Strategy iceBlast = new Strategy() {
+
+		@Override
+		public void spawn() {
+			if (creature.getEquippedItems().getItem(0).getItemType() instanceof ItemWeaponMagic) {
+				util = new SpellIceBlast(setPoint(0.5f), creature);
+				creature.useEquippedItem(0);
+				util.setVelocityX(setVelocity(1));
+				level.spawnEntity(util);
+			}
+		}
+	};
 
 }
