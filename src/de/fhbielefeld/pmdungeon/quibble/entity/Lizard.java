@@ -4,16 +4,15 @@ import java.util.List;
 
 import com.badlogic.gdx.ai.pfa.GraphPath;
 
-import de.fhbielefeld.pmdungeon.quibble.DungeonStart;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
-import de.fhbielefeld.pmdungeon.quibble.entity.range_combat.ProjectileTypes;
+import de.fhbielefeld.pmdungeon.quibble.entity.range_combat.RangeCombatSystem;
 import de.fhbielefeld.pmdungeon.quibble.item.Item;
 import de.fhbielefeld.pmdungeon.vorgaben.dungeonCreator.DungeonWorld;
 import de.fhbielefeld.pmdungeon.vorgaben.dungeonCreator.dungeonconverter.Coordinate;
 import de.fhbielefeld.pmdungeon.vorgaben.dungeonCreator.tiles.Tile;
 
-public class Lizard extends Creature {
+public class Lizard extends Creature implements RangeCombatSystem{
 	private GraphPath<Tile> currentMovement;
 
 	/**
@@ -97,23 +96,12 @@ public class Lizard extends Creature {
 			this.currentMovement = dungeon.findPath(dungeon.getTileAt((int) this.getX(), (int) this.getY()),
 					dungeon.getTileAt(moveTarget));
 		}
-
-		List<Entity> t = (List<Entity>) this.getLevel().getEntitiesInRadius(this.getPosition().x, this.getPosition().y,
+		List<Entity> entities = (List<Entity>) this.getLevel().getEntitiesInRadius(this.getPosition().x, this.getPosition().y,
 				3, this);
-		for (Entity entity : t) {
-			if (entity instanceof Player) {
-				int p1 = (int) this.getPosition().y;
-				int p2 = (int) entity.getPosition().y;
-				if (p1 == p2) {
-					if (this.getPosition().x - entity.getPosition().x > 0
-							&& this.getLookingDirection() == LookingDirection.LEFT)
-						this.useEquippedItem(0);
-					else if (this.getPosition().x - entity.getPosition().x < 0
-							&& this.getLookingDirection() == LookingDirection.RIGHT)
-						this.useEquippedItem(0);
-				}
-			}
-		}
+		
+		if(RangeCombatSystem.shouldShoot(this, entities))
+			useEquippedItem(0);
+
 	}
 
 	/**
