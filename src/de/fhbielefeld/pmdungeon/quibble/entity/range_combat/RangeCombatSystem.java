@@ -14,7 +14,7 @@ public interface RangeCombatSystem {
 	 * use a Ranged Weapon, if the Player is on the same y-Axis and is looking
 	 * towards the player
 	 * 
-	 * @param creature     Monster who is able to shoot (Have to use a certain Item)
+	 * @param creature     Monster who is able to shoot
 	 * @param listOfEntity Entity List in reach of the Monster
 	 * @return true if a Monster should fire a projectile
 	 */

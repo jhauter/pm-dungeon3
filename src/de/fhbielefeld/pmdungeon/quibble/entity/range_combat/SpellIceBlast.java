@@ -33,6 +33,9 @@ public class SpellIceBlast extends ProjectileMagic {
 	protected void onEntityCollision(Entity otherEntity) {
 		super.onEntityCollision(otherEntity);
 		if (otherEntity instanceof Creature) {
+			if(otherEntity == creature) {
+				return;
+			}
 			((Creature) otherEntity).addStatusEffect(new StatusEffectSpeed((Creature) otherEntity, 0.005), 100);
 			LoggingHandler.logger.log(Level.INFO, ProjectileTypes.SPELL_ICE_BLAST.name + " has hit an Entity");
 		}

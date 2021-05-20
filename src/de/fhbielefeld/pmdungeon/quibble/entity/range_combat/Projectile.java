@@ -60,6 +60,9 @@ public abstract class Projectile extends Entity {
 	protected void onEntityCollision(Entity otherEntity) {
 		// it have to be check if it is an Creature cause the Chest etc are also Entity
 		if (otherEntity instanceof Creature && isPlayer()) {
+			if(otherEntity == creature) {
+				return;
+			}
 			((Creature) otherEntity).damage(damage, getDamageType(), this.creature, false);
 		} else if (otherEntity instanceof Player) {
 			((Player) otherEntity).damage(damage, getDamageType(), this.creature, false);

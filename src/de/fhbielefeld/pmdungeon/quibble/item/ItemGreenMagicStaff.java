@@ -46,7 +46,7 @@ public class ItemGreenMagicStaff extends ItemWeaponMagic {
 
 	@Override
 	public Projectile spawnProjectile(Creature user) {
-		iceBlast = new SpellIceBlast(this.setProjectileStartPoint(1, 0.5f), user);
+		iceBlast = new SpellIceBlast(this.setProjectileStartPoint(0.5f), user);
 		iceBlast.setVelocityX(setVelocity(1));
 		return iceBlast;
 	}

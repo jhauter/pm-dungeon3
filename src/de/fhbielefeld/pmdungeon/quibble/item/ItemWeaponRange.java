@@ -2,6 +2,7 @@ package de.fhbielefeld.pmdungeon.quibble.item;
 
 import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
 import de.fhbielefeld.pmdungeon.quibble.entity.LookingDirection;
+import de.fhbielefeld.pmdungeon.quibble.particle.ParticleMovement;
 import de.fhbielefeld.pmdungeon.vorgaben.tools.Point;
 
 public abstract class ItemWeaponRange extends ItemWeapon {
@@ -23,20 +24,18 @@ public abstract class ItemWeaponRange extends ItemWeapon {
 	}
 
 	/**
-	 * Sets the starting point of a projectile. This must be a bit away from the
-	 * user, so that it does not meet itself. For it to work, <code>setUser(Creature
-	 * creature)<code> must be used to determine its position as well as its current
-	 * direction of view
+	 * Sets the starting point of a projectile.For it to work,
+	 * <code>setUser(Creature creature)<code> must be used to determine its position
+	 * as well as its current direction of view
 	 * 
-	 * @param shift       shift of x-Axis start Point from User Point
 	 * @param adjustYAxis for adjust y-Axis if the projectile starts to way up or
 	 *                    down
-	 * @return the spawn Point a bit away from it's user
+	 * @return the spawn Point of the projectile
 	 */
-	Point setProjectileStartPoint(float shift, float adjustYAxis) {
+	Point setProjectileStartPoint(float adjustYAxis) {
 		if (isLookingLeft())
-			return new Point(creature.getPosition().x - shift, creature.getPosition().y + adjustYAxis);
-		return new Point(creature.getPosition().x + shift, creature.getPosition().y + adjustYAxis);
+			return new Point(creature.getPosition().x, creature.getPosition().y + adjustYAxis);
+		return new Point(creature.getPosition().x, creature.getPosition().y + adjustYAxis);
 	}
 
 	/**
@@ -71,6 +70,12 @@ public abstract class ItemWeaponRange extends ItemWeapon {
 	 */
 	private boolean isLookingLeft() {
 		return creature.getLookingDirection() == LookingDirection.LEFT;
+	}
+
+	@Override
+	public ParticleMovement getWeaponMovement(Creature user) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

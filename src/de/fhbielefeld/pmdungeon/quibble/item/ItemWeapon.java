@@ -94,7 +94,5 @@ public abstract class ItemWeapon extends Item
 	 * @param user the creature that used the weapon
 	 * @return the particle movement that the spawned weapon particle should use
 	 */
-	public ParticleMovement getWeaponMovement(Creature user) {
-		return null;
-	}
+	public abstract ParticleMovement getWeaponMovement(Creature user);
 }
