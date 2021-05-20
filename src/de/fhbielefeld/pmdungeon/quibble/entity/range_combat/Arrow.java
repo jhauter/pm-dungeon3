@@ -12,4 +12,10 @@ public class Arrow extends ProjectilePhysical {
 				ProjectileTypes.SHOT_ARROW.path, 4);
 	}
 
+	@Override
+	protected boolean isPlayer() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

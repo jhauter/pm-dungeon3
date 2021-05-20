@@ -79,7 +79,7 @@ public class Lizard extends Creature {
 		stats.setStat(CreatureStatsAttribs.DAMAGE_MAGIC, 1.0D);
 		stats.setStat(CreatureStatsAttribs.WALKING_SPEED, 0.05D);
 		stats.setStat(CreatureStatsAttribs.HIT_REACH, 0.4D);
-		stats.setStat(CreatureStatsAttribs.HIT_COOLDOWN, 15.0D);
+		stats.setStat(CreatureStatsAttribs.HIT_COOLDOWN, 20.0D);
 		return stats;
 	}
 
@@ -98,14 +98,22 @@ public class Lizard extends Creature {
 					dungeon.getTileAt(moveTarget));
 		}
 
-//		List<Entity> t = (List<Entity>) this.getLevel().getEntitiesInRadius(this.getPosition().x, this.getPosition().y,
-//				3, this);
-//		for (Entity entity : t) {
-//			if (entity instanceof Player) {
-//				int p1 = (int) this.getPosition().y;
-//				int p2 = (int) this.getPosition().y;
-//				
-//		
+		List<Entity> t = (List<Entity>) this.getLevel().getEntitiesInRadius(this.getPosition().x, this.getPosition().y,
+				3, this);
+		for (Entity entity : t) {
+			if (entity instanceof Player) {
+				int p1 = (int) this.getPosition().y;
+				int p2 = (int) entity.getPosition().y;
+				if (p1 == p2) {
+					if (this.getPosition().x - entity.getPosition().x > 0
+							&& this.getLookingDirection() == LookingDirection.LEFT)
+						this.useEquippedItem(0);
+					else if (this.getPosition().x - entity.getPosition().x < 0
+							&& this.getLookingDirection() == LookingDirection.RIGHT)
+						this.useEquippedItem(0);
+				}
+			}
+		}
 	}
 
 	/**
@@ -124,7 +132,7 @@ public class Lizard extends Creature {
 	public int getExpDrop() {
 		return 7;
 	}
-	
+
 	@Override
 	public int getEquipmentSlots() {
 		return 1;

@@ -2,6 +2,7 @@ package de.fhbielefeld.pmdungeon.quibble.entity.range_combat;
 
 import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
 import de.fhbielefeld.pmdungeon.quibble.entity.Entity;
+import de.fhbielefeld.pmdungeon.quibble.entity.Player;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.DamageType;
 import de.fhbielefeld.pmdungeon.vorgaben.tools.Point;
@@ -23,12 +24,14 @@ public abstract class Projectile extends Entity {
 	// will be set by a CreatureStat
 	private double damage;
 
+	private boolean friendlyFire;
+
 	/**
 	 * A ranged Combat System for projectiles like Arrow or Spells
 	 * 
-	 * @param x            x start of the Projectile on x - Axis
-	 * @param y            y start of the Projectile on y - Axis
-	 * @param player       Creature who shoots an Projectile
+	 * @param x      x start of the Projectile on x - Axis
+	 * @param y      y start of the Projectile on y - Axis
+	 * @param player Creature who shoots an Projectile
 	 */
 	public Projectile(Point point, Creature creature) {
 		this.point = point;
@@ -56,12 +59,15 @@ public abstract class Projectile extends Entity {
 	@Override
 	protected void onEntityCollision(Entity otherEntity) {
 		// it have to be check if it is an Creature cause the Chest etc are also Entity
-		// And the own weapon should not damage the player
-		if (otherEntity instanceof Creature) {
+		if (otherEntity instanceof Creature && isPlayer()) {
 			((Creature) otherEntity).damage(damage, getDamageType(), this.creature, false);
-			setDepleted();
+		} else if (otherEntity instanceof Player) {
+			((Player) otherEntity).damage(damage, getDamageType(), this.creature, false);
 		}
+		setDepleted();
 	}
+
+	protected abstract boolean isPlayer();
 
 	/**
 	 * 
