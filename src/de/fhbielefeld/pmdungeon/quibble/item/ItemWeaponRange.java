@@ -12,10 +12,10 @@ public abstract class ItemWeaponRange extends ItemWeapon {
 		super(name, itemWidth, itemHeight, visibleTime, texture);
 	}
 
-	Point setProjectileStartPoint(float shift) {
+	Point setProjectileStartPoint(float shift, float adjustYAxis) {
 		if (isLookingLeft())
-			return new Point(creature.getPosition().x - shift, creature.getPosition().y);
-		return new Point(creature.getPosition().x + shift, creature.getPosition().y);
+			return new Point(creature.getPosition().x - shift, creature.getPosition().y + adjustYAxis);
+		return new Point(creature.getPosition().x + shift, creature.getPosition().y + adjustYAxis);
 	}
 
 	float setVelocity(float speed) {

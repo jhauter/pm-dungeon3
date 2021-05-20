@@ -29,7 +29,7 @@ public class ItemGreenMagicStaff extends ItemWeaponMagic {
 	public void onUse(Creature user) {
 		super.onUse(user);
 		this.setUser(user);
-		iceBlast = new SpellIceBlast(this.setProjectileStartPoint(1), user);
+		iceBlast = new SpellIceBlast(this.setProjectileStartPoint(1, 0.5f), user);
 		iceBlast.setVelocityX(setVelocity(1));
 		user.getLevel().spawnEntity(iceBlast);
 	}
