@@ -1,7 +1,9 @@
 package de.fhbielefeld.pmdungeon.quibble.item;
 
+import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
+import de.fhbielefeld.pmdungeon.quibble.entity.range_combat.Projectile;
 
 public class ItemRedMagicStaff extends ItemWeaponMagic {
 	
@@ -27,6 +29,12 @@ public class ItemRedMagicStaff extends ItemWeaponMagic {
 		CreatureStats stats = new CreatureStats();
 		stats.setStat(CreatureStatsAttribs.DAMAGE_MAGIC, 2);
 		return stats;
+	}
+
+	@Override
+	public Projectile spawnProjectile(Creature user) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
