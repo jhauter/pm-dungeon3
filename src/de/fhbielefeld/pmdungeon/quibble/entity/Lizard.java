@@ -98,17 +98,14 @@ public class Lizard extends Creature {
 					dungeon.getTileAt(moveTarget));
 		}
 
-		List<Entity> t = (List<Entity>) this.getLevel().getEntitiesInRadius(this.getPosition().x, this.getPosition().y,
-				3, this);
-		for (Entity entity : t) {
-			if (entity instanceof Player) {
-				int p1 = (int) this.getPosition().y;
-				int p2 = (int) this.getPosition().y;
-				
-				System.out.println("Player: " + p1 + "Lizard: " + p2);
-				DungeonStart.rangedCombat.RangedCombat(ProjectileTypes.SPELL_ICE_BLAST, this);
-			}
-		}
+//		List<Entity> t = (List<Entity>) this.getLevel().getEntitiesInRadius(this.getPosition().x, this.getPosition().y,
+//				3, this);
+//		for (Entity entity : t) {
+//			if (entity instanceof Player) {
+//				int p1 = (int) this.getPosition().y;
+//				int p2 = (int) this.getPosition().y;
+//				
+//		
 	}
 
 	/**
