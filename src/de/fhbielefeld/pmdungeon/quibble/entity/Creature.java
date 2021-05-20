@@ -847,7 +847,6 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	/**
 	 * Makes the creature walk along the specified path.
 	 * This method needs to be called every frame until the end of the path is reached.
-	 * Make sure to pass only the same reference to this method until the end of the patch is reached.
 	 * If this method detects a different path reference then it will start to follow the new path reference
 	 * from the beginning.<br><br>
 	 * The method indicates that the end of the path has been reached by returning <code>true</code>.
@@ -863,9 +862,17 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		if(this.currentPath != path)
 		{
 			this.currentPath = path;
-			this.currentPathIndex = 0;
+			Tile t0 = path.get(0);
+			if(t0.getX() == currentX && t0.getY() == currentY && path.getCount() > 1)
+			{
+				this.currentPathIndex = 1;
+			}
+			else
+			{
+				this.currentPathIndex = 0;
+			}
 		}
-		else if(this.currentPathIndex < this.currentPath.getCount() - 1)
+		if(this.currentPathIndex < this.currentPath.getCount() - 1)
 		{
 			Tile pathTileTarget = this.currentPath.get(this.currentPathIndex);
 			if(currentX == pathTileTarget.getX() && currentY == pathTileTarget.getY())
