@@ -13,6 +13,15 @@ public abstract class ItemWeaponMagic extends ItemWeaponRange {
 
 	private float swingSpeed;
 
+	/**
+	 * Creates a Magic weapon. Magic weapon mostly have status effects in the certain Weapon
+	 * @param name        user friendly display name
+	 * @param itemWidth   render width of this weapon
+	 * @param itemHeight  render height of this weapon
+	 * @param swingSpeed  the speed at which this weapon will swing
+	 * @param visibleTime time in seconds that this weapon will be visible when used
+	 * @param texture     texture used to render this item
+	 */
 	protected ItemWeaponMagic(String name, float itemWidth, float itemHeight, float swingSpeed, float visibleTime,
 			String texture) {
 		super(name, itemWidth, itemHeight, visibleTime, texture);
