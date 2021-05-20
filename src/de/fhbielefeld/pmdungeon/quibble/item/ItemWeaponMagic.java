@@ -3,7 +3,6 @@ package de.fhbielefeld.pmdungeon.quibble.item;
 import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
 import de.fhbielefeld.pmdungeon.quibble.entity.LookingDirection;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
-import de.fhbielefeld.pmdungeon.quibble.entity.range_combat.Projectile;
 import de.fhbielefeld.pmdungeon.quibble.item.visitor.ItemVisitor;
 import de.fhbielefeld.pmdungeon.quibble.particle.ParticleMovement;
 import de.fhbielefeld.pmdungeon.quibble.particle.ParticleWeapon;
@@ -45,14 +44,6 @@ public abstract class ItemWeaponMagic extends ItemWeaponRange {
 		user.getLevel().spawnEntity(spawnProjectile(user));
 		user.getCurrentStats().setStat(CreatureStatsAttribs.HIT_COOLDOWN, 15);
 	}
-
-	/**
-	 * The projectile that should be spawn if the weapon is used
-	 * 
-	 * @param user user of the weapon
-	 * @return the new projectile that should be spawn
-	 */
-	public abstract Projectile spawnProjectile(Creature user);
 
 	@Override
 	public ParticleMovement getWeaponMovement(Creature user) {

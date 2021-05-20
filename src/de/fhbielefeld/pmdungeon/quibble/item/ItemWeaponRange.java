@@ -2,6 +2,7 @@ package de.fhbielefeld.pmdungeon.quibble.item;
 
 import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
 import de.fhbielefeld.pmdungeon.quibble.entity.LookingDirection;
+import de.fhbielefeld.pmdungeon.quibble.entity.range_combat.Projectile;
 import de.fhbielefeld.pmdungeon.quibble.particle.ParticleMovement;
 import de.fhbielefeld.pmdungeon.vorgaben.tools.Point;
 
@@ -77,5 +78,14 @@ public abstract class ItemWeaponRange extends ItemWeapon {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+
+	/**
+	 * The projectile that should be spawn if the weapon is used
+	 * 
+	 * @param user user of the weapon
+	 * @return the new projectile that should be spawn
+	 */
+	public abstract Projectile spawnProjectile(Creature user);
 
 }

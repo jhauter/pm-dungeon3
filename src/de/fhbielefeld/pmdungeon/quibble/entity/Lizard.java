@@ -40,7 +40,8 @@ public class Lizard extends Creature implements RangeCombatSystem{
 				"assets/textures/entity/lizard/lizard_m_run_right_anim_f.png", 4);
 		this.animationHandler.addAnimation(Creature.ANIM_NAME_RUN_L, 4, 2,
 				"assets/textures/entity/lizard/lizard_m_run_left_anim_f.png", 4);
-		this.getEquippedItems().addItem(Item.GREEN_MAGIC_STAFF);
+		
+		getEquippedItems().addItem(Item.GREEN_MAGIC_STAFF);
 	}
 
 	/**
@@ -99,10 +100,10 @@ public class Lizard extends Creature implements RangeCombatSystem{
 		List<Entity> entities = (List<Entity>) this.getLevel().getEntitiesInRadius(this.getPosition().x, this.getPosition().y,
 				3, this);
 		
-		if(RangeCombatSystem.shouldShoot(this, entities))
+		if(RangeCombatSystem.shouldShoot(this, entities)) {
 			useEquippedItem(0);
-
-	}
+			}
+		}
 
 	/**
 	 * {@inheritDoc}
