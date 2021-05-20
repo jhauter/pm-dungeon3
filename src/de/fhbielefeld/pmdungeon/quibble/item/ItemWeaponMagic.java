@@ -9,7 +9,7 @@ import de.fhbielefeld.pmdungeon.quibble.particle.ParticleMovement;
 import de.fhbielefeld.pmdungeon.quibble.particle.Swing;
 import de.fhbielefeld.pmdungeon.quibble.particle.Swing.SwingOrientation;
 
-public abstract class ItemWeaponMagic extends ItemWeapon {
+public abstract class ItemWeaponMagic extends ItemWeaponRange {
 
 	private float swingSpeed;
 
@@ -18,15 +18,14 @@ public abstract class ItemWeaponMagic extends ItemWeapon {
 		super(name, itemWidth, itemHeight, visibleTime, texture);
 		this.swingSpeed = swingSpeed;
 	}
-
-	/**
-	 * {@inheritDoc}
-	 */
+	
 	@Override
-	public CreatureStats getItemStats() {
-		CreatureStats stats = new CreatureStats();
-		stats.setStat(CreatureStatsAttribs.DAMAGE_PHYS, 3.0D);
-		return stats;
+	public void onUse(Creature user) {
+		super.onUse(user);
+		if(user.getHitCooldown() > 0.0D) {
+			return;
+		}
+		user.attackAoE();
 	}
 
 	@Override
@@ -40,6 +39,6 @@ public abstract class ItemWeaponMagic extends ItemWeapon {
 	@Override
 	public void accept(ItemVisitor visitor) {
 		// TODO Auto-generated method stub
-
 	}
+	
 }
