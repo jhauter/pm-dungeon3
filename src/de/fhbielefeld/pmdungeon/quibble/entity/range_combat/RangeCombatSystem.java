@@ -27,12 +27,8 @@ public class RangeCombatSystem {
 	 * @param level    level to spawn the projectile
 	 * @param creature creature that use this projectile
 	 */
-	public RangeCombatSystem(DungeonLevel level, Creature creature) {
-		this.creature = creature;
+	public RangeCombatSystem(DungeonLevel level) {
 		this.level = level;
-		positionX = creature.getPosition().x;
-		// else the Projectile will be little to low
-		positionY = creature.getPosition().y + 0.5f;
 		strategyMap = createStrategy();
 	}
 
@@ -41,7 +37,12 @@ public class RangeCombatSystem {
 	 * 
 	 * @param projectile the projectile that will be used
 	 */
-	public void RangedCombat(ProjectileTypes projectile) {
+	public void RangedCombat(ProjectileTypes projectile, Creature creature) {
+		this.creature = creature;
+		positionX = creature.getPosition().x;
+		// else the Projectile will be little to low
+		positionY = creature.getPosition().y + 0.5f;
+		
 		strategyMap.get(projectile).spawn();
 	}
 
@@ -113,5 +114,18 @@ public class RangeCombatSystem {
 			}
 		}
 	};
+	
+//	Strategy iceBlast = new Strategy() {
+//
+//		@Override
+//		public void spawn() {
+//			if (creature.getEquippedItems().getItem(0).getItemType() instanceof ItemWeaponMagic) {
+//				util = new SpellIceBlast(setPoint(0.5f), creature);
+//				creature.useEquippedItem(0);
+//				util.setVelocityX(setVelocity(1));
+//				level.spawnEntity(util);
+//			}
+//		}
+//	};
 
 }

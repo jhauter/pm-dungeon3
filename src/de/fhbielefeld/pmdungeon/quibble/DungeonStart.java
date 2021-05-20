@@ -76,7 +76,7 @@ public class DungeonStart extends MainController implements EntityEventHandler, 
 	
 	private Player myHero;
 	
-	private RangeCombatSystem rangedCombat;
+	public static RangeCombatSystem rangedCombat;
 	
 	private InputHandler inputHandler;
 	
@@ -257,10 +257,10 @@ public class DungeonStart extends MainController implements EntityEventHandler, 
 		
 		floatTime += Gdx.graphics.getDeltaTime();
 		
-		rangedCombat = new RangeCombatSystem(currentLevel, myHero);
+		rangedCombat = new RangeCombatSystem(currentLevel);
 		
 		if(Gdx.input.isKeyJustPressed(Input.Keys.M)) {
-			rangedCombat.RangedCombat(ProjectileTypes.SPELL_ICE_BLAST);
+			rangedCombat.RangedCombat(ProjectileTypes.SPELL_ICE_BLAST, myHero);
 			LoggingHandler.logger.log(Level.INFO, "Attempted to use the IceBlastSpell");
 		}
 

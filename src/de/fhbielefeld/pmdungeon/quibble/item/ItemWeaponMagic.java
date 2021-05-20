@@ -14,8 +14,8 @@ public abstract class ItemWeaponMagic extends ItemWeaponRange {
 	private float swingSpeed;
 
 	protected ItemWeaponMagic(String name, float itemWidth, float itemHeight, float swingSpeed, float visibleTime,
-			String texture) {
-		super(name, itemWidth, itemHeight, visibleTime, texture);
+			String texture, Creature creature) {
+		super(name, itemWidth, itemHeight, visibleTime, texture, creature);
 		this.swingSpeed = swingSpeed;
 	}
 	

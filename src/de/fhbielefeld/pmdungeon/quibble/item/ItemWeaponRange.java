@@ -15,7 +15,6 @@ public abstract class ItemWeaponRange extends ItemWeapon {
 
 	boolean isLookingLeft() {
 		return creature.getLookingDirection() == LookingDirection.LEFT;
-
 	}
 
 }
