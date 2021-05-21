@@ -4,6 +4,8 @@ import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
 import de.fhbielefeld.pmdungeon.quibble.entity.LookingDirection;
 import de.fhbielefeld.pmdungeon.quibble.entity.range_combat.Projectile;
 import de.fhbielefeld.pmdungeon.quibble.particle.ParticleMovement;
+import de.fhbielefeld.pmdungeon.quibble.particle.Swing;
+import de.fhbielefeld.pmdungeon.quibble.particle.Swing.SwingOrientation;
 import de.fhbielefeld.pmdungeon.vorgaben.tools.Point;
 
 public abstract class ItemWeaponRange extends ItemWeapon {
@@ -75,10 +77,10 @@ public abstract class ItemWeaponRange extends ItemWeapon {
 
 	@Override
 	public ParticleMovement getWeaponMovement(Creature user) {
-		// TODO Auto-generated method stub
-		return null;
+		SwingOrientation swingDir = user.getLookingDirection() == LookingDirection.RIGHT ? SwingOrientation.RIGHT
+				: SwingOrientation.LEFT;
+		return new Swing(swingDir, 0.0F);
 	}
-	
 
 	/**
 	 * The projectile that should be spawn if the weapon is used

@@ -41,7 +41,7 @@ public class Lizard extends Creature implements RangeCombatSystem{
 		this.animationHandler.addAnimation(Creature.ANIM_NAME_RUN_L, 4, 2,
 				"assets/textures/entity/lizard/lizard_m_run_left_anim_f.png", 4);
 		
-		getEquippedItems().addItem(Item.GREEN_MAGIC_STAFF);
+		getEquippedItems().addItem(Item.SIMPLE_BOW);
 	}
 
 	/**
