@@ -4,10 +4,7 @@ import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
 import de.fhbielefeld.pmdungeon.quibble.entity.range_combat.Projectile;
-import de.fhbielefeld.pmdungeon.quibble.entity.range_combat.ProjectileMagic;
 import de.fhbielefeld.pmdungeon.quibble.entity.range_combat.SpellIceBlast;
-import de.fhbielefeld.pmdungeon.quibble.particle.ParticleWeapon;
-import de.fhbielefeld.pmdungeon.vorgaben.tools.Point;
 
 public class ItemGreenMagicStaff extends ItemWeaponMagic {
 
@@ -37,11 +34,6 @@ public class ItemGreenMagicStaff extends ItemWeaponMagic {
 		CreatureStats stats = new CreatureStats();
 		stats.setStat(CreatureStatsAttribs.DAMAGE_MAGIC, 3.0D);
 		return stats;
-	}
-
-	@Override
-	public void onUse(Creature user) {
-		super.onUse(user);
 	}
 
 	@Override

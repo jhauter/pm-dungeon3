@@ -41,7 +41,7 @@ public abstract class Item
 	public static final ItemWeaponMelee SWORD_KATANA = new ItemKatana("Katana", 0.25F, 1.25F, 3.5F, 0.25F, "katana");
 	public static final ItemWeaponRange RED_MAGIC_STAFF = new ItemRedMagicStaff("Red Staff", 0.25F, 1.25F, 3.5F, 0.25F, "red_magic_staff");
 	public static final ItemWeaponRange GREEN_MAGIC_STAFF = new ItemGreenMagicStaff("Green Staff", 0.15F, 1.25F, 3.5F, 0.25F, "green_magic_staff");
-	public static final ItemWeaponRange SIMPLE_BOW = new ItemWeaponSimpleBow("Simple Bow", 0.15F, 1.25F, 3.5F, "bow");
+	public static final ItemWeaponRange SIMPLE_BOW = new ItemWeaponSimpleBow("Simple Bow", 0.15F, 1.25F, 0.5F, "bow");
 	public static final ItemBag<Item> BAG_DEFAULT = new ItemBag<Item>("Bag", 3, "bag");
 	
 	private final String displayName;

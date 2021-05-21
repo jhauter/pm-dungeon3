@@ -5,7 +5,6 @@ import java.util.logging.Level;
 import de.fhbielefeld.pmdungeon.quibble.LoggingHandler;
 import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
 import de.fhbielefeld.pmdungeon.quibble.entity.Entity;
-import de.fhbielefeld.pmdungeon.quibble.entity.Player;
 import de.fhbielefeld.pmdungeon.quibble.entity.effect.StatusEffectSpeed;
 import de.fhbielefeld.pmdungeon.vorgaben.tools.Point;
 
@@ -39,12 +38,5 @@ public class SpellIceBlast extends ProjectileMagic {
 			((Creature) otherEntity).addStatusEffect(new StatusEffectSpeed((Creature) otherEntity, 0.005), 100);
 			LoggingHandler.logger.log(Level.INFO, ProjectileTypes.SPELL_ICE_BLAST.name + " has hit an Entity");
 		}
-	}
-
-	@Override
-	protected boolean isPlayer() {
-		if (creature instanceof Player)
-			return true;
-		return false;
 	}
 }
