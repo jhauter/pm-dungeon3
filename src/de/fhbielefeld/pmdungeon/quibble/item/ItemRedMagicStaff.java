@@ -4,6 +4,8 @@ import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
 import de.fhbielefeld.pmdungeon.quibble.entity.range_combat.Projectile;
+import de.fhbielefeld.pmdungeon.quibble.entity.range_combat.ProjectileTypes;
+import de.fhbielefeld.pmdungeon.quibble.entity.range_combat.SpellFireBall;
 
 public class ItemRedMagicStaff extends ItemWeaponMagic {
 	
@@ -27,14 +29,15 @@ public class ItemRedMagicStaff extends ItemWeaponMagic {
 	@Override
 	public CreatureStats getItemStats() {
 		CreatureStats stats = new CreatureStats();
-		stats.setStat(CreatureStatsAttribs.DAMAGE_MAGIC, 2);
+		stats.setStat(CreatureStatsAttribs.DAMAGE_MAGIC, 5);
 		return stats;
 	}
 
 	@Override
 	public Projectile spawnProjectile(Creature user) {
-		// TODO Auto-generated method stub
-		return null;
+		Projectile fireBall = new SpellFireBall(ProjectileTypes.SPELL_FIRE_BALL.name(), user.getPosition(), user);
+		fireBall.setVelocityX(10);
+		return fireBall;
 	}
 
 }
