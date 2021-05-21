@@ -18,11 +18,11 @@ public class SpellIceBlast extends ProjectileMagic {
 	 * @param point    Spawning Point of this projectile
 	 * @param creature Creature that used this spell
 	 */
-	public SpellIceBlast(Point point, Creature creature) {
-		super(point, creature);
+	public SpellIceBlast(String name, Point point, Creature creature) {
+		super(name, point, creature);
 		this.creature = creature;
-		this.animationHandler.addAsDefaultAnimation(ProjectileTypes.SPELL_ICE_BLAST.name, 8, 5,
-				ProjectileTypes.SPELL_ICE_BLAST.path, 4);
+		this.animationHandler.addAsDefaultAnimation(ProjectileTypes.SPELL_FIRE_BALL.name, 8, 5,
+				ProjectileTypes.SPELL_FIRE_BALL.path, 4);
 	}
 
 	/**
@@ -36,7 +36,6 @@ public class SpellIceBlast extends ProjectileMagic {
 				return;
 			}
 			((Creature) otherEntity).addStatusEffect(new StatusEffectSpeed((Creature) otherEntity, 0.005), 100);
-			LoggingHandler.logger.log(Level.INFO, ProjectileTypes.SPELL_ICE_BLAST.name + " has hit an Entity");
 		}
 	}
 }

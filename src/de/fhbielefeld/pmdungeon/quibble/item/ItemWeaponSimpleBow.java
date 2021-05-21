@@ -4,8 +4,8 @@ import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
 import de.fhbielefeld.pmdungeon.quibble.entity.range_combat.Projectile;
+import de.fhbielefeld.pmdungeon.quibble.entity.range_combat.ProjectileTypes;
 import de.fhbielefeld.pmdungeon.quibble.entity.range_combat.ShootArrow;
-import de.fhbielefeld.pmdungeon.quibble.entity.range_combat.SpellIceBlast;
 import de.fhbielefeld.pmdungeon.quibble.item.visitor.ItemVisitor;
 
 public class ItemWeaponSimpleBow extends ItemWeaponRange{
@@ -41,7 +41,7 @@ public class ItemWeaponSimpleBow extends ItemWeaponRange{
 
 	@Override
 	public Projectile spawnProjectile(Creature user) {
-		arrow = new ShootArrow(this.setProjectileStartPoint(0.5f), user);
+		arrow = new ShootArrow(ProjectileTypes.SHOT_ARROW.name(),this.setProjectileStartPoint(0.5f), user);
 		arrow.setVelocityX(setVelocity(1));
 		return arrow;
 	}

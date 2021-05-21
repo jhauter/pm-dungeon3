@@ -1,5 +1,8 @@
 package de.fhbielefeld.pmdungeon.quibble.entity.range_combat;
 
+import java.util.logging.Level;
+
+import de.fhbielefeld.pmdungeon.quibble.LoggingHandler;
 import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
 import de.fhbielefeld.pmdungeon.quibble.entity.Entity;
 import de.fhbielefeld.pmdungeon.quibble.entity.Player;
@@ -24,19 +27,25 @@ public abstract class Projectile extends Entity {
 	// will be set by a CreatureStat
 	private double damage;
 
+	// To identify the projectile
+	private String name;
+
 	/**
 	 * A ranged Combat System for projectiles like Arrow or Spells
 	 * 
+	 * @param name   for Identification
 	 * @param x      x start of the Projectile on x - Axis
 	 * @param y      y start of the Projectile on y - Axis
 	 * @param player Creature who shoots an Projectile
 	 */
-	public Projectile(Point point, Creature creature) {
+	public Projectile(String name, Point point, Creature creature) {
+		this.name = name;
 		this.point = point;
 		this.setPosition(point);
 		this.creature = creature;
 
 		setDamageAmount();
+		LoggingHandler.logger.info(name + " was used");
 	}
 
 	/**
@@ -58,7 +67,7 @@ public abstract class Projectile extends Entity {
 	protected void onEntityCollision(Entity otherEntity) {
 		// it have to be check if it is an Creature cause the Chest etc are also Entity
 		if (otherEntity instanceof Creature && isPlayer()) {
-			if(otherEntity == creature) {
+			if (otherEntity == creature) {
 				return;
 			}
 			((Creature) otherEntity).damage(damage, getDamageType(), this.creature, false);
@@ -66,6 +75,7 @@ public abstract class Projectile extends Entity {
 			((Player) otherEntity).damage(damage, getDamageType(), this.creature, false);
 		}
 		setDepleted();
+		LoggingHandler.logger.log(Level.INFO, name + " has hit an Entity");
 	}
 
 	/**
