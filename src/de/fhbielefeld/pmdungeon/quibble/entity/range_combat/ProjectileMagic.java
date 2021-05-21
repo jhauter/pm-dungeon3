@@ -14,8 +14,8 @@ public abstract class ProjectileMagic extends Projectile {
 	 * @param point spawning point of the projectile
 	 * @param creature that used this magic 
 	 */
-	public ProjectileMagic(Point point, Creature creature) {
-		super(point, creature);
+	public ProjectileMagic(String name, Point point, Creature creature) {
+		super(name, point, creature);
 	}
 
 	@Override

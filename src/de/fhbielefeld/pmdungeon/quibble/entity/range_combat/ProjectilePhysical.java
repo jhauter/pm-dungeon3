@@ -7,8 +7,8 @@ import de.fhbielefeld.pmdungeon.vorgaben.tools.Point;
 
 public abstract class ProjectilePhysical extends Projectile {
 
-	public ProjectilePhysical(Point point, Creature creature) {
-		super(point, creature);
+	public ProjectilePhysical(String name, Point point, Creature creature) {
+		super(name, point, creature);
 	}
 	
 	@Override

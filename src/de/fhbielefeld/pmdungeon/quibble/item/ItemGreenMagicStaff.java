@@ -4,6 +4,7 @@ import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
 import de.fhbielefeld.pmdungeon.quibble.entity.range_combat.Projectile;
+import de.fhbielefeld.pmdungeon.quibble.entity.range_combat.ProjectileTypes;
 import de.fhbielefeld.pmdungeon.quibble.entity.range_combat.SpellIceBlast;
 
 public class ItemGreenMagicStaff extends ItemWeaponMagic {
@@ -38,7 +39,7 @@ public class ItemGreenMagicStaff extends ItemWeaponMagic {
 
 	@Override
 	public Projectile spawnProjectile(Creature user) {
-		iceBlast = new SpellIceBlast(this.setProjectileStartPoint(0.5f), user);
+		iceBlast = new SpellIceBlast(ProjectileTypes.SPELL_ICE_BLAST.name(), this.setProjectileStartPoint(0.5f), user);
 		iceBlast.setVelocityX(setVelocity(1));
 		return iceBlast;
 	}
