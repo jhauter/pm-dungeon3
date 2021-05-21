@@ -24,8 +24,6 @@ public abstract class Projectile extends Entity {
 	// will be set by a CreatureStat
 	private double damage;
 
-	private boolean friendlyFire;
-
 	/**
 	 * A ranged Combat System for projectiles like Arrow or Spells
 	 * 
@@ -70,7 +68,15 @@ public abstract class Projectile extends Entity {
 		setDepleted();
 	}
 
-	protected abstract boolean isPlayer();
+	/**
+	 * 
+	 * @return if the user of the projectile a human Player
+	 */
+	private boolean isPlayer() {
+		if (creature instanceof Player)
+			return true;
+		return false;
+	}
 
 	/**
 	 * 
