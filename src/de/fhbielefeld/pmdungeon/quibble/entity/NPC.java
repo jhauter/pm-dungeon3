@@ -2,6 +2,8 @@ package de.fhbielefeld.pmdungeon.quibble.entity;
 
 import java.util.List;
 
+import com.badlogic.gdx.math.Vector2;
+
 import de.fhbielefeld.pmdungeon.quibble.entity.ai.AIApproachTarget;
 import de.fhbielefeld.pmdungeon.quibble.entity.ai.AIMoveAround;
 import de.fhbielefeld.pmdungeon.quibble.entity.ai.AIStrategy;
@@ -30,30 +32,43 @@ public abstract class NPC extends Creature
 		super(x, y);
 	}
 	
-	public final void setAIStrategy(AIStrategy newBehavior)
+	/**
+	 * Sets the currently used <code>AIStrategy</code> for this NPC.
+	 * The <code>AIStrategy</code> dictates how the entity moves and behaves.
+	 * This method is protected because it is only intended to be used in <code>calculateCurrentBehavior()</code>.
+	 * Otherwise this method could interfere with the logic in said method and could cause undefined behavior.
+	 * @param newBehavior the new <code>AIStrategy</code> that this NPC should follow
+	 * @see #getCurrentAIStrategy()
+	 * @see #calculateCurrentBehavior()
+	 * @see AIStrategy
+	 */
+	protected final void setAIStrategy(AIStrategy newBehavior)
 	{
 		this.currentBehavior = newBehavior;
 	}
 	
+	/**
+	 * Returns the current <code>AIStrategy</code> that this NPC is currently following.
+	 * The <code>AIStrategy</code> dictates how the entity moves and behaves.
+	 * @return the <code>AIStrategy</code> that is currently set for this NPC
+	 */
 	public final AIStrategy getCurrentAIStrategy()
 	{
 		return this.currentBehavior;
 	}
 	
+	/**
+	 * This is called every update to determine which AI strategy should be used currently.
+	 * This method should be overridden to implement custom behavior decision.
+	 * The method {@link #setAIStrategy(AIStrategy)} can be used to set an <code>AIStrategy</code>.
+	 * By default all NPCs use a behavior which makes them move aimlessly until they see the player.
+	 * Then they will try to get as close as possible to the player to hit them.
+	 */
 	public void calculateCurrentBehavior()
 	{
 		//Default implementation for monsters
-		List<Entity> entities = this.level.getEntitiesInRadius(this.getX(), this.getY(), 999999);
-		Player aPlayer = null;
-		for(int i = 0; i < entities.size(); ++i)
-		{
-			if(entities.get(i) instanceof Player)
-			{
-				aPlayer = (Player)entities.get(i);
-				break;
-			}
-		}
-		if(aPlayer == null)
+		List<Player> players = this.level.getPlayers();
+		if(players.isEmpty())
 		{
 			//Can happen if the player dies?
 			return;
@@ -62,13 +77,15 @@ public abstract class NPC extends Creature
 		{
 			this.currentBehavior = new AIMoveAround();
 		}
-		else if(this.hasLineOfSightTo(getPosition()) && !(this.currentBehavior instanceof AIApproachTarget))
+		else if(this.hasLineOfSightTo(new Vector2(players.get(0).getPosition().x, players.get(0).getPosition().y)) && !(this.currentBehavior instanceof AIApproachTarget))
 		{
-			this.setAIStrategy(new AIApproachTarget(aPlayer));
-			System.out.println("efef");
+			this.setAIStrategy(new AIApproachTarget(players.get(0)));
 		}
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	protected void updateLogic()
 	{
