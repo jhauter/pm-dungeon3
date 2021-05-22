@@ -12,6 +12,7 @@ import de.fhbielefeld.pmdungeon.quibble.animation.AnimationHandlerImpl;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEventHandler;
 import de.fhbielefeld.pmdungeon.quibble.particle.ParticleSource;
+import de.fhbielefeld.pmdungeon.quibble.util.GeometryUtil;
 import de.fhbielefeld.pmdungeon.vorgaben.graphic.Animation;
 import de.fhbielefeld.pmdungeon.vorgaben.interfaces.IAnimatable;
 import de.fhbielefeld.pmdungeon.vorgaben.interfaces.IEntity;
@@ -244,9 +245,6 @@ public abstract class Entity implements IEntity, IAnimatable, ParticleSource
 			{
 				continue;
 			}
-//			System.out.println(this.boundingBox.offset(this.getX(), this.getY()));
-//			System.out.print("Other: ");
-//			System.out.println(cOther.boundingBox.offset(cOther.getX(), cOther.getY()));
 			if(this.boundingBox.offset(this.getX(), this.getY()).intersects(cOther.boundingBox.offset(cOther.getX(), cOther.getY())))
 			{
 				//This is called on the other entity too by its own update() method
@@ -466,7 +464,7 @@ public abstract class Entity implements IEntity, IAnimatable, ParticleSource
 	}
 	
 	/**
-	 * Actual deletable(). Once this returns true, the entity will despawn.
+	 * Actual deleteable(). Once this returns true, the entity will despawn.
 	 * @return whether this entity should despawn until the next frame
 	 */
 	public boolean deleteableWorkaround()
@@ -478,6 +476,8 @@ public abstract class Entity implements IEntity, IAnimatable, ParticleSource
 	 * This method can be overridden to do custom rendering on entities by using a <code>SpriteBatch</code>.
 	 * In order to disable the default rendering, {@link #useDefaultDrawing()} must be overridden.
 	 * @param batch the batch that is used for custom rendering on all entities
+	 * @param x the entity x-position in screen-coordinates after applying the camera position
+	 * @param y the entity y-position in screen-coordinates after applying the camera position
 	 */
 	public void doCustomRendering(SpriteBatch batch, float x, float y)
 	{
@@ -537,5 +537,38 @@ public abstract class Entity implements IEntity, IAnimatable, ParticleSource
 	public DungeonLevel getLevel()
 	{
 		return this.level;
+	}
+	
+	/**
+	 * Checks whether there is a straight line between this entity and the specified point that
+	 * is not blocked by an inaccessible tile like a wall, i. e. whether
+	 * this entity can "see" the specified point.
+	 * @param p the point at which the line of sight will end
+	 * @return whether there is a line of sight between this entity and the specified point
+	 */
+	public boolean hasLineOfSightTo(Vector2 p)
+	{
+		int boundsMinX = Math.min((int)this.getX(), (int)p.x);
+		int boundsMinY = Math.min((int)this.getY(), (int)p.y);
+		
+		int boundsMaxX = Math.max((int)Math.ceil(this.getX()), (int)Math.ceil(p.x));
+		int boundsMaxY = Math.max((int)Math.ceil(this.getY()), (int)Math.ceil(p.y));
+		
+		for(int x = boundsMinX; x <= boundsMaxX; ++x)
+		{
+			for(int y = boundsMinY; y <= boundsMaxY; ++y)
+			{
+				if(this.level.getDungeon().getTileAt(x, y) == null || this.level.getDungeon().getTileAt(x, y).isAccessible())
+				{
+					continue;
+				}
+				
+				if(GeometryUtil.intersectLineSegmentRectangle(this.getX(), this.getY(), p.x, p.y, x, y, 1, 1))
+				{
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 }
