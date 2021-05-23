@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.logging.Level;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -16,9 +15,8 @@ import de.fhbielefeld.pmdungeon.quibble.chest.GoldenChest;
 import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
 import de.fhbielefeld.pmdungeon.quibble.entity.Demon;
 import de.fhbielefeld.pmdungeon.quibble.entity.Entity;
-import de.fhbielefeld.pmdungeon.quibble.entity.Goblin;
+import de.fhbielefeld.pmdungeon.quibble.entity.Knight;
 import de.fhbielefeld.pmdungeon.quibble.entity.Lizard;
-import de.fhbielefeld.pmdungeon.quibble.entity.Mage;
 import de.fhbielefeld.pmdungeon.quibble.entity.Player;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.CreatureExpEvent;
@@ -27,8 +25,6 @@ import de.fhbielefeld.pmdungeon.quibble.entity.event.CreatureStatChangeEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEventHandler;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.PlayerOpenChestEvent;
-import de.fhbielefeld.pmdungeon.quibble.entity.range_combat.ProjectileTypes;
-import de.fhbielefeld.pmdungeon.quibble.entity.range_combat.RangeCombatSystem;
 import de.fhbielefeld.pmdungeon.quibble.entity.range_combat.SpellIceBlast;
 import de.fhbielefeld.pmdungeon.quibble.file.ResourceHandler;
 import de.fhbielefeld.pmdungeon.quibble.hud.ExpBarHUD;
@@ -109,8 +105,8 @@ public class DungeonStart extends MainController implements EntityEventHandler, 
 	protected void setup()
 	{
 		super.setup();
-		this.myHero = new Mage();
-//		this.myHero.getEquippedItems().addItem(Item.SWORD_BLUE);
+		this.myHero = new Knight();
+		this.myHero.getEquippedItems().addItem(Item.SWORD_BLUE);
 		this.myHero.addEntityEventHandler(this);
 		this.invSwitchNormal = new InventoryHUDSwitchListener(this, INV_NAME_DEFAULT, this.myHero.getInventory(), "Inventory", 16, 176);
 		this.invSwitchEquip = new InventoryHUDSwitchListener(this, INV_NAME_EQUIP, this.myHero.getEquippedItems(), "Equipment", 16, 76);
