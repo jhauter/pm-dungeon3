@@ -1,17 +1,10 @@
 package de.fhbielefeld.pmdungeon.quibble.entity;
 
-import com.badlogic.gdx.ai.pfa.GraphPath;
-
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
-import de.fhbielefeld.pmdungeon.vorgaben.dungeonCreator.DungeonWorld;
-import de.fhbielefeld.pmdungeon.vorgaben.dungeonCreator.dungeonconverter.Coordinate;
-import de.fhbielefeld.pmdungeon.vorgaben.dungeonCreator.tiles.Tile;
 
-public class Goblin extends Creature
+public class Goblin extends NPC
 {
-	private GraphPath<Tile> currentMovement;
-	
 	/**
 	 * Creates a goblin instance at the given coordinates.
 	 * The coordinates can be changed after creating the goblin by calling
@@ -72,23 +65,6 @@ public class Goblin extends Creature
 		stats.setStat(CreatureStatsAttribs.HIT_REACH, 0.4D);
 		stats.setStat(CreatureStatsAttribs.HIT_COOLDOWN, 15.0D);
 		return stats;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void updateLogic()
-	{
-		super.updateLogic();
-		
-		//Always finds a new tile to move to
-		DungeonWorld dungeon = this.level.getDungeon();
-		if(this.currentMovement == null || this.followPath(this.currentMovement))
-		{
-			Coordinate moveTarget = dungeon.getRandomLocationInDungeon();
-			this.currentMovement = dungeon.findPath(dungeon.getTileAt((int)this.getX(), (int)this.getY()), dungeon.getTileAt(moveTarget));
-		}
 	}
 	
 	/**

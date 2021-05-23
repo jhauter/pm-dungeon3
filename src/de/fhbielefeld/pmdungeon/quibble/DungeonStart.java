@@ -166,7 +166,7 @@ public class DungeonStart extends MainController implements EntityEventHandler, 
 		this.invSwitchEquip.show();
 		
 		/**
-		 * Spawn Chest's
+		 * Spawn Chests
 		 */
 		final int  num = currentLevel.getRNG().nextInt(1) + 1;
 		for (int i = 0; i < num; i++) {
@@ -250,9 +250,9 @@ public class DungeonStart extends MainController implements EntityEventHandler, 
 		entityCustomRenderBatch.end();
 		entityCustomRenderBatch.flush();
 		
-		this.hudManager.update();
-		
 		this.currentLevel.getParticleSystem().draw(this.camera.position.x, this.camera.position.y);
+		
+		this.hudManager.update(); //Draw HUD last
 	}
 	
 	@Override
