@@ -33,6 +33,7 @@ public abstract class ItemWeaponMagic extends ItemWeaponRange {
 
 	@Override
 	public void onUse(Creature user) {
+		super.onUse(user);
 		if (user.getHitCooldown() > 0.0D) {
 			return;
 		}
@@ -41,7 +42,6 @@ public abstract class ItemWeaponMagic extends ItemWeaponRange {
 		user.getLevel().getParticleSystem().addParticle(
 				new ParticleWeapon(this, user.getX() + weaponOffset.x, user.getY() + weaponOffset.y, user),
 				this.getWeaponMovement(user));
-		user.getLevel().spawnEntity(spawnProjectile(user));
 		user.getCurrentStats().setStat(CreatureStatsAttribs.HIT_COOLDOWN, 15);
 	}
 

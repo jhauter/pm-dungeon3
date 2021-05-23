@@ -35,5 +35,4 @@ public interface RangeCombatSystem {
 		}
 		return false;
 	}
-
 }

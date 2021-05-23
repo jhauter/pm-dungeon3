@@ -45,7 +45,6 @@ public abstract class Projectile extends Entity {
 		this.creature = creature;
 
 		setDamageAmount();
-		LoggingHandler.logger.info(name + " was used");
 	}
 
 	/**

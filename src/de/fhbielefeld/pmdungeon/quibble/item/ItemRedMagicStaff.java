@@ -36,7 +36,7 @@ public class ItemRedMagicStaff extends ItemWeaponMagic {
 	@Override
 	public Projectile spawnProjectile(Creature user) {
 		Projectile fireBall = new SpellFireBall(ProjectileTypes.SPELL_FIRE_BALL.name(), user.getPosition(), user);
-		fireBall.setVelocityX(10);
+		fireBall.setVelocityX(1);
 		return fireBall;
 	}
 

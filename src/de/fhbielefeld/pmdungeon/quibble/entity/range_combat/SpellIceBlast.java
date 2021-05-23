@@ -1,8 +1,5 @@
 package de.fhbielefeld.pmdungeon.quibble.entity.range_combat;
 
-import java.util.logging.Level;
-
-import de.fhbielefeld.pmdungeon.quibble.LoggingHandler;
 import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
 import de.fhbielefeld.pmdungeon.quibble.entity.Entity;
 import de.fhbielefeld.pmdungeon.quibble.entity.effect.StatusEffectSpeed;
@@ -21,8 +18,8 @@ public class SpellIceBlast extends ProjectileMagic {
 	public SpellIceBlast(String name, Point point, Creature creature) {
 		super(name, point, creature);
 		this.creature = creature;
-		this.animationHandler.addAsDefaultAnimation(ProjectileTypes.SPELL_FIRE_BALL.name, 8, 5,
-				ProjectileTypes.SPELL_FIRE_BALL.path, 4);
+		this.animationHandler.addAsDefaultAnimation(ProjectileTypes.SPELL_ICE_BLAST.name, 8, 5,
+				ProjectileTypes.SPELL_ICE_BLAST.path, 4);
 	}
 
 	/**

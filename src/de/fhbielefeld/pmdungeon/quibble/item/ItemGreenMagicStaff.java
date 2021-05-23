@@ -9,8 +9,6 @@ import de.fhbielefeld.pmdungeon.quibble.entity.range_combat.SpellIceBlast;
 
 public class ItemGreenMagicStaff extends ItemWeaponMagic {
 
-	private Projectile iceBlast;
-
 	/**
 	 * A Green Magic staff which fires Ice Blast. Ice Blast's will slow down the hit
 	 * creature
@@ -39,8 +37,8 @@ public class ItemGreenMagicStaff extends ItemWeaponMagic {
 
 	@Override
 	public Projectile spawnProjectile(Creature user) {
-		iceBlast = new SpellIceBlast(ProjectileTypes.SPELL_ICE_BLAST.name(), this.setProjectileStartPoint(0.5f), user);
-		iceBlast.setVelocityX(setVelocity(1));
+		Projectile iceBlast = new SpellIceBlast(ProjectileTypes.SPELL_ICE_BLAST.name(), user.getPosition(), user);
+		iceBlast.setVelocityX(1);
 		return iceBlast;
 	}
 }

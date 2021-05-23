@@ -1,5 +1,6 @@
 package de.fhbielefeld.pmdungeon.quibble.item;
 
+import de.fhbielefeld.pmdungeon.quibble.LoggingHandler;
 import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
 import de.fhbielefeld.pmdungeon.quibble.entity.LookingDirection;
 import de.fhbielefeld.pmdungeon.quibble.entity.range_combat.Projectile;
@@ -98,6 +99,7 @@ public abstract class ItemWeaponRange extends ItemWeapon {
 		user.getLevel().getParticleSystem().addParticle(
 				new ParticleWeapon(this, user.getX() + weaponOffset.x, user.getY() + weaponOffset.y, user),
 				this.getWeaponMovement(user));
+		user.getLevel().spawnEntity(spawnProjectile(user));
 	}
 
 }

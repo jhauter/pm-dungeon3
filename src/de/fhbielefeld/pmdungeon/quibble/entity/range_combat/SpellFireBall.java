@@ -9,8 +9,8 @@ public class SpellFireBall extends ProjectileMagic{
 	public SpellFireBall(String name, Point point, Creature creature) {
 		super(name, point, creature);
 		this.creature = creature;
-		this.animationHandler.addAsDefaultAnimation(ProjectileTypes.SPELL_ICE_BLAST.name, 8, 5,
-				ProjectileTypes.SPELL_ICE_BLAST.path, 4);
+		this.animationHandler.addAsDefaultAnimation(ProjectileTypes.SPELL_FIRE_BALL.name, 8, 5,
+				ProjectileTypes.SPELL_FIRE_BALL.path, 4);
 	}
 
 }
