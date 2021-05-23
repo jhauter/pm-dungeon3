@@ -11,6 +11,12 @@ public abstract class DamageType
 	 */
 	public static final DamageType PHYSICAL = new DamagePhysical();
 	
+	
+	/**
+	 * Magical damage, an extra combat Damage, reduced by magical resistance
+	 */
+	public static final DamageType MAGICAL = new DamageMagical();
+	
 	/**
 	 * Calculates the actual damage dealt assuming the target has the stats specified by the <code>stats</code> parameter.
 	 * @param sourceDamage the raw/source damage that is output by an entity.

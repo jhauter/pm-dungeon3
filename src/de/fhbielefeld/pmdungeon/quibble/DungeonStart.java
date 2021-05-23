@@ -15,8 +15,8 @@ import de.fhbielefeld.pmdungeon.quibble.chest.GoldenChest;
 import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
 import de.fhbielefeld.pmdungeon.quibble.entity.Demon;
 import de.fhbielefeld.pmdungeon.quibble.entity.Entity;
-import de.fhbielefeld.pmdungeon.quibble.entity.Goblin;
 import de.fhbielefeld.pmdungeon.quibble.entity.Knight;
+import de.fhbielefeld.pmdungeon.quibble.entity.Lizard;
 import de.fhbielefeld.pmdungeon.quibble.entity.Player;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.CreatureExpEvent;
@@ -149,7 +149,7 @@ public class DungeonStart extends MainController implements EntityEventHandler, 
 		for(int i = 0; i < 10; ++i)
 		{
 			final Point pos = this.currentLevel.getDungeon().getRandomPointInDungeon();
-			final Creature toSpawn = this.currentLevel.getRNG().nextInt(2) == 0 ? new Demon() : new Goblin();
+			final Creature toSpawn = this.currentLevel.getRNG().nextInt(2) == 0 ? new Demon() : new Lizard();
 			toSpawn.setPosition(pos);
 			this.currentLevel.spawnEntity(toSpawn);
 		}
@@ -187,6 +187,8 @@ public class DungeonStart extends MainController implements EntityEventHandler, 
 		//Set the camera to follow the hero
 		this.camera.follow(this.myHero);
 		LoggingHandler.logger.log(Level.INFO, "New level loaded.");
+		
+
 	}
 	
 
@@ -379,5 +381,9 @@ public class DungeonStart extends MainController implements EntityEventHandler, 
 		{
 			this.closeInventory(INV_NAME_CHEST);
 		}
+	}
+	
+	public float getCamaraPositionX() {
+		return this.camera.position.x;
 	}
 }

@@ -12,7 +12,7 @@ public class ItemSpeedPotion extends ItemPotion
 	/**
 	 * Creates a healing potion item.
 	 * @param displayName user friendly display name
-	 * @param speedAmount the amount this potion should heal
+	 * @param speedAmount the amount this potion should increase speed
 	 * @param ticks the frames the speed effect should be stay on
 	 * @param texture texture that is used to render the item
 	 */
