@@ -13,8 +13,6 @@ public abstract class Quest implements EntityEventHandler {
 	public final static String ACCEPT_DECLINE = "To Accept press J to Decline press N";
 	public final static String QUEST_REACHED = "You will gain: ";
 
-	protected boolean isAccept;
-	protected boolean isActive;
 	private boolean isCompleted;
 
 	private String texture;
@@ -25,27 +23,19 @@ public abstract class Quest implements EntityEventHandler {
 	private Item itemOnReward;
 	private int expOnReward;
 
+	/**
+	 * Creates a quest object that can track the player's progress on an objective.
+	 * @param questName the display name of the quest
+	 * @param p the player that should have the quest
+	 * @param itemOnReward the item that is rewarded when the quest is completed
+	 * @param expOnReward the exp that are rewarded when the quest is completed
+	 */
 	public Quest(String questName, Player p, Item itemOnReward, int expOnReward) {
 		this.questName = questName;
 		this.itemOnReward = itemOnReward;
 		this.expOnReward = expOnReward;
 		this.player = p;
 		LoggingHandler.logger.log(Level.INFO, "The Quest: " + questName + " was accepted");
-	}
-
-	/**
-	 * whether a quest has been accepted and has now become active
-	 */
-	protected void setActive(boolean b) {
-		this.isActive = b;
-	}
-
-	/**
-	 * 
-	 * @return whether a quest is active or not
-	 */
-	public boolean isActive() {
-		return isActive;
 	}
 
 	/**
@@ -69,9 +59,9 @@ public abstract class Quest implements EntityEventHandler {
 		if (this.getExpOnReward() > 0 && itemOnReward == null)
 			return QUEST_REACHED + this.getExpOnReward();
 		if (this.getExpOnReward() == 0 && itemOnReward != null)
-			return QUEST_REACHED + this.getExpOnReward() + " and " + getItemOnReward();
+			return QUEST_REACHED + getItemOnReward();
 		else
-			return QUEST_REACHED + " and " + getItemOnReward().getDisplayName();
+			return QUEST_REACHED + this.getExpOnReward() + " and " + getItemOnReward().getDisplayName();
 	}
 
 	/**
@@ -96,22 +86,39 @@ public abstract class Quest implements EntityEventHandler {
 			p.getEquippedItems().addItem(itemOnReward);
 	}
 
+	/**
+	 * 
+	 * @return the player that has this quest
+	 */
 	public Player getPlayer() {
 		return player;
 	}
 
+	/**
+	 * @return whether the quest has been completed and is marked for removal
+	 */
 	public boolean isCompleted() {
 		return isCompleted;
 	}
 
+	/**
+	 * Marks this quest for removal
+	 * @param isCompleted whether this quest should be removed
+	 */
 	public void setCompleted(boolean isCompleted) {
 		this.isCompleted = isCompleted;
 	}
 
+	/**
+	 * @return the items that the player gets when the quest is completed
+	 */
 	public Item getItemOnReward() {
 		return itemOnReward;
 	}
 
+	/**
+	 * @return the amount of exp that the player gets when the quest is completed
+	 */
 	public int getExpOnReward() {
 		return expOnReward;
 	}
