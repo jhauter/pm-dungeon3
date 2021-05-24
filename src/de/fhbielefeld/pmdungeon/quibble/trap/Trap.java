@@ -1,5 +1,6 @@
 package de.fhbielefeld.pmdungeon.quibble.trap;
 
+import de.fhbielefeld.pmdungeon.quibble.entity.BoundingBox;
 import de.fhbielefeld.pmdungeon.quibble.entity.Entity;
 
 public abstract class Trap extends Entity {
@@ -124,5 +125,10 @@ public abstract class Trap extends Entity {
 		this.visible = b;
 		this.ticksTillInvisible = timeOfSight;
 	}
-
+	
+	@Override
+	protected BoundingBox getInitBoundingBox()
+	{
+		return new BoundingBox(-0.4F, -0.4F, 0.8F, 0.8F);
+	}
 }

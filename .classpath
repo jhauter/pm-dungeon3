@@ -9,7 +9,7 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/pmdungeon.jar">
 		<attributes>
-			<attribute name="javadoc_location" value="jar:platform:/resource/pm-dungeon/lib/pmdungeon-doc.zip!/"/>
+			<attribute name="javadoc_location" value="jar:file:/C:/Users/Andreas/Documents/Informatik-FH-Bielefeld/Programmiermethoden/pm-dungeon/lib/pmdungeon-doc.zip!/"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>

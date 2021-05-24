@@ -3,7 +3,7 @@ package de.fhbielefeld.pmdungeon.quibble.entity;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 
 import de.fhbielefeld.pmdungeon.quibble.DungeonLevel;
@@ -29,6 +29,11 @@ public abstract class Entity implements IEntity, IAnimatable, ParticleSource
 	 * Event ID for entity despawn events.
 	 */
 	public static final int EVENT_ID_DESPAWN = EntityEvent.genEventID();
+	
+	/**
+	 * Event ID for entity collision with tiles events.
+	 */
+	public static final int EVENT_ID_COLLISION_TILE = EntityEvent.genEventID();
 	
 	private long ticks;
 	
@@ -93,7 +98,14 @@ public abstract class Entity implements IEntity, IAnimatable, ParticleSource
 	 */
 	public boolean loadResources()
 	{
-		this.loadedResources = this.animationHandler.loadAnimations();
+		if(this.useAnimationHandler())
+		{
+			this.loadedResources = this.animationHandler.loadAnimations();
+		}
+		else
+		{
+			this.loadedResources = true;
+		}
 		return this.loadedResources;
 	}
 	
@@ -294,7 +306,10 @@ public abstract class Entity implements IEntity, IAnimatable, ParticleSource
 	{
 		/******GRAPHICS******/
 		
-		this.animationHandler.frameUpdate();
+		if(this.useAnimationHandler())
+		{
+			this.animationHandler.frameUpdate();
+		}
 		
 		if(!this.isInvisible() && this.useDefaultDrawing())
 		{
@@ -333,15 +348,21 @@ public abstract class Entity implements IEntity, IAnimatable, ParticleSource
 			//Calculate the axis independently so that it doesn't get stuck if it moves diagonally
 			Point newPosX = new Point(this.position.x + x, this.position.y);
 			Point newPosY = new Point(this.position.x, this.position.y + y);
-			if(this.level.getDungeon().isTileAccessible(newPosX))
+			boolean collsionX = !this.level.getDungeon().isTileAccessible(newPosX);
+			boolean collsionY = !this.level.getDungeon().isTileAccessible(newPosY);
+			if(!collsionX)
 			{
 				this.position.x += x;
 			}
-			if(this.level.getDungeon().isTileAccessible(newPosY))
+			if(!collsionY)
 			{
 				this.position.y += y;
 			}
-			//TODO add collision event
+			if(collsionX || collsionY)
+			{
+				this.fireEvent(new EntityEvent(EVENT_ID_COLLISION_TILE, this));
+				this.onTileCollision();
+			}
 		}
 	}
 	
@@ -403,7 +424,7 @@ public abstract class Entity implements IEntity, IAnimatable, ParticleSource
 	 */
 	protected Point getDrawingOffsetOverride()
 	{
-		return null;
+		return new Point(-0.5F, -0.5F);
 	}
 	
 	/**
@@ -455,6 +476,14 @@ public abstract class Entity implements IEntity, IAnimatable, ParticleSource
 	}
 	
 	/**
+	 * This is called when collision with tiles occurs.
+	 */
+	protected void onTileCollision()
+	{
+		
+	}
+	
+	/**
 	 * Whether this entity should not be rendered.
 	 * @return true if invisible
 	 */
@@ -479,7 +508,7 @@ public abstract class Entity implements IEntity, IAnimatable, ParticleSource
 	 * @param x the entity x-position in screen-coordinates after applying the camera position
 	 * @param y the entity y-position in screen-coordinates after applying the camera position
 	 */
-	public void doCustomRendering(SpriteBatch batch, float x, float y)
+	public void doCustomRendering(Batch batch, float x, float y)
 	{
 		
 	}
@@ -492,6 +521,16 @@ public abstract class Entity implements IEntity, IAnimatable, ParticleSource
 	 * @return whether the default drawing for this entity should be used
 	 */
 	public boolean useDefaultDrawing()
+	{
+		return true;
+	}
+	
+	/**
+	 * Can be overridden in order to not use the animation handler to prevent it from automatically loading
+	 * animations and throwing an exception if no animation is added.
+	 * @return whether the animation handler should be used
+	 */
+	public boolean useAnimationHandler()
 	{
 		return true;
 	}

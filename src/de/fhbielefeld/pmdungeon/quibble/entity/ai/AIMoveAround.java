@@ -22,7 +22,13 @@ public class AIMoveAround implements AIStrategy
 		if(this.currentMovement == null || entity.followPath(this.currentMovement))
 		{
 			Coordinate moveTarget = dungeon.getRandomLocationInDungeon();
-			this.currentMovement = dungeon.findPath(dungeon.getTileAt((int)entity.getX(), (int)entity.getY()), dungeon.getTileAt(moveTarget));
+			Tile startTile = dungeon.getTileAt((int)entity.getX(), (int)entity.getY());
+			Tile endTile = dungeon.getTileAt(moveTarget);
+			if(startTile == null || endTile == null)
+			{
+				return;
+			}
+			this.currentMovement = dungeon.findPath(startTile, endTile);
 		}
 	}
 }

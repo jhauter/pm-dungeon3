@@ -75,7 +75,13 @@ public abstract class AIDistantAction implements AIStrategy
 		{
 			this.targetLocation = new Vector2(this.target.getX(), this.target.getY());
 			final Coordinate c = new Coordinate((int)this.targetLocation.x, (int)this.targetLocation.y);
-			this.currentMovement = dungeon.findPath(dungeon.getTileAt((int)entity.getX(), (int)entity.getY()), dungeon.getTileAt(c));
+			Tile startTile = dungeon.getTileAt((int)entity.getX(), (int)entity.getY());
+			Tile endTile = dungeon.getTileAt(c);
+			if(startTile == null || endTile == null)
+			{
+				return;
+			}
+			this.currentMovement = dungeon.findPath(startTile, endTile);
 		}
 		if(!entity.hasLineOfSightTo(targetLocation) || Vector2.dst2(entity.getX(), entity.getY(), targetLocation.x, targetLocation.y) > this.getAimDistanceSq())
 		{

@@ -1,5 +1,6 @@
 package de.fhbielefeld.pmdungeon.quibble.hud;
 
+
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
@@ -20,6 +21,8 @@ public class InventoryItemHUD extends HUDElement
 	private int unclickableTicks;
 	
 	private final boolean isInsideBag;
+	
+	private boolean marked;
 	
 	public InventoryItemHUD(Inventory<Item> inv, int slot, int x, int y, int w, int h, boolean inBag)
 	{
@@ -45,6 +48,16 @@ public class InventoryItemHUD extends HUDElement
 	public boolean isInsideBag()
 	{
 		return this.isInsideBag;
+	}
+	
+	public boolean isMarked()
+	{
+		return marked;
+	}
+	
+	public void setMarked(boolean marked)
+	{
+		this.marked = marked;
 	}
 	
 	@Override
@@ -111,6 +124,15 @@ public class InventoryItemHUD extends HUDElement
 			if(texture.isLoaded())
 			{
 				batch.draw(texture.getResource(), renderX + 4, renderY + 4, this.width - 8, this.height - 8);
+			}
+		}
+		
+		if(this.marked)
+		{
+			DungeonResource<Texture> textureFrame = ResourceHandler.requestResourceInstantly("assets/textures/hud/item_frame.png", ResourceType.TEXTURE);
+			if(textureFrame.isLoaded())
+			{
+				batch.draw(textureFrame.getResource(), renderX, renderY, this.width, this.height);
 			}
 		}
 	}

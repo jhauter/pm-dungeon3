@@ -2,27 +2,25 @@ package de.fhbielefeld.pmdungeon.quibble.entity;
 
 import java.util.List;
 
-import com.badlogic.gdx.ai.pfa.GraphPath;
+import com.badlogic.gdx.math.Vector2;
 
+import de.fhbielefeld.pmdungeon.quibble.entity.ai.AIShootFireball;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
-import de.fhbielefeld.pmdungeon.quibble.entity.range_combat.RangeCombatSystem;
 import de.fhbielefeld.pmdungeon.quibble.item.Item;
-import de.fhbielefeld.pmdungeon.vorgaben.dungeonCreator.DungeonWorld;
-import de.fhbielefeld.pmdungeon.vorgaben.dungeonCreator.dungeonconverter.Coordinate;
-import de.fhbielefeld.pmdungeon.vorgaben.dungeonCreator.tiles.Tile;
 
-public class Lizard extends Creature implements RangeCombatSystem{
-	private GraphPath<Tile> currentMovement;
+public class Lizard extends NPC{
 
+	private boolean noticedPlayer;
+	
 	/**
 	 * Creates a Lizard instance at the given coordinates. The coordinates can be
 	 * changed after creating the goblin by calling
 	 * {@link Lizard#setPosition(float, float)}. This way it can be placed anywhere
 	 * in the dungeon.
 	 * 
-	 * @param x x position
-	 * @param y y position
+	 * @param x x-position
+	 * @param y y-position
 	 */
 	public Lizard(float x, float y) {
 		super(x, y);
@@ -59,7 +57,7 @@ public class Lizard extends Creature implements RangeCombatSystem{
 	 */
 	@Override
 	protected BoundingBox getInitBoundingBox() {
-		return new BoundingBox(-0.25F, -0.4F, 0.5F, 0.8F);
+		return new BoundingBox(-0.35F, 0.0F, 0.7F, 0.8F);
 	}
 
 	/**
@@ -68,7 +66,7 @@ public class Lizard extends Creature implements RangeCombatSystem{
 	@Override
 	protected CreatureStats getBaseStatsForLevel(int level) {
 		CreatureStats stats = new CreatureStats();
-		stats.setStat(CreatureStatsAttribs.HEALTH, 4 + level);
+		stats.setStat(CreatureStatsAttribs.HEALTH, 6 + level);
 		stats.setStat(CreatureStatsAttribs.RESISTANCE_PHYS, level);
 		stats.setStat(CreatureStatsAttribs.RESISTANCE_MAGIC, level);
 		stats.setStat(CreatureStatsAttribs.MISS_CHANCE, 0.0D);
@@ -76,7 +74,7 @@ public class Lizard extends Creature implements RangeCombatSystem{
 		stats.setStat(CreatureStatsAttribs.KNOCKBACK, 0.25D);
 		stats.setStat(CreatureStatsAttribs.KNOCKBACK_RES, 0.1D);
 		stats.setStat(CreatureStatsAttribs.DAMAGE_PHYS, 2.0D);
-		stats.setStat(CreatureStatsAttribs.DAMAGE_MAGIC, 1.0D);
+		stats.setStat(CreatureStatsAttribs.DAMAGE_MAGIC, 3.0D);
 		stats.setStat(CreatureStatsAttribs.WALKING_SPEED, 0.05D);
 		stats.setStat(CreatureStatsAttribs.HIT_REACH, 0.4D);
 		stats.setStat(CreatureStatsAttribs.HIT_COOLDOWN, 20.0D);
@@ -87,33 +85,28 @@ public class Lizard extends Creature implements RangeCombatSystem{
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected void updateLogic() {
-		super.updateLogic();
-
-		// Always finds a new tile to move to
-		DungeonWorld dungeon = this.level.getDungeon();
-		if (this.currentMovement == null || this.followPath(this.currentMovement)) {
-			Coordinate moveTarget = dungeon.getRandomLocationInDungeon();
-			this.currentMovement = dungeon.findPath(dungeon.getTileAt((int) this.getX(), (int) this.getY()),
-					dungeon.getTileAt(moveTarget));
-		}
-		List<Entity> entities = (List<Entity>) this.getLevel().getEntitiesInRadius(this.getPosition().x, this.getPosition().y,
-				3, this);
-		
-		if(RangeCombatSystem.shouldShoot(this, entities)) {
-			useEquippedItem(0);
-			}
-		}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
 	protected void onEntityCollision(Entity otherEntity) {
 		super.onEntityCollision(otherEntity);
 		if (otherEntity instanceof Player) // Attack player when touched
 		{
 			this.attack((Player) otherEntity);
+		}
+	}
+	
+	@Override
+	public void calculateCurrentBehavior()
+	{
+		//Shoot fire balls
+		List<Player> players = this.level.getPlayers();
+		if(players.isEmpty())
+		{
+			//Can happen if the player dies?
+			return;
+		};
+		if(!this.noticedPlayer && this.hasLineOfSightTo(new Vector2(players.get(0).getPosition().x, players.get(0).getPosition().y)))
+		{
+			this.noticedPlayer = true;
+			this.setAIStrategy(new AIShootFireball(players.get(0)));
 		}
 	}
 

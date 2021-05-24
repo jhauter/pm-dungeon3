@@ -20,7 +20,7 @@ public class Mage extends Player {
 		this.animationHandler.addAsDefaultAnimation(Creature.ANIM_NAME_HIT_L, 1, 15, "assets/textures/entity/mage/wizzard_m_hit_left_anim_f.png", 4);
 	
 		getEquippedItems().addItem(Item.RED_MAGIC_STAFF);
-		getEquippedItems().addItem(Item.GREEN_MAGIC_STAFF);
+		getEquippedItems().addItem(Item.SIMPLE_BOW);
 		
 		
 	}
@@ -44,8 +44,8 @@ public class Mage extends Player {
 		stats.setStat(CreatureStatsAttribs.KNOCKBACK, 0.4D);
 		stats.setStat(CreatureStatsAttribs.KNOCKBACK_RES, 0.1D);
 		stats.setStat(CreatureStatsAttribs.DAMAGE_PHYS, 1.0D + level);
-		stats.setStat(CreatureStatsAttribs.DAMAGE_MAGIC, 3.0D);
-		stats.setStat(CreatureStatsAttribs.WALKING_SPEED, 0.1D + level * 0.025D);
+		stats.setStat(CreatureStatsAttribs.DAMAGE_MAGIC, 3.0D + level);
+		stats.setStat(CreatureStatsAttribs.WALKING_SPEED, 0.1D + level * 0.003D);
 		stats.setStat(CreatureStatsAttribs.HIT_REACH, 0.6D);
 		stats.setStat(CreatureStatsAttribs.HIT_COOLDOWN, 15.0D);
 		return stats;
@@ -57,7 +57,16 @@ public class Mage extends Player {
 	@Override
 	public Point getWeaponHoldOffset()
 	{
-		return new Point(0.0F, 1.25F);
+		return new Point(0.0F, 0.75F);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected BoundingBox getInitBoundingBox()
+	{
+		return new BoundingBox(-0.35F, 0.0F, 0.7F, 0.75F);
 	}
 	
 	/**

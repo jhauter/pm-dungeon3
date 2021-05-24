@@ -1,5 +1,7 @@
 package de.fhbielefeld.pmdungeon.quibble.entity.effect;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
+
 import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
 
@@ -91,5 +93,17 @@ public abstract class StatusEffect
 	public final void setRemainingTicks(int ticks)
 	{
 		this.remainingTicks = ticks;
+	}
+	
+	/**
+	 * This method can be overridden to do custom rendering on entities that are affected by the status effect.
+	 * This method is called after rendering the entity so this method draws on top of the entity.
+	 * @param batch the batch that is used to draw status effects
+	 * @param x the entity x-position in screen-coordinates after applying the camera position
+	 * @param y the entity y-position in screen-coordinates after applying the camera position
+	 */
+	public void renderStatusEffect(Batch batch, float x, float y)
+	{
+		
 	}
 }

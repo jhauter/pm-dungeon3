@@ -2,7 +2,6 @@ package de.fhbielefeld.pmdungeon.quibble.item;
 
 import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
 import de.fhbielefeld.pmdungeon.quibble.entity.effect.StatusEffectSpeed;
-import de.fhbielefeld.pmdungeon.quibble.item.visitor.ItemVisitor;
 
 public class ItemSpeedPotion extends ItemPotion
 {
@@ -31,11 +30,5 @@ public class ItemSpeedPotion extends ItemPotion
 	
 	{
 		user.addStatusEffect(new StatusEffectSpeed(user, speedAmount), ticks);
-	}
-
-	@Override
-	public void accept(ItemVisitor visitor)
-	{
-		visitor.visit(this);
 	}
 }

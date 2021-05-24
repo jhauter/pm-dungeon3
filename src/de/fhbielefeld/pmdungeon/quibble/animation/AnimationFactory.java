@@ -8,11 +8,14 @@ public class AnimationFactory {
 
 	private static AnimationFactory animationFactory = new AnimationFactory();
 	
-	Texture texture;
-	
-	public Animation<TextureRegion> createAnimation(Animations animation){
+	private AnimationFactory()
+	{
 		
-		texture = animation.texture;
+	}
+	
+	public Animation<TextureRegion> createAnimation(SpriteSheets animation){
+		
+		Texture texture = animation.texture;
 		
 		TextureRegion[][] tmp = TextureRegion.split(texture, texture.getWidth() / animation.col, texture.getHeight() / animation.row);
 		
@@ -24,9 +27,7 @@ public class AnimationFactory {
 			}
 		}
 		
-		Animation<TextureRegion> finishedAnimation = new Animation<>(0.1f, frames);
-		
-		return finishedAnimation;
+		return new Animation<>(0.1f, frames);
 	}
 
 	public static AnimationFactory getAnimationFactory() {

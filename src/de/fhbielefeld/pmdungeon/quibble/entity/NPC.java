@@ -19,6 +19,7 @@ public abstract class NPC extends Creature
 	public NPC()
 	{
 		super();
+		this.setAIStrategy(new AIMoveAround());
 	}
 	
 	/**
@@ -30,6 +31,7 @@ public abstract class NPC extends Creature
 	public NPC(float x, float y)
 	{
 		super(x, y);
+		this.setAIStrategy(new AIMoveAround());
 	}
 	
 	/**
@@ -73,11 +75,7 @@ public abstract class NPC extends Creature
 			//Can happen if the player dies?
 			return;
 		}
-		if(this.currentBehavior == null)
-		{
-			this.currentBehavior = new AIMoveAround();
-		}
-		else if(this.hasLineOfSightTo(new Vector2(players.get(0).getPosition().x, players.get(0).getPosition().y)) && !(this.currentBehavior instanceof AIApproachTarget))
+		if(this.hasLineOfSightTo(new Vector2(players.get(0).getPosition().x, players.get(0).getPosition().y)) && !(this.currentBehavior instanceof AIApproachTarget))
 		{
 			this.setAIStrategy(new AIApproachTarget(players.get(0)));
 		}
@@ -91,11 +89,14 @@ public abstract class NPC extends Creature
 	{
 		super.updateLogic();
 		
-		this.calculateCurrentBehavior();
-		
-		if(this.currentBehavior != null)
+		if(!this.isDead())
 		{
-			this.currentBehavior.executeStrategy(this);
+			this.calculateCurrentBehavior();
+			
+			if(this.currentBehavior != null)
+			{
+				this.currentBehavior.executeStrategy(this);
+			}
 		}
 	}
 }

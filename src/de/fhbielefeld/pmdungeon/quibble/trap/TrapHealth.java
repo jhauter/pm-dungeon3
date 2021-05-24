@@ -3,6 +3,7 @@ package de.fhbielefeld.pmdungeon.quibble.trap;
 import de.fhbielefeld.pmdungeon.quibble.entity.Entity;
 import de.fhbielefeld.pmdungeon.quibble.entity.Player;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
+import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.DamageSource;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.DamageType;
 
@@ -44,7 +45,7 @@ public class TrapHealth extends Trap implements DamageSource{
 	@Override
 	public void isActiv(Entity e) {
 		if (e instanceof Player) {
-			((Player) e).damage(damageAmount, DamageType.PHYSICAL, this, false);
+			((Player) e).damage(this, DamageType.PHYSICAL, null, false);
 			this.coolDown = 44;
 			setActivationLimit(activationLimit-1);
 			this.visible = true;
@@ -54,7 +55,7 @@ public class TrapHealth extends Trap implements DamageSource{
 	@Override
 	public CreatureStats getCurrentStats() {
 		CreatureStats stats = new CreatureStats();
-		
+		stats.setStat(CreatureStatsAttribs.DAMAGE_PHYS, damageAmount);
 		return stats;
 	}
 

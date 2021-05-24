@@ -1,18 +1,19 @@
 package de.fhbielefeld.pmdungeon.quibble.item;
 
-import de.fhbielefeld.pmdungeon.quibble.LoggingHandler;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Vector2;
+
+import de.fhbielefeld.pmdungeon.quibble.DungeonStart;
 import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
 import de.fhbielefeld.pmdungeon.quibble.entity.LookingDirection;
-import de.fhbielefeld.pmdungeon.quibble.entity.range_combat.Projectile;
+import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
+import de.fhbielefeld.pmdungeon.quibble.entity.projectile.Projectile;
+import de.fhbielefeld.pmdungeon.quibble.particle.DrawingUtil;
 import de.fhbielefeld.pmdungeon.quibble.particle.ParticleMovement;
-import de.fhbielefeld.pmdungeon.quibble.particle.ParticleWeapon;
 import de.fhbielefeld.pmdungeon.quibble.particle.Swing;
 import de.fhbielefeld.pmdungeon.quibble.particle.Swing.SwingOrientation;
-import de.fhbielefeld.pmdungeon.vorgaben.tools.Point;
 
 public abstract class ItemWeaponRange extends ItemWeapon {
-
-	private Creature creature;
 
 	/**
 	 * The superclass of the range weapons (magic spells, arrows etc. . ).
@@ -26,55 +27,6 @@ public abstract class ItemWeaponRange extends ItemWeapon {
 	 */
 	protected ItemWeaponRange(String name, float itemWidth, float itemHeight, float visibleTime, String texture) {
 		super(name, itemWidth, itemHeight, visibleTime, texture);
-	}
-
-	/**
-	 * Sets the starting point of a projectile.For it to work,
-	 * <code>setUser(Creature creature)<code> must be used to determine its position
-	 * as well as its current direction of view
-	 * 
-	 * @param adjustYAxis for adjust y-Axis if the projectile starts to way up or
-	 *                    down
-	 * @return the spawn Point of the projectile
-	 */
-	Point setProjectileStartPoint(float adjustYAxis) {
-		if (isLookingLeft())
-			return new Point(creature.getPosition().x, creature.getPosition().y + adjustYAxis);
-		return new Point(creature.getPosition().x, creature.getPosition().y + adjustYAxis);
-	}
-
-	/**
-	 * Sets the speed of a projectile. For it to work, <code>setUser(Creature
-	 * creature)<code> must be used to determine its position as well as its current
-	 * direction of view
-	 * 
-	 * @param speed the amount of speed a projectile has
-	 * @return A floating point number passed to the projectile as
-	 *         <code>setVelocityX<code>
-	 */
-	float setVelocity(float speed) {
-		if (isLookingLeft())
-			return -speed;
-		return speed;
-	}
-
-	/**
-	 * Used to determine the user's current direction of view as well as its current
-	 * Position
-	 * 
-	 * @param creature the user of the weapon
-	 */
-	void setUser(Creature creature) {
-		this.creature = creature;
-	}
-
-	/**
-	 * Convenience Method to determine the user's LookingDirection
-	 * 
-	 * @return if the user is looking left
-	 */
-	private boolean isLookingLeft() {
-		return creature.getLookingDirection() == LookingDirection.LEFT;
 	}
 
 	@Override
@@ -92,14 +44,29 @@ public abstract class ItemWeaponRange extends ItemWeapon {
 	 */
 	public abstract Projectile spawnProjectile(Creature user);
 	
+	public abstract float getProjectileSpeed();
+	
 	@Override
 	public void onUse(Creature user) {
 		super.onUse(user);
-		final Point weaponOffset = user.getWeaponHoldOffset();
-		user.getLevel().getParticleSystem().addParticle(
-				new ParticleWeapon(this, user.getX() + weaponOffset.x, user.getY() + weaponOffset.y, user),
-				this.getWeaponMovement(user));
-		user.getLevel().spawnEntity(spawnProjectile(user));
+		if(user.getHitCooldown() > 0.0D)
+		{
+			return;
+		}
+		
+		Projectile proj = spawnProjectile(user);
+		int mouseX = Gdx.input.getX();
+		int mouseY = Gdx.graphics.getHeight() - Gdx.input.getY();
+
+		float dungeonX = DrawingUtil.screenToDungeonXCam(mouseX, DungeonStart.getDungeonMain().getCamPosX());
+		float dungeonY = DrawingUtil.screenToDungeonYCam(mouseY, DungeonStart.getDungeonMain().getCamPosY());
+		
+		Vector2 dir = new Vector2(dungeonX - user.getX(), dungeonY - user.getY());
+		dir.setLength(this.getProjectileSpeed());
+		proj.setVelocity(dir.x, dir.y);
+		user.getLevel().spawnEntity(proj);
+		
+		user.getCurrentStats().setStat(CreatureStatsAttribs.HIT_COOLDOWN, 15);
 	}
 
 }

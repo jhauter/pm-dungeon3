@@ -15,10 +15,12 @@ public class DrawingUtil
 	public static final float TILE_SCALE = 48.0F;
 	
 	//Bug: weapon particle not displayed correctly after screen resize
+	//Note: ignoring screen resizing in newer methods, because resizing is not intended anyway and
+	//HUD does not work when resizing the window.
 	
 	/**
 	 * Converts dungeon coordinates to screen coordinates.
-	 * @param x the x coordinate
+	 * @param x the x coordinate in dungeon space
 	 * @return the x coordinate in screen space
 	 */
 	public static float dungeonToScreenX(float x)
@@ -28,7 +30,7 @@ public class DrawingUtil
 	
 	/**
 	 * Converts dungeon coordinates to screen coordinates.
-	 * @param y the y coordinate
+	 * @param y the y coordinate in dungeon space
 	 * @return the y coordinate in screen space
 	 */
 	public static float dungeonToScreenY(float y)
@@ -55,5 +57,47 @@ public class DrawingUtil
 	public static float dungeonToScreenYCam(float y, float camY)
 	{
 		return dungeonToScreenX(y - camY) + CURRENT_SCREEN_HEIGHT.get() / 2.0F;
+	}
+	
+	/**
+	 * Converts screen coordinates to dungeon coordinates.
+	 * @param x the x coordinate in screen space
+	 * @return the x coordinate in dungeon space
+	 */
+	public static float screenToDungeonX(float x)
+	{
+		return x / TILE_SCALE;
+	}
+	
+	/**
+	 * Converts screen coordinates to dungeon coordinates.
+	 * @param y the y coordinate in screen space
+	 * @return the y coordinate in dungeon space
+	 */
+	public static float screenToDungeonY(float y)
+	{
+		return y / TILE_SCALE;
+	}
+	
+	/**
+	 * Converts screen coordinates to dungeon coordinates, taking into account the camera position.
+	 * @param x the x coordinate in screen space
+	 * @param camX the x coordinate of the camera in dungeon space
+	 * @return the x coordinate in dungeon space
+	 */
+	public static float screenToDungeonXCam(float x, float camX)
+	{
+		return screenToDungeonX(x) + camX - CURRENT_SCREEN_WIDTH.get() / 2 / TILE_SCALE;
+	}
+	
+	/**
+	 * Converts screen coordinates to dungeon coordinates, taking into account the camera position.
+	 * @param y the y coordinate in screen space
+	 * @param camX the y coordinate of the camera in dungeon space
+	 * @return the y coordinate in dungeon space
+	 */
+	public static float screenToDungeonYCam(float y, float camY)
+	{
+		return screenToDungeonY(y) + camY - CURRENT_SCREEN_HEIGHT.get() / 2 / TILE_SCALE;
 	}
 }

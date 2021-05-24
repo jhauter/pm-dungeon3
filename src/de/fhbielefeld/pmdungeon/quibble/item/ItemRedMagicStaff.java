@@ -3,9 +3,8 @@ package de.fhbielefeld.pmdungeon.quibble.item;
 import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
-import de.fhbielefeld.pmdungeon.quibble.entity.range_combat.Projectile;
-import de.fhbielefeld.pmdungeon.quibble.entity.range_combat.ProjectileTypes;
-import de.fhbielefeld.pmdungeon.quibble.entity.range_combat.SpellFireBall;
+import de.fhbielefeld.pmdungeon.quibble.entity.projectile.Projectile;
+import de.fhbielefeld.pmdungeon.quibble.entity.projectile.SpellFireBall;
 
 public class ItemRedMagicStaff extends ItemWeaponMagic {
 	
@@ -27,17 +26,20 @@ public class ItemRedMagicStaff extends ItemWeaponMagic {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public CreatureStats getItemStats() {
+	public CreatureStats getAttackStats() {
 		CreatureStats stats = new CreatureStats();
-		stats.setStat(CreatureStatsAttribs.DAMAGE_MAGIC, 5);
+		stats.setStat(CreatureStatsAttribs.DAMAGE_MAGIC, 4);
 		return stats;
 	}
 
 	@Override
 	public Projectile spawnProjectile(Creature user) {
-		Projectile fireBall = new SpellFireBall(ProjectileTypes.SPELL_FIRE_BALL.name(), user.getPosition(), user);
-		fireBall.setVelocityX(1);
-		return fireBall;
+		return new SpellFireBall(this.getDisplayName() + " Projectile", user.getX(), user.getY(), user.getCurrentStats().addCopy(getAttackStats()), user);
 	}
 
+	@Override
+	public float getProjectileSpeed()
+	{
+		return 0.3F;
+	}
 }

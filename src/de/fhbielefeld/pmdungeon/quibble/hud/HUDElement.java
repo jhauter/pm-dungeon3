@@ -12,6 +12,8 @@ public abstract class HUDElement
 	private int x, y;
 	protected int width, height;
 	
+	protected float alpha = 1.0F;
+	
 	public HUDElement(int x, int y)
 	{
 		this.x = x;
