@@ -38,10 +38,9 @@ import de.fhbielefeld.pmdungeon.quibble.hud.HealthDisplayHUD;
 import de.fhbielefeld.pmdungeon.quibble.hud.InventoryHUDSwitchListener;
 import de.fhbielefeld.pmdungeon.quibble.hud.InventoryItemHUD;
 import de.fhbielefeld.pmdungeon.quibble.hud.QuestHUD;
-import de.fhbielefeld.pmdungeon.quibble.input.DungeonInput;
 import de.fhbielefeld.pmdungeon.quibble.input.DungeonInputHandler;
 import de.fhbielefeld.pmdungeon.quibble.input.InputHandler;
-import de.fhbielefeld.pmdungeon.quibble.input.InputListener;
+import de.fhbielefeld.pmdungeon.quibble.input.strategy.InputStrategyCloseChest;
 import de.fhbielefeld.pmdungeon.quibble.inventory.BagInventoryItem;
 import de.fhbielefeld.pmdungeon.quibble.inventory.Inventory;
 import de.fhbielefeld.pmdungeon.quibble.item.Item;
@@ -55,7 +54,7 @@ import de.fhbielefeld.pmdungeon.vorgaben.game.Controller.MainController;
 import de.fhbielefeld.pmdungeon.vorgaben.interfaces.IEntity;
 import de.fhbielefeld.pmdungeon.vorgaben.tools.Point;
 
-public class DungeonStart extends MainController implements EntityEventHandler, InputListener
+public class DungeonStart extends MainController implements EntityEventHandler
 {
 	public static void main(String[] args)
 	{
@@ -129,6 +128,9 @@ public class DungeonStart extends MainController implements EntityEventHandler, 
 	protected void setup()
 	{
 		super.setup();
+		//HudManager have to be made before the Player
+		// cause InputStrategy would got a null HUDManager
+		this.hudManager = new HUDManager();
 		this.myHero = new Mage();
 		this.myHero.getEquippedItems().addItem(Item.SWORD_BLUE);
 		this.myHero.addEntityEventHandler(this);
@@ -139,10 +141,9 @@ public class DungeonStart extends MainController implements EntityEventHandler, 
 		this.expBarHUD = new ExpBarHUD(this.myHero, 16, 432);
 		this.healthHUD = new HealthDisplayHUD(this.myHero, 16, 368);
 		this.inputHandler.addInputListener(myHero);
-		this.inputHandler.addInputListener(this);
-		this.hudManager = new HUDManager();
-		this.hudManager.addElement(this.expBarHUD);
-		this.hudManager.addElement(this.healthHUD);
+		
+		this.getHudManager().addElement(this.expBarHUD);
+		this.getHudManager().addElement(this.healthHUD);
 		this.lastFrameTimeStamp = System.currentTimeMillis();
 		Gdx.app.getGraphics().setResizable(false);
 		
@@ -151,7 +152,7 @@ public class DungeonStart extends MainController implements EntityEventHandler, 
 		
 		this.questHUD = new QuestHUD(400, 400, this.textHUD);
 		this.questHUD.setQuests(this.myHero.getQuestList());
-		this.hudManager.addElement(questHUD);
+		this.getHudManager().addElement(questHUD);
 		
 		LoggingHandler.logger.log(Level.INFO, "Setup done.");
 	}
@@ -172,7 +173,7 @@ public class DungeonStart extends MainController implements EntityEventHandler, 
 			final Point pos = this.currentLevel.getDungeon().getRandomPointInDungeon();
 			final Creature toSpawn = this.currentLevel.getRNG().nextInt(2) == 0 ? new Lizard() : new Lizard();
 			toSpawn.setPosition(pos);
-			this.currentLevel.spawnEntity(toSpawn);
+//			this.currentLevel.spawnEntity(toSpawn);
 		}
 		
 		/**************************/
@@ -293,7 +294,7 @@ public class DungeonStart extends MainController implements EntityEventHandler, 
 		
 		this.currentLevel.getParticleSystem().draw(this.camera.position.x, this.camera.position.y);
 		
-		this.hudManager.update(); //Draw HUD last
+		this.getHudManager().update(); //Draw HUD last
 	}
 	
 	private void drawCreatureStatusEffects(Batch b, Creature c, float x, float y)
@@ -362,9 +363,10 @@ public class DungeonStart extends MainController implements EntityEventHandler, 
 	
 	public void showInventory(String id, Inventory<Item> inv, String name, int x, int y)
 	{
-		this.closeInventory(id);
+		
+		new InputStrategyCloseChest(myHero);
 		HUDGroup g = this.generateInventoryHUD(inv, x, y - 60);
-		this.hudManager.addGroup(g);
+		this.getHudManager().addGroup(g);
 		this.shownHUDGroups.put(id, g);
 		
 		Label label = this.shownLabels.get(id);
@@ -379,26 +381,11 @@ public class DungeonStart extends MainController implements EntityEventHandler, 
 		}
 	}
 	
-	public void closeInventory(String id)
-	{
-		HUDGroup g = this.shownHUDGroups.get(id);
-		if(g != null)
-		{
-			this.hudManager.removeGroup(g);
-			this.hudManager.setElementOnMouse(null);
-		}
-		Label label = this.shownLabels.get(id);
-		if(label != null)
-		{
-			label.setText("");
-		}
-	}
-	
 	@SuppressWarnings("unchecked")
 	private HUDGroup generateInventoryHUD(Inventory<Item> inv, int x, int y)
 	{
 		HUDGroup g = new HUDGroup();
-		this.hudManager.setElementOnMouse(null);
+		this.getHudManager().setElementOnMouse(null);
 		int nextItemX = x;
 		InventoryItemHUD currentHUDElement;
 		for(int i = 0; i < inv.getCapacity(); ++i)
@@ -434,9 +421,9 @@ public class DungeonStart extends MainController implements EntityEventHandler, 
 	public void setMarkedEquipSlot(int slot)
 	{
 		HUDElement e;
-		for(int i = 0; i < this.hudManager.getNumElements(); ++i)
+		for(int i = 0; i < this.getHudManager().getNumElements(); ++i)
 		{
-			e = this.hudManager.getElement(i);
+			e = this.getHudManager().getElement(i);
 			if(e instanceof InventoryItemHUD)
 			{
 				final InventoryItemHUD invSlot = (InventoryItemHUD)e;
@@ -456,22 +443,25 @@ public class DungeonStart extends MainController implements EntityEventHandler, 
 		this.currentlyMarkedEquipSlot = slot;
 	}
 	
-	@Override
-	public void onInputRecieved(DungeonInput key)
-	{
-		if(key == DungeonInput.CLOSE)
-		{
-			this.closeInventory(INV_NAME_CHEST);
-		}
-	}
-	
 	public float getCamPosX()
 	{
 		return this.camera.position.x;
 	}
-	
+
 	public float getCamPosY()
 	{
 		return this.camera.position.y;
+	}
+
+	public HUDManager getHudManager() {
+		return hudManager;
+	}
+	
+	public Label getChestLabel() {
+		return this.shownLabels.get(INV_NAME_CHEST);
+	}
+	
+	public HUDGroup getChestHud() {
+		return this.shownHUDGroups.get(INV_NAME_CHEST);
 	}
 }
