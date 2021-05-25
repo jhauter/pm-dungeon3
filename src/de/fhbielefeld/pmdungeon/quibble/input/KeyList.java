@@ -26,6 +26,20 @@ import com.badlogic.gdx.Input.Keys;
  *                     Inventory Slots and supposed to select an Item
  */
 public class KeyList {
+	
+	public static final String OPEN_CHEST = "OpenChest";
+	public static final String USE_ITEM = "UseItem";
+	public static final String PICK_UP_DROP = "PickUpDrop";
+	public static final String CLOSE_CHEST_INV = "CloseChestInv";
+
+	public static final String[] SELECT_ITEM = new String[9];
+	{
+	  for(int i = 0; i < SELECT_ITEM.length; ++i)
+	  {
+	    SELECT_ITEM[i] = "select_" + i;
+	  }
+	}
+	
 
 	private ArrayList<Key> keyList;
 
@@ -90,7 +104,7 @@ public class KeyList {
 	 *         be used
 	 */
 	KeyMouseButton useItem() {
-		return new KeyMouseButton("use item", Buttons.LEFT);
+		return new KeyMouseButton(USE_ITEM, Buttons.LEFT);
 	}
 
 	/**
@@ -98,7 +112,7 @@ public class KeyList {
 	 * @return a KeyJustPressed which is supposed to open a Chest
 	 */
 	KeyJustPressed openChest() {
-		return new KeyJustPressed("open chest", Keys.E);
+		return new KeyJustPressed(OPEN_CHEST, Keys.E);
 	}
 
 	/**
@@ -106,7 +120,7 @@ public class KeyList {
 	 * @return a KeyJustPressed which is supposed to pick up a drop from Ground
 	 */
 	KeyJustPressed pickUpDrop() {
-		return new KeyJustPressed("pick up drop", Keys.SPACE);
+		return new KeyJustPressed(PICK_UP_DROP, Keys.SPACE);
 	}
 
 	/**
@@ -114,7 +128,7 @@ public class KeyList {
 	 * @return a KeyJustPressed which is supposed to close a Chest Inventory HUD
 	 */
 	KeyJustPressed closeChestInv() {
-		return new KeyJustPressed("close chest", Keys.SPACE);
+		return new KeyJustPressed(CLOSE_CHEST_INV, Keys.SPACE);
 	}
 
 	/**
@@ -124,7 +138,7 @@ public class KeyList {
 	public ArrayList<KeyJustPressed> items() {
 		ArrayList<KeyJustPressed> keys = new ArrayList<>();
 		for (int i = 0; i < 9; i++) {
-			KeyJustPressed k = new KeyJustPressed("choose " + i, 7 + i);
+			KeyJustPressed k = new KeyJustPressed(SELECT_ITEM[i], 7 + i);
 			keys.add(k);
 		}
 		return keys;

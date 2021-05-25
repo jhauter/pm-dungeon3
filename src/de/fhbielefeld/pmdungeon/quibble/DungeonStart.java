@@ -173,7 +173,7 @@ public class DungeonStart extends MainController implements EntityEventHandler
 			final Point pos = this.currentLevel.getDungeon().getRandomPointInDungeon();
 			final Creature toSpawn = this.currentLevel.getRNG().nextInt(2) == 0 ? new Lizard() : new Lizard();
 			toSpawn.setPosition(pos);
-//			this.currentLevel.spawnEntity(toSpawn);
+			this.currentLevel.spawnEntity(toSpawn);
 		}
 		
 		/**************************/

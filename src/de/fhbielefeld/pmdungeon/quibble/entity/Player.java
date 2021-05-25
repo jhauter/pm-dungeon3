@@ -10,6 +10,7 @@ import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.PlayerQuestsChangedEvent;
 import de.fhbielefeld.pmdungeon.quibble.input.InputListener;
 import de.fhbielefeld.pmdungeon.quibble.input.Key;
+import de.fhbielefeld.pmdungeon.quibble.input.KeyList;
 import de.fhbielefeld.pmdungeon.quibble.input.KeyMovement;
 import de.fhbielefeld.pmdungeon.quibble.input.strategy.InputStrategy;
 import de.fhbielefeld.pmdungeon.quibble.input.strategy.InputStrategyCloseChest;
@@ -65,8 +66,7 @@ public abstract class Player extends Creature implements InputListener
 	}
 	
 	@Override
-	public void onEvent(Key key) {
-		if(inputMap.get(key.getEvent()) != null) 
+	public void onEvent(Key key) {	
 			inputMap.get(key.getEvent()).handle();
 		}
 	
@@ -185,17 +185,17 @@ public abstract class Player extends Creature implements InputListener
 	private HashMap<String, InputStrategy> fillInputMap(){
 		HashMap<String, InputStrategy> map = new HashMap<>();
 		
-		map.put("pick up drop", new InputStrategyPickUpDrops(this));
+		map.put(KeyList.PICK_UP_DROP, new InputStrategyPickUpDrops(this));
 		
-		map.put("open chest", new InputStrategyOpenChest(this));
+		map.put(KeyList.OPEN_CHEST, new InputStrategyOpenChest(this));
 		
-		map.put("close chest", new InputStrategyCloseChest(this));
+		map.put(KeyList.CLOSE_CHEST_INV, new InputStrategyCloseChest(this));
 		
-		map.put("use item", new InputStrategyUseItem(this));
+		map.put(KeyList.USE_ITEM, new InputStrategyUseItem(this));
 		
 		//Will create so a List in the range of Inventory Slots
-		for (int i = 0; i < this.getInventorySlots(); i++) {
-			map.put("choose " + i, new InputStrategySelectItem(this, i)) ;
+		for (int i = 0; i < 9; i++) {
+			map.put(KeyList.SELECT_ITEM[i], new InputStrategySelectItem(this, i)) ;
 		}
 		return map;
 	}

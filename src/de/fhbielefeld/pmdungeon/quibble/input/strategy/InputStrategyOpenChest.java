@@ -18,7 +18,6 @@ public class InputStrategyOpenChest extends InputStrategy {
 	 */
 	public InputStrategyOpenChest(Player player) {
 		super(player);
-		handle();
 	}
 
 	@Override

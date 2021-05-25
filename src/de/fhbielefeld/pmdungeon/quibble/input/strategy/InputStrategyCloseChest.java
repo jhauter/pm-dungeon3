@@ -14,7 +14,6 @@ public class InputStrategyCloseChest extends InputStrategy{
 	 */
 	public InputStrategyCloseChest(Player player) {
 		super(player);
-		handle();
 	}
 
 	@Override

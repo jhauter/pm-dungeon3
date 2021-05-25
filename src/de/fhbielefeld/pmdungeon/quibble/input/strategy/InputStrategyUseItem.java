@@ -11,7 +11,6 @@ public class InputStrategyUseItem extends InputStrategy {
 	 */
 	public InputStrategyUseItem(Player player) {
 		super(player);
-		handle();
 	}
 
 	@Override

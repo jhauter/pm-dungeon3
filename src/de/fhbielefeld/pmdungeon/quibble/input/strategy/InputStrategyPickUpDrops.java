@@ -16,7 +16,6 @@ public class InputStrategyPickUpDrops extends InputStrategy{
 	 */
 	public InputStrategyPickUpDrops(Player player) {
 		super(player);
-		handle();
 	}
 
 	@Override

@@ -18,7 +18,6 @@ public class InputStrategySelectItem extends InputStrategy{
 	public InputStrategySelectItem(Player player, int index) {
 		super(player);
 		this.index = index;
-		handle();
 	}
 	
 	@Override
