@@ -10,20 +10,18 @@ import com.badlogic.gdx.Input.Keys;
  * game <br>
  * Provides a default Configuration and could be changed if wanted
  * 
- * Each Key could be Could be overwritten
- * 
- * @param up           <code>KeyMovement</code> to walk up
- * @param right        <code>KeyMovement</code> to walk right
- * @param down         <code>KeyMovement</code> to walk down
- * @param left         <code>KeyMovement</code> to walk left
- *                     <p>
- * @param useItem      <code>KeyMouseButton</code> to use a selected Item
- *                     <p>
- * @param openChest    <code>Key</code> to open a Chest
- * @param closeCestInv <code>Key</code> to close a Chest
- * @param pickupDrop   <code>Key</code> to pickup drops from the ground
- * @param items        <code>Key's in an ArrayList</code> which represents the
- *                     Inventory Slots and supposed to select an Item
+ * <blockquote>
+ * <li>up <code>KeyMovement</code> to walk up
+ * <li>right <code>KeyMovement</code> to walk right
+ * <li>down <code>KeyMovement</code> to walk down
+ * <li>left <code>KeyMovement</code> to walk left </blockquote> <blockquote>
+ * <li>useItem <code>KeyMouseButton</code> to use a selected Item </blockquote>
+ * <blockquote>
+ * <li>openChest <code>KeyJustPressed</code> to open a Chest
+ * <li>closeCestInv <code>KeyJustPressed</code> to close a Chest
+ * <li>pickupDrop <code>KeyJustPressed</code> to pickup drops from the ground
+ * <li>items <code>Key's JustPressed in an ArrayList</code> which represents the
+ * Inventory Slots and supposed to select an Item </blockquote>
  */
 public class KeyList {
 	
