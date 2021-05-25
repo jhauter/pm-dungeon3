@@ -1,10 +1,17 @@
 package de.fhbielefeld.pmdungeon.quibble.input;
 
-@FunctionalInterface
-public interface InputListener
-{
+public interface InputListener {
 	/**
-	 * @param key the button that was pressed by the player.
+	 * Should be a KeyBoard Key
+	 * 
+	 * @param key the button that was pressed by the player. KeyMoveMent carries a
+	 *            own Vector which is necessary to calculate the movement
 	 */
-	public void onInputRecieved(DungeonInput key);
+	public void onMovement(KeyMovement key);
+
+	/**
+	 * 
+	 * @param key that was pressed, contains a String to identify the certain event
+	 */
+	public void onEvent(Key key);
 }

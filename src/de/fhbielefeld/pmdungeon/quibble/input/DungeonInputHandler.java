@@ -9,6 +9,8 @@ public class DungeonInputHandler implements InputHandler {
 
 	private ArrayList<InputListener> listener = new ArrayList<>();
 
+	private KeyList defaultKeyList = new KeyList();
+
 	@Override
 	public void addInputListener(InputListener listener) {
 		if (this.listener.contains(listener)) {
@@ -25,18 +27,29 @@ public class DungeonInputHandler implements InputHandler {
 	}
 
 	@Override
-	public void notifyListeners(DungeonInput key) {
-		listener.forEach(l -> l.onInputRecieved(key));
+	public void notifyMovement(Key key) {
+		listener.forEach(l -> l.onMovement((KeyMovement) key));
+	}
+
+	@Override
+	public void notifyEvent(Key key) {
+		listener.forEach(l -> l.onEvent(key));
 	}
 
 	@Override
 	public void updateHandler() {
-		DungeonInput[] inputs = DungeonInput.values();
-		for (DungeonInput i : inputs) {
-			if (i.isPressed()) {
-				notifyListeners(i);
-			}
-		}
+		for (int i = 0; i < defaultKeyList.getKeyList().size(); i++) {
 
+			// if the button is pressed and is a move Button
+			// KeyMovement has Vector units thats needed for movement Calculation
+			if (defaultKeyList.getKeyList().get(i).isPressed() && defaultKeyList.getKeyList().get(i).isMovementKey())
+				notifyMovement(defaultKeyList.getKeyList().get(i));
+
+			// if the button is pressed and a Simple Button which supposed to have a String
+			// which is
+			// Recognized as an event
+			if (defaultKeyList.getKeyList().get(i).isPressed() && !defaultKeyList.getKeyList().get(i).isMovementKey())
+				notifyEvent(defaultKeyList.getKeyList().get(i));
+		}
 	}
 }
