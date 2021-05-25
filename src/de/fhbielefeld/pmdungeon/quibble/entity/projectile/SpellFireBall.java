@@ -23,6 +23,12 @@ public class SpellFireBall extends ProjectileMagic{
 	{
 		super(name, x, y, stats, owner);
 	}
+	
+	@Override
+	public void onProjectileImpactCreature(Creature hitCreature) {
+		super.onProjectileImpactCreature(hitCreature);
+		
+	}
 
 	@Override
 	public int getTicksLasting()
