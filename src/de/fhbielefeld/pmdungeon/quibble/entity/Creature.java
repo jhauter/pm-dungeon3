@@ -13,6 +13,7 @@ import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsEventListener;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.DamageSource;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.DamageType;
+import de.fhbielefeld.pmdungeon.quibble.entity.battle.SimpleDamageSource;
 import de.fhbielefeld.pmdungeon.quibble.entity.effect.StatusEffect;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.CreatureDamageEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.CreatureExpEvent;
@@ -135,7 +136,7 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	
 	private final CreatureStats currentStats;
 	
-	private int expLevel;
+	private int totalExp;
 	
 	private int invulnerableTicks;
 	
@@ -155,6 +156,8 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	
 	private Inventory<Item> equippedItems;
 	
+	private int selectedEquipSlot;
+	
 	private List<StatusEffect> statusEffects;
 	
 	/**
@@ -169,7 +172,7 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		this.lookingDirection = LookingDirection.RIGHT;
 		
 		//=====Stats=====
-		this.baseStats = this.getBaseStatsForLevel(this.expLevel);
+		this.baseStats = this.getBaseStatsForLevel(this.totalExp);
 		this.statsFromEquipped = new CreatureStats();
 		this.maxStats = new CreatureStats(this.baseStats);
 		this.currentStats = new CreatureStats(this.maxStats);
@@ -494,7 +497,7 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	 */
 	public CreatureStats calculateMaxStats()
 	{
-		this.baseStats.setStats(this.getBaseStatsForLevel(this.expLevelFunction(this.expLevel)));
+		this.baseStats.setStats(this.getBaseStatsForLevel(this.expLevelFunction(this.totalExp)));
 		CreatureStats equippedItemsStats = this.baseStats.addCopy(this.statsFromEquipped);
 		this.applyStatsFromStatusEffects(equippedItemsStats);
 		return equippedItemsStats;
@@ -605,13 +608,29 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	 * Causes damage to this creature. The damage value is altered according to the stats of the creature.
 	 * The creature is knocked back according to its stats and the stats of the damage source.
 	 * Creatures that take damage are invincible for a short amount of time.
-	 * @param damage the raw damage to inflict
-	 * @param damageType the damage type which determines how damage is calculated according to stats
+	 * Particles may be spawned indicating the outcome of this method.<br>
+	 * The <code>damageSource</code> parameter affects the main damage calculation:
+	 * <blockquote>
+	 * <li>raw damage
+	 * <li>critical strike chance
+	 * <li>miss chance
+	 * <li>knockback strength
+	 * <li>knockback direction (origin is <code>DamageSource.getX()</code> and <code>DamageSource.getY()</code>)
+	 * </blockquote>
+	 * <code>damageSource</code> usually contains the creature's stats plus
+	 * the attack stats of the item used to attack when performing a melee attack.<br>
+	 * When using projectiles, the projectile calls this damage method instead of the attacking creature.
+	 * In this case the projectile usually copies the creature's stats plus the stats of the item used to
+	 * spawn the projectile.<br>
+	 * On impact the projectile creates a <code>DamageSource</code> with the copied stats
+	 * and with its own x and y values und uses the owner of the projectile as <code>cause</code>.
 	 * @param damageSource the damage source (ex.: the entity that deals the damage)
+	 * @param damageType the damage type which determines how damage is calculated according to stats
+	 * @param cause the creature that calls this method. The "cause" is rewarded exp when the target is killed.
 	 * @param ignoreInvincibleTicks whether the entity should take damage even though
 	 * it is actually invincible due to it being hit recently
 	 */
-	public void damage(double damage, DamageType damageType, DamageSource damageSource, boolean ignoreInvincibleTicks)
+	public void damage(DamageSource damageSource, DamageType damageType, Creature cause, boolean ignoreInvincibleTicks)
 	{
 		if(!ignoreInvincibleTicks && this.isInvulnerable())
 		{
@@ -623,6 +642,13 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 			return;
 		}
 		
+		if(this.level.getRNG().nextFloat() <= damageSource.getCurrentStats().getStat(CreatureStatsAttribs.MISS_CHANCE))
+		{
+			this.level.getParticleSystem().addParticle(new ParticleFightText(Type.MISS, this.getX(), this.getY() + 0.5F, null),
+				new Splash());
+			return;
+		}
+		
 		//====================CALCULATE====================
 		//-----Knockback-----
 		Vector2 knockbackDirection = new Vector2(this.getX() - damageSource.getX(), this.getY() - damageSource.getY());
@@ -630,9 +656,31 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		knockbackDirection.scl(1.0F - (float)this.getCurrentStats().getStat(CreatureStatsAttribs.KNOCKBACK_RES));
 		
 		//-----Damage-----
+		double damage = damageSource.getCurrentStats().getStat(damageType.getSourceDamageStat());
+		if(this.level.getRNG().nextFloat() <= damageSource.getCurrentStats().getStat(CreatureStatsAttribs.CRIT_CHANCE))
+		{
+			//Crit
+			damage *= 2.0D;
+		}
 		double actualDamage = damageType.getDamageAgainst(damage, this.getCurrentStats());
 		
 		//-----Event-----
+		
+		if(cause != null)
+		{
+			CreatureHitTargetEvent eventHTP = (CreatureHitTargetEvent)this
+				.fireEvent(new CreatureHitTargetEvent(EVENT_ID_HIT_TARGET, cause, this, damageType, actualDamage));
+			
+			if(eventHTP.isCancelled())
+			{
+				//Don't proceed if event is cancelled
+				return;
+			}
+			
+			actualDamage = eventHTP.getDamage();
+			damageType = eventHTP.getDamageType();
+		}
+		
 		CreatureDamageEvent event = (CreatureDamageEvent)this.fireEvent(
 			new CreatureDamageEvent(EVENT_ID_TAKE_DAMAGE, this,
 				damageSource, damageType, damage, actualDamage, knockbackDirection.x, knockbackDirection.y));
@@ -658,6 +706,19 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 			this.animationHandler.playAnimation(this.lookingDirection == LookingDirection.LEFT ? ANIM_NAME_HIT_L : ANIM_NAME_HIT_R, ANIM_PRIO_HIT, false);
 		}
 		
+		//====================AFTERMATH====================
+		
+		if(cause != null)
+		{
+			this.fireEvent(new CreatureHitTargetPostEvent(EVENT_ID_HIT_TARGET_POST, cause, this, damageType, damage));
+			//Canceling target post event has no effect
+		}
+		
+		if(cause != null && this.isDead)
+		{
+			cause.rewardExp(this.getExpDrop());
+		}
+		
 		//Death is handled in onStatValueChange()
 	}
 	
@@ -675,6 +736,7 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	/**
 	 * Makes this creature hit another creature.
 	 * The damage, knockback, miss chance and other factors are all determined by this creature's stats.
+	 * The actual damage is calculated in {@link #damage(DamageSource, DamageType, Creature, boolean)}.
 	 * If the target is out of reach then the hit will not succeed.
 	 * @param target the target creature to hit
 	 * @param damageType the type of damage to use (usually physical damage)
@@ -692,39 +754,17 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 			return;
 		}
 		
-		if(this.level.getRNG().nextFloat() <= this.getCurrentStats().getStat(CreatureStatsAttribs.MISS_CHANCE))
+		InventoryItem<Item> selectedItem = this.getEquippedItems().getItem(this.getSelectedEquipSlot());
+		
+		CreatureStats attackStats = this.getCurrentStats();
+		if(selectedItem != null)
 		{
-			this.level.getParticleSystem().addParticle(new ParticleFightText(Type.MISS, target.getX(), target.getY() + 0.5F, null),
-				new Splash());
-			return;
+			attackStats.addStats(selectedItem.getItemType().getAttackStats());
 		}
 		
-		double damage = this.getCurrentStats().getStat(damageType.getSourceDamageStat());
+		DamageSource attackDamageSrc = new SimpleDamageSource(this.getX(), this.getY(), attackStats);
 		
-		if(this.level.getRNG().nextFloat() <= this.getCurrentStats().getStat(CreatureStatsAttribs.CRIT_CHANCE))
-		{
-			//Crit
-			damage *= 2.0D;
-		}
-		
-		CreatureHitTargetEvent event = (CreatureHitTargetEvent)this
-			.fireEvent(new CreatureHitTargetEvent(EVENT_ID_HIT_TARGET, this, target, damageType, damage));
-		
-		if(event.isCancelled())
-		{
-			//Don't proceed is event is cancelled
-			return;
-		}
-		
-		target.damage(event.getDamage(), event.getDamageType(), this, false);
-		
-		this.fireEvent(new CreatureHitTargetPostEvent(EVENT_ID_HIT_TARGET_POST, this, target, damageType, damage));
-		//Canceling target post event has no effect
-		
-		if(target.isDead)
-		{
-			this.rewardExp(target.getExpDrop());
-		}
+		target.damage(attackDamageSrc, damageType, this, false);
 	}
 	
 	/**
@@ -847,7 +887,6 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	/**
 	 * Makes the creature walk along the specified path.
 	 * This method needs to be called every frame until the end of the path is reached.
-	 * Make sure to pass only the same reference to this method until the end of the patch is reached.
 	 * If this method detects a different path reference then it will start to follow the new path reference
 	 * from the beginning.<br><br>
 	 * The method indicates that the end of the path has been reached by returning <code>true</code>.
@@ -860,12 +899,24 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	{
 		int currentX = (int)this.getX();
 		int currentY = (int)this.getY();
+		if(path.getCount() == 0)
+		{
+			return true;
+		}
 		if(this.currentPath != path)
 		{
 			this.currentPath = path;
-			this.currentPathIndex = 0;
+			Tile t0 = path.get(0);
+			if(t0.getX() == currentX && t0.getY() == currentY && path.getCount() > 1)
+			{
+				this.currentPathIndex = 1;
+			}
+			else
+			{
+				this.currentPathIndex = 0;
+			}
 		}
-		else if(this.currentPathIndex < this.currentPath.getCount() - 1)
+		if(this.currentPathIndex < this.currentPath.getCount() - 1)
 		{
 			Tile pathTileTarget = this.currentPath.get(this.currentPathIndex);
 			if(currentX == pathTileTarget.getX() && currentY == pathTileTarget.getY())
@@ -998,6 +1049,10 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	 */
 	public void useEquippedItem(int slot)
 	{
+		if(this.isDead)
+		{
+			return;
+		}
 		InventoryItem<Item> item = this.equippedItems.getItem(slot);
 		if(item == null)
 		{
@@ -1009,6 +1064,28 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		{
 			this.equippedItems.removeItem(slot);
 		}
+	}
+	
+	/**
+	 * Sets the equipment slot that this creature has currently selected.
+	 * The item in the selected equipment slot determines how much damage will be dealt
+	 * when the creature attacks.
+	 * @param slot the slot index to be selected
+	 */
+	public void setSelectedEquipSlot(int slot)
+	{
+		this.selectedEquipSlot = slot;
+	}
+	
+	/**
+	 * Returns the equipment slot that this creature has currently selected.
+	 * The item in the selected equipment slot determines how much damage will be dealt
+	 * when the creature attacks.
+	 * @return the equipment slot index that this creature has currently selected
+	 */
+	public int getSelectedEquipSlot()
+	{
+		return this.selectedEquipSlot;
 	}
 	
 	/**
@@ -1026,6 +1103,23 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		}
 		this.statusEffects.add(effect);
 		effect.setRemainingTicks(durationTicks);
+	}
+	
+	/**
+	 * @return the amount of status effects this creature currently has
+	 */
+	public final int getNumStatusEffects()
+	{
+		return this.statusEffects.size();
+	}
+	
+	/**
+	 * @param index index of the status effects in the status effects list
+	 * @return the creature's status effect at the specified index
+	 */
+	public StatusEffect getStatusEffect(int index)
+	{
+		return this.statusEffects.get(index);
 	}
 	
 	/**
@@ -1059,26 +1153,26 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	
 	public void setTotalExp(int exp)
 	{
-		CreatureExpEvent event = (CreatureExpEvent)this.fireEvent(new CreatureExpEvent(EVENT_ID_EXP_CHANGE, this, this.expLevel, exp));
+		CreatureExpEvent event = (CreatureExpEvent)this.fireEvent(new CreatureExpEvent(EVENT_ID_EXP_CHANGE, this, this.totalExp, exp));
 		if(!event.isCancelled())
 		{
-			this.expLevel = event.getNewTotalExp();
+			this.totalExp = event.getNewTotalExp();
 			this.updateMaxStats();
 		}
 	}
 	
 	public int getTotalExp()
 	{
-		return this.expLevel;
+		return this.totalExp;
 	}
 	
 	public void rewardExp(int exp)
 	{
-		this.setTotalExp(this.expLevel + exp);
+		this.setTotalExp(this.totalExp + exp);
 	}
 	
 	public int getCurrentExpLevel()
 	{
-		return this.expLevelFunction(this.expLevel);
+		return this.expLevelFunction(this.totalExp);
 	}
 }

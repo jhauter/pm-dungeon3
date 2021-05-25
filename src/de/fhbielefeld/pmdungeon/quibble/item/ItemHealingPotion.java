@@ -1,7 +1,6 @@
 package de.fhbielefeld.pmdungeon.quibble.item;
 
 import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
-import de.fhbielefeld.pmdungeon.quibble.item.visitor.ItemVisitor;
 
 public class ItemHealingPotion extends ItemPotion
 {
@@ -26,11 +25,5 @@ public class ItemHealingPotion extends ItemPotion
 	public void onUse(Creature user)
 	{
 		user.heal(this.healAmount);
-	}
-
-	@Override
-	public void accept(ItemVisitor visitor)
-	{
-		visitor.visit(this);
 	}
 }

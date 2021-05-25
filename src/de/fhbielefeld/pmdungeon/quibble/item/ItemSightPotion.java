@@ -4,7 +4,6 @@ import java.util.List;
 
 import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
 import de.fhbielefeld.pmdungeon.quibble.entity.Entity;
-import de.fhbielefeld.pmdungeon.quibble.item.visitor.ItemVisitor;
 import de.fhbielefeld.pmdungeon.quibble.trap.Trap;
 
 public class ItemSightPotion extends ItemPotion
@@ -37,13 +36,5 @@ public class ItemSightPotion extends ItemPotion
 				((Trap)entity).setVisible(true, this.timeOfSight);;
 			}
 		}
-	}
-	
-	
-
-	@Override
-	public void accept(ItemVisitor visitor)
-	{
-		visitor.visit(this);
 	}
 }

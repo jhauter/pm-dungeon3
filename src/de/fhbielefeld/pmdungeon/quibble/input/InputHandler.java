@@ -17,10 +17,16 @@ public interface InputHandler
 	public void removeInputListener(InputListener listener);
 	
 	/**
-	 * Notifies all listeners about an input event. This should only be called internally.
+	 * Notifies all listeners about an movement InputKey. This should only be called internally.
 	 * @param input the input that was done by the player.
 	 */
-	public void notifyListeners(DungeonInput input);
+	public void notifyMovement(Key input);
+	
+	/**
+	 * Notifies all listeners about an event InputKey. This should only be called internally.
+	 * @param input the input that was done by the player.
+	 */
+	public void notifyEvent(Key input);
 	
 	/*
 	 * Called once per frame and retrieves the state of registered buttons and fires events accordingly.

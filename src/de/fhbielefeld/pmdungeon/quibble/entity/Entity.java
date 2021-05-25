@@ -3,7 +3,7 @@ package de.fhbielefeld.pmdungeon.quibble.entity;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 
 import de.fhbielefeld.pmdungeon.quibble.DungeonLevel;
@@ -12,6 +12,7 @@ import de.fhbielefeld.pmdungeon.quibble.animation.AnimationHandlerImpl;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEventHandler;
 import de.fhbielefeld.pmdungeon.quibble.particle.ParticleSource;
+import de.fhbielefeld.pmdungeon.quibble.util.GeometryUtil;
 import de.fhbielefeld.pmdungeon.vorgaben.graphic.Animation;
 import de.fhbielefeld.pmdungeon.vorgaben.interfaces.IAnimatable;
 import de.fhbielefeld.pmdungeon.vorgaben.interfaces.IEntity;
@@ -28,6 +29,11 @@ public abstract class Entity implements IEntity, IAnimatable, ParticleSource
 	 * Event ID for entity despawn events.
 	 */
 	public static final int EVENT_ID_DESPAWN = EntityEvent.genEventID();
+	
+	/**
+	 * Event ID for entity collision with tiles events.
+	 */
+	public static final int EVENT_ID_COLLISION_TILE = EntityEvent.genEventID();
 	
 	private long ticks;
 	
@@ -92,7 +98,14 @@ public abstract class Entity implements IEntity, IAnimatable, ParticleSource
 	 */
 	public boolean loadResources()
 	{
-		this.loadedResources = this.animationHandler.loadAnimations();
+		if(this.useAnimationHandler())
+		{
+			this.loadedResources = this.animationHandler.loadAnimations();
+		}
+		else
+		{
+			this.loadedResources = true;
+		}
 		return this.loadedResources;
 	}
 	
@@ -244,9 +257,6 @@ public abstract class Entity implements IEntity, IAnimatable, ParticleSource
 			{
 				continue;
 			}
-//			System.out.println(this.boundingBox.offset(this.getX(), this.getY()));
-//			System.out.print("Other: ");
-//			System.out.println(cOther.boundingBox.offset(cOther.getX(), cOther.getY()));
 			if(this.boundingBox.offset(this.getX(), this.getY()).intersects(cOther.boundingBox.offset(cOther.getX(), cOther.getY())))
 			{
 				//This is called on the other entity too by its own update() method
@@ -296,7 +306,10 @@ public abstract class Entity implements IEntity, IAnimatable, ParticleSource
 	{
 		/******GRAPHICS******/
 		
-		this.animationHandler.frameUpdate();
+		if(this.useAnimationHandler())
+		{
+			this.animationHandler.frameUpdate();
+		}
 		
 		if(!this.isInvisible() && this.useDefaultDrawing())
 		{
@@ -335,15 +348,21 @@ public abstract class Entity implements IEntity, IAnimatable, ParticleSource
 			//Calculate the axis independently so that it doesn't get stuck if it moves diagonally
 			Point newPosX = new Point(this.position.x + x, this.position.y);
 			Point newPosY = new Point(this.position.x, this.position.y + y);
-			if(this.level.getDungeon().isTileAccessible(newPosX))
+			boolean collsionX = !this.level.getDungeon().isTileAccessible(newPosX);
+			boolean collsionY = !this.level.getDungeon().isTileAccessible(newPosY);
+			if(!collsionX)
 			{
 				this.position.x += x;
 			}
-			if(this.level.getDungeon().isTileAccessible(newPosY))
+			if(!collsionY)
 			{
 				this.position.y += y;
 			}
-			//TODO add collision event
+			if(collsionX || collsionY)
+			{
+				this.fireEvent(new EntityEvent(EVENT_ID_COLLISION_TILE, this));
+				this.onTileCollision();
+			}
 		}
 	}
 	
@@ -405,7 +424,7 @@ public abstract class Entity implements IEntity, IAnimatable, ParticleSource
 	 */
 	protected Point getDrawingOffsetOverride()
 	{
-		return null;
+		return new Point(-0.5F, -0.5F);
 	}
 	
 	/**
@@ -457,6 +476,14 @@ public abstract class Entity implements IEntity, IAnimatable, ParticleSource
 	}
 	
 	/**
+	 * This is called when collision with tiles occurs.
+	 */
+	protected void onTileCollision()
+	{
+		
+	}
+	
+	/**
 	 * Whether this entity should not be rendered.
 	 * @return true if invisible
 	 */
@@ -466,7 +493,7 @@ public abstract class Entity implements IEntity, IAnimatable, ParticleSource
 	}
 	
 	/**
-	 * Actual deletable(). Once this returns true, the entity will despawn.
+	 * Actual deleteable(). Once this returns true, the entity will despawn.
 	 * @return whether this entity should despawn until the next frame
 	 */
 	public boolean deleteableWorkaround()
@@ -478,8 +505,10 @@ public abstract class Entity implements IEntity, IAnimatable, ParticleSource
 	 * This method can be overridden to do custom rendering on entities by using a <code>SpriteBatch</code>.
 	 * In order to disable the default rendering, {@link #useDefaultDrawing()} must be overridden.
 	 * @param batch the batch that is used for custom rendering on all entities
+	 * @param x the entity x-position in screen-coordinates after applying the camera position
+	 * @param y the entity y-position in screen-coordinates after applying the camera position
 	 */
-	public void doCustomRendering(SpriteBatch batch, float x, float y)
+	public void doCustomRendering(Batch batch, float x, float y)
 	{
 		
 	}
@@ -492,6 +521,16 @@ public abstract class Entity implements IEntity, IAnimatable, ParticleSource
 	 * @return whether the default drawing for this entity should be used
 	 */
 	public boolean useDefaultDrawing()
+	{
+		return true;
+	}
+	
+	/**
+	 * Can be overridden in order to not use the animation handler to prevent it from automatically loading
+	 * animations and throwing an exception if no animation is added.
+	 * @return whether the animation handler should be used
+	 */
+	public boolean useAnimationHandler()
 	{
 		return true;
 	}
@@ -537,5 +576,38 @@ public abstract class Entity implements IEntity, IAnimatable, ParticleSource
 	public DungeonLevel getLevel()
 	{
 		return this.level;
+	}
+	
+	/**
+	 * Checks whether there is a straight line between this entity and the specified point that
+	 * is not blocked by an inaccessible tile like a wall, i. e. whether
+	 * this entity can "see" the specified point.
+	 * @param p the point at which the line of sight will end
+	 * @return whether there is a line of sight between this entity and the specified point
+	 */
+	public boolean hasLineOfSightTo(Vector2 p)
+	{
+		int boundsMinX = Math.min((int)this.getX(), (int)p.x);
+		int boundsMinY = Math.min((int)this.getY(), (int)p.y);
+		
+		int boundsMaxX = Math.max((int)Math.ceil(this.getX()), (int)Math.ceil(p.x));
+		int boundsMaxY = Math.max((int)Math.ceil(this.getY()), (int)Math.ceil(p.y));
+		
+		for(int x = boundsMinX; x <= boundsMaxX; ++x)
+		{
+			for(int y = boundsMinY; y <= boundsMaxY; ++y)
+			{
+				if(this.level.getDungeon().getTileAt(x, y) == null || this.level.getDungeon().getTileAt(x, y).isAccessible())
+				{
+					continue;
+				}
+				
+				if(GeometryUtil.intersectLineSegmentRectangle(this.getX(), this.getY(), p.x, p.y, x, y, 1, 1))
+				{
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 }

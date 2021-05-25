@@ -87,7 +87,7 @@ public class HUDManager
 				}
 				e.onMouseClicked(this);
 			}
-			
+			batch.setColor(1.0F, 1.0F, 1.0F, e.alpha);
 			e.render(batch, e.getX(), e.getY());
 		}
 		
@@ -109,5 +109,15 @@ public class HUDManager
 			this.elementOnMouse.onDelete();
 			this.elementOnMouse = null;
 		}
+	}
+	
+	public int getNumElements()
+	{
+		return this.hudElements.size();
+	}
+	
+	public HUDElement getElement(int index)
+	{
+		return this.hudElements.get(index);
 	}
 }

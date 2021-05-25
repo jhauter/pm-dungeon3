@@ -8,6 +8,7 @@ import java.util.logging.Level;
 
 import de.fhbielefeld.pmdungeon.quibble.entity.BoundingBox;
 import de.fhbielefeld.pmdungeon.quibble.entity.Entity;
+import de.fhbielefeld.pmdungeon.quibble.entity.Player;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEvent;
 import de.fhbielefeld.pmdungeon.quibble.particle.ParticleSystem;
 import de.fhbielefeld.pmdungeon.vorgaben.dungeonCreator.DungeonWorld;
@@ -173,5 +174,20 @@ public class DungeonLevel
 			}
 		}
 		return entitiesInRadius;
+	}
+	
+	public List<Player> getPlayers()
+	{
+		List<IEntity> entityList = this.entityController.getList();
+		List<Player> players = new ArrayList<Player>();
+		for(int i = 0; i < entityList.size(); ++i)
+		{
+			if(entityList.get(i) instanceof Player)
+			{
+				players.add((Player)entityList.get(i));
+				break;
+			}
+		}
+		return players;
 	}
 }

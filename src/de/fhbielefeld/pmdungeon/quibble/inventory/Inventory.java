@@ -1,7 +1,6 @@
 package de.fhbielefeld.pmdungeon.quibble.inventory;
 
 import de.fhbielefeld.pmdungeon.quibble.item.Item;
-import de.fhbielefeld.pmdungeon.quibble.item.visitor.ItemVisitor;
 
 public interface Inventory<T extends Item>
 {
@@ -133,25 +132,5 @@ public interface Inventory<T extends Item>
 		}
 		builder.append(']');
 		return builder.toString();
-	}
-	
-	/**
-	 * Creates a textual representation of the specified inventory
-	 * @param <T> the item type the inventory contains
-	 * @param inv the inventory
-	 * @return the textual representation of the specified inventory
-	 */
-	public static <T extends Item> void inventoryVisitor(Inventory<T> inv, ItemVisitor visitor)
-	{
-		InventoryItem<T> currentItem;
-		final int size = inv.getCapacity();
-		for(int i = 0; i < size; ++i)
-		{
-			currentItem = inv.getItem(i);
-			if(currentItem != null)
-			{
-				currentItem.getItemType().accept(visitor);
-			}
-		}
 	}
 }

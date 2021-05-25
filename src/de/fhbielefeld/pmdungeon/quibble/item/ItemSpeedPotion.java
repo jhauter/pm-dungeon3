@@ -2,7 +2,6 @@ package de.fhbielefeld.pmdungeon.quibble.item;
 
 import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
 import de.fhbielefeld.pmdungeon.quibble.entity.effect.StatusEffectSpeed;
-import de.fhbielefeld.pmdungeon.quibble.item.visitor.ItemVisitor;
 
 public class ItemSpeedPotion extends ItemPotion
 {
@@ -12,7 +11,7 @@ public class ItemSpeedPotion extends ItemPotion
 	/**
 	 * Creates a healing potion item.
 	 * @param displayName user friendly display name
-	 * @param speedAmount the amount this potion should heal
+	 * @param speedAmount the amount this potion should increase speed
 	 * @param ticks the frames the speed effect should be stay on
 	 * @param texture texture that is used to render the item
 	 */
@@ -31,11 +30,5 @@ public class ItemSpeedPotion extends ItemPotion
 	
 	{
 		user.addStatusEffect(new StatusEffectSpeed(user, speedAmount), ticks);
-	}
-
-	@Override
-	public void accept(ItemVisitor visitor)
-	{
-		visitor.visit(this);
 	}
 }

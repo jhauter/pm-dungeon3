@@ -7,7 +7,6 @@ import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
 import de.fhbielefeld.pmdungeon.quibble.inventory.DefaultInventoryItem;
 import de.fhbielefeld.pmdungeon.quibble.inventory.InventoryItem;
-import de.fhbielefeld.pmdungeon.quibble.item.visitor.ItemVisitor;
 
 public abstract class Item
 {
@@ -34,11 +33,14 @@ public abstract class Item
 	
 	public static final ItemHealingPotion POTION_RED_BIG = new ItemHealingPotion("Healing Potion", 5.0D, "pot_red_big");
 	public static final ItemHealingPotion POTION_RED_SMALL = new ItemHealingPotion("Small Healing Potion", 2.0D, "pot_red_small");
-	public static final ItemSpeedPotion POTION_YELLOW_BIG = new ItemSpeedPotion("Big Speed Potion",  0.3, 300, "pot_yellow_big");
-	public static final ItemSpeedPotion POTION_YELLOW_Small = new ItemSpeedPotion("Small Speed Potion",  0.2, 200, "pot_yellow_small");
+	public static final ItemSpeedPotion POTION_YELLOW_BIG = new ItemSpeedPotion("Big Speed Potion", 0.3, 300, "pot_yellow_big");
+	public static final ItemSpeedPotion POTION_YELLOW_Small = new ItemSpeedPotion("Small Speed Potion", 0.2, 200, "pot_yellow_small");
 	public static final ItemSightPotion POTION_SIGHT_BIG = new ItemSightPotion("Big Sight Potion", 0.2D, "pot_green_big");
 	public static final ItemWeaponMelee SWORD_BLUE = new ItemSwordBlue("Blue Sword", 1.25F, 1.25F, 3.5F, 0.25F, "sword_blue");
-	public static final ItemWeaponMelee SWORD_KATANA = new ItemKatana("Katana", 0.25F, 1.25F, 3.5F, 0.25F, "katana");
+	public static final ItemWeaponMelee SWORD_KATANA = new ItemKatana("Katana", 1.25F, 1.25F, 3.5F, 0.25F, "katana");
+	public static final ItemWeaponRange RED_MAGIC_STAFF = new ItemRedMagicStaff("Red Staff", 1.0F, 1.0F, 3.5F, 0.25F, "red_magic_staff");
+	public static final ItemWeaponRange GREEN_MAGIC_STAFF = new ItemGreenMagicStaff("Green Staff", 1.0F, 1.0F, 3.5F, 0.25F, "green_magic_staff");
+	public static final ItemWeaponRange SIMPLE_BOW = new ItemWeaponSimpleBow("Simple Bow", 1.25F, 1.25F, 0.5F, "bow");
 	public static final ItemBag<Item> BAG_DEFAULT = new ItemBag<Item>("Bag", 3, "bag");
 	
 	private final String displayName;
@@ -82,6 +84,11 @@ public abstract class Item
 		return new CreatureStats();
 	}
 	
+	public CreatureStats getAttackStats()
+	{
+		return new CreatureStats();
+	}
+	
 	/**
 	 * @return user friendly display name
 	 */
@@ -98,6 +105,4 @@ public abstract class Item
 	{
 		return new DefaultInventoryItem<Item>(this);
 	}
-	
-	public abstract void accept(ItemVisitor visitor);
 }

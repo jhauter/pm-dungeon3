@@ -14,7 +14,7 @@ public class ItemKatana extends ItemWeaponMelee
 	 * {@inheritDoc}
 	 */
 	@Override
-	public CreatureStats getItemStats()
+	public CreatureStats getAttackStats()
 	{
 		CreatureStats stats = new CreatureStats();
 		stats.setStat(CreatureStatsAttribs.DAMAGE_PHYS, 10.0D);
