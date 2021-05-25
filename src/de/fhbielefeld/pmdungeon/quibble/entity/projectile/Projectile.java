@@ -11,6 +11,7 @@ import de.fhbielefeld.pmdungeon.quibble.LoggingHandler;
 import de.fhbielefeld.pmdungeon.quibble.entity.BoundingBox;
 import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
 import de.fhbielefeld.pmdungeon.quibble.entity.Entity;
+import de.fhbielefeld.pmdungeon.quibble.entity.NPC;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.DamageType;
@@ -108,14 +109,21 @@ public abstract class Projectile extends Entity
 	@Override
 	protected final void onEntityCollision(Entity otherEntity)
 	{
-		if(otherEntity == owner)
+		if(otherEntity == owner )
 		{
 			return;
+		}
+		// With this, NPC’s no longer harm each other
+		if(owner instanceof NPC)
+		{
+			if(otherEntity instanceof NPC)
+			{
+				return;
+			}
 		}
 		// it have to be check if it is an Creature cause the Chest etc are also Entity
 		if(otherEntity instanceof Creature)
 		{
-			
 			this.onProjectileImpactCreature((Creature)otherEntity);
 			LoggingHandler.logger.log(Level.INFO, name + " has hit an Entity");
 		}
