@@ -20,6 +20,8 @@ import com.badlogic.gdx.Input.Keys;
  * <li>openChest <code>KeyJustPressed</code> to open a Chest
  * <li>closeCestInv <code>KeyJustPressed</code> to close a Chest
  * <li>pickupDrop <code>KeyJustPressed</code> to pickup drops from the ground
+ * <li>accept <code>KeyJustPressed</code> to accept event's
+ * <li>decline <code>KeyJustPressed</code> to decline event's
  * <li>items <code>Key's JustPressed in an ArrayList</code> which represents the
  * Inventory Slots and supposed to select an Item </blockquote>
  */
@@ -29,6 +31,9 @@ public class KeyList {
 	public static final String USE_ITEM = "UseItem";
 	public static final String PICK_UP_DROP = "PickUpDrop";
 	public static final String CLOSE_CHEST_INV = "CloseChestInv";
+	public static final String INTERACT_QUEST = "InteractQuest";
+	public static final String ACCEPT = "Accept";
+	public static final String DECLINE = "Decline";
 
 	public static final String[] SELECT_ITEM = new String[9];
 	{
@@ -52,6 +57,9 @@ public class KeyList {
 		this.keyList.addAll(items());
 		this.keyList.add(pickUpDrop());
 		this.keyList.add(closeChestInv());
+		this.keyList.add(activateQuest());
+		this.keyList.add(accept());
+		this.keyList.add(decline());
 	}
 
 	/**
@@ -128,6 +136,29 @@ public class KeyList {
 	KeyJustPressed closeChestInv() {
 		return new KeyJustPressed(CLOSE_CHEST_INV, Keys.SPACE);
 	}
+	/**
+	 * 
+	 * @return a KeyJustPressed which is supposed to interact with the quest
+	 */
+	KeyJustPressed activateQuest() {
+		return new KeyJustPressed(INTERACT_QUEST, Keys.Q);
+	}
+	
+	/**
+	 * 
+	 * @return a KeyJustPressed which is supposed to interact with entities that could be accept
+	 */
+	KeyJustPressed accept() {
+		return new KeyJustPressed(ACCEPT, Keys.J);
+	}
+	
+	/**
+	 * 
+	 * @return a KeyJustPressed which is supposed to interact with entities that could be accept
+	 */
+	KeyJustPressed decline() {
+		return new KeyJustPressed(DECLINE, Keys.N);
+	}
 
 	/**
 	 * 
@@ -142,6 +173,10 @@ public class KeyList {
 		return keys;
 	}
 
+	/**
+	 * 
+	 * @return the whole list of Key's and Button to play the full game
+	 */
 	public ArrayList<Key> getKeyList() {
 		return keyList;
 	}
