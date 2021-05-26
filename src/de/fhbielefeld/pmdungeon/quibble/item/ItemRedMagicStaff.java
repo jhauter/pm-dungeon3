@@ -28,7 +28,7 @@ public class ItemRedMagicStaff extends ItemWeaponMagic {
 	@Override
 	public CreatureStats getAttackStats() {
 		CreatureStats stats = new CreatureStats();
-		stats.setStat(CreatureStatsAttribs.DAMAGE_MAGIC, 4);
+		stats.setStat(CreatureStatsAttribs.DAMAGE_MAGIC, 1);
 		return stats;
 	}
 

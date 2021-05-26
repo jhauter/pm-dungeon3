@@ -1,5 +1,6 @@
 package de.fhbielefeld.pmdungeon.quibble.entity.effect;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 
 import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
@@ -13,6 +14,8 @@ public abstract class StatusEffect
 	
 	private boolean removable;
 	
+	private float stateTime;
+	
 	public StatusEffect(Creature creature)
 	{
 		this.creature = creature;
@@ -23,6 +26,8 @@ public abstract class StatusEffect
 	 */
 	public void update()
 	{
+		this.stateTime += Gdx.graphics.getDeltaTime();
+		
 		if(this.remainingTicks > 0)
 		{
 			--this.remainingTicks;
@@ -105,5 +110,13 @@ public abstract class StatusEffect
 	public void renderStatusEffect(Batch batch, float x, float y)
 	{
 		
+	}
+	
+	/**
+	 * 
+	 * @return the GDX Delta Time for rendering purpose
+	 */
+	public float getStateTime() {
+		return stateTime;
 	}
 }
