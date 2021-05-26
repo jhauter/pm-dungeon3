@@ -40,12 +40,7 @@ public class StatusEffectBurning extends StatusEffect {
 		Animation<TextureRegion> onFire = AnimationFactory.getAnimationFactory()
 				.createAnimation(SpriteSheets.BURNING_CIRCLE);
 
-		float posX = DrawingUtil.dungeonToScreenXCam(this.getCreature().getPosition().x,
-				DungeonStart.getDungeonMain().getCamPosX());
-		float posY = DrawingUtil.dungeonToScreenYCam(this.getCreature().getPosition().y,
-				DungeonStart.getDungeonMain().getCamPosY());
-
-		batch.draw(onFire.getKeyFrame(this.getStateTime()), posX - 10, posY);
+		batch.draw(onFire.getKeyFrame(this.getStateTime() * 10F, true), x - this.getCreature().getBoundingBox().width * 36.0F, y, 72.0F, 72.0F);
 	}
 
 	@Override
