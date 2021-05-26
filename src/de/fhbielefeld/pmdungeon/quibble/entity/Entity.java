@@ -610,4 +610,13 @@ public abstract class Entity implements IEntity, IAnimatable, ParticleSource
 		}
 		return true;
 	}
+	/**
+	 * A boolean value that says whether something can be accepted or rejected.
+	 * Entities, such as QuestDummy, override this value to allow the player
+	 * to interact with the entity using a key.
+	 * @return whether a entity could can accept method
+	 */
+	public boolean canBeAccepted() {
+		return false;
+	}
 }

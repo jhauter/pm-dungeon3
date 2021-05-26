@@ -17,7 +17,7 @@ public class RQuestDungeonStageTest extends TestCase {
 	@Before
 	public void setUp() throws Exception {
 		p = new Knight();
-		this.quest = new RQuestDungeonStage(QuestTypes.QUEST_NEXT_STAGE.questName, p, null, 0);
+		this.quest = new RQuestDungeonStage("", p, null, 0);
 		this.p.addQuest(quest);
 	}
 

@@ -13,7 +13,10 @@ import de.fhbielefeld.pmdungeon.quibble.input.Key;
 import de.fhbielefeld.pmdungeon.quibble.input.KeyList;
 import de.fhbielefeld.pmdungeon.quibble.input.KeyMovement;
 import de.fhbielefeld.pmdungeon.quibble.input.strategy.InputStrategy;
+import de.fhbielefeld.pmdungeon.quibble.input.strategy.InputStrategyAccept;
 import de.fhbielefeld.pmdungeon.quibble.input.strategy.InputStrategyCloseChest;
+import de.fhbielefeld.pmdungeon.quibble.input.strategy.InputStrategyDecline;
+import de.fhbielefeld.pmdungeon.quibble.input.strategy.InputStrategyActivateQuest;
 import de.fhbielefeld.pmdungeon.quibble.input.strategy.InputStrategyOpenChest;
 import de.fhbielefeld.pmdungeon.quibble.input.strategy.InputStrategyPickUpDrops;
 import de.fhbielefeld.pmdungeon.quibble.input.strategy.InputStrategySelectItem;
@@ -192,6 +195,12 @@ public abstract class Player extends Creature implements InputListener
 		map.put(KeyList.CLOSE_CHEST_INV, new InputStrategyCloseChest(this));
 		
 		map.put(KeyList.USE_ITEM, new InputStrategyUseItem(this));
+		
+		map.put(KeyList.INTERACT_QUEST, new InputStrategyActivateQuest(this));
+		
+		map.put(KeyList.ACCEPT, new InputStrategyAccept(this));
+		
+		map.put(KeyList.DECLINE, new InputStrategyDecline(this));
 		
 		//Will create so a List in the range of Inventory Slots
 		for (int i = 0; i < 9; i++) {

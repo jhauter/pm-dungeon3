@@ -1,8 +1,5 @@
 package de.fhbielefeld.pmdungeon.quibble.quest;
 
-import java.util.logging.Level;
-
-import de.fhbielefeld.pmdungeon.quibble.LoggingHandler;
 import de.fhbielefeld.pmdungeon.quibble.entity.Player;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEventHandler;
 import de.fhbielefeld.pmdungeon.quibble.item.Item;
@@ -10,32 +7,29 @@ import de.fhbielefeld.pmdungeon.quibble.item.Item;
 public abstract class Quest implements EntityEventHandler {
 
 	public final static String QUEST_TEXTURE_PATH = "assets/textures/quest/";
-	public final static String ACCEPT_DECLINE = "To Accept press J to Decline press N";
 	public final static String QUEST_REACHED = "You will gain: ";
 
 	private boolean isCompleted;
 
-	private String texture;
-	private String questName;
+	private final String questName;
 
-	private Player player;
+	private final Player player;
 
-	private Item itemOnReward;
-	private int expOnReward;
+	private final Item itemOnReward;
+	private final int expOnReward;
 
 	/**
 	 * Creates a quest object that can track the player's progress on an objective.
 	 * @param questName the display name of the quest
-	 * @param p the player that should have the quest
+	 * @param player the player that should have the quest
 	 * @param itemOnReward the item that is rewarded when the quest is completed
 	 * @param expOnReward the exp that are rewarded when the quest is completed
 	 */
-	public Quest(String questName, Player p, Item itemOnReward, int expOnReward) {
+	public Quest(String questName, Player player, Item itemOnReward, int expOnReward) {
 		this.questName = questName;
 		this.itemOnReward = itemOnReward;
 		this.expOnReward = expOnReward;
-		this.player = p;
-		LoggingHandler.logger.log(Level.INFO, "The Quest: " + questName + " was accepted");
+		this.player = player;
 	}
 
 	/**
@@ -62,14 +56,6 @@ public abstract class Quest implements EntityEventHandler {
 			return QUEST_REACHED + getItemOnReward();
 		else
 			return QUEST_REACHED + this.getExpOnReward() + " and " + getItemOnReward().getDisplayName();
-	}
-
-	/**
-	 * 
-	 * @return the given Texture
-	 */
-	public final String getTexture() {
-		return this.texture;
 	}
 
 	/**

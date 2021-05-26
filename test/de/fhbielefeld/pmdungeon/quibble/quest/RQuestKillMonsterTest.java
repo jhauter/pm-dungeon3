@@ -26,7 +26,7 @@ public class RQuestKillMonsterTest extends TestCase {
 	@Before
 	public void setUp() throws Exception {
 		p = new Knight();
-		this.quest = new RQuestKillMonster(QuestTypes.QUEST_KILL.questName, p, null, 0, 6);
+		this.quest = new RQuestKillMonster("", p, null, 0, 6);
 		this.p.addQuest(quest);
 		cList = new ArrayList<Creature>();
 		c = new Goblin();
