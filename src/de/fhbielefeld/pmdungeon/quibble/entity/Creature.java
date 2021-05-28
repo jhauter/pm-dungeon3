@@ -668,7 +668,7 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		
 		if(cause != null)
 		{
-			CreatureHitTargetEvent eventHTP = (CreatureHitTargetEvent)this
+			CreatureHitTargetEvent eventHTP = (CreatureHitTargetEvent)cause
 				.fireEvent(new CreatureHitTargetEvent(EVENT_ID_HIT_TARGET, cause, this, damageType, actualDamage));
 			
 			if(eventHTP.isCancelled())
@@ -710,7 +710,7 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		
 		if(cause != null)
 		{
-			this.fireEvent(new CreatureHitTargetPostEvent(EVENT_ID_HIT_TARGET_POST, cause, this, damageType, damage));
+			cause.fireEvent(new CreatureHitTargetPostEvent(EVENT_ID_HIT_TARGET_POST, cause, this, damageType, damage));
 			//Canceling target post event has no effect
 		}
 		
