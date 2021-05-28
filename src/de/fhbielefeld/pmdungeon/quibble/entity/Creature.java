@@ -754,7 +754,11 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 			return;
 		}
 		
-		InventoryItem<Item> selectedItem = this.getEquippedItems().getItem(this.getSelectedEquipSlot());
+		InventoryItem<Item> selectedItem = null;
+		if(this.getSelectedEquipSlot() >= 0 && this.getSelectedEquipSlot() < this.equippedItems.getCapacity())
+		{
+			selectedItem = this.getEquippedItems().getItem(this.getSelectedEquipSlot());
+		}
 		
 		CreatureStats attackStats = this.getCurrentStats();
 		if(selectedItem != null)
