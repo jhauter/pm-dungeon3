@@ -7,12 +7,7 @@ public enum ResourceType
 	/**
 	 * Represents a texture resource.
 	 */
-	TEXTURE(TextureResource::new),
-	
-	/**
-	 * Represents a texture region resource.
-	 */
-	TEXTURE_REGION(TextureRegionResource::new);
+	TEXTURE(TextureResource::new);
 	
 	private final Supplier<DungeonResource<?>> resourceClassGenerator;
 	
