@@ -20,11 +20,9 @@ public class InputStrategyAccept extends InputStrategy {
 	public void handle() {
 		List<Entity> l = getPlayer().getLevel().getEntitiesInRadius(getPlayer().getX(), getPlayer().getY(), 1);
 		for (int i = 0; i < l.size(); i++) {
-			if (l.get(i).canBeAccepted()) {
-				if(l.get(i) instanceof QuestDummy) {
-					QuestDummy qd = (QuestDummy) l.get(i);
-					qd.setDecided(true);
-				}
+			if(l.get(i) instanceof QuestDummy) {
+				QuestDummy qd = (QuestDummy) l.get(i);
+				qd.setDecided(true);
 			}
 		}
 	}
