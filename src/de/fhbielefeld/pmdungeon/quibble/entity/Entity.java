@@ -16,11 +16,9 @@ import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEventHandler;
 import de.fhbielefeld.pmdungeon.quibble.particle.ParticleSource;
 import de.fhbielefeld.pmdungeon.quibble.util.GeometryUtil;
 import de.fhbielefeld.pmdungeon.vorgaben.graphic.Animation;
-import de.fhbielefeld.pmdungeon.vorgaben.interfaces.IAnimatable;
-import de.fhbielefeld.pmdungeon.vorgaben.interfaces.IEntity;
 import de.fhbielefeld.pmdungeon.vorgaben.tools.Point;
 
-public abstract class Entity implements IEntity, IAnimatable, ParticleSource
+public abstract class Entity implements ParticleSource
 {
 	/**
 	 * Event ID for entity spawn events.
@@ -96,9 +94,8 @@ public abstract class Entity implements IEntity, IAnimatable, ParticleSource
 	
 	/**
 	 * This is intended to be used to load all resources that read files and thus block the thread.
-	 * Hopefully this makes it easier to adapt this to a possible new file loading system.
 	 * This is not called by the entity itself but by the system that is responsible for adding the entity to the level.
-	 * @return true if all resources have been loaded successfully
+	 * @return true if enough resources have been loaded successfully to let the entity spawn
 	 */
 	public boolean loadResources()
 	{
@@ -124,9 +121,10 @@ public abstract class Entity implements IEntity, IAnimatable, ParticleSource
 	}
 	
 	/**
-	 * {@inheritDoc}
+	 * Returns the current position of this entity.
+	 * The position is at at bottom center of the rendered entity.
+	 * @return the current position
 	 */
-	@Override
 	public final Point getPosition()
 	{
 		return this.position;
@@ -220,27 +218,28 @@ public abstract class Entity implements IEntity, IAnimatable, ParticleSource
 	}
 	
 	/**
-	 * {@inheritDoc}
+	 * Returns the animation that should render at a given moment.
+	 * @return the currently displayed animation
 	 */
-	@Override
 	public Animation getActiveAnimation()
 	{
 		return this.animationHandler.getCurrentAnimation();
 	}
 	
 	/**
-	 * {@inheritDoc}
+	 * If this returns <code>true</code> then this entity will be removed from the level
+	 * on the next update.
+	 * @return whether this entity should despawn on the next update
 	 */
-	@Override
-	public boolean deleteable()
+	public boolean shouldDespawn()
 	{
-		return false; //This method does not work so we have a workaround
+		return false;
 	}
 	
 	/**
-	 * {@inheritDoc}
+	 * Calculates the entity's logic such as new position, collision detection, animation...
+	 * Cannot be overridden. Override the other update methods instead.
 	 */
-	@Override
 	public final void update()
 	{
 		this.updateBegin();
@@ -270,8 +269,6 @@ public abstract class Entity implements IEntity, IAnimatable, ParticleSource
 		
 		this.updateAnimationState();
 		this.updateEnd();
-		
-		this.level.getSpatialHashGrid().update(spatialHashGridHandle, this.getBoundingBox().offset(getX(), getY()));
 	}
 	
 	/**
@@ -320,13 +317,13 @@ public abstract class Entity implements IEntity, IAnimatable, ParticleSource
 			final Point drawingOffsetOverride = this.getDrawingOffsetOverride();
 			if(drawingOffsetOverride != null)
 			{
-				this.draw(drawingOffsetOverride.x, drawingOffsetOverride.y);
+//				this.draw(drawingOffsetOverride.x, drawingOffsetOverride.y); TODO
 			}
 			else
 			{
 				//I think this draws the entity texture with the center at the entity position
 				//But it doesn't quite seem to fit...
-				this.draw();
+//				this.draw();
 			}
 		}
 	}
@@ -378,6 +375,14 @@ public abstract class Entity implements IEntity, IAnimatable, ParticleSource
 	public void onSpawn(DungeonLevel level)
 	{
 		this.level = level;
+	}
+	
+	/**
+	 * This is executed when the entity is removed from a level.
+	 */
+	public void onDespawn()
+	{
+		
 	}
 	
 	/**

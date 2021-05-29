@@ -1,7 +1,6 @@
 package de.fhbielefeld.pmdungeon.quibble;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
@@ -53,7 +52,7 @@ import de.fhbielefeld.pmdungeon.quibble.trap.TrapHealth;
 import de.fhbielefeld.pmdungeon.quibble.trap.TrapTeleport;
 import de.fhbielefeld.pmdungeon.vorgaben.dungeonCreator.dungeonconverter.Coordinate;
 import de.fhbielefeld.pmdungeon.vorgaben.game.Controller.MainController;
-import de.fhbielefeld.pmdungeon.vorgaben.interfaces.IEntity;
+import de.fhbielefeld.pmdungeon.vorgaben.tools.DungeonCamera;
 import de.fhbielefeld.pmdungeon.vorgaben.tools.Point;
 
 public class DungeonStart extends MainController implements EntityEventHandler
@@ -109,12 +108,16 @@ public class DungeonStart extends MainController implements EntityEventHandler
 	
 	private Map<String, HUDGroup> shownHUDGroups;
 	private Map<String, Label> shownLabels;
-
-	private boolean drawBoundingBoxes = false;
+	
+	private boolean drawBoundingBoxes = true;
 	private boolean drawSHGCells = true;
 	private boolean drawSHGCNearby = true;
 	
-	private DungeonStart()
+	//Prevents you from using entityController >:D use currentLevel instead!
+	@SuppressWarnings("unused")
+	private Object entityController;
+	
+	private DungeonStart() //Private constructor because singleton
 	{
 		if(instance != null)
 		{
@@ -138,16 +141,22 @@ public class DungeonStart extends MainController implements EntityEventHandler
 		this.myHero = new Mage();
 		this.myHero.getEquippedItems().addItem(Item.SWORD_BLUE);
 		this.myHero.addEntityEventHandler(this);
+		
+		//Planning to remove these weird switches and replace them with a proper UI system
 		this.invSwitchNormal = new InventoryHUDSwitchListener(this, INV_NAME_DEFAULT, this.myHero.getInventory(), "Inventory", 16, 176);
 		this.invSwitchEquip = new InventoryHUDSwitchListener(this, INV_NAME_EQUIP, this.myHero.getEquippedItems(), "Equipment", 16, 76);
+		
 		this.myHero.getInventory().addInventoryListener(this.invSwitchNormal);
 		this.myHero.getEquippedItems().addInventoryListener(this.invSwitchEquip);
+		
 		this.expBarHUD = new ExpBarHUD(this.myHero, 16, 432);
 		this.healthHUD = new HealthDisplayHUD(this.myHero, 16, 368);
+		
 		this.inputHandler.addInputListener(myHero);
 		
 		this.getHudManager().addElement(this.expBarHUD);
 		this.getHudManager().addElement(this.healthHUD);
+		
 		this.lastFrameTimeStamp = System.currentTimeMillis();
 		Gdx.app.getGraphics().setResizable(false);
 		
@@ -166,9 +175,12 @@ public class DungeonStart extends MainController implements EntityEventHandler
 	{
 		super.onLevelLoad();
 		//Clear entities from previous level
-		this.entityController.getList().clear();
+		if(this.currentLevel != null) //For the first level its null
+		{
+			this.currentLevel.clearEntities();
+		}
 		//Set current level from the level controller and entity controller
-		this.currentLevel = new DungeonLevel(this.levelController.getDungeon(), this.entityController, 15, 15, 30, 30);
+		this.currentLevel = new DungeonLevel(this.levelController.getDungeon(), 15, 15, 30, 30);
 		
 		/**** Populate dungeon ****/
 		
@@ -212,7 +224,8 @@ public class DungeonStart extends MainController implements EntityEventHandler
 		this.currentLevel.spawnEntity(new QuestDummy(i, pos4.x, pos4.y));
 		
 		//Set the camera to follow the hero
-		this.camera.follow(this.myHero);
+//		this.camera.follow(this.myHero);
+		DungeonCamera
 		LoggingHandler.logger.log(Level.INFO, "New level loaded.");
 		
 	}
@@ -225,6 +238,8 @@ public class DungeonStart extends MainController implements EntityEventHandler
 		ResourceHandler.processQueue();
 		
 		this.inputHandler.updateHandler();
+		
+		this.currentLevel.update();
 		
 		//Check the triggeredNextLevel flag of the player
 		if(this.myHero.triggeredNextLevel())
@@ -244,20 +259,12 @@ public class DungeonStart extends MainController implements EntityEventHandler
 	{
 		super.endFrame();
 		
-		//The Level class has a buffer mechanism to avoid concurrent modification
-		//when spawning entities within the Entity.update() function.
-		if(this.currentLevel != null && !this.currentLevel.isEntityBufferEmpty())
-		{
-			this.currentLevel.flushEntityBuffer();
-		}
-		
 		ShapeRenderer debugBatch = new ShapeRenderer();
 		debugBatch.setAutoShapeType(true);
 		debugBatch.begin();
 		debugBatch.setColor(Color.GREEN);
 		
 		SpriteBatch entityCustomRenderBatch = new SpriteBatch();
-		List<IEntity> entityList = this.entityController.getList();
 		Entity currentEntity;
 		
 		entityCustomRenderBatch.begin();
@@ -283,22 +290,16 @@ public class DungeonStart extends MainController implements EntityEventHandler
 			}
 		}
 		
-		for(int i = 0; i < entityList.size(); ++i)
+		for(int i = 0; i < currentLevel.getNumEntities(); ++i)
 		{
-			currentEntity = (Entity)entityList.get(i);
+			currentEntity = currentLevel.getEntity(i);
 			
 			if(this.drawBoundingBoxes)
 			{
 				this.drawBoundingBox(debugBatch, currentEntity.getBoundingBox().offset(currentEntity.getX(), currentEntity.getY()));
 			}
 			
-			if(currentEntity.deleteableWorkaround())
-			{
-				this.currentLevel.getSpatialHashGrid().remove(currentEntity.getSpatialHashGridHandle());
-				entityList.remove(i);
-				--i;
-			}
-			else if(!currentEntity.isInvisible())
+			if(!currentEntity.isInvisible())
 			{
 				final float customRenderX = DrawingUtil.dungeonToScreenXCam(currentEntity.getX(), this.camera.position.x);
 				final float customRenderY = DrawingUtil.dungeonToScreenYCam(currentEntity.getY(), this.camera.position.y);
@@ -321,7 +322,7 @@ public class DungeonStart extends MainController implements EntityEventHandler
 	private void drawBoundingBox(ShapeRenderer r, BoundingBox bb)
 	{
 		r.rect(
-			DrawingUtil.dungeonToScreenXCam(bb.x , this.camera.position.x),
+			DrawingUtil.dungeonToScreenXCam(bb.x, this.camera.position.x),
 			DrawingUtil.dungeonToScreenYCam(bb.y, this.camera.position.y),
 			DrawingUtil.dungeonToScreenX(bb.width),
 			DrawingUtil.dungeonToScreenY(bb.height));
@@ -477,21 +478,24 @@ public class DungeonStart extends MainController implements EntityEventHandler
 	{
 		return this.camera.position.x;
 	}
-
+	
 	public float getCamPosY()
 	{
 		return this.camera.position.y;
 	}
-
-	public HUDManager getHudManager() {
+	
+	public HUDManager getHudManager()
+	{
 		return hudManager;
 	}
 	
-	public Label getChestLabel() {
+	public Label getChestLabel()
+	{
 		return this.shownLabels.get(INV_NAME_CHEST);
 	}
 	
-	public HUDGroup getChestHud() {
+	public HUDGroup getChestHud()
+	{
 		return this.shownHUDGroups.get(INV_NAME_CHEST);
 	}
 }

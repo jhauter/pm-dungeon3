@@ -13,16 +13,14 @@ import de.fhbielefeld.pmdungeon.quibble.entity.Player;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEvent;
 import de.fhbielefeld.pmdungeon.quibble.particle.ParticleSystem;
 import de.fhbielefeld.pmdungeon.vorgaben.dungeonCreator.DungeonWorld;
-import de.fhbielefeld.pmdungeon.vorgaben.game.Controller.EntityController;
-import de.fhbielefeld.pmdungeon.vorgaben.interfaces.IEntity;
 
 public class DungeonLevel
 {
 	private final DungeonWorld world;
 	
-	private final EntityController entityController;
-	
 	private final ParticleSystem particleSystem;
+	
+	private final List<Entity> entities;
 	
 	private final List<Entity> newEntityBuffer;
 	
@@ -31,17 +29,16 @@ public class DungeonLevel
 	private SpatialHashGrid<Entity> spatialHashGrid;
 	
 	/**
-	 * Creates a Level that contains a <code>DungeonWorld</code> and an <code>EntityController</code>.
-	 * The parameters should be copied from the main controller as this class is basically a convenience class.
-	 * An entity buffer is also created.
+	 * Creates a Level that wraps a <code>DungeonWorld</code> and contains all entities in the level.
+	 * The <code>MainController.entityController</code> should not be used anymore as all entities are now in
+	 * <code>DungeonLevel</code>.
 	 * @param world dungeon reference
-	 * @param entityController entity controller reference
 	 */
-	public DungeonLevel(DungeonWorld world, EntityController entityController, int shgRow, int shgCol, float shgWidth, float shgHeight)
+	public DungeonLevel(DungeonWorld world, int shgRow, int shgCol, float shgWidth, float shgHeight)
 	{
 		this.world = world;
-		this.entityController = entityController;
 		this.particleSystem = new ParticleSystem();
+		this.entities = new ArrayList<Entity>();
 		this.newEntityBuffer = new ArrayList<Entity>();
 		this.rng = new Random();
 		this.spatialHashGrid = new SpatialHashGrid<>(shgRow, shgCol, shgWidth, shgHeight);
@@ -53,6 +50,43 @@ public class DungeonLevel
 	public DungeonWorld getDungeon()
 	{
 		return this.world;
+	}
+	
+	public void update()
+	{
+		Entity current;
+		for(int i = 0; i < this.entities.size(); ++i)
+		{
+			current = this.entities.get(i);
+			if(current.shouldDespawn())
+			{
+				this.removeEntity(i);
+				--i;
+				continue;
+			}
+			current.update();
+			final BoundingBox entityBB = current.getBoundingBox().offset(current.getX(), current.getY());
+			this.spatialHashGrid.update(current.getSpatialHashGridHandle(), entityBB);
+		}
+		
+		if(!this.isEntityBufferEmpty())
+		{
+			this.flushEntityBuffer();
+		}
+	}
+	
+	/**
+	 * Handles <code>onDespawn()</code>, removes from the list and removes from hash grid.
+	 * @param index the position of the entity in the list
+	 */
+	private void removeEntity(int index)
+	{
+		this.entities.get(index).onDespawn();
+		this.spatialHashGrid.remove(this.entities.get(index).getSpatialHashGridHandle());
+		
+		this.entities.set(index, this.entities.get(this.entities.size() - 1));
+		this.entities.remove(this.entities.size() - 1);
+		
 	}
 	
 	/**
@@ -67,14 +101,7 @@ public class DungeonLevel
 			//Don't add entity if an error occurs
 			return;
 		}
-		EntityEvent spawnEvent = entity.fireEvent(new EntityEvent(Entity.EVENT_ID_SPAWN, entity));
-		if(spawnEvent.isCancelled())
-		{
-			//Don't spawn entity if event is cancelled
-			return;
-		}
 		this.newEntityBuffer.add(entity);
-		entity.onSpawn(this); //Entity is not actually spawned but still in buffer but makes little difference
 		LoggingHandler.logger.log(Level.FINE, "Added entity to spawn queue: " + entity);
 	}
 	
@@ -85,7 +112,14 @@ public class DungeonLevel
 	{
 		for(Entity e : this.newEntityBuffer)
 		{
-			this.entityController.addEntity(e);
+			EntityEvent spawnEvent = e.fireEvent(new EntityEvent(Entity.EVENT_ID_SPAWN, e));
+			if(spawnEvent.isCancelled())
+			{
+				//Don't spawn entity if event is cancelled
+				return;
+			}
+			this.entities.add(e);
+			e.onSpawn(this);
 			Handle<Entity> h = this.spatialHashGrid.add(e.getBoundingBox().offset(e.getX(), e.getY()), e);
 			e.setSpationHashGridHandle(h);
 		}
@@ -97,7 +131,7 @@ public class DungeonLevel
 	 * since the last flush.
 	 * @return whether the entity buffer is empty
 	 */
-	public boolean isEntityBufferEmpty()
+	private boolean isEntityBufferEmpty()
 	{
 		return this.newEntityBuffer.isEmpty();
 	}
@@ -116,7 +150,7 @@ public class DungeonLevel
 	 */
 	public int getNumEntities()
 	{
-		return this.entityController.getList().size();
+		return this.entities.size();
 	}
 	
 	/**
@@ -126,8 +160,19 @@ public class DungeonLevel
 	 */
 	public Entity getEntity(int index)
 	{
-		//We can cast because we only add "our" entity
-		return (Entity)this.entityController.getList().get(index);
+		return this.entities.get(index);
+	}
+	
+	/**
+	 * Removes all entities from the level.
+	 */
+	public void clearEntities()
+	{
+		while(!this.entities.isEmpty())
+		{
+			//Can use 0 index because we use swap with last anyway
+			this.removeEntity(0); //Important because onDespawn and to remove from hash grid
+		}
 	}
 	
 	/**
@@ -138,6 +183,9 @@ public class DungeonLevel
 		return this.rng;
 	}
 	
+	/**
+	 * @return the spatial hash grid that this level uses
+	 */
 	public SpatialHashGrid<Entity> getSpatialHashGrid()
 	{
 		return this.spatialHashGrid;
@@ -150,12 +198,11 @@ public class DungeonLevel
 	 */
 	public List<Entity> getEntitiesInArea(BoundingBox area)
 	{
-		List<IEntity> entityList = this.entityController.getList();
 		List<Entity> entitiesInArea = new ArrayList<Entity>();
 		Entity currentEntity;
-		for(int i = 0; i < entityList.size(); ++i)
+		for(int i = 0; i < this.entities.size(); ++i)
 		{
-			currentEntity = (Entity)entityList.get(i);
+			currentEntity = this.entities.get(i);
 			if(currentEntity.getBoundingBox().offset(currentEntity.getX(), currentEntity.getY()).intersects(area))
 			{
 				entitiesInArea.add(currentEntity);
@@ -174,12 +221,11 @@ public class DungeonLevel
 	 */
 	public List<Entity> getEntitiesInRadius(float x, float y, float radius, Entity... exclude)
 	{
-		List<IEntity> entityList = this.entityController.getList();
 		List<Entity> entitiesInRadius = new ArrayList<Entity>();
 		Entity currentEntity;
-		for(int i = 0; i < entityList.size(); ++i)
+		for(int i = 0; i < this.entities.size(); ++i)
 		{
-			currentEntity = (Entity)entityList.get(i);
+			currentEntity = this.entities.get(i);
 			if(Math.pow(currentEntity.getX() - x, 2) + Math.pow(currentEntity.getY() - y, 2) <= Math.pow(radius + currentEntity.getRadius(), 2)
 				&& !Arrays.asList(exclude).contains(currentEntity))
 			{
@@ -191,13 +237,12 @@ public class DungeonLevel
 	
 	public List<Player> getPlayers()
 	{
-		List<IEntity> entityList = this.entityController.getList();
 		List<Player> players = new ArrayList<Player>();
-		for(int i = 0; i < entityList.size(); ++i)
+		for(int i = 0; i < this.entities.size(); ++i)
 		{
-			if(entityList.get(i) instanceof Player)
+			if(this.entities.get(i) instanceof Player)
 			{
-				players.add((Player)entityList.get(i));
+				players.add((Player)this.entities.get(i));
 				break;
 			}
 		}

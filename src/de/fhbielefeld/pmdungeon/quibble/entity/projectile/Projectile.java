@@ -188,7 +188,7 @@ public abstract class Projectile extends Entity
 	}
 	
 	@Override
-	public boolean deleteable()
+	public boolean shouldDespawn()
 	{
 		return isDepleted;
 	}

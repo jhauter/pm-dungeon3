@@ -57,7 +57,8 @@ public class QuestDummy extends Entity {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean deleteable() {
+	public boolean shouldDespawn()
+	{
 		return decide;
 	}
 	
