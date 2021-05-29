@@ -7,7 +7,6 @@ import com.badlogic.gdx.math.Vector2;
 import de.fhbielefeld.pmdungeon.quibble.entity.ai.AIShootFireball;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
-import de.fhbielefeld.pmdungeon.quibble.item.Item;
 
 public class Lizard extends NPC{
 
@@ -33,8 +32,6 @@ public class Lizard extends NPC{
 		
 		this.animationHandler.addAnimation(Creature.ANIM_NAME_RUN, 4, 0.1F, 1, 4, "assets/textures/entity/lizard/lizard_m_run.png");
 		this.animationHandler.addAnimation(Creature.ANIM_NAME_HIT, 1, 0.5F, 1, 1, "assets/textures/entity/lizard/lizard_m_hit.png");
-		
-		getEquippedItems().addItem(Item.SIMPLE_BOW);
 	}
 
 	/**
@@ -114,10 +111,5 @@ public class Lizard extends NPC{
 	@Override
 	public int getExpDrop() {
 		return 7;
-	}
-
-	@Override
-	public int getEquipmentSlots() {
-		return 1;
 	}
 }
