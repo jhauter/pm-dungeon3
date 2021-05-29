@@ -1,8 +1,9 @@
 /bin/**
 /bin/
 
-# eclipse project file
+# eclipse project files
 *.project
+*.classpath
 
 # visual paradigm files
 **/*.vpp.bak*
