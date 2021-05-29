@@ -16,6 +16,7 @@ import de.fhbielefeld.pmdungeon.desktop.DesktopLauncher;
 import de.fhbielefeld.pmdungeon.quibble.SpatialHashGrid.Handle;
 import de.fhbielefeld.pmdungeon.quibble.chest.GoldenChest;
 import de.fhbielefeld.pmdungeon.quibble.entity.BoundingBox;
+import de.fhbielefeld.pmdungeon.quibble.entity.Chort;
 import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
 import de.fhbielefeld.pmdungeon.quibble.entity.Demon;
 import de.fhbielefeld.pmdungeon.quibble.entity.Entity;
@@ -204,10 +205,11 @@ public class DungeonStart extends MainController implements EntityEventHandler
 		for(int i = 0; i < 10; ++i)
 		{
 			final Point pos = this.currentLevel.getDungeon().getRandomPointInDungeon();
-			final Creature toSpawn = switch (currentLevel.getRNG().nextInt(3)) {
+			final Creature toSpawn = switch (currentLevel.getRNG().nextInt(4)) {
 				case 0 -> new Demon();
 				case 1 -> new Goblin();
 				case 2 -> new Lizard();
+				case 3 -> new Chort();
 				default ->
 				throw new IllegalArgumentException("Unexpected value [spawn entity]");
 			};
