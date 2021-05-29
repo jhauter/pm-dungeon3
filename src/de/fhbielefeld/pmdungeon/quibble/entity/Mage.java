@@ -10,19 +10,12 @@ public class Mage extends Player {
 	public Mage(float x, float y) {
 		super(x, y);
 		
-		this.animationHandler.addAsDefaultAnimation(Creature.ANIM_NAME_IDLE_R, 4, 5, "assets/textures/entity/mage/wizzard_m_idle_right_anim_f.png", 4);
-	
-		this.animationHandler.addAsDefaultAnimation(Creature.ANIM_NAME_IDLE_L, 4, 5, "assets/textures/entity/mage/wizzard_m_idle_left_anim_f.png", 4);
-		
-		this.animationHandler.addAsDefaultAnimation(Creature.ANIM_NAME_RUN_R, 4, 5, "assets/textures/entity/mage/wizzard_m_run_right_anim_f.png", 4);
-		this.animationHandler.addAsDefaultAnimation(Creature.ANIM_NAME_RUN_L, 4, 5, "assets/textures/entity/mage/wizzard_m_run_left_anim_f.png", 4);
-		this.animationHandler.addAsDefaultAnimation(Creature.ANIM_NAME_HIT_R , 1, 15, "assets/textures/entity/mage/wizzard_m_hit_right_anim_f.png", 4);
-		this.animationHandler.addAsDefaultAnimation(Creature.ANIM_NAME_HIT_L, 1, 15, "assets/textures/entity/mage/wizzard_m_hit_left_anim_f.png", 4);
+		this.animationHandler.addAsDefaultAnimation(Creature.ANIM_NAME_IDLE, 4, 0.15F, 1, 4, "assets/textures/entity/mage/wizzard_m_idle.png");
+		this.animationHandler.addAnimation(Creature.ANIM_NAME_RUN, 4, 0.1F, 1, 4, "assets/textures/entity/mage/wizzard_m_run.png");
+		this.animationHandler.addAnimation(Creature.ANIM_NAME_HIT, 1, 0.5F, 1, 1, "assets/textures/entity/mage/wizzard_m_hit.png");
 	
 		getEquippedItems().addItem(Item.RED_MAGIC_STAFF);
 		getEquippedItems().addItem(Item.SIMPLE_BOW);
-		
-		
 	}
 	
 	public Mage() {

@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
 import de.fhbielefeld.pmdungeon.quibble.DungeonLevel;
@@ -15,12 +17,10 @@ import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEventHandler;
 import de.fhbielefeld.pmdungeon.quibble.particle.ParticleSource;
 import de.fhbielefeld.pmdungeon.quibble.util.GeometryUtil;
-import de.fhbielefeld.pmdungeon.vorgaben.graphic.Animation;
-import de.fhbielefeld.pmdungeon.vorgaben.interfaces.IAnimatable;
-import de.fhbielefeld.pmdungeon.vorgaben.interfaces.IEntity;
+import de.fhbielefeld.pmdungeon.vorgaben.game.GameSetup;
 import de.fhbielefeld.pmdungeon.vorgaben.tools.Point;
 
-public abstract class Entity implements IEntity, IAnimatable, ParticleSource
+public abstract class Entity implements ParticleSource
 {
 	/**
 	 * Event ID for entity spawn events.
@@ -39,7 +39,63 @@ public abstract class Entity implements IEntity, IAnimatable, ParticleSource
 	
 	private long ticks;
 	
-	private Point position;
+	private Vector2 position;
+	
+	/**
+	 * The width of the rendered image.
+	 * A value of <code>1.0</code> means the entity texture will be 1 tile wide.
+	 */
+	protected float renderWidth = 1.0F;
+	
+	/**
+	 * The height of the rendered image.
+	 * A value of <code>1.0</code> means the entity texture will be 1 tile high.
+	 */
+	protected float renderHeight = 1.0F;
+	
+	/**
+	 * Render image scale on the x axis.
+	 * How much to multiply the width when rendering.
+	 * Negative values will flip the image.
+	 */
+	protected float renderScaleX = 1.0F;
+	
+	/**
+	 * Render image scale on the y axis.
+	 * How much to multiply the height when rendering.
+	 * Negative values will flip the image.
+	 */
+	protected float renderScaleY = 1.0F;
+	
+	/**
+	 * Render offset along the x axis. This value determines the image offset from the position.
+	 * A value of <code>0.0</code> centers the image on the actual entity position.
+	 */
+	protected float renderOffsetX = 0.0F;
+	
+	/**
+	 * Render offset along the x axis. This value determines the image offset from the position.
+	 * A value of <code>0.0</code> centers the image on the actual entity position.
+	 */
+	protected float renderOffsetY = 0.0F;
+	
+	/**
+	 * Rotation pivot relative to renderWidth.
+	 * <code>renderWidth * 0.5</code> means rotation around the center
+	 */
+	protected float renderPivotX = 0.5F;
+	
+	/**
+	 * Rotation pivot relative to renderHeight.
+	 * <code>renderHeight * 0.5</code> means rotation around the center
+	 */
+	protected float renderPivotY = 0.5F;
+	
+	/**
+	 * Rotation for rendering in degrees. Change the rotation origin with the
+	 * <code>renderPivotX</code> and <code>renderPivotY</code> values.
+	 */
+	protected float renderRotation = 0.0F;
 	
 	private boolean noclip;
 	
@@ -79,7 +135,7 @@ public abstract class Entity implements IEntity, IAnimatable, ParticleSource
 	 */
 	public Entity(float x, float y)
 	{
-		this.position = new Point(x, y);
+		this.position = new Vector2(x, y);
 		this.velocity = new Vector2();
 		this.animationHandler = new AnimationHandlerImpl();
 		this.boundingBox = this.getInitBoundingBox();
@@ -96,9 +152,8 @@ public abstract class Entity implements IEntity, IAnimatable, ParticleSource
 	
 	/**
 	 * This is intended to be used to load all resources that read files and thus block the thread.
-	 * Hopefully this makes it easier to adapt this to a possible new file loading system.
 	 * This is not called by the entity itself but by the system that is responsible for adding the entity to the level.
-	 * @return true if all resources have been loaded successfully
+	 * @return true if enough resources have been loaded successfully to let the entity spawn
 	 */
 	public boolean loadResources()
 	{
@@ -124,10 +179,11 @@ public abstract class Entity implements IEntity, IAnimatable, ParticleSource
 	}
 	
 	/**
-	 * {@inheritDoc}
+	 * Returns the current position of this entity.
+	 * The position is at at bottom center of the rendered entity.
+	 * @return the current position
 	 */
-	@Override
-	public final Point getPosition()
+	public final Vector2 getPosition()
 	{
 		return this.position;
 	}
@@ -154,7 +210,7 @@ public abstract class Entity implements IEntity, IAnimatable, ParticleSource
 	 * Instantly sets the position of this entity and thus teleporting it. No collision checks are made.
 	 * @param pos the new position
 	 */
-	public final void setPosition(Point pos)
+	public final void setPosition(Vector2 pos)
 	{
 		//I think this is more efficient than this.position = pos;
 		this.position.x = pos.x;
@@ -220,27 +276,28 @@ public abstract class Entity implements IEntity, IAnimatable, ParticleSource
 	}
 	
 	/**
-	 * {@inheritDoc}
+	 * Returns the animation that should render at a given moment.
+	 * @return the currently displayed animation
 	 */
-	@Override
-	public Animation getActiveAnimation()
+	public Animation<TextureRegion> getActiveAnimation()
 	{
 		return this.animationHandler.getCurrentAnimation();
 	}
 	
 	/**
-	 * {@inheritDoc}
+	 * If this returns <code>true</code> then this entity will be removed from the level
+	 * on the next update.
+	 * @return whether this entity should despawn on the next update
 	 */
-	@Override
-	public boolean deleteable()
+	public boolean shouldDespawn()
 	{
-		return false; //This method does not work so we have a workaround
+		return false;
 	}
 	
 	/**
-	 * {@inheritDoc}
+	 * Calculates the entity's logic such as new position, collision detection, animation...
+	 * Cannot be overridden. Override the other update methods instead.
 	 */
-	@Override
 	public final void update()
 	{
 		this.updateBegin();
@@ -270,8 +327,6 @@ public abstract class Entity implements IEntity, IAnimatable, ParticleSource
 		
 		this.updateAnimationState();
 		this.updateEnd();
-		
-		this.level.getSpatialHashGrid().update(spatialHashGridHandle, this.getBoundingBox().offset(getX(), getY()));
 	}
 	
 	/**
@@ -312,23 +367,24 @@ public abstract class Entity implements IEntity, IAnimatable, ParticleSource
 		
 		if(this.useAnimationHandler())
 		{
-			this.animationHandler.frameUpdate();
+			this.animationHandler.frameUpdate(Gdx.graphics.getDeltaTime());
 		}
+	}
+	
+	public void render()
+	{
+		TextureRegion t = this.getActiveAnimation().getKeyFrame(this.animationHandler.getCurrentAnimationState(), true);
 		
-		if(!this.isInvisible() && this.useDefaultDrawing())
-		{
-			final Point drawingOffsetOverride = this.getDrawingOffsetOverride();
-			if(drawingOffsetOverride != null)
-			{
-				this.draw(drawingOffsetOverride.x, drawingOffsetOverride.y);
-			}
-			else
-			{
-				//I think this draws the entity texture with the center at the entity position
-				//But it doesn't quite seem to fit...
-				this.draw();
-			}
-		}
+		GameSetup.batch.draw(t,
+			this.getX() + this.getRenderOffsetX() - this.getRenderWidth() * 0.5F,
+			this.getY() + this.getRenderOffsetY() - this.getRenderHeight() * 0.5F,
+			this.getRenderPivotX(),
+			this.getRenderPivotY(),
+			this.getRenderWidth(),
+			this.getRenderHeight(),
+			this.getScaleX(),
+			this.getScaleY(),
+			this.getRotation());
 	}
 	
 	/**
@@ -381,6 +437,14 @@ public abstract class Entity implements IEntity, IAnimatable, ParticleSource
 	}
 	
 	/**
+	 * This is executed when the entity is removed from a level.
+	 */
+	public void onDespawn()
+	{
+		
+	}
+	
+	/**
 	 * Returns true if noclip is active, i.e. collision detection should not be performed.
 	 * @return whether noclip is active
 	 */
@@ -420,15 +484,6 @@ public abstract class Entity implements IEntity, IAnimatable, ParticleSource
 	public final void setLinearDamping(float v)
 	{
 		this.linearDamping = v;
-	}
-	
-	/**
-	 * A point of (0 | 0) renders the texture's bottom left corner at the entity's position
-	 * @return
-	 */
-	protected Point getDrawingOffsetOverride()
-	{
-		return new Point(-0.5F, -0.5F);
 	}
 	
 	/**
@@ -494,39 +549,6 @@ public abstract class Entity implements IEntity, IAnimatable, ParticleSource
 	public boolean isInvisible()
 	{
 		return false;
-	}
-	
-	/**
-	 * Actual deleteable(). Once this returns true, the entity will despawn.
-	 * @return whether this entity should despawn until the next frame
-	 */
-	public boolean deleteableWorkaround()
-	{
-		return false;
-	}
-	
-	/**
-	 * This method can be overridden to do custom rendering on entities by using a <code>SpriteBatch</code>.
-	 * In order to disable the default rendering, {@link #useDefaultDrawing()} must be overridden.
-	 * @param batch the batch that is used for custom rendering on all entities
-	 * @param x the entity x-position in screen-coordinates after applying the camera position
-	 * @param y the entity y-position in screen-coordinates after applying the camera position
-	 */
-	public void doCustomRendering(Batch batch, float x, float y)
-	{
-		
-	}
-	
-	/**
-	 * Returns whether the entity will be drawn by using the PM-Dungeon API.
-	 * This can be disabled by overriding this method.
-	 * By disabling this method, the entity will not be drawn at all and
-	 * the user is entirely responsible for drawing the entity at the right position.
-	 * @return whether the default drawing for this entity should be used
-	 */
-	public boolean useDefaultDrawing()
-	{
-		return true;
 	}
 	
 	/**
@@ -614,15 +636,6 @@ public abstract class Entity implements IEntity, IAnimatable, ParticleSource
 		}
 		return true;
 	}
-	/**
-	 * A boolean value that says whether something can be accepted or rejected.
-	 * Entities, such as QuestDummy, override this value to allow the player
-	 * to interact with the entity using a key.
-	 * @return whether a entity could can accept method
-	 */
-	public boolean canBeAccepted() {
-		return false;
-	}
 	
 	public final SpatialHashGrid.Handle<Entity> getSpatialHashGridHandle()
 	{
@@ -632,5 +645,50 @@ public abstract class Entity implements IEntity, IAnimatable, ParticleSource
 	public final void setSpationHashGridHandle(SpatialHashGrid.Handle<Entity> handle)
 	{
 		this.spatialHashGridHandle = handle;
+	}
+	
+	public float getRenderWidth()
+	{
+		return this.renderWidth;
+	}
+	
+	public float getRenderHeight()
+	{
+		return this.renderHeight;
+	}
+	
+	public float getScaleX()
+	{
+		return this.renderScaleX;
+	}
+	
+	public float getScaleY()
+	{
+		return this.renderScaleY;
+	}
+	
+	public float getRenderOffsetX()
+	{
+		return this.renderOffsetX;
+	}
+	
+	public float getRenderOffsetY()
+	{
+		return this.renderOffsetY;
+	}
+	
+	public float getRenderPivotX()
+	{
+		return this.renderPivotX;
+	}
+	
+	public float getRenderPivotY()
+	{
+		return this.renderPivotY;
+	}
+	
+	public float getRotation()
+	{
+		return this.renderRotation;
 	}
 }

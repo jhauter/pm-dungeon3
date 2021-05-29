@@ -1,17 +1,11 @@
 package de.fhbielefeld.pmdungeon.quibble.entity.projectile;
 
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-
-import de.fhbielefeld.pmdungeon.quibble.animation.AnimationFactory;
-import de.fhbielefeld.pmdungeon.quibble.animation.SpriteSheets;
 import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
 import de.fhbielefeld.pmdungeon.quibble.entity.effect.StatusEffectBurning;
 
 public class SpellFireBall extends ProjectileMagic{
 
-	private Creature owner;
 	/**
 	 * Creates a fire ball projectile.
 	 * It will set a Creature on fire for a certain probability
@@ -25,15 +19,14 @@ public class SpellFireBall extends ProjectileMagic{
 	public SpellFireBall(String name, float x, float y, CreatureStats stats, Creature owner)
 	{
 		super(name, x, y, stats, owner);
-		this.owner = owner;
+		this.animationHandler.addAsDefaultAnimation("", 8, 0.1F, 1, 8, PROJECTILE_PATH + "fireBall.png");
 	}
 	
 	@Override
 	public void onProjectileImpactCreature(Creature hitCreature) {
 		super.onProjectileImpactCreature(hitCreature);
-		int i = owner.getLevel().getRNG().nextInt(4);
-		if(i == 1)
-			hitCreature.addStatusEffect(new StatusEffectBurning(hitCreature, owner), 200);
+		if(this.getLevel().getRNG().nextInt(4) == 1)
+			hitCreature.addStatusEffect(new StatusEffectBurning(hitCreature, this.getOwner()), 200);
 	}
 
 	@Override
@@ -46,11 +39,5 @@ public class SpellFireBall extends ProjectileMagic{
 	public float getDamageDecreaseOverTime()
 	{
 		return this.getTicks() * 0.06F;
-	}
-
-	@Override
-	public Animation<TextureRegion> getProjectileAnimation()
-	{
-		return AnimationFactory.getAnimationFactory().createAnimation(SpriteSheets.SPELL_FIRE_BALL);
 	}
 }

@@ -17,13 +17,13 @@ public class Demon extends NPC
 		super(x, y);
 		//Default idle animation will always be played if no other animation is being played
 		//This must be added or an exception will be thrown
-		this.animationHandler.addAsDefaultAnimation(Creature.ANIM_NAME_IDLE_R, 4, 2, "assets/textures/entity/demon/big_demon_idle_right_anim_f.png", 4);
+		this.animationHandler.addAsDefaultAnimation(Creature.ANIM_NAME_IDLE, 4, 0.15F, 1, 4, "assets/textures/entity/demon/big_demon_idle.png");
 		
 		//Other animations
-		this.animationHandler.addAnimation(Creature.ANIM_NAME_IDLE_L, 4, 2, "assets/textures/entity/demon/big_demon_idle_left_anim_f.png", 4);
+		this.animationHandler.addAnimation(Creature.ANIM_NAME_RUN, 4, 0.1F, 1, 4, "assets/textures/entity/demon/big_demon_run.png");
 		
-		this.animationHandler.addAnimation(Creature.ANIM_NAME_RUN_R, 4, 2, "assets/textures/entity/demon/big_demon_run_right_anim_f.png", 4);
-		this.animationHandler.addAnimation(Creature.ANIM_NAME_RUN_L, 4, 2, "assets/textures/entity/demon/big_demon_run_left_anim_f.png", 4);
+		//Render properties
+		this.renderOffsetY = this.renderHeight * 0.5F;
 	}
 	
 	/**
@@ -42,7 +42,7 @@ public class Demon extends NPC
 	@Override
 	protected BoundingBox getInitBoundingBox()
 	{
-		return new BoundingBox(-0.35F, -0.5F, 0.7F, 1.0F);
+		return new BoundingBox(-0.45F, 0.0F, 0.9F, 1.3F);
 	}
 	
 	/**

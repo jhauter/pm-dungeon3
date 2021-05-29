@@ -87,7 +87,7 @@ public abstract class Trap extends Entity {
 	}
 
 	@Override
-	public boolean deleteableWorkaround() {
+	public boolean shouldDespawn() {
 		return depleted;
 	}
 

@@ -1,6 +1,7 @@
 package de.fhbielefeld.pmdungeon.quibble.animation;
 
-import de.fhbielefeld.pmdungeon.vorgaben.graphic.Animation;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public interface AnimationHandler
 {
@@ -8,10 +9,16 @@ public interface AnimationHandler
 	 * Registers a new animation for this animation handler.
 	 * Each animation is a set of textures which is assigned a name.
 	 * The number of textures is specified by <code>numFrames</code>.
-	 * Every frame of the animation will last <code>frameDuration</code> frames.
+	 * Every frame of the animation will last <code>frameDuration</code> seconds.
+	 * <br><br>
 	 * 
-	 * This method stores the supplied parameters internally.
+	 * This method stores the supplied parameters internally and does not immediately load the animations.
 	 * The files can be loaded by calling <code>loadAnimations()</code>.
+	 * The parameters specify how the sprite sheet will be loaded.
+	 * The given number of frames will be loaded from the sprite sheet with the given number of rows and columns
+	 * by going from left to right and then top to bottom.
+	 * <br><br>
+	 * 
 	 * The animations can be played after loading by calling the <code>playAnimation()</code> method by
 	 * passing the here specified animName.
 	 * An animation with an already registered name cannot be added, because then an <code>IllegalArgumentException</code>
@@ -19,13 +26,17 @@ public interface AnimationHandler
 	 * @param animName the name of the animation (names are case sensitive)
 	 * @param numFrames number of textures in this animation
 	 * @param frameDuration how long a single frame will be displayed in the animation
-	 * @param fileName the complete file path with the frame count number omitted
-	 * @param frameCountPos the position of the frame count number, counting from the back of the path string
-	 * (<code>-1</code> does not insert a number and should only be used with <code>numFrames = 1</code>)
+	 * @param rows number of rows in the sprite sheet
+	 * @param columns number of column in the sprite sheet
+	 * @param fileName the complete file path to the sprite sheet
 	 * @throws IllegalArgumentException if an animation with the same <code>animName</code>
 	 * has already been registered
+	 * @throws IllegalArgumentException <code>numFrames</code> is <code><= 0</code> or greater than <code>rows * columns</code>
+	 * @throws IllegalArgumentException <code>frameDuration</code> is negative
 	 */
-	public void addAnimation(String animName, int numFrames, int frameDuration, String fileName, int frameCountPos);
+	public void addAnimation(String animName, int numFrames, float frameDuration, int rows, int columns, String fileName);
+	
+	public void addAnimation(String animName, int numFrames, int firstFrame, float frameDuration, int rows, int columns, String fileName);
 	
 	/**
 	 * Sets the default animation which should be fallen back to if no other animation is currently playing.
@@ -35,14 +46,19 @@ public interface AnimationHandler
 	 * @param animName the name of the animation (names are case sensitive)
 	 * @param numFrames number of textures in this animation
 	 * @param frameDuration how long a single frame will be displayed in the animation
-	 * @param fileName the complete file path with the frame count number omitted
-	 * @param frameCountPos the position of the frame count number, counting from the back of the path string
-	 * (<code>-1</code> does not insert a number and should only be used with <code>numFrames = 1</code>)
+	 * @param rows number of rows in the sprite sheet
+	 * @param columns number of column in the sprite sheet
+	 * @param fileName the complete file path to the sprite sheet
 	 * @throws IllegalArgumentException if an animation with the same <code>animName</code>
 	 * has already been registered
+	 * @throws IllegalArgumentException <code>numFrames</code> is <code><= 0</code> or greater than <code>rows * columns</code>
+	 * @throws IllegalArgumentException <code>frameDuration</code> is negative
 	 * @see AnimationHandler#addAnimation(String, int, String, String)
 	 */
-	public void addAsDefaultAnimation(String animName, int numFrames, int frameDuration, String fileName, int frameCountPos);
+	public void addAsDefaultAnimation(String animName, int numFrames, float frameDuration, int rows, int columns, String fileName);
+	
+	
+	public void addAsDefaultAnimation(String animName, int numFrames, int firstFrame, float frameDuration, int rows, int columns, String fileName);
 	
 	/**
 	 * Tries to load all textures of all registered animations from the file system.
@@ -64,11 +80,13 @@ public interface AnimationHandler
 	 * A animation can be cyclic or not. A cyclic animation will be played as long as this method keeps playing
 	 * said animation. A cyclic animation will stop playing if this method does not "keep alive" the cyclic
 	 * animation every frame anymore.
+	 * <br><br>
 	 * A non-cyclic animation does only need to be called once and will play until it runs out of frames.
 	 * Calling this method if the non-cyclic animation has already started will reset the duration the animation
 	 * but will not reset it so that the animation starts over again at the first frame. It would have the
 	 * same effect as a cyclic animation apart from that a non-cyclic animation will play out after this method stops
 	 * reseting the animation.
+	 * If the specified <code>animName</code> was not registered then this method will do nothing.
 	 * <br><br>
 	 * DISCLAIMER: as there is no real way known by me to get any useful information out of the Animation class,
 	 * the duration for non-cyclic animations are just estimates and may differ from how long they would actually last.
@@ -80,10 +98,10 @@ public interface AnimationHandler
 	public void playAnimation(String animName, int priority, boolean cyclic);
 	
 	/**
-	 * This is called every frame per animation handler and is used to calculate the animations' states
+	 * This is called every frame for every animation handler and is used to calculate the animations' states
 	 * each frame.
 	 */
-	public void frameUpdate();
+	public void frameUpdate(float delta);
 	
 	/**
 	 * Returns the currently played animation that has the greatest priority.
@@ -92,5 +110,7 @@ public interface AnimationHandler
 	 * <code>loadAnimations()</code>.
 	 * @return currently visible animation with greatest priority
 	 */
-	public Animation getCurrentAnimation();
+	public Animation<TextureRegion> getCurrentAnimation();
+	
+	public float getCurrentAnimationState();
 }

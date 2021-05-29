@@ -17,7 +17,7 @@ public class TrapTeleport extends Trap {
 	 */
 	public TrapTeleport(float x, float y, boolean noActivationLimit) {
 		super(x, y, noActivationLimit);
-		this.animationHandler.addAsDefaultAnimation("", 1, 1, Trap.TRAP_TEXTURE_PATH + "trapBlue.png", 4);
+		this.animationHandler.addAsDefaultAnimation("", 1, 999, 1, 1, Trap.TRAP_TEXTURE_PATH + "trapBlue.png");
 		this.noActivationLimit = noActivationLimit;
 	}
 
@@ -32,7 +32,7 @@ public class TrapTeleport extends Trap {
 	 */
 	public TrapTeleport(float x, float y, int activationLimit) {
 		super(x, y, activationLimit);
-		this.animationHandler.addAsDefaultAnimation("", 1, 1, Trap.TRAP_TEXTURE_PATH + "trapBlue.png", 4);
+		this.animationHandler.addAsDefaultAnimation("", 1, 999, 1, 1, Trap.TRAP_TEXTURE_PATH + "trapBlue.png");
 		this.activationLimit = activationLimit;
 	}
 	
@@ -40,7 +40,7 @@ public class TrapTeleport extends Trap {
 	public void isActiv(Entity e) {
 		if (e instanceof Player) {
 			Point p = this.level.getDungeon().getRandomPointInDungeon();
-			((Creature) e).setPosition(p);
+			((Creature) e).setPosition(p.x, p.y);
 			this.coolDown = 44;
 			setActivationLimit(activationLimit-1);
 			this.visible = true;

@@ -27,17 +27,12 @@ public class Lizard extends NPC{
 		// Default idle animation will always be played if no other animation is being
 		// played
 		// This must be added or an exception will be thrown
-		this.animationHandler.addAsDefaultAnimation(Creature.ANIM_NAME_IDLE_R, 4, 5,
-				"assets/textures/entity/lizard/lizard_m_idle_right_anim_f.png", 4);
-
-		// Other animations
-		this.animationHandler.addAnimation(Creature.ANIM_NAME_IDLE_L, 4, 5,
-				"assets/textures/entity/lizard/lizard_m_idle_left_anim_f.png", 4);
-
-		this.animationHandler.addAnimation(Creature.ANIM_NAME_RUN_R, 4, 2,
-				"assets/textures/entity/lizard/lizard_m_run_right_anim_f.png", 4);
-		this.animationHandler.addAnimation(Creature.ANIM_NAME_RUN_L, 4, 2,
-				"assets/textures/entity/lizard/lizard_m_run_left_anim_f.png", 4);
+		this.animationHandler.addAsDefaultAnimation(Creature.ANIM_NAME_IDLE, 4, 0.15F, 1, 4, "assets/textures/entity/lizard/lizard_m_idle.png");
+		
+		//Other animations
+		
+		this.animationHandler.addAnimation(Creature.ANIM_NAME_RUN, 4, 0.1F, 1, 4, "assets/textures/entity/lizard/lizard_m_run.png");
+		this.animationHandler.addAnimation(Creature.ANIM_NAME_HIT, 1, 0.5F, 1, 1, "assets/textures/entity/lizard/lizard_m_hit.png");
 		
 		getEquippedItems().addItem(Item.SIMPLE_BOW);
 	}
@@ -75,7 +70,7 @@ public class Lizard extends NPC{
 		stats.setStat(CreatureStatsAttribs.KNOCKBACK_RES, 0.1D);
 		stats.setStat(CreatureStatsAttribs.DAMAGE_PHYS, 2.0D);
 		stats.setStat(CreatureStatsAttribs.DAMAGE_MAGIC, 3.0D);
-		stats.setStat(CreatureStatsAttribs.WALKING_SPEED, 0.05D);
+		stats.setStat(CreatureStatsAttribs.WALKING_SPEED, 0.04D);
 		stats.setStat(CreatureStatsAttribs.HIT_REACH, 0.4D);
 		stats.setStat(CreatureStatsAttribs.HIT_COOLDOWN, 20.0D);
 		return stats;
@@ -108,6 +103,12 @@ public class Lizard extends NPC{
 			this.noticedPlayer = true;
 			this.setAIStrategy(new AIShootFireball(players.get(0)));
 		}
+	}
+	
+	@Override
+	protected boolean useHitAnimation()
+	{
+		return true;
 	}
 
 	@Override
