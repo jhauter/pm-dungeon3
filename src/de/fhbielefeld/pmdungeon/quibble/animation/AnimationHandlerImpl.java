@@ -8,12 +8,13 @@ import java.util.Map;
 import java.util.logging.Level;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import de.fhbielefeld.pmdungeon.quibble.LoggingHandler;
 import de.fhbielefeld.pmdungeon.quibble.file.DungeonResource;
 import de.fhbielefeld.pmdungeon.quibble.file.ResourceHandler;
 import de.fhbielefeld.pmdungeon.quibble.file.ResourceType;
-import de.fhbielefeld.pmdungeon.vorgaben.graphic.Animation;
 
 public class AnimationHandlerImpl implements AnimationHandler
 {
@@ -21,45 +22,46 @@ public class AnimationHandlerImpl implements AnimationHandler
 	{
 		private final String name;
 		private final int numFrames;
-		private final int frameDuration;
+		private final int firstFrame;
+		private final float frameDuration;
+		private final int rows;
+		private final int columns;
 		private final String fileName;
-		private final int frameCountPos;
 		
-		public AnimationInfo(String name, int numFrames, int frameDuration, String fileName, int frameCountPos)
+		public AnimationInfo(String animName, int numFrames, int firstFrame, float frameDuration, int rows, int columns, String fileName)
 		{
-			this.name = name;
+			this.name = animName;
 			this.numFrames = numFrames;
+			this.firstFrame = firstFrame;
 			this.frameDuration = frameDuration;
+			this.rows = rows;
+			this.columns = columns;
 			this.fileName = fileName;
-			this.frameCountPos = frameCountPos;
 		}
 	}
 	
 	private static class LoadedAnimation
 	{
-		private final Animation animation;
-		private final int numFrames;
-		private final int frameDuration;
-
-		private int remainingDuration;
+		private final Animation<TextureRegion> animation;
+		
+		private float visibleDurationRemaining;
+		private float stateTime;
 		private boolean cyclicState;
 		private int priority;
 		
-		private LoadedAnimation(Animation animation, int numFrames, int frameDuration)
+		private LoadedAnimation(Animation<TextureRegion> animation)
 		{
 			this.animation = animation;
-			this.numFrames = numFrames;
-			this.frameDuration = frameDuration;
 		}
 		
 		private void fullDuration()
 		{
-			this.remainingDuration = this.calcFull();
+			this.visibleDurationRemaining = this.calcFull();
 		}
 		
-		private int calcFull()
+		private float calcFull()
 		{
-			return this.frameDuration * this.numFrames;
+			return this.animation.getAnimationDuration();
 		}
 	}
 	
@@ -73,7 +75,9 @@ public class AnimationHandlerImpl implements AnimationHandler
 	
 	private boolean isLoaded;
 	
-	private Animation currentAnimation;
+	private Animation<TextureRegion> currentAnimation;
+	
+	private float currentAnimationState;
 	
 	/**
 	 * Creates an empty animation handler to which animations can be added.
@@ -86,6 +90,24 @@ public class AnimationHandlerImpl implements AnimationHandler
 	
 	private void addAnimation(AnimationInfo animInfo)
 	{
+		if(animInfo.numFrames <= 0)
+		{
+			IllegalArgumentException e = new IllegalArgumentException("numFrames cannot be <= 0");
+			LoggingHandler.logger.log(Level.SEVERE, e.toString());
+			throw e;
+		}
+		if(animInfo.frameDuration < 0.0F)
+		{
+			IllegalArgumentException e = new IllegalArgumentException("frameDuration cannot be negative");
+			LoggingHandler.logger.log(Level.SEVERE, e.toString());
+			throw e;
+		}
+		if(animInfo.numFrames + animInfo.firstFrame > animInfo.rows * animInfo.columns)
+		{
+			IllegalArgumentException e = new IllegalArgumentException("numFrames (+firstFrame) cannot be greater than rows * columns");
+			LoggingHandler.logger.log(Level.SEVERE, e.toString());
+			throw e;
+		}
 		for(int i = 0; i < this.registeredAnimations.size(); ++i)
 		{
 			if(this.registeredAnimations.get(i).name.equals(animInfo.name))
@@ -102,18 +124,36 @@ public class AnimationHandlerImpl implements AnimationHandler
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void addAnimation(String animName, int numFrames, int frameDuration, String fileName, int frameCountPos)
+	public void addAnimation(String animName, int numFrames, float frameDuration, int rows, int columns, String fileName)
 	{
-		this.addAnimation(new AnimationInfo(animName, numFrames, frameDuration, fileName, frameCountPos));
+		this.addAnimation(animName, numFrames, 0, frameDuration, rows, columns, fileName);
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void addAsDefaultAnimation(String animName, int numFrames, int frameDuration, String fileName, int frameCountPos)
+	public void addAnimation(String animName, int numFrames, int firstFrame, float frameDuration, int rows, int columns, String fileName)
 	{
-		AnimationInfo animInfo = new AnimationInfo(animName, numFrames, frameDuration, fileName, frameCountPos);
+		this.addAnimation(new AnimationInfo(animName, numFrames, firstFrame, frameDuration, rows, columns, fileName));
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void addAsDefaultAnimation(String animName, int numFrames, float frameDuration, int rows, int columns, String fileName)
+	{
+		this.addAsDefaultAnimation(animName, numFrames, 0, frameDuration, rows, columns, fileName);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void addAsDefaultAnimation(String animName, int numFrames, int firstFrame, float frameDuration, int rows, int columns, String fileName)
+	{
+		AnimationInfo animInfo = new AnimationInfo(animName, numFrames, firstFrame, frameDuration, rows, columns, fileName);
 		this.addAnimation(animInfo);
 		this.defaultAnimInfo = animInfo;
 	}
@@ -128,22 +168,24 @@ public class AnimationHandlerImpl implements AnimationHandler
 		{
 			IllegalStateException e = new IllegalStateException("animations have already been loaded");
 			LoggingHandler.logger.log(Level.SEVERE, e.getMessage(), e);
-			throw e;			
+			throw e;
 		}
-		if(this.defaultAnimInfo == null) //This must be second as defaultAnimation is set to null after loading
+		
+		//This must be the second 'if' as defaultAnimInfo is set to null after loading
+		if(this.defaultAnimInfo == null)
 		{
 			IllegalStateException e = new IllegalStateException("a default animation must be added");
 			LoggingHandler.logger.log(Level.SEVERE, e.getMessage(), e);
 			throw e;
 		}
-		StringBuilder pathBuilder = new StringBuilder();
-		List<Texture> frames;
+		
+		List<TextureRegion> frames = new ArrayList<TextureRegion>();
 		for(AnimationInfo animInfo : this.registeredAnimations)
 		{
-			//Must be a new list every time because the API actually does not copy it
-			frames = new ArrayList<Texture>();
+			//This is faster than creating a new one every time
+			frames.clear();
 			
-			final LoadedAnimation loadedAnim = this.loadAnimation(animInfo, pathBuilder, frames);
+			final LoadedAnimation loadedAnim = this.loadAnimation(animInfo, frames);
 			if(loadedAnim == null) //if an error occurred
 			{
 				return false;
@@ -153,7 +195,7 @@ public class AnimationHandlerImpl implements AnimationHandler
 			
 			if(animInfo == this.defaultAnimInfo) //If current animInfo is the default animation info
 			{
-				this.defaultAnimation = loadedAnim;	//In addition to the normal process,
+				this.defaultAnimation = loadedAnim; //In addition to the normal process,
 													//save this as default animation separately
 				
 				//Clear; not needed anymore
@@ -163,35 +205,30 @@ public class AnimationHandlerImpl implements AnimationHandler
 		}
 		this.isLoaded = true;
 		this.registeredAnimations.clear(); //Free space that is not needed anymore
+		this.currentAnimation = this.defaultAnimation.animation;
 		return true;
 	}
 	
-	private LoadedAnimation loadAnimation(AnimationInfo animInfo, StringBuilder pathBuilder, List<Texture> frames)
+	private LoadedAnimation loadAnimation(AnimationInfo animInfo, List<TextureRegion> frames)
 	{
-		Texture currentTexture;
-		DungeonResource<Texture> texRes;
-		for(int n = 0; n < animInfo.numFrames; ++n)
+		DungeonResource<Texture> texRes = ResourceHandler.requestResourceInstantly(animInfo.fileName, ResourceType.TEXTURE);
+		
+		if(texRes.hasError())
 		{
-			pathBuilder.append(animInfo.fileName);
-			if(animInfo.frameCountPos != -1)
-			{
-				pathBuilder.insert(pathBuilder.length() - animInfo.frameCountPos, n);
-			}
-			
-			texRes = ResourceHandler.requestResourceInstantly(pathBuilder.toString(), ResourceType.TEXTURE);
-			if(texRes.hasError())
-			{
-				this.loadedAnimations.clear(); //clear list to allow retry to load
-				//No need to log here because the ResourceHandler already logs
-				return null;
-			}
-			
-			currentTexture = new Texture(pathBuilder.toString());
-			frames.add(currentTexture);
-			pathBuilder.setLength(0);
+			this.loadedAnimations.clear(); //clear list to allow retry to load
+			//No need to log here because the ResourceHandler already logs
+			return null;
 		}
-		Animation anim = new Animation(frames, animInfo.frameDuration);
-		return new LoadedAnimation(anim, animInfo.numFrames, animInfo.frameDuration);
+
+		final int tileWidth = texRes.getResource().getWidth() / animInfo.columns;
+		final int tileHeight = texRes.getResource().getHeight() / animInfo.rows;
+		TextureRegion[][] grid = TextureRegion.split(texRes.getResource(), tileWidth, tileHeight);
+		for(int n = animInfo.firstFrame; n < animInfo.numFrames + animInfo.firstFrame; ++n)
+		{
+			frames.add(grid[n / animInfo.columns][n % animInfo.columns]);
+		}
+		Animation<TextureRegion> anim = new Animation<>(animInfo.frameDuration, frames.toArray(new TextureRegion[0]));
+		return new LoadedAnimation(anim);
 	}
 	
 	/**
@@ -201,6 +238,14 @@ public class AnimationHandlerImpl implements AnimationHandler
 	public void playAnimation(String animName, int priority, boolean cyclic)
 	{
 		LoadedAnimation anim = this.loadedAnimations.get(animName);
+		if(anim == null)
+		{
+			return;
+		}
+		if(!cyclic)
+		{
+			anim.stateTime = 0.0F;
+		}
 		anim.fullDuration();
 		anim.priority = priority;
 		anim.cyclicState = cyclic;
@@ -210,7 +255,7 @@ public class AnimationHandlerImpl implements AnimationHandler
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void frameUpdate()
+	public void frameUpdate(float delta)
 	{
 		LoadedAnimation currentSelected = null;
 		int priority = -1;
@@ -218,21 +263,22 @@ public class AnimationHandlerImpl implements AnimationHandler
 		Collection<LoadedAnimation> loadedAnims = this.loadedAnimations.values();
 		for(LoadedAnimation anim : loadedAnims)
 		{
-			//If the animation is cyclic and at least one frame has passed without the animation getting refreshed,
-			//the animation should stop (remainingDuration == 0 means stopped)
-			if(anim.cyclicState && anim.remainingDuration < anim.calcFull())
+			anim.stateTime += delta;
+			//If the animation is cyclic and at least one frame has passed without the animation
+			//getting refreshed, the animation should stop (remainingDuration == 0 means stopped)
+			if(anim.cyclicState && anim.visibleDurationRemaining < anim.calcFull())
 			{
-				anim.remainingDuration = 0;
+				anim.visibleDurationRemaining = 0.0F;
 			}
 			
 			//Count down remaining duration
-			if(anim.remainingDuration > 0)
+			if(anim.visibleDurationRemaining > 0.0F)
 			{
-				--anim.remainingDuration;
+				anim.visibleDurationRemaining -= delta;
 			}
 			
 			//If it has finished, it should not be candidate to be a visible animation, so continue
-			if(anim.remainingDuration <= 0)
+			if(anim.visibleDurationRemaining <= 0.0F)
 			{
 				continue;
 			}
@@ -244,12 +290,12 @@ public class AnimationHandlerImpl implements AnimationHandler
 			}
 			else if(anim.priority == priority) //If prio is the same, the most recent anim wins
 			{
-				final int durationSinceStartSelected = currentSelected.calcFull() - currentSelected.remainingDuration;
-				final int durationSinceStartAnim = anim.calcFull() - anim.remainingDuration;
+				final float durationSinceStartSelected = currentSelected.calcFull() - currentSelected.visibleDurationRemaining;
+				final float durationSinceStartAnim = anim.calcFull() - anim.visibleDurationRemaining;
 				if(durationSinceStartAnim > durationSinceStartSelected)
 				{
 					currentSelected = anim;
-					priority = anim.priority; //Even though the priority is the same...
+					priority = anim.priority; //Even though the priority is the same anyway...
 				}
 			}
 			//Nothing if anim.priority < priority
@@ -260,19 +306,28 @@ public class AnimationHandlerImpl implements AnimationHandler
 		if(currentSelected == null)
 		{
 			this.currentAnimation = this.defaultAnimation.animation;
+			this.currentAnimationState = this.defaultAnimation.stateTime;
 		}
 		else
 		{
 			this.currentAnimation = currentSelected.animation;
+			this.currentAnimationState = currentSelected.stateTime;
 		}
+		
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Animation getCurrentAnimation()
+	public Animation<TextureRegion> getCurrentAnimation()
 	{
 		return this.currentAnimation;
+	}
+	
+	@Override
+	public float getCurrentAnimationState()
+	{
+		return this.currentAnimationState;
 	}
 }

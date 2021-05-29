@@ -1,7 +1,6 @@
 package de.fhbielefeld.pmdungeon.quibble.entity.effect;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.Batch;
 
 import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
@@ -10,15 +9,34 @@ public abstract class StatusEffect
 {
 	private final Creature creature;
 	
+	private final Creature cause;
+	
 	private int remainingTicks;
 	
 	private boolean removable;
 	
 	private float stateTime;
 	
-	public StatusEffect(Creature creature)
+	/**
+	 * Creates a status effect that can be placed on a creature.
+	 * The effect still needs to be added with {@link Creature#addStatusEffect(StatusEffect, int)}
+	 * @param creature the creature to influence
+	 * @param cause the creature that caused the effect (may be <code>null</code>)
+	 */
+	public StatusEffect(Creature creature, Creature cause)
 	{
 		this.creature = creature;
+		this.cause = cause;
+	}
+	
+	/**
+	 * Creates a status effect that can be placed on a creature.
+	 * The effect still needs to be added with {@link Creature#addStatusEffect(StatusEffect, int)}
+	 * @param cause the creature that caused the effect (may be <code>null</code>)
+	 */
+	public StatusEffect(Creature creature)
+	{
+		this(creature, null);
 	}
 	
 	/**
@@ -67,6 +85,14 @@ public abstract class StatusEffect
 	}
 	
 	/**
+	 * @return the creature that caused this status effect (may be <code>null</code>)
+	 */
+	public final Creature getCause()
+	{
+		return this.cause;
+	}
+	
+	/**
 	 * Marks this status effect as removable. Once this has been done, the status effect
 	 * will be removed from the creature on the next frame.
 	 */
@@ -101,22 +127,21 @@ public abstract class StatusEffect
 	}
 	
 	/**
-	 * This method can be overridden to do custom rendering on entities that are affected by the status effect.
+	 * This method can be overridden to do rendering on entities that are affected by the status effect.
 	 * This method is called after rendering the entity so this method draws on top of the entity.
-	 * @param batch the batch that is used to draw status effects
-	 * @param x the entity x-position in screen-coordinates after applying the camera position
-	 * @param y the entity y-position in screen-coordinates after applying the camera position
+	 * To do drawing, use <code>DungeonStart.getGameBatch()</code>.
+	 * This batch draws in dungeon coordinates so no conversion is necessary.
 	 */
-	public void renderStatusEffect(Batch batch, float x, float y)
+	public void renderStatusEffect()
 	{
 		
 	}
 	
 	/**
-	 * 
-	 * @return the GDX Delta Time for rendering purpose
+	 * @return the state time for animation
 	 */
-	public float getStateTime() {
+	public float getStateTime()
+	{
 		return stateTime;
 	}
 }

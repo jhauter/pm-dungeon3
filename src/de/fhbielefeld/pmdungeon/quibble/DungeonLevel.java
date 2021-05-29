@@ -54,6 +54,11 @@ public class DungeonLevel
 	
 	public void update()
 	{
+		if(!this.isEntityBufferEmpty())
+		{
+			this.flushEntityBuffer();
+		}
+		
 		Entity current;
 		for(int i = 0; i < this.entities.size(); ++i)
 		{
@@ -67,11 +72,6 @@ public class DungeonLevel
 			current.update();
 			final BoundingBox entityBB = current.getBoundingBox().offset(current.getX(), current.getY());
 			this.spatialHashGrid.update(current.getSpatialHashGridHandle(), entityBB);
-		}
-		
-		if(!this.isEntityBufferEmpty())
-		{
-			this.flushEntityBuffer();
 		}
 	}
 	

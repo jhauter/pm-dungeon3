@@ -18,7 +18,6 @@ public class QuestDummy extends Entity {
 	private Quest quest;
 	private Player player;
 
-	private boolean isActiv;
 	private boolean decide;
 
 	private final int index;
@@ -34,8 +33,8 @@ public class QuestDummy extends Entity {
 		super(x, y);
 		this.index = index;
 		questMap = createQuestMap();
-		this.animationHandler.addAsDefaultAnimation("default", 1, 1,
-				Quest.QUEST_TEXTURE_PATH + questMap.get(index).toString() + ".png", -1);
+		this.animationHandler.addAsDefaultAnimation("", 1, 999, 1, 1,
+				Quest.QUEST_TEXTURE_PATH + questMap.get(index).toString() + ".png");
 	}
 
 	/**
@@ -80,7 +79,6 @@ public class QuestDummy extends Entity {
 	 */
 	public void setActive(Player player) {
 		this.player = player;
-		this.isActiv = true;
 		quest = createQuest();
 		LoggingHandler.logger.info(msg());
 	}
@@ -160,11 +158,6 @@ public class QuestDummy extends Entity {
 
 	private void deleteStarsInSB() {
 		stars.delete(0, stars.length());
-	}
-	
-	@Override
-	public boolean canBeAccepted() {
-		return isActiv;
 	}
 
 }

@@ -13,7 +13,7 @@ public class ItemDrop extends Entity
 	{
 		super(x, y);
 		this.item = item;
-		this.animationHandler.addAsDefaultAnimation("default", 1, 999, Item.ITEMS_TEXTURE_PATH + item.getItemType().getTexture() + ".png", -1);
+		this.animationHandler.addAsDefaultAnimation("", 1, 999, 1, 1, Item.ITEMS_TEXTURE_PATH + item.getItemType().getTexture() + ".png");
 	}
 	
 	public ItemDrop(InventoryItem<Item> item)
@@ -27,7 +27,7 @@ public class ItemDrop extends Entity
 	}
 	
 	@Override
-	public boolean deleteableWorkaround()
+	public boolean shouldDespawn()
 	{
 		return this.isPickedUp;
 	}

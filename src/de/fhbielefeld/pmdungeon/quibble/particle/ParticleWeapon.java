@@ -1,6 +1,6 @@
 package de.fhbielefeld.pmdungeon.quibble.particle;
 
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.Texture;
 
 import de.fhbielefeld.pmdungeon.quibble.file.DungeonResource;
 import de.fhbielefeld.pmdungeon.quibble.file.ResourceHandler;
@@ -53,9 +53,9 @@ public class ParticleWeapon extends Particle
 	 * {@inheritDoc}
 	 */
 	@Override
-	public DungeonResource<TextureRegion> getTexture()
+	public DungeonResource<Texture> getTexture()
 	{
-		return ResourceHandler.requestResourceInstantly(Item.ITEMS_TEXTURE_PATH + this.type.getTexture() + TEXTURE_FILE_EXT, ResourceType.TEXTURE_REGION);
+		return ResourceHandler.requestResourceInstantly(Item.ITEMS_TEXTURE_PATH + this.type.getTexture() + TEXTURE_FILE_EXT, ResourceType.TEXTURE);
 	}
 	
 	/**

@@ -1,6 +1,6 @@
 package de.fhbielefeld.pmdungeon.quibble.particle;
 
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.Texture;
 
 import de.fhbielefeld.pmdungeon.quibble.file.DungeonResource;
 import de.fhbielefeld.pmdungeon.quibble.file.ResourceHandler;
@@ -79,19 +79,19 @@ public class ParticleFightText extends Particle
 	 * {@inheritDoc}
 	 */
 	@Override
-	public DungeonResource<TextureRegion> getTexture()
+	public DungeonResource<Texture> getTexture()
 	{
 		if(this.type == Type.CRIT)
 		{
-			return ResourceHandler.requestResourceInstantly("assets/textures/particle/crit.png", ResourceType.TEXTURE_REGION);
+			return ResourceHandler.requestResourceInstantly("assets/textures/particle/crit.png", ResourceType.TEXTURE);
 		}
 		else if(this.type == Type.MISS)
 		{
-			return ResourceHandler.requestResourceInstantly("assets/textures/particle/miss.png", ResourceType.TEXTURE_REGION);
+			return ResourceHandler.requestResourceInstantly("assets/textures/particle/miss.png", ResourceType.TEXTURE);
 		}
 		else
 		{
-			return ResourceHandler.requestResourceInstantly("assets/textures/particle/" + this.numberIndex + ".png", ResourceType.TEXTURE_REGION);
+			return ResourceHandler.requestResourceInstantly("assets/textures/particle/" + this.numberIndex + ".png", ResourceType.TEXTURE);
 		}
 	}
 	

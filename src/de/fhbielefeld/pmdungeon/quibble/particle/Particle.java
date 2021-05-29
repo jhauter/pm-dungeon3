@@ -1,6 +1,6 @@
 package de.fhbielefeld.pmdungeon.quibble.particle;
 
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.Texture;
 
 import de.fhbielefeld.pmdungeon.quibble.file.DungeonResource;
 
@@ -102,9 +102,9 @@ public abstract class Particle
 	}
 	
 	/**
-	 * @return the texture region that is used to render the particle
+	 * @return the texture that is used to render the particle
 	 */
-	public abstract DungeonResource<TextureRegion> getTexture();
+	public abstract DungeonResource<Texture> getTexture();
 	
 	/**
 	 * @return whether the particle should despawn on the next update
