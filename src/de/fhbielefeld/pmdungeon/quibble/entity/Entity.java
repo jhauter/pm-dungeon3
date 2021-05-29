@@ -2,11 +2,13 @@ package de.fhbielefeld.pmdungeon.quibble.entity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 
 import de.fhbielefeld.pmdungeon.quibble.DungeonLevel;
+import de.fhbielefeld.pmdungeon.quibble.SpatialHashGrid;
 import de.fhbielefeld.pmdungeon.quibble.animation.AnimationHandler;
 import de.fhbielefeld.pmdungeon.quibble.animation.AnimationHandlerImpl;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEvent;
@@ -68,6 +70,8 @@ public abstract class Entity implements IEntity, IAnimatable, ParticleSource
 	protected BoundingBox boundingBox;
 	
 	private List<EntityEventHandler> eventHandlers;
+	
+	private SpatialHashGrid.Handle<Entity> spatialHashGridHandle;
 	
 	/**
 	 * @param x x-coordinate
@@ -248,19 +252,17 @@ public abstract class Entity implements IEntity, IAnimatable, ParticleSource
 		this.velocity.x *= this.linearDamping;
 		this.velocity.y *= this.linearDamping;
 		
-		final int numOtherEntities = this.level.getNumEntities();
-		Entity cOther;
-		for(int i = 0; i < numOtherEntities; ++i)
+		Set<Entity> nearbyEntities = this.level.getSpatialHashGrid().nearby(this.spatialHashGridHandle);
+		for(Entity other : nearbyEntities)
 		{
-			cOther = this.level.getEntity(i);
-			if(cOther == this)
+			if(other == this)
 			{
 				continue;
 			}
-			if(this.boundingBox.offset(this.getX(), this.getY()).intersects(cOther.boundingBox.offset(cOther.getX(), cOther.getY())))
+			if(this.boundingBox.offset(this.getX(), this.getY()).intersects(other.boundingBox.offset(other.getX(), other.getY())))
 			{
 				//This is called on the other entity too by its own update() method
-				this.onEntityCollision(cOther);
+				this.onEntityCollision(other);
 			}
 		}
 		
@@ -268,6 +270,8 @@ public abstract class Entity implements IEntity, IAnimatable, ParticleSource
 		
 		this.updateAnimationState();
 		this.updateEnd();
+		
+		this.level.getSpatialHashGrid().update(spatialHashGridHandle, this.getBoundingBox().offset(getX(), getY()));
 	}
 	
 	/**
@@ -618,5 +622,15 @@ public abstract class Entity implements IEntity, IAnimatable, ParticleSource
 	 */
 	public boolean canBeAccepted() {
 		return false;
+	}
+	
+	public final SpatialHashGrid.Handle<Entity> getSpatialHashGridHandle()
+	{
+		return this.spatialHashGridHandle;
+	}
+	
+	public final void setSpationHashGridHandle(SpatialHashGrid.Handle<Entity> handle)
+	{
+		this.spatialHashGridHandle = handle;
 	}
 }

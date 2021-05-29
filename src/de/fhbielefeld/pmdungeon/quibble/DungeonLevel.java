@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.logging.Level;
 
+import de.fhbielefeld.pmdungeon.quibble.SpatialHashGrid.Handle;
 import de.fhbielefeld.pmdungeon.quibble.entity.BoundingBox;
 import de.fhbielefeld.pmdungeon.quibble.entity.Entity;
 import de.fhbielefeld.pmdungeon.quibble.entity.Player;
@@ -27,6 +28,8 @@ public class DungeonLevel
 	
 	private Random rng;
 	
+	private SpatialHashGrid<Entity> spatialHashGrid;
+	
 	/**
 	 * Creates a Level that contains a <code>DungeonWorld</code> and an <code>EntityController</code>.
 	 * The parameters should be copied from the main controller as this class is basically a convenience class.
@@ -34,14 +37,14 @@ public class DungeonLevel
 	 * @param world dungeon reference
 	 * @param entityController entity controller reference
 	 */
-	
-	public DungeonLevel(DungeonWorld world, EntityController entityController)
+	public DungeonLevel(DungeonWorld world, EntityController entityController, int shgRow, int shgCol, float shgWidth, float shgHeight)
 	{
 		this.world = world;
 		this.entityController = entityController;
 		this.particleSystem = new ParticleSystem();
 		this.newEntityBuffer = new ArrayList<Entity>();
 		this.rng = new Random();
+		this.spatialHashGrid = new SpatialHashGrid<>(shgRow, shgCol, shgWidth, shgHeight);
 	}
 	
 	/**
@@ -80,7 +83,12 @@ public class DungeonLevel
 	 */
 	public void flushEntityBuffer()
 	{
-		this.newEntityBuffer.forEach(e -> this.entityController.addEntity(e));
+		for(Entity e : this.newEntityBuffer)
+		{
+			this.entityController.addEntity(e);
+			Handle<Entity> h = this.spatialHashGrid.add(e.getBoundingBox().offset(e.getX(), e.getY()), e);
+			e.setSpationHashGridHandle(h);
+		}
 		this.newEntityBuffer.clear();
 	}
 	
@@ -128,6 +136,11 @@ public class DungeonLevel
 	public Random getRNG()
 	{
 		return this.rng;
+	}
+	
+	public SpatialHashGrid<Entity> getSpatialHashGrid()
+	{
+		return this.spatialHashGrid;
 	}
 	
 	/**
