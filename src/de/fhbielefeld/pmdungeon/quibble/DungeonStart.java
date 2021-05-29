@@ -3,6 +3,7 @@ package de.fhbielefeld.pmdungeon.quibble;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 
 import com.badlogic.gdx.Gdx;
@@ -10,9 +11,11 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 
 import de.fhbielefeld.pmdungeon.desktop.DesktopLauncher;
+import de.fhbielefeld.pmdungeon.quibble.SpatialHashGrid.Handle;
 import de.fhbielefeld.pmdungeon.quibble.chest.GoldenChest;
 import de.fhbielefeld.pmdungeon.quibble.entity.BoundingBox;
 import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
@@ -106,8 +109,10 @@ public class DungeonStart extends MainController implements EntityEventHandler
 	
 	private Map<String, HUDGroup> shownHUDGroups;
 	private Map<String, Label> shownLabels;
-	
+
 	private boolean drawBoundingBoxes = false;
+	private boolean drawSHGCells = true;
+	private boolean drawSHGCNearby = true;
 	
 	private DungeonStart()
 	{
@@ -163,7 +168,7 @@ public class DungeonStart extends MainController implements EntityEventHandler
 		//Clear entities from previous level
 		this.entityController.getList().clear();
 		//Set current level from the level controller and entity controller
-		this.currentLevel = new DungeonLevel(this.levelController.getDungeon(), this.entityController);
+		this.currentLevel = new DungeonLevel(this.levelController.getDungeon(), this.entityController, 15, 15, 30, 30);
 		
 		/**** Populate dungeon ****/
 		
@@ -257,22 +262,39 @@ public class DungeonStart extends MainController implements EntityEventHandler
 		
 		entityCustomRenderBatch.begin();
 		
+		if(this.drawSHGCells) //Draw spatial hash grid cells of the player
+		{
+			final Handle<Entity> h = this.myHero.getSpatialHashGridHandle();
+			final SpatialHashGrid<Entity> shg = this.currentLevel.getSpatialHashGrid();
+			float colsize = shg.getWidth() / shg.getColumns();
+			float rowsize = shg.getHeight() / shg.getRows();
+			for(Vector2 cell : h.cellsArray()) //All cells that the player touches
+			{
+				this.drawBoundingBox(debugBatch, new BoundingBox(cell.x * colsize, cell.y * rowsize, colsize, rowsize));
+				
+				if(this.drawSHGCNearby) //Draw entity BBs that touch the player's cells
+				{
+					final Set<Entity> nearby = shg.nearby(h);
+					for(Entity e : nearby)
+					{
+						this.drawBoundingBox(debugBatch, e.getBoundingBox().offset(e.getX(), e.getY()));
+					}
+				}
+			}
+		}
+		
 		for(int i = 0; i < entityList.size(); ++i)
 		{
 			currentEntity = (Entity)entityList.get(i);
 			
 			if(this.drawBoundingBoxes)
 			{
-				final BoundingBox b = currentEntity.getBoundingBox();
-				debugBatch.rect(
-					DrawingUtil.dungeonToScreenXCam(b.x + currentEntity.getX(), this.camera.position.x),
-					DrawingUtil.dungeonToScreenYCam(b.y + currentEntity.getY(), this.camera.position.y),
-					DrawingUtil.dungeonToScreenX(b.width),
-					DrawingUtil.dungeonToScreenY(b.height));
+				this.drawBoundingBox(debugBatch, currentEntity.getBoundingBox().offset(currentEntity.getX(), currentEntity.getY()));
 			}
 			
 			if(currentEntity.deleteableWorkaround())
 			{
+				this.currentLevel.getSpatialHashGrid().remove(currentEntity.getSpatialHashGridHandle());
 				entityList.remove(i);
 				--i;
 			}
@@ -294,6 +316,15 @@ public class DungeonStart extends MainController implements EntityEventHandler
 		this.currentLevel.getParticleSystem().draw(this.camera.position.x, this.camera.position.y);
 		
 		this.getHudManager().update(); //Draw HUD last
+	}
+	
+	private void drawBoundingBox(ShapeRenderer r, BoundingBox bb)
+	{
+		r.rect(
+			DrawingUtil.dungeonToScreenXCam(bb.x , this.camera.position.x),
+			DrawingUtil.dungeonToScreenYCam(bb.y, this.camera.position.y),
+			DrawingUtil.dungeonToScreenX(bb.width),
+			DrawingUtil.dungeonToScreenY(bb.height));
 	}
 	
 	private void drawCreatureStatusEffects(Batch b, Creature c, float x, float y)
