@@ -175,7 +175,7 @@ public class DungeonStart extends MainController implements EntityEventHandler
 		this.lastFrameTimeStamp = System.currentTimeMillis();
 		Gdx.app.getGraphics().setResizable(false);
 		
-		this.expLabel = this.textHUD.drawText("Level: 0", FONT_ARIAL, Color.WHITE, 24, 200, 64, 16, 432);
+		this.expLabel = this.textHUD.drawText("Level: 1", FONT_ARIAL, Color.WHITE, 24, 200, 64, 16, 432);
 		this.healthLabel = this.textHUD.drawText("Health", FONT_ARIAL, Color.WHITE, 24, 200, 64, 16, 384);
 		
 		this.questHUD = new QuestHUD(400, 400, this.textHUD);
@@ -202,7 +202,7 @@ public class DungeonStart extends MainController implements EntityEventHandler
 		
 		/**** Populate dungeon ****/
 		
-		for(int i = 0; i < 0; ++i)
+		for(int i = 0; i < 8; ++i)
 		{
 			final Point pos = this.currentLevel.getDungeon().getRandomPointInDungeon();
 			final Creature toSpawn = switch(currentLevel.getRNG().nextInt(4))
@@ -273,7 +273,6 @@ public class DungeonStart extends MainController implements EntityEventHandler
 			
 			LoggingHandler.logger.log(Level.INFO, "Player entered new level.");
 		}
-		System.out.println(this.myHero.getHitCooldown());
 		this.currentLevel.getParticleSystem().update((System.currentTimeMillis() - this.lastFrameTimeStamp) / 1000.0F);
 		this.lastFrameTimeStamp = System.currentTimeMillis();
 	}
