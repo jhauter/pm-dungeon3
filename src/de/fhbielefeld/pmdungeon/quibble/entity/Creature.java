@@ -1042,6 +1042,38 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	}
 	
 	/**
+	 * Tries to add the given itemType to the equipped items.
+	 * If the equipped items are full, then tries to add the item
+	 * to the normal inventory.
+	 * @param itemType the item type to add.
+	 * @return <code>true</code> if adding the item was successful
+	 */
+	public boolean addItem(Item itemType)
+	{
+		if(!this.equippedItems.addItem(itemType))
+		{
+			return this.inventory.addItem(itemType);
+		}
+		return true;
+	}
+	
+	/**
+	 * Tries to add the given item to the equipped items.
+	 * If the equipped items are full, then tries to add the item
+	 * to the normal inventory.
+	 * @param item the item to add.
+	 * @return <code>true</code> if adding the item was successful
+	 */
+	public boolean addItem(InventoryItem<Item> item)
+	{
+		if(!this.equippedItems.addItem(item))
+		{
+			return this.inventory.addItem(item);
+		}
+		return true;
+	}
+	
+	/**
 	 * Adds a status effect to the creature. Status effects have a set duration after which they disappear.
 	 * While the status effect is on the creature, its update method is executed continuously.
 	 * Status effects can alter the creature's stats.

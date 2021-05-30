@@ -24,7 +24,7 @@ public abstract class QuestItemReward extends Quest
 		super.onReward(player);
 		for(Item i : this.rewardItems)
 		{
-			player.getEquippedItems().addItem(i);
+			player.addItem(i);
 		}
 	}
 
