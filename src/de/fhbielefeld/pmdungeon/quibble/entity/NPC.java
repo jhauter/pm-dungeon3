@@ -1,9 +1,8 @@
 package de.fhbielefeld.pmdungeon.quibble.entity;
 
-import java.util.List;
-
 import com.badlogic.gdx.math.Vector2;
 
+import de.fhbielefeld.pmdungeon.quibble.DungeonStart;
 import de.fhbielefeld.pmdungeon.quibble.entity.ai.AIApproachTarget;
 import de.fhbielefeld.pmdungeon.quibble.entity.ai.AIMoveAround;
 import de.fhbielefeld.pmdungeon.quibble.entity.ai.AIStrategy;
@@ -69,16 +68,11 @@ public abstract class NPC extends Creature
 	public void calculateCurrentBehavior()
 	{
 		//Default implementation for monsters
-		List<Player> players = this.level.getPlayers();
-		if(players.isEmpty())
-		{
-			//Can happen if the player dies?
-			return;
-		}
-		if(this.hasLineOfSightTo(new Vector2(players.get(0).getPosition().x, players.get(0).getPosition().y))
+		Player player = DungeonStart.getDungeonMain().getPlayer();
+		if(this.hasLineOfSightTo(new Vector2(player.getPosition().x, player.getPosition().y))
 			&& !(this.currentBehavior instanceof AIApproachTarget))
 		{
-			this.setAIStrategy(new AIApproachTarget(players.get(0)));
+			this.setAIStrategy(new AIApproachTarget(player));
 		}
 	}
 	

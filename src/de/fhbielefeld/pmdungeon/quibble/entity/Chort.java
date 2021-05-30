@@ -1,9 +1,8 @@
 package de.fhbielefeld.pmdungeon.quibble.entity;
 
-import java.util.List;
-
 import com.badlogic.gdx.math.Vector2;
 
+import de.fhbielefeld.pmdungeon.quibble.DungeonStart;
 import de.fhbielefeld.pmdungeon.quibble.entity.ai.AIApproachTarget;
 import de.fhbielefeld.pmdungeon.quibble.entity.ai.AIShootArrow;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
@@ -97,30 +96,24 @@ public class Chort extends NPC
 	public void calculateCurrentBehavior()
 	{
 		//Shoot fire balls
-		List<Player> players = this.level.getPlayers();
-		if(players.isEmpty())
-		{
-			//Can happen if the player dies?
-			return;
-		}
-		;
-		if(!this.noticedPlayer && this.hasLineOfSightTo(new Vector2(players.get(0).getPosition().x, players.get(0).getPosition().y)))
+		Player player = DungeonStart.getDungeonMain().getPlayer();
+		if(!this.noticedPlayer && this.hasLineOfSightTo(new Vector2(player.getPosition().x, player.getPosition().y)))
 		{
 			this.noticedPlayer = true;
-			this.setAIStrategy(new AIShootArrow(players.get(0)));
+			this.setAIStrategy(new AIShootArrow(player));
 		}
 		
 		if(this.noticedPlayer)
 		{
-			if(this.meleeMode && this.getPosition().dst2(players.get(0).getPosition()) > 12.25F)//3.5 tiles away
+			if(this.meleeMode && this.getPosition().dst2(player.getPosition()) > 12.25F)//3.5 tiles away
 			{
-				this.setAIStrategy(new AIShootArrow(players.get(0)));
+				this.setAIStrategy(new AIShootArrow(player));
 				this.meleeMode = false;
 			}
-			else if(!this.meleeMode && this.getPosition().dst2(players.get(0).getPosition()) < 7.5F)//2.75 tiles away
+			else if(!this.meleeMode && this.getPosition().dst2(player.getPosition()) < 7.5F)//2.75 tiles away
 			{
 				this.meleeMode = true;
-				this.setAIStrategy(new AIApproachTarget(players.get(0)));
+				this.setAIStrategy(new AIApproachTarget(player));
 			}
 		}
 	}
