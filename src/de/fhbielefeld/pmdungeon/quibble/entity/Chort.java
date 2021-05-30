@@ -4,43 +4,45 @@ import java.util.List;
 
 import com.badlogic.gdx.math.Vector2;
 
-import de.fhbielefeld.pmdungeon.quibble.entity.ai.AIShootFireball;
+import de.fhbielefeld.pmdungeon.quibble.entity.ai.AIApproachTarget;
+import de.fhbielefeld.pmdungeon.quibble.entity.ai.AIShootArrow;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
 
-public class Lizard extends NPC{
+public class Chort extends NPC{
 
 	private boolean noticedPlayer;
 	
+	private boolean meleeMode;
+	
 	/**
-	 * Creates a Lizard instance at the given coordinates. The coordinates can be
+	 * Creates a Chort instance at the given coordinates. The coordinates can be
 	 * changed after creating the goblin by calling
-	 * {@link Lizard#setPosition(float, float)}. This way it can be placed anywhere
+	 * {@link Chort#setPosition(float, float)}. This way it can be placed anywhere
 	 * in the dungeon.
 	 * 
 	 * @param x x-position
 	 * @param y y-position
 	 */
-	public Lizard(float x, float y) {
+	public Chort(float x, float y) {
 		super(x, y);
 		// Default idle animation will always be played if no other animation is being
 		// played
 		// This must be added or an exception will be thrown
-		this.animationHandler.addAsDefaultAnimation(Creature.ANIM_NAME_IDLE, 4, 0.15F, 1, 4, "assets/textures/entity/lizard/lizard_m_idle.png");
+		this.animationHandler.addAsDefaultAnimation(Creature.ANIM_NAME_IDLE, 4, 0.1F, 1, 4, "assets/textures/entity/chort/chort_idle.png");
 		
 		//Other animations
 		
-		this.animationHandler.addAnimation(Creature.ANIM_NAME_RUN, 4, 0.1F, 1, 4, "assets/textures/entity/lizard/lizard_m_run.png");
-		this.animationHandler.addAnimation(Creature.ANIM_NAME_HIT, 1, 0.5F, 1, 1, "assets/textures/entity/lizard/lizard_m_hit.png");
+		this.animationHandler.addAnimation(Creature.ANIM_NAME_RUN, 4, 0.07F, 1, 4, "assets/textures/entity/chort/chort_run.png");
 	}
 
 	/**
 	 * Creates a Lizard instance at <code>x = 0</code> and <code>y = 0</code>. The
 	 * coordinates can be changed after creating the knight by calling
-	 * {@link Lizard#setPosition(float, float)}. This way it can be placed anywhere
+	 * {@link Chort#setPosition(float, float)}. This way it can be placed anywhere
 	 * in the dungeon.
 	 */
-	public Lizard() {
+	public Chort() {
 		this(0.0F, 0.0F);
 	}
 
@@ -58,16 +60,16 @@ public class Lizard extends NPC{
 	@Override
 	protected CreatureStats getBaseStatsForLevel(int level) {
 		CreatureStats stats = new CreatureStats();
-		stats.setStat(CreatureStatsAttribs.HEALTH, 6 + level);
+		stats.setStat(CreatureStatsAttribs.HEALTH, 4 + level);
 		stats.setStat(CreatureStatsAttribs.RESISTANCE_PHYS, level);
 		stats.setStat(CreatureStatsAttribs.RESISTANCE_MAGIC, level);
 		stats.setStat(CreatureStatsAttribs.MISS_CHANCE, 0.0D);
 		stats.setStat(CreatureStatsAttribs.CRIT_CHANCE, 0.1D);
-		stats.setStat(CreatureStatsAttribs.KNOCKBACK, 0.25D);
+		stats.setStat(CreatureStatsAttribs.KNOCKBACK, 0.1D);
 		stats.setStat(CreatureStatsAttribs.KNOCKBACK_RES, 0.1D);
 		stats.setStat(CreatureStatsAttribs.DAMAGE_PHYS, 2.0D);
-		stats.setStat(CreatureStatsAttribs.DAMAGE_MAGIC, 3.0D);
-		stats.setStat(CreatureStatsAttribs.WALKING_SPEED, 0.04D);
+		stats.setStat(CreatureStatsAttribs.DAMAGE_MAGIC, 0.0D);
+		stats.setStat(CreatureStatsAttribs.WALKING_SPEED, 0.05D);
 		stats.setStat(CreatureStatsAttribs.HIT_REACH, 0.4D);
 		stats.setStat(CreatureStatsAttribs.HIT_COOLDOWN, 20.0D);
 		return stats;
@@ -98,18 +100,26 @@ public class Lizard extends NPC{
 		if(!this.noticedPlayer && this.hasLineOfSightTo(new Vector2(players.get(0).getPosition().x, players.get(0).getPosition().y)))
 		{
 			this.noticedPlayer = true;
-			this.setAIStrategy(new AIShootFireball(players.get(0)));
+			this.setAIStrategy(new AIShootArrow(players.get(0)));
 		}
-	}
-	
-	@Override
-	protected boolean useHitAnimation()
-	{
-		return true;
+		
+		if(this.noticedPlayer)
+		{
+			if(this.meleeMode && this.getPosition().dst2(players.get(0).getPosition()) > 12.25F)//3.5 tiles away
+			{
+				this.setAIStrategy(new AIShootArrow(players.get(0)));
+				this.meleeMode = false;
+			}
+			else if(!this.meleeMode && this.getPosition().dst2(players.get(0).getPosition()) < 7.5F)//2.75 tiles away
+			{
+				this.meleeMode = true;
+				this.setAIStrategy(new AIApproachTarget(players.get(0)));
+			}
+		}
 	}
 
 	@Override
 	public int getExpDrop() {
-		return 7;
+		return 5;
 	}
 }
