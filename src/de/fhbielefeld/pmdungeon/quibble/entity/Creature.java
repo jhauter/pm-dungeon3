@@ -1104,6 +1104,11 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		return expLevel * 10;
 	}
 	
+	
+	/**
+	 * Sets the total exp of this creature. The level will update automatically.
+	 * @param exp the new total exp
+	 */
 	public void setTotalExp(int exp)
 	{
 		CreatureExpEvent event = (CreatureExpEvent)this.fireEvent(new CreatureExpEvent(EVENT_ID_EXP_CHANGE, this, this.totalExp, exp));
@@ -1114,16 +1119,26 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		}
 	}
 	
+	/**
+	 * @return total exp of the creature
+	 */
 	public int getTotalExp()
 	{
 		return this.totalExp;
 	}
 	
+	/**
+	 * Adds exp to the total exp of this creature.
+	 * @param exp the exp to add
+	 */
 	public void rewardExp(int exp)
 	{
 		this.setTotalExp(this.totalExp + exp);
 	}
 	
+	/**
+	 * @return the level of the creature
+	 */
 	public int getCurrentExpLevel()
 	{
 		return this.expLevelFunction(this.totalExp);

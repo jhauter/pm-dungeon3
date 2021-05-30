@@ -17,7 +17,7 @@ public abstract class Projectile extends Entity
 	public static final String PROJECTILE_PATH = "assets/textures/projectiles/";
 	
 	//To indicate if the projectile should be deleted
-	private boolean isDepleted;
+	private boolean deleteFlag;
 	
 	// Owner of the projectile. To check that the projectile cannot hit the owner.
 	private Creature owner;
@@ -93,7 +93,7 @@ public abstract class Projectile extends Entity
 	@Override
 	protected void onTileCollision()
 	{
-		this.isDepleted = true;
+		this.deleteFlag = true;
 	}
 	
 	/**
@@ -107,7 +107,7 @@ public abstract class Projectile extends Entity
 	 */
 	public boolean isDepleted()
 	{
-		return isDepleted;
+		return deleteFlag;
 	}
 	
 	/**
@@ -115,13 +115,13 @@ public abstract class Projectile extends Entity
 	 */
 	private void setDepleted()
 	{
-		this.isDepleted = true;
+		this.deleteFlag = true;
 	}
 	
 	@Override
 	public boolean shouldDespawn()
 	{
-		return isDepleted;
+		return deleteFlag;
 	}
 	
 	/**

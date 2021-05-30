@@ -19,19 +19,23 @@ public class StatusEffectBurning extends StatusEffect implements DamageSource
 		anim = AnimationFactory.createAnimation("assets/textures/particle/burningCircle.png", 8, 8, 0.01F);
 	}
 	
-	private Creature cause;
-	
 	/**
-	 * A creature that is on fire will receive more damage the higher its magical
-	 * abilities
-	 * 
-	 * @param creature that is set on fire
-	 * @param cause    that will get the Exp
+	 * Creates a burning status effect that inflicts damage over time.
+	 * @param creature the creature that is on fire
+	 * @param cause the attacker
 	 */
 	public StatusEffectBurning(Creature creature, Creature cause)
 	{
+		super(creature, cause);
+	}
+	
+	/**
+	 * Creates a burning status effect that inflicts damage over time.
+	 * @param creature the creature that is on fire
+	 */
+	public StatusEffectBurning(Creature creature)
+	{
 		super(creature);
-		this.cause = cause;
 	}
 	
 	@Override
@@ -56,7 +60,7 @@ public class StatusEffectBurning extends StatusEffect implements DamageSource
 		
 		//every 50 Ticks a creature will get damage
 		if(getCreature().getTicks() % 60 == 0)
-			this.getCreature().damage(this, DamageType.MAGICAL, cause, true);
+			this.getCreature().damage(this, DamageType.MAGICAL, this.getCause(), true);
 	}
 	
 	@Override

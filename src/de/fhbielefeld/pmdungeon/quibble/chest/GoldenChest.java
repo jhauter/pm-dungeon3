@@ -4,8 +4,8 @@ public class GoldenChest extends Chest
 {
 	/**
 	 * Creates a golden chest at the given position
-	 * @param x value for position
-	 * @param y value for position
+	 * @param x the x-position
+	 * @param y the y-position
 	 */
 	public GoldenChest(float x, float y)
 	{

@@ -485,6 +485,10 @@ public class DungeonStart extends MainController implements EntityEventHandler
 		return g;
 	}
 	
+	/**
+	 * Sets the slot that is marked in the hotbar.
+	 * @param slot the slot index
+	 */
 	public void setMarkedEquipSlot(int slot)
 	{
 		HUDElement e;
@@ -510,11 +514,17 @@ public class DungeonStart extends MainController implements EntityEventHandler
 		this.currentlyMarkedEquipSlot = slot;
 	}
 	
+	/**
+	 * @return the camera's x-position
+	 */
 	public float getCamPosX()
 	{
 		return this.camera.position.x;
 	}
 	
+	/**
+	 * @return the camera's y-position
+	 */
 	public float getCamPosY()
 	{
 		return this.camera.position.y;

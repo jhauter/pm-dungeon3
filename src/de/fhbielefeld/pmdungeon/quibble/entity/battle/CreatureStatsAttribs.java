@@ -72,8 +72,7 @@ public enum CreatureStatsAttribs
 	}
 	
 	/**
-	 * Whether to fill up this stat if new maximum stats are set and this would result in the current
-	 * stat to be lower than the maximum stat.
+	 * Whether to fill up this stat if new maximum stats are higher than the current stats.
 	 * @return whether to fill this stat up if new max. stats are set
 	 */
 	public boolean fillIfNewMax()

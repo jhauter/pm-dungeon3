@@ -20,6 +20,14 @@ public final class AnimationFactory
 		return createAnimation(animation.file, animation.row, animation.col, frameDuration);
 	}
 	
+	/**
+	 * Creates an animation from the provided sprite sheet.
+	 * @param file the sprite sheet file
+	 * @param rows number of rows in the sprite sheet
+	 * @param columns number of columns in the sprite sheet
+	 * @param frameDuration how long a frame should take in seconds
+	 * @return an animation of the sprite sheet
+	 */
 	public static Animation<TextureRegion> createAnimation(String file, int rows, int columns, float frameDuration)
 	{
 		DungeonResource<Texture> texture = ResourceHandler.requestResourceInstantly(file, ResourceType.TEXTURE);

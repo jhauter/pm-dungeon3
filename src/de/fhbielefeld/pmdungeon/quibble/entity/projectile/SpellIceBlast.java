@@ -28,7 +28,7 @@ public class SpellIceBlast extends ProjectileMagic
 		super.onProjectileImpactCreature(hitCreature);
 		
 		//Slows down hit creatures
-		hitCreature.addStatusEffect(new StatusEffectSpeed(hitCreature, 0.005), 100);
+		hitCreature.addStatusEffect(new StatusEffectSpeed(hitCreature, 0.5D), 100);
 	}
 	
 	@Override

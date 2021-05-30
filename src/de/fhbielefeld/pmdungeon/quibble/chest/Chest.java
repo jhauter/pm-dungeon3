@@ -9,7 +9,6 @@ import de.fhbielefeld.pmdungeon.quibble.item.Item;
 
 public abstract class Chest extends Entity
 {
-	
 	public static final String ANIM_OPEN_STATE = "open_state";
 	public static final String ANIM_OPENING = "opening";
 	public static final String TEXTURE_PATH_CHEST = "assets/textures/chest/";
@@ -37,13 +36,17 @@ public abstract class Chest extends Entity
 		}
 	}
 	
+	/**
+	 * @return the inventory of the chest
+	 */
 	public Inventory<Item> getInv()
 	{
 		return inv;
 	}
 	
 	/**
-	 * if activated the chest was opened once and this chest will show a open chest Texture.
+	 * Puts the chest into the "open" state visually and plays an animation that
+	 * shows the chest opening.
 	 */
 	public void setOpen()
 	{
@@ -54,6 +57,9 @@ public abstract class Chest extends Entity
 		}
 	}
 	
+	/**
+	 * @return whether the chest has been opened
+	 */
 	public boolean isOpen()
 	{
 		return this.isOpen;
@@ -64,6 +70,8 @@ public abstract class Chest extends Entity
 	{
 		super.updateAnimationState();
 		if(isOpen)
+		{
 			this.animationHandler.playAnimation(ANIM_OPEN_STATE, 2, true);
+		}
 	}
 }

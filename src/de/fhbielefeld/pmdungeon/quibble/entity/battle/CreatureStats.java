@@ -142,6 +142,11 @@ public class CreatureStats
 		}
 	}
 	
+	/**
+	 * Cuts all values off or raises them to the <code>newMax</code> stats, depending on
+	 * the declaration of each <code>CreatureStatsAttrib</code> in its enum.
+	 * @param newMax the <code>CreatureStats</code> that represent the new maximum values
+	 */
 	public void newMax(CreatureStats newMax)
 	{
 		for(int i = 0; i < this.stats.length; ++i)

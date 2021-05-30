@@ -507,6 +507,11 @@ public abstract class Entity implements ParticleSource
 	
 	/**
 	 * Returns the initial value for the bounding box. This can be overridden to change the initial value.
+	 * The bounding box is in relative coordinates and therefore should be close to 0.<br><br>
+	 * Additionally, the bounding box should be placed in such a way that the actual entity
+	 * position if not too far away. Note that the entity position here is (0 | 0) because of the
+	 * relative coordinates of the bounding box.<br><br>
+	 * Ideally the bounding box should be centered on the entity at least on the x axis.
 	 * @return the initial bounding box relative to the entity's position
 	 */
 	protected BoundingBox getInitBoundingBox()
@@ -637,56 +642,103 @@ public abstract class Entity implements ParticleSource
 		return true;
 	}
 	
+	/**
+	 * Handle used for spatial hash grid collision testing.
+	 * @return spatial hash grid handle
+	 */
 	public final SpatialHashGrid.Handle<Entity> getSpatialHashGridHandle()
 	{
 		return this.spatialHashGridHandle;
 	}
 	
+	/**
+	 * Sets the handle used for spatial hash grid collision testing.
+	 * Do not use this.
+	 * @param the new spatial hash grid handle
+	 */
 	public final void setSpationHashGridHandle(SpatialHashGrid.Handle<Entity> handle)
 	{
 		this.spatialHashGridHandle = handle;
 	}
 	
+	/**
+	 * The width of the rendered image.
+	 * A value of <code>1.0</code> means the entity texture will be 1 tile wide.
+	 */
 	public float getRenderWidth()
 	{
 		return this.renderWidth;
 	}
 	
+	/**
+	 * The height of the rendered image.
+	 * A value of <code>1.0</code> means the entity texture will be 1 tile high.
+	 */
 	public float getRenderHeight()
 	{
 		return this.renderHeight;
 	}
 	
+	/**
+	 * Render image scale on the x axis.
+	 * How much to multiply the width when rendering.
+	 * Negative values will flip the image.
+	 */
 	public float getScaleX()
 	{
 		return this.renderScaleX;
 	}
 	
+	/**
+	 * Render image scale on the y axis.
+	 * How much to multiply the height when rendering.
+	 * Negative values will flip the image.
+	 */
 	public float getScaleY()
 	{
 		return this.renderScaleY;
 	}
 	
+	/**
+	 * Render offset along the x axis. This value determines the image offset from the position.
+	 * A value of <code>0.0</code> centers the image on the actual entity position.
+	 */
 	public float getRenderOffsetX()
 	{
 		return this.renderOffsetX;
 	}
 	
+	/**
+	 * Render offset along the x axis. This value determines the image offset from the position.
+	 * A value of <code>0.0</code> centers the image on the actual entity position.
+	 */
 	public float getRenderOffsetY()
 	{
 		return this.renderOffsetY;
 	}
 	
+	/**
+	 * Rotation pivot relative to renderWidth.
+	 * <code>renderWidth * 0.5</code> means rotation around the center
+	 */
 	public float getRenderPivotX()
 	{
 		return this.renderPivotX;
 	}
 	
+	/**
+	 * Rotation pivot relative to renderHeight.
+	 * <code>renderHeight * 0.5</code> means rotation around the center
+	 */
 	public float getRenderPivotY()
 	{
 		return this.renderPivotY;
 	}
 	
+	/**
+	 * Rotation for rendering in degrees. Change the rotation origin with the
+	 * <code>renderPivotX</code> and <code>renderPivotY</code> values.
+	 */
 	public float getRotation()
 	{
 		return this.renderRotation;

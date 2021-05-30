@@ -2,8 +2,9 @@ package de.fhbielefeld.pmdungeon.quibble.animation;
 
 public enum SpriteSheets
 {
-	
 	//Sprite sheets for use with AnimationFactory
+	//It is not necessary to use this enum because AnimationFactory
+	//also directly accepts the parameters used here
 	
 	SPELL_ICE_BLAST("assets/textures/projectiles/IceBlast.png", 8, 1),
 	SPELL_FIRE_BALL("assets/textures/projectiles/fireBall.png", 8, 1),
@@ -21,5 +22,4 @@ public enum SpriteSheets
 		this.col = col;
 		this.row = row;
 	}
-	
 }

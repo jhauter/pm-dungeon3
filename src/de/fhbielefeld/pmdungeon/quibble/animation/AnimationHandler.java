@@ -36,6 +36,21 @@ public interface AnimationHandler
 	 */
 	public void addAnimation(String animName, int numFrames, float frameDuration, int rows, int columns, String fileName);
 	
+	/**
+	 * See {@link #addAnimation(String, int, float, int, int, String)} for more info.
+	 * 
+	 * @param animName the name of the animation (names are case sensitive)
+	 * @param numFrames number of textures in this animation
+	 * @param firstFrame the offset at which the frames begin (how many frames to skip at the start)
+	 * @param frameDuration how long a single frame will be displayed in the animation
+	 * @param rows number of rows in the sprite sheet
+	 * @param columns number of column in the sprite sheet
+	 * @param fileName the complete file path to the sprite sheet
+	 * @throws IllegalArgumentException if an animation with the same <code>animName</code>
+	 * has already been registered
+	 * @throws IllegalArgumentException <code>numFrames</code> is <code><= 0</code> or greater than <code>rows * columns</code>
+	 * @throws IllegalArgumentException <code>frameDuration</code> is negative
+	 */
 	public void addAnimation(String animName, int numFrames, int firstFrame, float frameDuration, int rows, int columns, String fileName);
 	
 	/**
@@ -57,6 +72,21 @@ public interface AnimationHandler
 	 */
 	public void addAsDefaultAnimation(String animName, int numFrames, float frameDuration, int rows, int columns, String fileName);
 	
+	/**
+	 * See {@link #addAsDefaultAnimation(String, int, float, int, int, String)} for more info.
+	 * 
+	 * @param animName the name of the animation (names are case sensitive)
+	 * @param numFrames number of textures in this animation
+	 * @param firstFrame the offset at which the frames begin (how many frames to skip at the start)
+	 * @param frameDuration how long a single frame will be displayed in the animation
+	 * @param rows number of rows in the sprite sheet
+	 * @param columns number of column in the sprite sheet
+	 * @param fileName the complete file path to the sprite sheet
+	 * @throws IllegalArgumentException if an animation with the same <code>animName</code>
+	 * has already been registered
+	 * @throws IllegalArgumentException <code>numFrames</code> is <code><= 0</code> or greater than <code>rows * columns</code>
+	 * @throws IllegalArgumentException <code>frameDuration</code> is negative
+	 */
 	public void addAsDefaultAnimation(String animName, int numFrames, int firstFrame, float frameDuration, int rows, int columns, String fileName);
 	
 	/**
@@ -111,5 +141,9 @@ public interface AnimationHandler
 	 */
 	public Animation<TextureRegion> getCurrentAnimation();
 	
+	/**
+	 * @return how many seconds the current animation has been playing.
+	 * Can be used to calculate the current frame of the current animation
+	 */
 	public float getCurrentAnimationState();
 }
