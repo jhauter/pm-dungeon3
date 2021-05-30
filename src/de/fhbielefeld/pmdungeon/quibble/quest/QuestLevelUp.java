@@ -1,33 +1,33 @@
 package de.fhbielefeld.pmdungeon.quibble.quest;
 
-import java.util.logging.Level;
-
-import de.fhbielefeld.pmdungeon.quibble.LoggingHandler;
 import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
 import de.fhbielefeld.pmdungeon.quibble.entity.Player;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.CreatureExpEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEvent;
 import de.fhbielefeld.pmdungeon.quibble.item.Item;
 
-public class RQuestLevelUp extends Quest
+public class QuestLevelUp extends QuestItemReward
 {
-	
-	private Player player;
 	private int levelToReach;
-	private int counter;
+	private int currentLv;
 	
 	/**
 	 * Creates a quest object that can be completed by the player by reaching the next exp level.
 	 * @param questName the display name of the quest
-	 * @param p the player that should have the quest
-	 * @param itemOnReward the item that is rewarded when the quest is completed
+	 * @param rewardItems the items that are given to the player when the quest is completed
 	 * @param expOnReward the exp that are rewarded when the quest is completed
 	 */
-	public RQuestLevelUp(String questName, Player p, Item itemOnReward, int expOnReward, int levelToReach)
+	public QuestLevelUp(String questName,  int levelToReach, int expOnReward, Item ... rewardItems)
 	{
-		super(questName, p, itemOnReward, expOnReward);
-		this.player = p;
+		super(questName, expOnReward, rewardItems);
 		this.levelToReach = levelToReach;
+	}
+	
+	@Override
+	public void onAccept(Player player)
+	{
+		super.onAccept(player);
+		this.currentLv = player.getCurrentExpLevel();
 	}
 	
 	/**
@@ -36,17 +36,16 @@ public class RQuestLevelUp extends Quest
 	@Override
 	public String getTask()
 	{
-		return "Level up to Level " + this.levelToReach;
+		return "Level up to lv. " + this.levelToReach;
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String onWork()
+	public String getProgressText()
 	{
-		int level = this.player.totalExpFunction(this.player.getCurrentExpLevel()) / 10;
-		return level + "/" + levelToReach;
+		return this.currentLv + "/" + levelToReach;
 	}
 	
 	/**
@@ -63,11 +62,18 @@ public class RQuestLevelUp extends Quest
 			int newLevel = expEvent.getEntity().expLevelFunction(expEvent.getNewTotalExp());
 			if(newLevel > oldLevel)
 			{
-				counter++;
-				if(counter >= levelToReach)
-					setCompleted(true);
-				LoggingHandler.logger.log(Level.INFO, "The quest " + this.getQuestName() + " was completed");
+				this.currentLv = newLevel;
+			}
+			if(this.currentLv >= this.levelToReach)
+			{
+				setCompleted(true);
 			}
 		}
+	}
+	
+	@Override
+	public String getIconPath()
+	{
+		return "yellow_flag";
 	}
 }

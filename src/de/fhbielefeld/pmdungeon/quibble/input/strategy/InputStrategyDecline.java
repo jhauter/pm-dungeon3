@@ -27,7 +27,7 @@ public class InputStrategyDecline extends InputStrategy
 			if(l.get(i) instanceof QuestDummy)
 			{
 				QuestDummy qd = (QuestDummy)l.get(i);
-				qd.setDecided(false);
+				qd.onPlayerDecision(false, getPlayer());
 			}
 		}
 	}

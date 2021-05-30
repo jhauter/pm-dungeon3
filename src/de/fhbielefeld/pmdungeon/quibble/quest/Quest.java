@@ -6,7 +6,6 @@ import de.fhbielefeld.pmdungeon.quibble.item.Item;
 
 public abstract class Quest implements EntityEventHandler
 {
-	
 	public final static String QUEST_TEXTURE_PATH = "assets/textures/quest/";
 	public final static String QUEST_REACHED = "You will gain: ";
 	
@@ -14,76 +13,68 @@ public abstract class Quest implements EntityEventHandler
 	
 	private final String questName;
 	
-	private final Player player;
-	
-	private final Item itemOnReward;
-	private final int expOnReward;
+	private final int rewardExp;
 	
 	/**
 	 * Creates a quest object that can track the player's progress on an objective.
 	 * @param questName the display name of the quest
 	 * @param player the player that should have the quest
-	 * @param itemOnReward the item that is rewarded when the quest is completed
-	 * @param expOnReward the exp that are rewarded when the quest is completed
+	 * @param rewardExp the exp that are rewarded when the quest is completed
 	 */
-	public Quest(String questName, Player player, Item itemOnReward, int expOnReward)
+	public Quest(String questName, int rewardExp)
 	{
+		if(rewardExp < 0)
+		{
+			throw new IllegalArgumentException("rewardExp cannot be negative");
+		}
 		this.questName = questName;
-		this.itemOnReward = itemOnReward;
-		this.expOnReward = expOnReward;
-		this.player = player;
+		this.rewardExp = rewardExp;
+	}
+	
+	/**
+	 * This is called when a player accepts the quest.
+	 * @param player the player that accepted the quest
+	 */
+	public void onAccept(Player player)
+	{
+		
 	}
 	
 	/**
 	 * 
-	 * @return The specific task of the quest as a string
+	 * @return the task or objective that the player has to complete as user friendly string
 	 */
 	public abstract String getTask();
 	
 	/**
 	 * 
-	 * @return A string that represents how far a quest has already been completed
+	 * @return the progress of the quest as a user fiendly string
 	 */
-	public abstract String onWork();
+	public abstract String getProgressText();
 	
 	/**
-	 * Use <code>QUEST_REACH</code> + <code>onReward</code>
-	 * 
-	 * @return A string that represents what reward the quest will give
+	 * @return the quest reward as a user friendly string
 	 */
-	public String onComplete()
-	{
-		if(this.getExpOnReward() > 0 && itemOnReward == null)
-			return QUEST_REACHED + this.getExpOnReward();
-		if(this.getExpOnReward() == 0 && itemOnReward != null)
-			return QUEST_REACHED + getItemOnReward();
-		else
-			return QUEST_REACHED + this.getExpOnReward() + " and " + getItemOnReward().getDisplayName();
-	}
+	public abstract String getRewardText();
 	
 	/**
-	 * 
-	 * @return name of a Quest
+	 * @return name of the quest
 	 */
 	public final String getQuestName()
 	{
 		return this.questName;
 	}
 	
-	public void onReward(Player p)
-	{
-		p.rewardExp(expOnReward);
-		if(itemOnReward != null)
-			p.getEquippedItems().addItem(itemOnReward);
-	}
-	
 	/**
-	 * 
-	 * @return the player that has this quest
+	 * Executed when the quest has been completed.
+	 * @param the player that completed the quest
 	 */
-	public Player getPlayer()
+	public void onReward(Player player)
 	{
-		return player;
+		if(this.rewardExp > 0)
+		{
+			player.rewardExp(this.rewardExp);
+		}
 	}
 	
 	/**
@@ -95,7 +86,7 @@ public abstract class Quest implements EntityEventHandler
 	}
 	
 	/**
-	 * Marks this quest for removal
+	 * Marks this quest for removal.
 	 * @param isCompleted whether this quest should be removed
 	 */
 	public void setCompleted(boolean isCompleted)
@@ -104,18 +95,42 @@ public abstract class Quest implements EntityEventHandler
 	}
 	
 	/**
-	 * @return the items that the player gets when the quest is completed
-	 */
-	public Item getItemOnReward()
-	{
-		return itemOnReward;
-	}
-	
-	/**
 	 * @return the amount of exp that the player gets when the quest is completed
 	 */
-	public int getExpOnReward()
+	public int getRewardExp()
 	{
-		return expOnReward;
+		return this.rewardExp;
+	}
+	
+	public String getIconPath()
+	{
+		//default icon; can be overridden
+		return "gray_flag";
+	}
+	
+	public static String makeRewardString(int rewardExp, Item ... rewardItems)
+	{
+		StringBuilder b = new StringBuilder();
+		if(rewardExp > 0)
+		{
+			b.append("+ " + rewardExp + " xp");
+			if(rewardItems.length > 0)
+			{
+				b.append(", ");
+			}
+		}
+		for(int i = 0; i < rewardItems.length; ++i)
+		{
+			b.append(rewardItems[i].getDisplayName());
+			if(i < rewardItems.length - 1)
+			{
+				b.append(", ");
+			}
+		}
+		if(b.isEmpty())
+		{
+			b.append("Nothing");
+		}
+		return b.toString();
 	}
 }

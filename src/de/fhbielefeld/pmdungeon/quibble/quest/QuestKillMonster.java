@@ -1,30 +1,24 @@
 package de.fhbielefeld.pmdungeon.quibble.quest;
 
-import java.util.logging.Level;
-
-import de.fhbielefeld.pmdungeon.quibble.LoggingHandler;
 import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
-import de.fhbielefeld.pmdungeon.quibble.entity.Player;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.CreatureHitTargetPostEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEvent;
 import de.fhbielefeld.pmdungeon.quibble.item.Item;
 
-public class RQuestKillMonster extends Quest
+public class QuestKillMonster extends QuestItemReward
 {
-	
 	private int toKill;
 	private int counter;
 	
 	/**
 	 * Creates a quest object that can be completed by the player by killing a certain amount of monsters.
 	 * @param questName the display name of the quest
-	 * @param p the player that should have the quest
-	 * @param itemOnReward the item that is rewarded when the quest is completed
+	 * @param rewardItems the items that are given to the player when the quest is completed
 	 * @param expOnReward the exp that are rewarded when the quest is completed
 	 */
-	public RQuestKillMonster(String questName, Player p, Item itemOnReward, int expOnReward, int toKill)
+	public QuestKillMonster(String questName, int toKill, int expOnReward, Item ... rewardItems)
 	{
-		super(questName, p, itemOnReward, expOnReward);
+		super(questName, expOnReward, rewardItems);
 		this.toKill = toKill;
 	}
 	
@@ -41,7 +35,7 @@ public class RQuestKillMonster extends Quest
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String onWork()
+	public String getProgressText()
 	{
 		return counter + "/" + toKill;
 	}
@@ -61,7 +55,6 @@ public class RQuestKillMonster extends Quest
 				if(counter == toKill)
 				{
 					this.setCompleted(true);
-					LoggingHandler.logger.log(Level.INFO, "The quest " + this.getQuestName() + "was completed");
 				}
 			}
 		}
@@ -85,5 +78,11 @@ public class RQuestKillMonster extends Quest
 	public void setCounter(int counter)
 	{
 		this.counter = counter;
+	}
+	
+	@Override
+	public String getIconPath()
+	{
+		return "red_flag";
 	}
 }

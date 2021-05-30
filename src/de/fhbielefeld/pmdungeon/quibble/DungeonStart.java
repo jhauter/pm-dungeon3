@@ -21,8 +21,8 @@ import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
 import de.fhbielefeld.pmdungeon.quibble.entity.Demon;
 import de.fhbielefeld.pmdungeon.quibble.entity.Entity;
 import de.fhbielefeld.pmdungeon.quibble.entity.Goblin;
+import de.fhbielefeld.pmdungeon.quibble.entity.Knight;
 import de.fhbielefeld.pmdungeon.quibble.entity.Lizard;
-import de.fhbielefeld.pmdungeon.quibble.entity.Mage;
 import de.fhbielefeld.pmdungeon.quibble.entity.Player;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
 import de.fhbielefeld.pmdungeon.quibble.entity.effect.StatusEffect;
@@ -50,6 +50,7 @@ import de.fhbielefeld.pmdungeon.quibble.inventory.Inventory;
 import de.fhbielefeld.pmdungeon.quibble.item.Item;
 import de.fhbielefeld.pmdungeon.quibble.particle.DrawingUtil;
 import de.fhbielefeld.pmdungeon.quibble.quest.QuestDummy;
+import de.fhbielefeld.pmdungeon.quibble.quest.QuestFactory;
 import de.fhbielefeld.pmdungeon.quibble.trap.TrapHealth;
 import de.fhbielefeld.pmdungeon.quibble.trap.TrapTeleport;
 import de.fhbielefeld.pmdungeon.vorgaben.dungeonCreator.dungeonconverter.Coordinate;
@@ -153,7 +154,7 @@ public class DungeonStart extends MainController implements EntityEventHandler
 		//HudManager have to be made before the Player
 		// cause InputStrategy would got a null HUDManager
 		this.hudManager = new HUDManager();
-		this.myHero = new Mage();
+		this.myHero = new Knight();
 		this.myHero.getEquippedItems().addItem(Item.SWORD_BLUE);
 		this.myHero.addEntityEventHandler(this);
 		
@@ -245,8 +246,7 @@ public class DungeonStart extends MainController implements EntityEventHandler
 		this.currentLevel.spawnEntity(currentLevel.getRNG().nextInt(2) == 0 ? new TrapTeleport(pos3.x, pos3.y, true) : new TrapHealth(pos3.x, pos3.y, 2, true));
 		
 		final Point pos4 = this.currentLevel.getDungeon().getRandomPointInDungeon();
-		int i = this.currentLevel.getRNG().nextInt(3);
-		this.currentLevel.spawnEntity(new QuestDummy(i, pos4.x, pos4.y));
+		this.currentLevel.spawnEntity(new QuestDummy(QuestFactory.getRandomQuest(), pos4.x, pos4.y));
 		
 		//Set the camera to follow the hero
 		this.cameraTarget = this.myHero;
@@ -542,5 +542,10 @@ public class DungeonStart extends MainController implements EntityEventHandler
 	public HUDGroup getChestHud()
 	{
 		return this.shownHUDGroups.get(INV_NAME_CHEST);
+	}
+	
+	public Player getPlayer()
+	{
+		return this.myHero;
 	}
 }

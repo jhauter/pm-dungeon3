@@ -29,7 +29,7 @@ public class InputStrategyActivateQuest extends InputStrategy
 			if(l.get(i) instanceof QuestDummy)
 			{
 				questDummy = (QuestDummy)l.get(i);
-				questDummy.setActive(getPlayer());
+				questDummy.showQuestDescription();
 			}
 		}
 	}

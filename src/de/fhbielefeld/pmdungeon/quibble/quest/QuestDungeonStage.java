@@ -4,19 +4,17 @@ import de.fhbielefeld.pmdungeon.quibble.entity.Player;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEvent;
 import de.fhbielefeld.pmdungeon.quibble.item.Item;
 
-public class RQuestDungeonStage extends Quest
+public class QuestDungeonStage extends QuestItemReward
 {
-	
 	/**
 	 * Creates a quest object that can be completed by the player by reaching the next dungeon stage.
 	 * @param questName the display name of the quest
-	 * @param p the player that should have the quest
-	 * @param itemOnReward the item that is rewarded when the quest is completed
+	 * @param rewardItems the items that are given to the player when the quest is completed
 	 * @param expOnReward the exp that are rewarded when the quest is completed
 	 */
-	public RQuestDungeonStage(String questName, Player p, Item itemOnReward, int expOnReward)
+	public QuestDungeonStage(String questName, int expOnReward, Item ... rewardItems)
 	{
-		super(questName, p, itemOnReward, expOnReward);
+		super(questName, expOnReward, rewardItems);
 	}
 	
 	/**
@@ -32,7 +30,7 @@ public class RQuestDungeonStage extends Quest
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String onWork()
+	public String getProgressText()
 	{
 		return "";
 	}
@@ -47,5 +45,11 @@ public class RQuestDungeonStage extends Quest
 		{
 			setCompleted(true);
 		}
+	}
+	
+	@Override
+	public String getIconPath()
+	{
+		return "blue_flag";
 	}
 }

@@ -27,7 +27,7 @@ public class InputStrategyAccept extends InputStrategy
 			if(l.get(i) instanceof QuestDummy)
 			{
 				QuestDummy qd = (QuestDummy)l.get(i);
-				qd.setDecided(true);
+				qd.onPlayerDecision(true, getPlayer());
 			}
 		}
 	}

@@ -140,6 +140,7 @@ public abstract class Player extends Creature implements InputListener
 			if(cQuest.isCompleted())
 			{
 				cQuest.onReward(this);
+				LoggingHandler.logger.log(Level.INFO, "The quest " + cQuest.getQuestName() + " was completed");
 				this.quests.set(i, this.quests.get(this.quests.size() - 1));
 				
 				this.quests.remove(this.quests.size() - 1);
@@ -174,6 +175,7 @@ public abstract class Player extends Creature implements InputListener
 	{
 		this.quests.add(quest);
 		this.addEntityEventHandler(quest);
+		quest.onAccept(this);
 		this.fireEvent(new PlayerQuestsChangedEvent(PlayerQuestsChangedEvent.EVENT_ID, this, quest));
 	}
 	

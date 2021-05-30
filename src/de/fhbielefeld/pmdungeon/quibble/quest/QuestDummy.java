@@ -1,27 +1,18 @@
 package de.fhbielefeld.pmdungeon.quibble.quest;
 
-import java.util.HashMap;
-
 import de.fhbielefeld.pmdungeon.quibble.LoggingHandler;
 import de.fhbielefeld.pmdungeon.quibble.entity.Entity;
 import de.fhbielefeld.pmdungeon.quibble.entity.Player;
-import de.fhbielefeld.pmdungeon.quibble.item.Item;
 
 public class QuestDummy extends Entity
 {
-	
 	private final StringBuilder sb = new StringBuilder();
 	private final StringBuffer stars = new StringBuffer();
 	private final int logLenght = 97;
 	
-	private final HashMap<Integer, String> questMap;
-	
 	private Quest quest;
-	private Player player;
 	
-	private boolean decide;
-	
-	private final int index;
+	private boolean shouldDespawn;
 	
 	/**
 	 * Will create a visible Quest Entity
@@ -30,29 +21,12 @@ public class QuestDummy extends Entity
 	 * @param x     x float of the Position
 	 * @param y     y float of the Position
 	 */
-	public QuestDummy(int index, float x, float y)
+	public QuestDummy(Quest quest, float x, float y)
 	{
 		super(x, y);
-		this.index = index;
-		questMap = createQuestMap();
+		this.quest = quest;
 		this.animationHandler.addAsDefaultAnimation("", 1, 999, 1, 1,
-			Quest.QUEST_TEXTURE_PATH + questMap.get(index).toString() + ".png");
-	}
-	
-	/**
-	 * Creates from all available Quest the Quest that symbolizes the dummy
-	 * @return the specific quest
-	 */
-	private Quest createQuest()
-	{
-		if(index == 0)
-			return quest = new RQuestLevelUp("Level Up Quest", player, Item.SWORD_KATANA, 20, player.getCurrentExpLevel() + 1);
-		else if(index == 1)
-			return quest = new RQuestDungeonStage("Reach next Stage Quest", player, Item.SWORD_KATANA, 20);
-		else if(index == 2)
-			return quest = new RQuestKillMonster("Kill Monster Quest", player, null, 20, 5);
-		else
-			throw new IndexOutOfBoundsException("Index out of Bounds for Index :" + this.index);
+			Quest.QUEST_TEXTURE_PATH + quest.getIconPath() + ".png");
 	}
 	
 	/**
@@ -61,41 +35,29 @@ public class QuestDummy extends Entity
 	@Override
 	public boolean shouldDespawn()
 	{
-		return decide;
+		return shouldDespawn;
 	}
 	
 	/**
-	 * HashMap which includes a special string for the texture of the quest
-	 * @return Map with Index and Strings for the texture
+	 * Shows the quest description in the console
 	 */
-	private HashMap<Integer, String> createQuestMap()
+	public void showQuestDescription()
 	{
-		HashMap<Integer, String> map = new HashMap<>();
-		map.put(0, "yellow_flag");
-		map.put(1, "blue_flag");
-		map.put(2, "red_flag");
-		return map;
-	}
-	
-	/**
-	 * 
-	 * @param player
-	 */
-	public void setActive(Player player)
-	{
-		this.player = player;
-		quest = createQuest();
 		LoggingHandler.logger.info(msg());
 	}
 	
 	/**
-	 * if set the quest becomes active and the doll disappears
+	 * Called when the player either accepts or declines the quest
+	 * @param b <code>true</code> if the quest was accepted
+	 * @param player the player that made the decision
 	 */
-	public void setDecided(boolean b)
+	public void onPlayerDecision(boolean b, Player player)
 	{
 		if(b)
-			this.player.addQuest(quest);
-		this.decide = true;
+		{
+			player.addQuest(quest);
+		}
+		this.shouldDespawn = true;
 	}
 	
 	/**
@@ -144,11 +106,7 @@ public class QuestDummy extends Entity
 	 */
 	private String msg_4()
 	{
-		if(quest.getItemOnReward() == null)
-		{
-			return " Gain: " + quest.getExpOnReward() + " exp ";
-		}
-		return " Gain: " + quest.getItemOnReward().getDisplayName() + " and " + quest.getExpOnReward() + " exp ";
+		return " Reward: " + quest.getRewardText() + " ";
 	}
 	
 	private String createMsg(String msg)
