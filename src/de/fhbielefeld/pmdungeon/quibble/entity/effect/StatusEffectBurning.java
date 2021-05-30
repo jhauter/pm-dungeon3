@@ -60,7 +60,9 @@ public class StatusEffectBurning extends StatusEffect implements DamageSource
 		
 		//every 50 Ticks a creature will get damage
 		if(getCreature().getTicks() % 60 == 0)
-			this.getCreature().damage(this, DamageType.MAGICAL, this.getCause(), true);
+		{
+			this.getCreature().damage(this, DamageType.MAGICAL, this.getCause(), true, false);
+		}
 	}
 	
 	@Override

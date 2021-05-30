@@ -519,6 +519,14 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		return this.invulnerableTicks > 0;
 	}
 	
+	public void updateInvulnerabilityTicks(int ticks)
+	{
+		if(ticks > this.invulnerableTicks)
+		{
+			this.invulnerableTicks = ticks;
+		}
+	}
+	
 	/**
 	 * Returns the current health of the creature.
 	 * @return current health
@@ -553,6 +561,32 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	}
 	
 	/**
+	 * This is a convenience method. For more info see {@link #damage(DamageSource, DamageType, Creature, boolean, boolean)}.
+	 * 
+	 * @param damageSource the damage source (ex.: the entity that deals the damage)
+	 * @param damageType the damage type which determines how damage is calculated according to stats
+	 * @param cause the creature that calls this method. The "cause" is rewarded exp when the target is killed.
+	 */
+	public void damage(DamageSource damageSource, DamageType damageType, Creature cause)
+	{
+		this.damage(damageSource, damageType, cause, false, true);
+	}
+	
+	/**
+	 * This is a convenience method. For more info see {@link #damage(DamageSource, DamageType, Creature, boolean, boolean)}.
+	 * 
+	 * @param damageSource the damage source (ex.: the entity that deals the damage)
+	 * @param damageType the damage type which determines how damage is calculated according to stats
+	 * @param cause the creature that calls this method. The "cause" is rewarded exp when the target is killed.
+	 * @param ignoreInvincibleTicks whether the entity should take damage even though
+	 * it is actually invincible due to it being hit recently
+	 */
+	public void damage(DamageSource damageSource, DamageType damageType, Creature cause, boolean ignoreInvincibleTicks)
+	{
+		this.damage(damageSource, damageType, cause, ignoreInvincibleTicks, true);
+	}
+	
+	/**
 	 * Causes damage to this creature. The damage value is altered according to the stats of the creature.
 	 * The creature is knocked back according to its stats and the stats of the damage source.
 	 * Creatures that take damage are invincible for a short amount of time.
@@ -577,8 +611,10 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	 * @param cause the creature that calls this method. The "cause" is rewarded exp when the target is killed.
 	 * @param ignoreInvincibleTicks whether the entity should take damage even though
 	 * it is actually invincible due to it being hit recently
+	 * @param makeInvulnerable whether the creature should be invulnerable
+	 * for a short amount of time after being damaged
 	 */
-	public void damage(DamageSource damageSource, DamageType damageType, Creature cause, boolean ignoreInvincibleTicks)
+	public void damage(DamageSource damageSource, DamageType damageType, Creature cause, boolean ignoreInvincibleTicks, boolean makeInvulnerable)
 	{
 		if(!ignoreInvincibleTicks && this.isInvulnerable())
 		{
@@ -646,7 +682,10 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		this.setBeingMoved();
 		
 		//-----Misc-----
-		this.invulnerableTicks = this.getInvulnerabilityTicksWhenHit();
+		if(makeInvulnerable && this.getInvulnerabilityTicksWhenHit() > this.invulnerableTicks)
+		{
+			this.invulnerableTicks = this.getInvulnerabilityTicksWhenHit();
+		}
 		
 		this.spawnDamageParticles(event.getDamageActual());
 		if(this.useHitAnimation())
