@@ -21,8 +21,8 @@ import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
 import de.fhbielefeld.pmdungeon.quibble.entity.Demon;
 import de.fhbielefeld.pmdungeon.quibble.entity.Entity;
 import de.fhbielefeld.pmdungeon.quibble.entity.Goblin;
-import de.fhbielefeld.pmdungeon.quibble.entity.Knight;
 import de.fhbielefeld.pmdungeon.quibble.entity.Lizard;
+import de.fhbielefeld.pmdungeon.quibble.entity.Mage;
 import de.fhbielefeld.pmdungeon.quibble.entity.Player;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
 import de.fhbielefeld.pmdungeon.quibble.entity.effect.StatusEffect;
@@ -154,7 +154,7 @@ public class DungeonStart extends MainController implements EntityEventHandler
 		//HudManager have to be made before the Player
 		// cause InputStrategy would got a null HUDManager
 		this.hudManager = new HUDManager();
-		this.myHero = new Knight();
+		this.myHero = new Mage();
 		this.myHero.getEquippedItems().addItem(Item.SWORD_BLUE);
 		this.myHero.addEntityEventHandler(this);
 		
@@ -199,7 +199,7 @@ public class DungeonStart extends MainController implements EntityEventHandler
 			this.currentLevel.clearEntities();
 		}
 		//Set current level from the level controller and entity controller
-		this.currentLevel = new DungeonLevel(this.levelController.getDungeon(), 15, 15, 30, 30);
+		this.currentLevel = new DungeonLevel(this.levelController.getDungeon(), 50, 50, 150, 150);
 		
 		/**** Populate dungeon ****/
 		
