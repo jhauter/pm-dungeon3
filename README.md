@@ -134,9 +134,11 @@ Bitte hier die Umsetzung der Lösung kurz beschreiben:
 -   was war das Ergebnis?
 -->
 
--	Fernkampf System (5h)  *** LULON ?
+-	Fernkampf System (5h) 21.05.
 -   Erstellen des neuen InputSystem (6h) 25.05.
 -   Logbuch schreiben (1h) 26.05
+-   Hash Grid (5h) 28.05.
+-   Refactor (5h) 29.05.
 
 # Postmortem
 
