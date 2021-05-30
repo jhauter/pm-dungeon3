@@ -62,7 +62,7 @@ public enum CreatureStatsAttribs
 	/**
 	 * Ticks remaining until a creature can hit again. Zero means no cool down and ready to hit.
 	 */
-	HIT_COOLDOWN(true);
+	HIT_COOLDOWN(false);
 	
 	private final boolean fillIfNewMax;
 	
