@@ -1086,12 +1086,17 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	
 	/**
 	 * Function used to calculate the level from the total exp.
+	 * A total exp <= 0 must result in level 1.
 	 * @param totalExp the total exp
 	 * @return the level that this creature would have with the given total exp
 	 */
 	public int expLevelFunction(int totalExp)
 	{
-		return (int)(totalExp * 0.1);
+		if(totalExp < 0)
+		{
+			return 1;
+		}
+		return (int)(1.0D / 3.0D * Math.sqrt(totalExp) + 1);
 	}
 	
 	/**
@@ -1101,7 +1106,7 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	 */
 	public int totalExpFunction(int expLevel)
 	{
-		return expLevel * 10;
+		return (int)Math.pow((3 * expLevel - 3), 2);
 	}
 	
 	
