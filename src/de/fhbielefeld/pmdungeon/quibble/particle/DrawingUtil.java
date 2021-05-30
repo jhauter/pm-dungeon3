@@ -8,7 +8,7 @@ public class DrawingUtil
 {
 	public static final int ORIGINAL_SCREEN_WIDTH = 640;
 	public static final int ORIGINAL_SCREEN_HEIGHT = 480;
-
+	
 	public static final Supplier<Integer> CURRENT_SCREEN_WIDTH = () -> Gdx.graphics.getWidth();
 	public static final Supplier<Integer> CURRENT_SCREEN_HEIGHT = () -> Gdx.graphics.getHeight();
 	
@@ -48,6 +48,7 @@ public class DrawingUtil
 	{
 		return dungeonToScreenX(x - camX) + CURRENT_SCREEN_WIDTH.get() / 2.0F;
 	}
+	
 	/**
 	 * Converts dungeon coordinates to screen coordinates, taking into account the camera position.
 	 * @param y the y coordinate in dungeon space

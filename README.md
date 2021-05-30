@@ -1,5 +1,5 @@
 ---
-title:  'Lerntagebuch zur Bearbeitung von Blatt 05
+title:  'Lerntagebuch zur Bearbeitung von Blatt 06
 author:
 - Andreas Wegner (andreas.wegner@fh-bielefeld.de)
 - Malte Kanders (malte_theodor.kanders@fh-bielefeld.de)
@@ -36,13 +36,15 @@ sowie [Praktikumsblatt "Lerntagebuch"](pm_praktikum.html#lerntagebuch).
 <!--
 Bitte hier die zu lösende Aufgabe kurz in eigenen Worten beschreiben.
 -->
+Im Spiel soll es möglich sein, ein einigermaßen realistisches Fernkampf System
+zu nutzen. Beispielsweise nehmen Projektile mit der Zeit an Schadenspunkten ab.
+Dazu sollen die Monster auch auf schlaue weise mit diesem Fernkampf System kämpfen.
 
-Es soll ein Quest System auf Basis des Observer Pattern hinzugefügt werden.
-Quest sind Aufgaben die erfüllt werden müssen um Belohnungen zu erhalten.
-Quest sollen geeignet dargestellt, sowie annehmbar oder ablehnbar sein.
-Angenommene Quest sind im HUD sichtbar.
+Eine weitere Aufgabe ist das Project aufzuräumen (Refactor).
+Das bedeutet beispielsweise einen durchgehenden Style im gesamten Projekt zu realisieren.
 
-Desweiteren sollen Quest sinnvoll mit JUnit getestet werden.
+Zuletzt soll eine eigene Hashtable implementiert werden, die alte Kollisionserkennung ersetzt.
+
 
 
 # Ansatz und Modellierung
@@ -55,88 +57,72 @@ Bitte hier den Lösungsansatz kurz beschreiben:
 -   Worauf müssen Sie konkret achten?
 -->
 
-Es sollen mehrere `Quest` implementiert werden die sich jedoch in der Aufgabe und Belohnung unterscheiden.
-Die Abstrakte Klasse Quest, soll den GrundbauPlan der neuen `Quest` vorgeben.
+Es soll ein Fernkampfsystem entwickelt werden.
+Wir haben bereits eine abstrakte Klasse namens `Item`von der auch schon `ItemWeapon` und `ItemWeaponMelee` erbt.
+Wir fügen diesem Vererbungssystem jetzt noch den unterzweig `ItemWeaponRange` hinzu.
+Diese Klasse beinhalten zusätzlich die zwei abstrakten Methoden:
+- `Projectile spawnProjectile` : welche es der jeweiligen Waffe ermöglicht ein Projectile zu spawnen
+- `float getProjectileSpeed` : welche die Geschwindigkeit des Projektil setzt.
+Wird nun ein Item genutzt mit der bereits vorhandenen `onUse` Methode wird ein Projektil gespwant.
+Von dieser Klasse erben dann normale Fernkampf Waffen. Beispielsweise unser `ItemSimpleBow`.
+Eine ergänzende abstrakte Klasse `ItemWeaponMagic` erbt von der `ItemWeaponRange`.
+Von hier erben unsere bisher zwei Magischen Stäbe.
 
-Quest bestehen so aus: 
-- `String questname`: Der Name der jeweiligen Quest
-- `Player player`: Der jeweilige Player der auch die Belohnungen bekommen soll.
-- `Item itemOnReward`: Falls die Quest ein Item zur Belohnung bereithält.
-- `int expOnReward`: Für den Fall das es als Belohnung Erfahrungspunkte gibt.
+Das eigentliche Projektil, welches das Fernkampfsystem ermöglicht, ist ein neu angelegtes Package in Entity.
+Die Klasse `Projectile` bildet die Spitze der Hierachie.
+Im Prinzip funktioniert diese Klasse ganz ähnlich wie andere Entities.
+Sie besitzt einen Startpunkt, eigene `CreatureStats` für Event´s und auch Animationen.
+Die Oberklasse schaut durch die `onEntityCollision` ob das Projektil etwas getroffen hat, das ein Entity ist.
+Allerdings nicht wenn es der eigene Besitzer ist oder wenn Npc's auf Npc's schießen, hir bricht die Methode ab.
+Ist das Ziel ein gewolltes Ziel ruft die Oberklasse `onProjectileImpactCreature` auf.
+Hier wird nun der errechnete Schaden aus den Stats direkt an das entsprechende Creature weitergeleitet.
+Jedes Projektil erbt aber nicht von `Projectile` direkt sondern erbt je nach Typ von `ProjectileMagic`
+für magische Projektile oder `ProjectilePhysical` für normale Projektile.
+Hier unterscheiden sich die `DamageType` von den Projektilen.
+Magischer Schaden für Magische Waffen.
+Physischer Schaden für Physische Waffen.
+Zudem sollen magische Waffen auch Statuseffekte auslösen können.
+Der `IceBlast` verlangsamt zum beispiel sein Ziel um eine gewisse Zeit.
 
-Da jede Quest auch eine Belohnung bereithält, hat die abstrakte Klasse Quest auch die Mehthode `onReward(Player p)`.
-Diese gibt den Spieler Exp, ein Item oder beides, sobald der `boolean isCompleted` gesetzt wurde.
+Jedes von `Projectile` erbende Projektil muss folgende Methoden überschreiben:
+- `int getTicksLasting` : Dies bestimmt die Zeit solange ein Projektil existieren soll, außer es trifft ein Entity oder die Wand
+- `float getDamgaeDecreasePverTime` : der Wert der über die Zeit bestimmt wieviel weniger Schaden eine Waffe nach einer bestimmten Zeit machen soll.
 
-Hinzukommen ein paar getter die dem HUD die Strings übergibt.
--   `String  getTask`: Für die Aufgabe an sich.
--   `String onWork`: Den Fortschritt der Quest.
--   `String onComplete`: Die Belohnung der Quest.
+Refactor:
+Das komplette Input System wurde neu aufgesetzt.
+Wir benutzen immernoch ein Observer Pattern um die entsprechende Events weiterzuleiten.
+Allerdings wurde das gesamte System jetzt auf ein Strategy Pattern umgemünzt.
+Dadurch haben wir es geschafft das es in Player beispielsweise keine ewig lange Methode `updateLogic` gibt
+die durch aberviele if's läuft.
+Dies wurde aber und aber mehr unübersichtlicher und ist teils sehr umständlich zu lesen geworden.
+Auch sind Methoden die sich langsam über das Projekt verteilt haben in ein zentrales Package gewandert.
+So ist das komplette Input System ein eigener Kern und abgekoppelt von anderen.
+Beispielsweise konnte der InputListener aus unserer Main entfernt werden und der QuestDummy (unser Entity zum Interagieren mit Quest Angeboten), enthält ebenfalls keine dem Input betreffende Methoden mehr.
+Ausserdem ist es dadurch übersichtlich geworden welche InputEvents wir bereits haben und wir können den Default Eingabe Wert mit ein paar Klicks und ohne zu suchen ändern.
 
-Ein wichtiger Boolean is der `isCompleted` boolean der ausgelöst wird sobald eine Quest erfüllt wurde.
+Dazu haben wir jetzt eigene Key's.
+Jeder Key trägt ein `String event` wodurch ein entsprechendes Event identifiziert werden kann.
+Dazu besitzt ein Key ein `int key` welches das entsprechende Gdx Key entspricht.
 
+Key ist die Oberklasse von der weitere Keys erben.
+Wir haben momentan so :
+- `Key` : die OberKlasse von der alle Keys erben.
+- `KeyJustPressed` : für Keys die nur einmal beim drücken getriggert werden sollen.
+- `KeyMouseButton` : für Maus Klicks
+- `KeyMovement`: Dies sind Keys die zusätzlich noch einen Vektor für die Bewegung behinhalten. 
 
-Beschreibung der eingefügten Quest:
+Für diese Key's gibt es eine Klasse namens `KeyList`. 
+Hier findet sich eine ArrayList mit einer Default eingestellten Liste aus Key's
+Man hätte die möglichkeit von dieser Klasse zu erben und entsprechende Key's zu überschreiben um sich eine Modifizierte Liste zu erstellen.
 
-1. `RQuestDungeonStage`
-    -   Quest besteht darin, die Treppe zu erreichen und eine Stage weiter zu kommen.
-2.  `RQuestKillMonster`
-    -   Es gilt, eine gewisse Anzahl von Monster `(Creature)` zu töten.
-3.  `RQuestLevelUp`
-    -   In dieser Aufgabe muss der Held eine bestimmte Anzahl von Level aufsteigen.
+In unserem `DungeonInputHandler`wird durch diese Liste iteriert und ein Event ausgelöst wenn einer der Key's den Boolean 
+`isPressed` als true makiert.
+Ist es eine `KeyMovement` Taste wird `notifyMovement` gefeuert.
+Ist es ein anderer Key wird `notifyEvent` gefeuert.
 
-
-Um die Quest jetzt auch geeignet in das Level zu malen, erstellen wir eine Klasse `QuestDummy`.
-Der QuestDummy erbt von Entity und kann so von der Funktion
-`spawnEntity` in die Stage gemalt werden.
-Er ist die Klasse, mit dem der Spieler im Dungeon interagiert.
-Für die Darstellung haben wir ein Enum namens `QuestTypes`,
-welches den Namen und den Namen der Texture speichert.
-Hier wird im Konstruktor mithilfe des QuestType dann die richtige Textur zur richtigen Quest gemalt.
-
-Hier gibt es boolean die gesetzt werden sobald der Spieler mit der Falle interagiert.
-`boolean isActive`: Wird gesetzt wenn der Spieler eine Quest mit einer Taste aktiviert. Der Spieler erhält so Informationen über die spezifizierte Quest und auch die Möglichkeit an oder abzulehnen.
-`boolean decide`: Entfernt die Quest von der Stage, wenn angenommen oder abgelehnt.
-
-Interagieren kann der Held, wenn er auf der Flagge steht.
-Wir überschreiben hier die Methode `onEntityCollision(Entity otherEntity)`.
-Wenn der Spieler mit der Taste Q den `boolean isActive` aktiviert erhält er die Möglichkeit die Quest anzunehmen (mit J) oder abzulehnen (mit N).
-
-Je nachdem welchen Quest der Dummy darstellt, bekommt der Held so seine Aufgabe hinzugefügt.
-Die Quest wird im Player in eine Liste gespeichert.
-Sobald die `updateLogic()`-Methode merkt, dass einer der Quests des Spielers `isCompleted == true` hat, wird diese Quest aus der
-Liste des Spielers gelöscht. Das ist das selbe Prinzip wie bei `IEntity.deleteable()`.
-
-Jede Quest implementiert auch einen `EntityEventListener`.
-Dies ist der Listener unseres Observer Pattern, welches wir schon benutzen und hier ebenfalls Anwendung finden kann.
-Wird ein bestimmtes Event gefeuert, welches mit der passenden ID korreliert, wird die Methode `handleEvent` ausgeführt.
-Somit ist jede Quest auch ein Listerner, der bei Entity-Events benachrichtigt wird.
-Jedes Entity und damit auch der Spieler hat eine Liste von `EntityEventListener`, die alle `EntityEventListener` enthält,
-die bei einem Event benachrichtigt werden sollen.
-Jede Quest, die dem Spieler hinzugefügt wird, wird ihm auch als `EntityEventListener` hinzugefügt.
-Dadurch wird die `handleEvent()`-Methode der angenommenen Quests ausgeführt, sobald ein Event eines Entities stattfindet.
-Beispiele für Entity-Events:
-- der Spieler greift einen Gegner an
-- der Spieler bekommt Erfahrungspunkte
-- der Spieler betritt das nächste Dungeon-Level
-- Statuswerte des Spielers (z. B. Lebenspunkte) ändern sich
-
-Dies erlaubt jeder Quest, intern die Events des Spielers nachzuverfolgen. Sobald die Quest feststellt, dass
-die Aufgabe der Quest erfüllt wurde, wird die Quest als "fertig" markiert mit `setCompleted(true)`.
-Das austeilen der Belohnung findet im der `Player`-Klasse statt, wenn die Quest folglich aus der Liste entfernt wird.
-
-Ein sehr einfaches Beipsiel unseres `RQuestDungeonStage`:
-```java
-	@Override
-	public void handleEvent(EntityEvent event) {
-		//Ziel dieser Quest ist, die nächste Stage zu erreichen
-		if(event.getEventID() == Player.EVENT_ID_DUNGEON_LEVEL_CHANGED)
-		{
-			setCompleted(true);
-		}
-	}
-```
-
-
+Dafür gibt es in Player eine HashMap die als SchlüsselWert einen String beinhaltet und eine `InputStrategy`
+Die Abstrakte Klasse `InputStrategy` braucht immer den Auslöser und besitzt eine Methode `handle` die je nach ankommenden Event gefeuert wird.
+Von ihr erben dann alle unseren zentrierten Event's
 
 # Umsetzung
 
@@ -148,12 +134,11 @@ Bitte hier die Umsetzung der Lösung kurz beschreiben:
 -   was war das Ergebnis?
 -->
 
--	Erstellen des HUDs (2h) 12.05.
--   Erstellen der ersten Quest (5h) 14.05.
--   Korrektur und Feinarbeiten an den Quest (3h) 14.05.
--   Implementierung und letzten Feinschliff der Quest (3h) 16.05.
--   Merge und Einbau in das Hud (2h) 16.05.
--   Erstellen der TestCases (2h) 16.05.
+-	Fernkampf System (5h) 21.05.
+-   Erstellen des neuen InputSystem (6h) 25.05.
+-   Logbuch schreiben (1h) 26.05
+-   Hash Grid (5h) 28.05.
+-   Refactor (5h) 29.05.
 
 # Postmortem
 
@@ -165,9 +150,9 @@ kritisch zurück:
 -   Wie haben Sie die Probleme letztlich gelöst?
 -->
 
-Das Erstellen der Lösung war diesmal nicht ein allzugroßer Aufwand. Erst war die Versuchung da, ein eigenes Observer Pattern allein für die Quest zu erstellen, aber die Möglichkeit auf das vorhandene EntityEvent ObserverPattern hat die Sache übersichtlich und leicht umsetzbar gemacht und so flog das 3. Observer-Pattern wieder raus.
+Die Aufgabe Refactorn Sie, ist natührlich anders als andere Aufgabe.
+Am Ende ist man vlt nie 100 % zu frieden und will immer verbessern.
+Dadurch ist es eine nahezu unlösbare Aufgabe, vor allem weil der eine einen anderen Stil hat als man selber, so muss es oft zu kompromissen kommen.
 
-Die Tests fielen uns dagegen schwer von der Hand.
-Es hat noch keiner von uns mit ihnen gearbeitet und nachdem wir herausgefunden haben wie sie funktionieren, wussten wir einfach nicht was wir testen sollten.
-
-
+Aufgaben wie das Fernkampfsystem waren eher leichter umzusetzen da schon ein bestimmtes EntityCollision System existierte.
+Wir eine Hiearachie für Items besaßen und durch die voher trockene Strukturierung eig gut auf dem bisherigen aufbauen können.

@@ -75,7 +75,8 @@ public abstract class NPC extends Creature
 			//Can happen if the player dies?
 			return;
 		}
-		if(this.hasLineOfSightTo(new Vector2(players.get(0).getPosition().x, players.get(0).getPosition().y)) && !(this.currentBehavior instanceof AIApproachTarget))
+		if(this.hasLineOfSightTo(new Vector2(players.get(0).getPosition().x, players.get(0).getPosition().y))
+			&& !(this.currentBehavior instanceof AIApproachTarget))
 		{
 			this.setAIStrategy(new AIApproachTarget(players.get(0)));
 		}

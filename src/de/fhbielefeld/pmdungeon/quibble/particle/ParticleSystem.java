@@ -4,9 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
+import de.fhbielefeld.pmdungeon.quibble.DungeonStart;
 import de.fhbielefeld.pmdungeon.quibble.file.DungeonResource;
 
 public class ParticleSystem
@@ -65,9 +66,10 @@ public class ParticleSystem
 	public void draw(float camX, float camY)
 	{
 		float x, y, width, height, rot, srcOffsetX, srcOffsetY;
-		DungeonResource<TextureRegion> particleTexture;
-		SpriteBatch batch = new SpriteBatch();
-		batch.begin();
+		DungeonResource<Texture> particleTexture;
+		
+		DungeonStart.getGameBatch().begin();
+		
 		for(Particle p : this.particles)
 		{
 			particleTexture = p.getTexture();
@@ -75,6 +77,7 @@ public class ParticleSystem
 			{
 				continue;
 			}
+			final TextureRegion reg = new TextureRegion(particleTexture.getResource());
 			if(p.getParticleSource() != null)
 			{
 				srcOffsetX = (p.getParticleSource().getX() + p.getSourceDiffX()) - p.getSpawnX();
@@ -85,18 +88,18 @@ public class ParticleSystem
 				srcOffsetX = 0.0F;
 				srcOffsetY = 0.0F;
 			}
-			x = DrawingUtil.dungeonToScreenXCam(p.particleMovement.getOffsetX(p.timeExisted) + p.getSpawnX() + srcOffsetX, camX);
-			y = DrawingUtil.dungeonToScreenYCam(p.particleMovement.getOffsetY(p.timeExisted) + p.getSpawnY() + srcOffsetY, camY);
-			width = DrawingUtil.dungeonToScreenX(p.getWidth());
-			height = DrawingUtil.dungeonToScreenY(p.getHeight());
+			x = p.particleMovement.getOffsetX(p.timeExisted) + p.getSpawnX() + srcOffsetX;
+			y = p.particleMovement.getOffsetY(p.timeExisted) + p.getSpawnY() + srcOffsetY;
+			width = p.getWidth();
+			height = p.getHeight();
 			rot = p.particleMovement.getRotation(p.timeExisted);
 			
 			//SpriteBatch.draw(textureRegion, x, y, originX, originY, width, height, scaleX, scaleY, rotation);
-			batch.draw(particleTexture.getResource(), x - width * 0.5F, y - height * 0.5F, p.originX * width, p.originY * height, width, height, p.particleMovement.getScaleX(p.timeExisted), p.particleMovement.getScaleY(p.timeExisted), rot);
+			DungeonStart.getGameBatch().draw(reg, x - width * 0.5F, y - height * 0.5F, p.originX * width, p.originY * height, width, height,
+				p.particleMovement.getScaleX(p.timeExisted), p.particleMovement.getScaleY(p.timeExisted), rot);
 			
 		}
-		batch.end();
-		batch.flush();
+		DungeonStart.getGameBatch().end();
 	}
 	
 	/**

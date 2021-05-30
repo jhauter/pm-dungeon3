@@ -2,7 +2,8 @@ package de.fhbielefeld.pmdungeon.quibble.input.strategy;
 
 import de.fhbielefeld.pmdungeon.quibble.entity.Player;
 
-public abstract class InputStrategy {
+public abstract class InputStrategy
+{
 	
 	private Player player;
 	
@@ -10,7 +11,8 @@ public abstract class InputStrategy {
 	 * 
 	 * @param player The user who performs an action
 	 */
-	public InputStrategy(Player player) {
+	public InputStrategy(Player player)
+	{
 		this.player = player;
 	}
 	
@@ -18,12 +20,13 @@ public abstract class InputStrategy {
 	 * The actual method that does the main work
 	 */
 	public abstract void handle();
-
+	
 	/**
 	 * 
 	 * @return the user of the Strategy
 	 */
-	public Player getPlayer() {
+	public Player getPlayer()
+	{
 		return player;
 	}
 	

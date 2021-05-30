@@ -6,10 +6,11 @@ import com.badlogic.gdx.math.Vector2;
  * In inherit from Key. Also has a vector to calculate the motion
  *
  */
-public class KeyMovement extends Key {
-
+public class KeyMovement extends Key
+{
+	
 	private Vector2 v2;
-
+	
 	/**
 	 * A key or a mouse button that was clicked. Contains a string representing the
 	 * event to be triggered by it. The KeyMovement are also contains a Vector which
@@ -22,21 +23,24 @@ public class KeyMovement extends Key {
 	 * @param axisX the x - axis a button represent
 	 * @param axisY the y - axis a button represent
 	 */
-	public KeyMovement(String event, int key, float axisX, float axisY) {
+	public KeyMovement(String event, int key, float axisX, float axisY)
+	{
 		super(event, key);
 		v2 = new Vector2(axisX, axisY);
 	}
-
+	
 	@Override
-	protected boolean isMovementKey() {
+	protected boolean isMovementKey()
+	{
 		return true;
 	}
-
+	
 	/**
 	 * @return a Vector of size 2
 	 */
-	public Vector2 getMovement() {
+	public Vector2 getMovement()
+	{
 		return v2;
 	}
-
+	
 }

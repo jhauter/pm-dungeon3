@@ -17,7 +17,7 @@ public class HealthDisplayHUD extends HUDElement
 		super(x, y);
 		this.creature = creature;
 	}
-
+	
 	@Override
 	public String getTexturePath()
 	{

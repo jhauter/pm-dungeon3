@@ -2,27 +2,22 @@ package de.fhbielefeld.pmdungeon.quibble.entity.projectile;
 
 import java.util.logging.Level;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-
 import de.fhbielefeld.pmdungeon.quibble.LoggingHandler;
 import de.fhbielefeld.pmdungeon.quibble.entity.BoundingBox;
 import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
 import de.fhbielefeld.pmdungeon.quibble.entity.Entity;
+import de.fhbielefeld.pmdungeon.quibble.entity.NPC;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.DamageType;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.SimpleDamageSource;
-import de.fhbielefeld.pmdungeon.quibble.particle.DrawingUtil;
 
 public abstract class Projectile extends Entity
 {
 	public static final String PROJECTILE_PATH = "assets/textures/projectiles/";
 	
 	//To indicate if the projectile should be deleted
-	private boolean isDepleted;
+	private boolean deleteFlag;
 	
 	// Owner of the projectile. To check that the projectile cannot hit the owner.
 	private Creature owner;
@@ -32,13 +27,6 @@ public abstract class Projectile extends Entity
 	
 	// To identify the projectile (only for logging, otherwise useless)
 	private String name;
-	
-	private Animation<TextureRegion> projectileAnimation;
-	
-	private float stateTime;
-	
-	private float width;
-	private float height;
 	
 	/**
 	 * Creates a projectile entity that will keep moving at the same speed when the velocity is set (by default).
@@ -52,43 +40,12 @@ public abstract class Projectile extends Entity
 	 */
 	public Projectile(String name, float x, float y, CreatureStats stats, Creature owner)
 	{
+		super(x, y);
 		this.name = name;
-		this.setPosition(x, y);
 		this.owner = owner;
 		this.setLinearDamping(1.0F);
 		
-		this.projectileAnimation = this.getProjectileAnimation();
-		
-		this.setSize(1.0F, 1.0F);
-		
 		this.stats = new CreatureStats(stats);
-	}
-	
-	/**
-	 * Sets the visual size of the projectile.
-	 * @param width width measured in tile units
-	 * @param height height measured in tile units
-	 */
-	public void setSize(float width, float height)
-	{
-		this.width = width;
-		this.height = height;
-	}
-	
-	/**
-	 * @return the visual width of the projectile in tile units
-	 */
-	public float getWidth()
-	{
-		return width;
-	}
-	
-	/**
-	 * @return the visual height of the projectile in tile units
-	 */
-	public float getHeight()
-	{
-		return height;
 	}
 	
 	/**
@@ -101,8 +58,13 @@ public abstract class Projectile extends Entity
 	{
 		if(getTicks() >= this.getTicksLasting())
 			setDepleted();
-		
-		this.stateTime += Gdx.graphics.getDeltaTime();
+	}
+	
+	@Override
+	protected void updateAnimationState()
+	{
+		super.updateAnimationState();
+		this.renderRotation = (float)Math.toDegrees(Math.atan2(this.getVelocity().y, this.getVelocity().x));
 	}
 	
 	@Override
@@ -112,10 +74,17 @@ public abstract class Projectile extends Entity
 		{
 			return;
 		}
+		// With this, NPC’s no longer harm each other
+		if(owner instanceof NPC)
+		{
+			if(otherEntity instanceof NPC)
+			{
+				return;
+			}
+		}
 		// it have to be check if it is an Creature cause the Chest etc are also Entity
 		if(otherEntity instanceof Creature)
 		{
-			
 			this.onProjectileImpactCreature((Creature)otherEntity);
 			LoggingHandler.logger.log(Level.INFO, name + " has hit an Entity");
 		}
@@ -124,7 +93,7 @@ public abstract class Projectile extends Entity
 	@Override
 	protected void onTileCollision()
 	{
-		this.isDepleted = true;
+		this.deleteFlag = true;
 	}
 	
 	/**
@@ -132,57 +101,27 @@ public abstract class Projectile extends Entity
 	 */
 	public abstract CreatureStatsAttribs getDamageFromStat();
 	
-	@Override
-	public void doCustomRendering(Batch batch, float x, float y)
-	{
-		if(this.projectileAnimation == null)
-		{
-			return;
-		}
-		
-		x -= DrawingUtil.dungeonToScreenX(this.width * 0.5F);
-		y -= DrawingUtil.dungeonToScreenY(this.height * 0.5F);
-		float w = DrawingUtil.dungeonToScreenX(this.width);
-		float h = DrawingUtil.dungeonToScreenY(this.height);
-		
-		float rot = (float)Math.toDegrees(Math.atan2(this.getVelocity().y, this.getVelocity().x));
-		
-		batch.draw(this.projectileAnimation.getKeyFrame(this.stateTime, true), x, y, w * 0.5F, h * 0.5F, w, h, 1, 1, rot);
-	}
-	
-	@Override
-	public boolean useDefaultDrawing()
-	{
-		return false;
-	}
-	
-	@Override
-	public boolean useAnimationHandler()
-	{
-		return false;
-	}
-	
 	/**
 	 * 
 	 * @return if its depleted it will be deleted
 	 */
 	public boolean isDepleted()
 	{
-		return isDepleted;
+		return deleteFlag;
 	}
 	
 	/**
 	 * Set's an Flag for this Combat util is depleted
 	 */
-	void setDepleted()
+	private void setDepleted()
 	{
-		this.isDepleted = true;
+		this.deleteFlag = true;
 	}
 	
 	@Override
-	public boolean deleteable()
+	public boolean shouldDespawn()
 	{
-		return isDepleted;
+		return deleteFlag;
 	}
 	
 	/**
@@ -213,8 +152,6 @@ public abstract class Projectile extends Entity
 	public abstract int getTicksLasting();
 	
 	public abstract float getDamageDecreaseOverTime();
-	
-	public abstract Animation<TextureRegion> getProjectileAnimation();
 	
 	@Override
 	protected BoundingBox getInitBoundingBox()

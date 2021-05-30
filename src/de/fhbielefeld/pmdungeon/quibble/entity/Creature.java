@@ -7,7 +7,6 @@ import java.util.List;
 import com.badlogic.gdx.ai.pfa.GraphPath;
 import com.badlogic.gdx.math.Vector2;
 
-import de.fhbielefeld.pmdungeon.quibble.animation.AnimationStateHelper;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsEventListener;
@@ -64,69 +63,33 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	 */
 	public static final int EVENT_KILLED_ENTITY = EntityEvent.genEventID();
 	
-	private static final int ANIM_SWITCH_IDLE_L = 0;
-	private static final int ANIM_SWITCH_IDLE_R = 1;
-	private static final int ANIM_SWITCH_RUN_L = 2;
-	private static final int ANIM_SWITCH_RUN_R = 3;
-	
-	private static final int ANIM_PRIO_IDLE = 0;
-	private static final int ANIM_PRIO_RUN = 5;
-	private static final int ANIM_PRIO_HIT = 10;
-	private static final int ANIM_PRIO_ATTACK = 8;
+	private static final int ANIM_PRIO_RUN = 10;
+	private static final int ANIM_PRIO_HIT = 20;
+	private static final int ANIM_PRIO_ATTACK = 30;
 	
 	/**
-	 * Animation name constant used by the <code>AnimationStateHelper</code>.
-	 * Names of animations that are handled by the <code>AnimationStateHelper</code> need to match this.
+	 * Animation name constant used with <code>AnimationHandler</code>.
 	 */
-	protected static final String ANIM_NAME_IDLE_L = "idle_left";
+	protected static final String ANIM_NAME_IDLE = "idle";
 	
 	/**
-	 * Animation name constant used by the <code>AnimationStateHelper</code>.
-	 * Names of animations that are handled by the <code>AnimationStateHelper</code> need to match this.
+	 * Animation name constant used with <code>AnimationHandler</code>.
 	 */
-	protected static final String ANIM_NAME_IDLE_R = "idle_right";
+	protected static final String ANIM_NAME_RUN = "run";
 	
 	/**
-	 * Animation name constant used by the <code>AnimationStateHelper</code>.
-	 * Names of animations that are handled by the <code>AnimationStateHelper</code> need to match this.
+	 * Animation name constant used with <code>AnimationHandler</code>.
 	 */
-	protected static final String ANIM_NAME_RUN_L = "run_left";
+	protected static final String ANIM_NAME_HIT = "hit";
 	
 	/**
-	 * Animation name constant used by the <code>AnimationStateHelper</code>.
-	 * Names of animations that are handled by the <code>AnimationStateHelper</code> need to match this.
+	 * Animation name constant used with <code>AnimationHandler</code>.
 	 */
-	protected static final String ANIM_NAME_RUN_R = "run_right";
-	
-	/**
-	 * Animation name constant used by the <code>AnimationStateHelper</code>.
-	 * Names of animations that are handled by the <code>AnimationStateHelper</code> need to match this.
-	 */
-	protected static final String ANIM_NAME_HIT_L = "hit_left";
-	
-	/**
-	 * Animation name constant used by the <code>AnimationStateHelper</code>.
-	 * Names of animations that are handled by the <code>AnimationStateHelper</code> need to match this.
-	 */
-	protected static final String ANIM_NAME_HIT_R = "hit_right";
-	
-	/**
-	 * Animation name constant used by the <code>AnimationStateHelper</code>.
-	 * Names of animations that are handled by the <code>AnimationStateHelper</code> need to match this.
-	 */
-	protected static final String ANIM_NAME_ATTACK_L = "attack_left";
-	
-	/**
-	 * Animation name constant used by the <code>AnimationStateHelper</code>.
-	 * Names of animations that are handled by the <code>AnimationStateHelper</code> need to match this.
-	 */
-	protected static final String ANIM_NAME_ATTACK_R = "attack_right";
+	protected static final String ANIM_NAME_ATTACK = "attack";
 	
 	private boolean isWalking;
 	
 	private LookingDirection lookingDirection;
-	
-	private AnimationStateHelper defaultAnimationsHelper;
 	
 	private final CreatureStats baseStats;
 	
@@ -168,6 +131,13 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	{
 		super(x, y);
 		
+		//Render properties - can be overridden by any creature
+		this.renderWidth = 1.75F;
+		this.renderHeight = 1.75F;
+		this.renderPivotX = this.renderWidth * 0.5F;
+		this.renderPivotY = this.renderHeight * 0.5F;
+		this.renderOffsetY = this.renderHeight * 0.25F;
+		
 		//Default looking direction should be right
 		this.lookingDirection = LookingDirection.RIGHT;
 		
@@ -181,22 +151,12 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		
 		this.statusEffects = new ArrayList<>();
 		
-		
 		this.inventory = new DefaultInventory<Item>(this.getInventorySlots());
 		this.equippedItems = new DefaultInventory<Item>(this.getEquipmentSlots());
 		this.equippedItems.addInventoryListener((slot, oldItem, newItem) ->
 		{
 			this.updateMaxStats();
 		});
-		
-		if(this.useDefaultAnimation())
-		{
-			this.defaultAnimationsHelper = new AnimationStateHelper(this.animationHandler);
-			this.defaultAnimationsHelper.addSwitch(ANIM_SWITCH_IDLE_L, ANIM_NAME_IDLE_L, ANIM_PRIO_IDLE);
-			this.defaultAnimationsHelper.addSwitch(ANIM_SWITCH_IDLE_R, ANIM_NAME_IDLE_R, ANIM_PRIO_IDLE);
-			this.defaultAnimationsHelper.addSwitch(ANIM_SWITCH_RUN_L, ANIM_NAME_RUN_L, ANIM_PRIO_RUN);
-			this.defaultAnimationsHelper.addSwitch(ANIM_SWITCH_RUN_R, ANIM_NAME_RUN_R, ANIM_PRIO_RUN);
-		}
 	}
 	
 	/**
@@ -318,9 +278,9 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	}
 	
 	/**
-	 * Whether this entity should use default animation that has a walk and run animation.
+	 * Whether this entity should automatically use default animation that
+	 * has a walk and run animation.
 	 * This method must be overridden to change this behavior.
-	 * If this is true then an <code>AnimationStateHelper</code> is created for this class.
 	 * @return whether this entity should use default animation
 	 */
 	protected boolean useDefaultAnimation()
@@ -409,15 +369,15 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	protected void updateAnimationState()
 	{
 		super.updateAnimationState();
+		this.renderScaleX = this.getLookingDirection().getAxisX();
 		if(this.useDefaultAnimation())
 		{
-			final boolean lookLeft = this.getLookingDirection() == LookingDirection.LEFT;
-			final boolean lookRight = this.getLookingDirection() == LookingDirection.RIGHT;
-			this.defaultAnimationsHelper.setSwitchValue(ANIM_SWITCH_IDLE_L, lookLeft);
-			this.defaultAnimationsHelper.setSwitchValue(ANIM_SWITCH_IDLE_R, lookRight);
-			this.defaultAnimationsHelper.setSwitchValue(ANIM_SWITCH_RUN_L, this.isWalking() && lookLeft);
-			this.defaultAnimationsHelper.setSwitchValue(ANIM_SWITCH_RUN_R, this.isWalking() && lookRight);
-			this.defaultAnimationsHelper.update();
+			if(this.isWalking)
+			{
+				//If this is not executed then the
+				//default animation "idle" will automatically play
+				this.animationHandler.playAnimation(ANIM_NAME_RUN, ANIM_PRIO_RUN, true);
+			}
 		}
 	}
 	
@@ -431,18 +391,6 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		this.isWalking = false;
 		
 		super.updateEnd();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected Point getDrawingOffsetOverride()
-	{
-		//Draw the entity half its width to the left.
-		//Draw the entity a bit higher to make its feet position match its real position.
-		//Y of zero makes the bottom side the position y.
-		return new Point(-0.5F, 0.0F);
 	}
 	
 	/**
@@ -668,7 +616,7 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		
 		if(cause != null)
 		{
-			CreatureHitTargetEvent eventHTP = (CreatureHitTargetEvent)this
+			CreatureHitTargetEvent eventHTP = (CreatureHitTargetEvent)cause
 				.fireEvent(new CreatureHitTargetEvent(EVENT_ID_HIT_TARGET, cause, this, damageType, actualDamage));
 			
 			if(eventHTP.isCancelled())
@@ -703,14 +651,14 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		this.spawnDamageParticles(event.getDamageActual());
 		if(this.useHitAnimation())
 		{
-			this.animationHandler.playAnimation(this.lookingDirection == LookingDirection.LEFT ? ANIM_NAME_HIT_L : ANIM_NAME_HIT_R, ANIM_PRIO_HIT, false);
+			this.animationHandler.playAnimation(ANIM_NAME_HIT, ANIM_PRIO_HIT, false);
 		}
 		
 		//====================AFTERMATH====================
 		
 		if(cause != null)
 		{
-			this.fireEvent(new CreatureHitTargetPostEvent(EVENT_ID_HIT_TARGET_POST, cause, this, damageType, damage));
+			cause.fireEvent(new CreatureHitTargetPostEvent(EVENT_ID_HIT_TARGET_POST, cause, this, damageType, damage));
 			//Canceling target post event has no effect
 		}
 		
@@ -754,7 +702,11 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 			return;
 		}
 		
-		InventoryItem<Item> selectedItem = this.getEquippedItems().getItem(this.getSelectedEquipSlot());
+		InventoryItem<Item> selectedItem = null;
+		if(this.getSelectedEquipSlot() >= 0 && this.getSelectedEquipSlot() < this.equippedItems.getCapacity())
+		{
+			selectedItem = this.getEquippedItems().getItem(this.getSelectedEquipSlot());
+		}
 		
 		CreatureStats attackStats = this.getCurrentStats();
 		if(selectedItem != null)
@@ -782,7 +734,8 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	 */
 	public void attackAoE()
 	{
-		List<Entity> entitiesInRadius = this.level.getEntitiesInRadius(this.getX(), this.getY(), (float)this.getCurrentStats().getStat(CreatureStatsAttribs.HIT_REACH) + this.getRadius(), this);
+		List<Entity> entitiesInRadius = this.level.getEntitiesInRadius(this.getX(), this.getY(),
+			(float)this.getCurrentStats().getStat(CreatureStatsAttribs.HIT_REACH) + this.getRadius(), this);
 		List<Creature> creatures = new ArrayList<Creature>();
 		for(Entity e : entitiesInRadius)
 		{
@@ -817,7 +770,7 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		
 		if(this.useAttackAnimation())
 		{
-			this.animationHandler.playAnimation(this.lookingDirection == LookingDirection.LEFT ? ANIM_NAME_ATTACK_L : ANIM_NAME_ATTACK_R, ANIM_PRIO_ATTACK, false);
+			this.animationHandler.playAnimation(ANIM_NAME_ATTACK, ANIM_PRIO_ATTACK, false);
 		}
 	}
 	
@@ -871,7 +824,7 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	}
 	
 	@Override
-	public boolean deleteableWorkaround()
+	public boolean shouldDespawn()
 	{
 		return this.isDead && this.deadTicks >= this.getDeadTicksBeforeDelete();
 	}
@@ -1133,12 +1086,17 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	
 	/**
 	 * Function used to calculate the level from the total exp.
+	 * A total exp <= 0 must result in level 1.
 	 * @param totalExp the total exp
 	 * @return the level that this creature would have with the given total exp
 	 */
 	public int expLevelFunction(int totalExp)
 	{
-		return (int)(totalExp * 0.1);
+		if(totalExp < 0)
+		{
+			return 1;
+		}
+		return (int)(1.0D / 3.0D * Math.sqrt(totalExp) + 1);
 	}
 	
 	/**
@@ -1148,9 +1106,14 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	 */
 	public int totalExpFunction(int expLevel)
 	{
-		return expLevel * 10;
+		return (int)Math.pow((3 * expLevel - 3), 2);
 	}
 	
+	
+	/**
+	 * Sets the total exp of this creature. The level will update automatically.
+	 * @param exp the new total exp
+	 */
 	public void setTotalExp(int exp)
 	{
 		CreatureExpEvent event = (CreatureExpEvent)this.fireEvent(new CreatureExpEvent(EVENT_ID_EXP_CHANGE, this, this.totalExp, exp));
@@ -1161,16 +1124,26 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		}
 	}
 	
+	/**
+	 * @return total exp of the creature
+	 */
 	public int getTotalExp()
 	{
 		return this.totalExp;
 	}
 	
+	/**
+	 * Adds exp to the total exp of this creature.
+	 * @param exp the exp to add
+	 */
 	public void rewardExp(int exp)
 	{
 		this.setTotalExp(this.totalExp + exp);
 	}
 	
+	/**
+	 * @return the level of the creature
+	 */
 	public int getCurrentExpLevel()
 	{
 		return this.expLevelFunction(this.totalExp);

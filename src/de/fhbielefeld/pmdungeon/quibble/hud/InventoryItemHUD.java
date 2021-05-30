@@ -1,6 +1,5 @@
 package de.fhbielefeld.pmdungeon.quibble.hud;
 
-
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
@@ -38,7 +37,7 @@ public class InventoryItemHUD extends HUDElement
 	{
 		this(inv, slot, x, y, w, h, false);
 	}
-
+	
 	@Override
 	public String getTexturePath()
 	{

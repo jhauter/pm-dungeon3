@@ -69,8 +69,8 @@ public class QuestHUD extends HUDElement
 		{
 			q = this.quests.get(i);
 			lt = this.textHUD.drawText(q.getTask(), DungeonStart.FONT_ARIAL, Color.WHITE, 16, 256, 32, this.getX(), this.getY() - i * 96 + 48);
-			lp = this.textHUD.drawText(q.onWork(), DungeonStart.FONT_ARIAL, Color.YELLOW, 16, 256, 32, this.getX(), this.getY() - i * 96 + 24);
-			lr = this.textHUD.drawText(q.onComplete(), DungeonStart.FONT_ARIAL, Color.GREEN, 16, 256, 32, this.getX(), this.getY() - i * 96);
+			lp = this.textHUD.drawText(q.getProgressText(), DungeonStart.FONT_ARIAL, Color.YELLOW, 16, 256, 32, this.getX(), this.getY() - i * 96 + 24);
+			lr = this.textHUD.drawText("Reward: " + q.getRewardText(), DungeonStart.FONT_ARIAL, Color.GREEN, 16, 256, 32, this.getX(), this.getY() - i * 96);
 			this.labels.add(new LabelWrapper(lt, lp, lr, q));
 		}
 	}
@@ -83,7 +83,7 @@ public class QuestHUD extends HUDElement
 	{
 		this.quests = quests;
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -104,8 +104,8 @@ public class QuestHUD extends HUDElement
 		{
 			w = this.labels.get(i);
 			w.lTask.setText(w.quest.getTask());
-			w.lProgress.setText(w.quest.onWork());
-			w.lReward.setText(w.quest.onComplete());
+			w.lProgress.setText(w.quest.getProgressText());
+			w.lReward.setText("Reward: " + w.quest.getRewardText());
 		}
 	}
 }

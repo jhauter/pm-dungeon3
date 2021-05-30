@@ -2,12 +2,13 @@ package de.fhbielefeld.pmdungeon.quibble.input;
 
 import com.badlogic.gdx.Gdx;
 
-public class Key {
-
+public class Key
+{
+	
 	private final String event;
-
+	
 	private int key;
-
+	
 	/**
 	 * A key that was pressed. Contains a string representing the event to be
 	 * triggered by it. <br>
@@ -22,52 +23,58 @@ public class Key {
 	 *              <code>com.badlogic.gdx.Input.Keys<code>
 	 * 
 	 */
-	public Key(String event, int key) {
+	public Key(String event, int key)
+	{
 		this.event = event;
 		this.key = key;
 	}
-
+	
 	/**
 	 * 
 	 * @return if a key is pressed
 	 */
-	protected boolean isPressed() {
+	protected boolean isPressed()
+	{
 		return Gdx.input.isKeyPressed(key);
 	}
-
+	
 	/**
 	 * Identifies the key or button as a normal key or a movement key. Movement keys
 	 * include a vector in addition to the event.
 	 * 
 	 * @return false if it's not a movement Key
 	 */
-	protected boolean isMovementKey() {
+	protected boolean isMovementKey()
+	{
 		return false;
 	}
-
+	
 	/**
 	 * To Set afterwards a new Key
 	 * 
 	 * @param key the new Key which should be used
 	 */
-	public void setKey(int key) {
+	public void setKey(int key)
+	{
 		this.key = key;
 	}
-
+	
 	/**
 	 * 
 	 * @return String which represent the event that should start if pressed
 	 */
-	public String getEvent() {
+	public String getEvent()
+	{
 		return event;
 	}
-
+	
 	/**
 	 * 
 	 * @return the certain Key
 	 */
-	public int getKey() {
+	public int getKey()
+	{
 		return key;
 	}
-
+	
 }

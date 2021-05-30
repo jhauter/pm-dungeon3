@@ -1,22 +1,26 @@
 package de.fhbielefeld.pmdungeon.quibble;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 
 import de.fhbielefeld.pmdungeon.desktop.DesktopLauncher;
+import de.fhbielefeld.pmdungeon.quibble.SpatialHashGrid.Handle;
 import de.fhbielefeld.pmdungeon.quibble.chest.GoldenChest;
 import de.fhbielefeld.pmdungeon.quibble.entity.BoundingBox;
+import de.fhbielefeld.pmdungeon.quibble.entity.Chort;
 import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
+import de.fhbielefeld.pmdungeon.quibble.entity.Demon;
 import de.fhbielefeld.pmdungeon.quibble.entity.Entity;
+import de.fhbielefeld.pmdungeon.quibble.entity.Goblin;
 import de.fhbielefeld.pmdungeon.quibble.entity.Lizard;
 import de.fhbielefeld.pmdungeon.quibble.entity.Mage;
 import de.fhbielefeld.pmdungeon.quibble.entity.Player;
@@ -46,12 +50,12 @@ import de.fhbielefeld.pmdungeon.quibble.inventory.Inventory;
 import de.fhbielefeld.pmdungeon.quibble.item.Item;
 import de.fhbielefeld.pmdungeon.quibble.particle.DrawingUtil;
 import de.fhbielefeld.pmdungeon.quibble.quest.QuestDummy;
-import de.fhbielefeld.pmdungeon.quibble.quest.QuestTypes;
+import de.fhbielefeld.pmdungeon.quibble.quest.QuestFactory;
 import de.fhbielefeld.pmdungeon.quibble.trap.TrapHealth;
 import de.fhbielefeld.pmdungeon.quibble.trap.TrapTeleport;
 import de.fhbielefeld.pmdungeon.vorgaben.dungeonCreator.dungeonconverter.Coordinate;
+import de.fhbielefeld.pmdungeon.vorgaben.game.GameSetup;
 import de.fhbielefeld.pmdungeon.vorgaben.game.Controller.MainController;
-import de.fhbielefeld.pmdungeon.vorgaben.interfaces.IEntity;
 import de.fhbielefeld.pmdungeon.vorgaben.tools.Point;
 
 public class DungeonStart extends MainController implements EntityEventHandler
@@ -64,6 +68,11 @@ public class DungeonStart extends MainController implements EntityEventHandler
 	public static DungeonStart getDungeonMain()
 	{
 		return instance;
+	}
+	
+	public static SpriteBatch getGameBatch()
+	{
+		return GameSetup.batch;
 	}
 	
 	/****************************************
@@ -108,9 +117,23 @@ public class DungeonStart extends MainController implements EntityEventHandler
 	private Map<String, HUDGroup> shownHUDGroups;
 	private Map<String, Label> shownLabels;
 	
-	private boolean drawBoundingBoxes = false;
+	private ShapeRenderer debugRenderer;
 	
-	private DungeonStart()
+	/**************DEBUG UTILS*************/
+	
+	private boolean drawBoundingBoxes = false;
+	private boolean drawSHGCells = false;
+	private boolean drawSHGCNearby = false;
+	
+	/**************************************/
+	
+	private Entity cameraTarget;
+	
+	//Prevents you from using entityController >:D -- use currentLevel instead!
+	@SuppressWarnings("unused")
+	private Object entityController;
+	
+	private DungeonStart() //Private constructor because singleton
 	{
 		if(instance != null)
 		{
@@ -134,25 +157,34 @@ public class DungeonStart extends MainController implements EntityEventHandler
 		this.myHero = new Mage();
 		this.myHero.getEquippedItems().addItem(Item.SWORD_BLUE);
 		this.myHero.addEntityEventHandler(this);
+		
+		//Planning to remove these weird switches and replace them with a proper UI system
 		this.invSwitchNormal = new InventoryHUDSwitchListener(this, INV_NAME_DEFAULT, this.myHero.getInventory(), "Inventory", 16, 176);
 		this.invSwitchEquip = new InventoryHUDSwitchListener(this, INV_NAME_EQUIP, this.myHero.getEquippedItems(), "Equipment", 16, 76);
+		
 		this.myHero.getInventory().addInventoryListener(this.invSwitchNormal);
 		this.myHero.getEquippedItems().addInventoryListener(this.invSwitchEquip);
+		
 		this.expBarHUD = new ExpBarHUD(this.myHero, 16, 432);
 		this.healthHUD = new HealthDisplayHUD(this.myHero, 16, 368);
+		
 		this.inputHandler.addInputListener(myHero);
 		
 		this.getHudManager().addElement(this.expBarHUD);
 		this.getHudManager().addElement(this.healthHUD);
+		
 		this.lastFrameTimeStamp = System.currentTimeMillis();
 		Gdx.app.getGraphics().setResizable(false);
 		
-		this.expLabel = this.textHUD.drawText("Level: 0", FONT_ARIAL, Color.WHITE, 24, 200, 64, 16, 432);
+		this.expLabel = this.textHUD.drawText("Level: 1", FONT_ARIAL, Color.WHITE, 24, 200, 64, 16, 432);
 		this.healthLabel = this.textHUD.drawText("Health", FONT_ARIAL, Color.WHITE, 24, 200, 64, 16, 384);
 		
 		this.questHUD = new QuestHUD(400, 400, this.textHUD);
 		this.questHUD.setQuests(this.myHero.getQuestList());
 		this.getHudManager().addElement(questHUD);
+		
+		this.debugRenderer = new ShapeRenderer();
+		this.debugRenderer.setAutoShapeType(true);
 		
 		LoggingHandler.logger.log(Level.INFO, "Setup done.");
 	}
@@ -162,17 +194,27 @@ public class DungeonStart extends MainController implements EntityEventHandler
 	{
 		super.onLevelLoad();
 		//Clear entities from previous level
-		this.entityController.getList().clear();
+		if(this.currentLevel != null) //For the first level its null
+		{
+			this.currentLevel.clearEntities();
+		}
 		//Set current level from the level controller and entity controller
-		this.currentLevel = new DungeonLevel(this.levelController.getDungeon(), this.entityController);
+		this.currentLevel = new DungeonLevel(this.levelController.getDungeon(), 50, 50, 150, 150);
 		
 		/**** Populate dungeon ****/
 		
-		for(int i = 0; i < 10; ++i)
+		for(int i = 0; i < 8; ++i)
 		{
 			final Point pos = this.currentLevel.getDungeon().getRandomPointInDungeon();
-			final Creature toSpawn = this.currentLevel.getRNG().nextInt(2) == 0 ? new Lizard() : new Lizard();
-			toSpawn.setPosition(pos);
+			final Creature toSpawn = switch(currentLevel.getRNG().nextInt(4))
+			{
+				case 0 -> new Demon();
+				case 1 -> new Goblin();
+				case 2 -> new Lizard();
+				case 3 -> new Chort();
+				default -> throw new IllegalArgumentException("Unexpected value [spawn entity]");
+			};
+			toSpawn.setPosition(pos.x, pos.y);
 			this.currentLevel.spawnEntity(toSpawn);
 		}
 		
@@ -204,11 +246,10 @@ public class DungeonStart extends MainController implements EntityEventHandler
 		this.currentLevel.spawnEntity(currentLevel.getRNG().nextInt(2) == 0 ? new TrapTeleport(pos3.x, pos3.y, true) : new TrapHealth(pos3.x, pos3.y, 2, true));
 		
 		final Point pos4 = this.currentLevel.getDungeon().getRandomPointInDungeon();
-		QuestTypes type = QuestTypes.values()[this.currentLevel.getRNG().nextInt(QuestTypes.values().length)];
-		this.currentLevel.spawnEntity(new QuestDummy(type, pos4.x, pos4.y));
+		this.currentLevel.spawnEntity(new QuestDummy(QuestFactory.getRandomQuest(), pos4.x, pos4.y));
 		
 		//Set the camera to follow the hero
-		this.camera.follow(this.myHero);
+		this.cameraTarget = this.myHero;
 		LoggingHandler.logger.log(Level.INFO, "New level loaded.");
 		
 	}
@@ -222,6 +263,8 @@ public class DungeonStart extends MainController implements EntityEventHandler
 		
 		this.inputHandler.updateHandler();
 		
+		this.currentLevel.update();
+		
 		//Check the triggeredNextLevel flag of the player
 		if(this.myHero.triggeredNextLevel())
 		{
@@ -230,7 +273,6 @@ public class DungeonStart extends MainController implements EntityEventHandler
 			
 			LoggingHandler.logger.log(Level.INFO, "Player entered new level.");
 		}
-		
 		this.currentLevel.getParticleSystem().update((System.currentTimeMillis() - this.lastFrameTimeStamp) / 1000.0F);
 		this.lastFrameTimeStamp = System.currentTimeMillis();
 	}
@@ -240,70 +282,94 @@ public class DungeonStart extends MainController implements EntityEventHandler
 	{
 		super.endFrame();
 		
-		//The Level class has a buffer mechanism to avoid concurrent modification
-		//when spawning entities within the Entity.update() function.
-		if(this.currentLevel != null && !this.currentLevel.isEntityBufferEmpty())
+		if(this.cameraTarget != null)
 		{
-			this.currentLevel.flushEntityBuffer();
+			this.camera.setFocusPoint(new Point(this.cameraTarget.getX(), this.cameraTarget.getY()));
 		}
 		
-		ShapeRenderer debugBatch = new ShapeRenderer();
-		debugBatch.setAutoShapeType(true);
-		debugBatch.begin();
-		debugBatch.setColor(Color.GREEN);
+		getGameBatch().begin();
 		
-		SpriteBatch entityCustomRenderBatch = new SpriteBatch();
-		List<IEntity> entityList = this.entityController.getList();
 		Entity currentEntity;
-		
-		entityCustomRenderBatch.begin();
-		
-		for(int i = 0; i < entityList.size(); ++i)
+		for(int i = 0; i < currentLevel.getNumEntities(); ++i)
 		{
-			currentEntity = (Entity)entityList.get(i);
+			currentEntity = currentLevel.getEntity(i);
 			
-			if(this.drawBoundingBoxes)
+			if(!currentEntity.isInvisible())
 			{
-				final BoundingBox b = currentEntity.getBoundingBox();
-				debugBatch.rect(
-					DrawingUtil.dungeonToScreenXCam(b.x + currentEntity.getX(), this.camera.position.x),
-					DrawingUtil.dungeonToScreenYCam(b.y + currentEntity.getY(), this.camera.position.y),
-					DrawingUtil.dungeonToScreenX(b.width),
-					DrawingUtil.dungeonToScreenY(b.height));
-			}
-			
-			if(currentEntity.deleteableWorkaround())
-			{
-				entityList.remove(i);
-				--i;
-			}
-			else if(!currentEntity.isInvisible())
-			{
-				final float customRenderX = DrawingUtil.dungeonToScreenXCam(currentEntity.getX(), this.camera.position.x);
-				final float customRenderY = DrawingUtil.dungeonToScreenYCam(currentEntity.getY(), this.camera.position.y);
-				currentEntity.doCustomRendering(entityCustomRenderBatch, customRenderX, customRenderY);
+				currentEntity.render();
+				
 				if(currentEntity instanceof Creature)
 				{
-					this.drawCreatureStatusEffects(entityCustomRenderBatch, (Creature)currentEntity, customRenderX, customRenderY);
+					this.drawCreatureStatusEffects((Creature)currentEntity);
 				}
 			}
 		}
-		entityCustomRenderBatch.end();
-		entityCustomRenderBatch.flush();
-		debugBatch.end();
+		getGameBatch().end();
 		
 		this.currentLevel.getParticleSystem().draw(this.camera.position.x, this.camera.position.y);
+		
+		this.doDebugDrawing();
 		
 		this.getHudManager().update(); //Draw HUD last
 	}
 	
-	private void drawCreatureStatusEffects(Batch b, Creature c, float x, float y)
+	private void doDebugDrawing()
+	{
+		this.debugRenderer.begin();
+		
+		if(this.drawSHGCells) //Draw spatial hash grid cells of the player
+		{
+			final Handle<Entity> h = this.myHero.getSpatialHashGridHandle();
+			final SpatialHashGrid<Entity> shg = this.currentLevel.getSpatialHashGrid();
+			float colsize = shg.getWidth() / shg.getColumns();
+			float rowsize = shg.getHeight() / shg.getRows();
+			for(Vector2 cell : h.cellsArray()) //All cells that the player touches
+			{
+				this.debugRenderer.setColor(Color.YELLOW);
+				this.drawBoundingBox(new BoundingBox(cell.x * colsize, cell.y * rowsize, colsize, rowsize));
+				
+				if(this.drawSHGCNearby) //Draw entity BBs that touch the player's cells
+				{
+					this.debugRenderer.setColor(Color.ORANGE);
+					final Set<Entity> nearby = shg.nearby(h);
+					for(Entity e : nearby)
+					{
+						this.drawBoundingBox(e.getBoundingBox().offset(e.getX(), e.getY()));
+					}
+				}
+			}
+		}
+		
+		this.debugRenderer.setColor(Color.GREEN);
+		Entity e;
+		for(int i = 0; i < currentLevel.getNumEntities(); ++i)
+		{
+			e = currentLevel.getEntity(i);
+			if(this.drawBoundingBoxes)
+			{
+				this.drawBoundingBox(e.getBoundingBox().offset(e.getX(), e.getY()));
+			}
+		}
+		
+		this.debugRenderer.end();
+	}
+	
+	private void drawBoundingBox(BoundingBox bb)
+	{
+		this.debugRenderer.rect(
+			DrawingUtil.dungeonToScreenXCam(bb.x, this.camera.position.x),
+			DrawingUtil.dungeonToScreenYCam(bb.y, this.camera.position.y),
+			DrawingUtil.dungeonToScreenX(bb.width),
+			DrawingUtil.dungeonToScreenY(bb.height));
+	}
+	
+	private void drawCreatureStatusEffects(Creature c)
 	{
 		StatusEffect e;
 		for(int i = 0; i < c.getNumStatusEffects(); ++i)
 		{
 			e = c.getStatusEffect(i);
-			e.renderStatusEffect(b, x, y);
+			e.renderStatusEffect();
 		}
 	}
 	
@@ -418,6 +484,10 @@ public class DungeonStart extends MainController implements EntityEventHandler
 		return g;
 	}
 	
+	/**
+	 * Sets the slot that is marked in the hotbar.
+	 * @param slot the slot index
+	 */
 	public void setMarkedEquipSlot(int slot)
 	{
 		HUDElement e;
@@ -443,25 +513,39 @@ public class DungeonStart extends MainController implements EntityEventHandler
 		this.currentlyMarkedEquipSlot = slot;
 	}
 	
+	/**
+	 * @return the camera's x-position
+	 */
 	public float getCamPosX()
 	{
 		return this.camera.position.x;
 	}
-
+	
+	/**
+	 * @return the camera's y-position
+	 */
 	public float getCamPosY()
 	{
 		return this.camera.position.y;
 	}
-
-	public HUDManager getHudManager() {
+	
+	public HUDManager getHudManager()
+	{
 		return hudManager;
 	}
 	
-	public Label getChestLabel() {
+	public Label getChestLabel()
+	{
 		return this.shownLabels.get(INV_NAME_CHEST);
 	}
 	
-	public HUDGroup getChestHud() {
+	public HUDGroup getChestHud()
+	{
 		return this.shownHUDGroups.get(INV_NAME_CHEST);
+	}
+	
+	public Player getPlayer()
+	{
+		return this.myHero;
 	}
 }

@@ -11,25 +11,25 @@ public class AIShootFireball extends AIShootProjectile
 	{
 		super(target);
 	}
-
+	
 	@Override
 	public Projectile createProjectile(NPC owner)
 	{
 		return new SpellFireBall("Fireball", owner.getX(), owner.getY() + 0.5F, owner.getCurrentStats(), owner);
 	}
-
+	
 	@Override
 	public float getProjectileSpeed()
 	{
 		return 0.1F;
 	}
-
+	
 	@Override
 	public int getTicksBetweenActions()
 	{
 		return 30;
 	}
-
+	
 	@Override
 	public float getAimDistanceSq()
 	{

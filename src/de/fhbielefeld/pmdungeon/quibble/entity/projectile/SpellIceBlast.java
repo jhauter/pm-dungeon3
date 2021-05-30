@@ -1,16 +1,12 @@
 package de.fhbielefeld.pmdungeon.quibble.entity.projectile;
 
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-
-import de.fhbielefeld.pmdungeon.quibble.animation.AnimationFactory;
-import de.fhbielefeld.pmdungeon.quibble.animation.SpriteSheets;
 import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
 import de.fhbielefeld.pmdungeon.quibble.entity.effect.StatusEffectSpeed;
 
-public class SpellIceBlast extends ProjectileMagic {
-
+public class SpellIceBlast extends ProjectileMagic
+{
+	
 	/**
 	 * Creates an ice blast projectile which will slow down entities on impact.
 	 * @param name text for log message. Has no other use.
@@ -23,6 +19,7 @@ public class SpellIceBlast extends ProjectileMagic {
 	public SpellIceBlast(String name, float x, float y, CreatureStats stats, Creature owner)
 	{
 		super(name, x, y, stats, owner);
+		this.animationHandler.addAsDefaultAnimation("", 8, 0.1F, 1, 8, PROJECTILE_PATH + "IceBlast.png");
 	}
 	
 	@Override
@@ -31,24 +28,18 @@ public class SpellIceBlast extends ProjectileMagic {
 		super.onProjectileImpactCreature(hitCreature);
 		
 		//Slows down hit creatures
-		hitCreature.addStatusEffect(new StatusEffectSpeed(hitCreature, 0.005), 100);
+		hitCreature.addStatusEffect(new StatusEffectSpeed(hitCreature, 0.5D), 100);
 	}
-
+	
 	@Override
 	public int getTicksLasting()
 	{
 		return 45;
 	}
-
+	
 	@Override
 	public float getDamageDecreaseOverTime()
 	{
 		return this.getTicks() * 0.06F;
-	}
-
-	@Override
-	public Animation<TextureRegion> getProjectileAnimation()
-	{
-		return AnimationFactory.getAnimationFactory().createAnimation(SpriteSheets.SPELL_ICE_BLAST);
 	}
 }

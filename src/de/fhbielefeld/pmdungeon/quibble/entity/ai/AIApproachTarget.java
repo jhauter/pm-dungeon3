@@ -61,6 +61,10 @@ public class AIApproachTarget implements AIStrategy
 	@Override
 	public void executeStrategy(NPC entity)
 	{
+		if(this.getTarget().isDead())
+		{
+			return;
+		}
 		DungeonWorld dungeon = entity.getLevel().getDungeon();
 		if(this.currentMovement == null ||
 			!GeometryUtil.pointProximity(this.targetLocation, this.targetLocationPrev, 0.01F)) //If the target changed position

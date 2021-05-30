@@ -14,7 +14,7 @@ public class AnimationStateHelper
 	{
 		private final String animation;
 		private final int priority;
-
+		
 		private boolean isOn;
 		
 		private SwitchData(String animation, int priority)

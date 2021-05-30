@@ -1,22 +1,19 @@
 package de.fhbielefeld.pmdungeon.quibble.quest;
 
-import java.util.logging.Level;
-
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-
 import de.fhbielefeld.pmdungeon.quibble.LoggingHandler;
 import de.fhbielefeld.pmdungeon.quibble.entity.Entity;
 import de.fhbielefeld.pmdungeon.quibble.entity.Player;
-import de.fhbielefeld.pmdungeon.quibble.item.Item;
 
-public class QuestDummy extends Entity {
-
-	private boolean decide;
-	private boolean isActive;
-
-	private final QuestTypes quest;
-
+public class QuestDummy extends Entity
+{
+	private final StringBuilder sb = new StringBuilder();
+	private final StringBuffer stars = new StringBuffer();
+	private final int logLenght = 97;
+	
+	private Quest quest;
+	
+	private boolean shouldDespawn;
+	
 	/**
 	 * Will create a visible Quest Entity
 	 * 
@@ -24,84 +21,115 @@ public class QuestDummy extends Entity {
 	 * @param x     x float of the Position
 	 * @param y     y float of the Position
 	 */
-	public QuestDummy(QuestTypes quest, float x, float y) {
+	public QuestDummy(Quest quest, float x, float y)
+	{
 		super(x, y);
 		this.quest = quest;
-		this.animationHandler.addAsDefaultAnimation("default", 1, 1,
-				Quest.QUEST_TEXTURE_PATH + quest.texture + ".png", -1);
+		this.animationHandler.addAsDefaultAnimation("", 1, 999, 1, 1,
+			Quest.QUEST_TEXTURE_PATH + quest.getIconPath() + ".png");
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean deleteable() {
-		return decide;
+	public boolean shouldDespawn()
+	{
+		return shouldDespawn;
 	}
-
+	
 	/**
-	 * {@inheritDoc}
+	 * Shows the quest description in the console
 	 */
-	@Override
-	protected void updateLogic() {
-		super.updateLogic();
-
+	public void showQuestDescription()
+	{
+		LoggingHandler.logger.info(msg());
 	}
-
+	
 	/**
-	 * {@inheritDoc}
+	 * Called when the player either accepts or declines the quest
+	 * @param b <code>true</code> if the quest was accepted
+	 * @param player the player that made the decision
 	 */
-	@Override
-	protected void onEntityCollision(Entity otherEntity) {
-		super.onEntityCollision(otherEntity);
-		if (!(otherEntity instanceof Player))
-			return;
-		if (Gdx.input.isKeyJustPressed(Input.Keys.Q)) {
-			LoggingHandler.logger.log(Level.INFO, "\nYou have activated a Quest: " + quest.questName
-					+ "\nWould you like to accept press J, else press N");
-			setActive();
+	public void onPlayerDecision(boolean b, Player player)
+	{
+		if(b)
+		{
+			player.addQuest(quest);
 		}
-		if (isActive) {
-			if (Gdx.input.isKeyJustPressed(Input.Keys.J)) {
-				Player player = (Player) otherEntity;
-				Quest newQuest = null;
-				if (quest == QuestTypes.QUEST_LEVEL_UP) {
-					int level = player.totalExpFunction(player.getCurrentExpLevel()) / 10;
-					newQuest = new RQuestLevelUp(quest.questName, player, Item.POTION_RED_BIG, 20, level + 1);
-				}
-				else if (quest == QuestTypes.QUEST_NEXT_STAGE) {
-					newQuest = new RQuestDungeonStage(quest.questName, player, Item.SWORD_KATANA, 20);
-				}
-				else if (quest == QuestTypes.QUEST_KILL) {
-					newQuest = new RQuestKillMonster(quest.questName, player, null, 20, 5);
-				}
-				else
-				{
-					return;
-				}
-				player.addQuest(newQuest);
-				setDecided();
-			}
-			if (Gdx.input.isKeyJustPressed(Input.Keys.N)) {
-				setDecided();
-				LoggingHandler.logger.log(Level.INFO, "Quest was declined");
-			}
-		}
+		this.shouldDespawn = true;
 	}
-
+	
 	/**
-	 * Sets whether the quest can be accepted or rejected
 	 * 
-	 * @param isActive if true the quest can be decline or accept
+	 * @return a log message for a easy reading
 	 */
-	public void setActive() {
-		this.isActive = true;
+	private String msg()
+	{
+		String msg_1 = "!You have activated a Quest Flag!";
+		String msg_2 = " This Quest is a: " + quest.getQuestName() + " ";
+		String msg_3 = " You have to : " + quest.getTask() + " ";
+		// String msg_4 is a method below
+		String msg_5 = " If you would like to Accept press J, else N ";
+		
+		// 1. line
+		msg_stars(getSize(msg_1));
+		sb.append("\n" + createMsg(msg_1));
+		deleteStarsInSB();
+		// 2. line
+		msg_stars(getSize(msg_2));
+		sb.append(createMsg(msg_2));
+		deleteStarsInSB();
+		// 3. line
+		msg_stars(getSize(msg_3));
+		sb.append(createMsg(msg_3));
+		deleteStarsInSB();
+		// 4. line
+		msg_stars(getSize(msg_4()));
+		sb.append(createMsg(msg_4()));
+		deleteStarsInSB();
+		// 5. line
+		msg_stars(getSize(msg_5));
+		sb.append(createMsg(msg_5));
+		deleteStarsInSB();
+		// 6. line
+		msg_stars(this.logLenght);
+		sb.append(stars.toString());
+		deleteStarsInSB();
+		
+		return sb.toString();
 	}
-
+	
 	/**
-	 * if set the quest becomes active and the doll disappears
+	 * 
+	 * @return String with get an ItemReward if a quest provides one
 	 */
-	public void setDecided() {
-		this.decide = true;
+	private String msg_4()
+	{
+		return " Reward: " + quest.getRewardText() + " ";
 	}
+	
+	private String createMsg(String msg)
+	{
+		return stars.toString() + msg + stars.toString() + "\n";
+	}
+	
+	private int getSize(String msg)
+	{
+		return (logLenght - msg.length()) / 2;
+	}
+	
+	private void msg_stars(int length)
+	{
+		for(int i = 0; i < length; i++)
+		{
+			stars.append("*");
+		}
+	}
+	
+	private void deleteStarsInSB()
+	{
+		stars.delete(0, stars.length());
+	}
+	
 }
