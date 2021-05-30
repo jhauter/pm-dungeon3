@@ -94,8 +94,9 @@ public class SpatialHashGrid<T>
 	
 	/**
 	 * Calculates in which column the given x-position is.
+	 * This will also return columns for out of bounds positions.
 	 * @param posX the x-position
-	 * @return the column in which the given x-position is or <code>-1</code> if out of bounds.
+	 * @return the column in which the given x-position is.
 	 */
 	public int getColumn(float posX)
 	{
@@ -109,8 +110,9 @@ public class SpatialHashGrid<T>
 	
 	/**
 	 * Calculates in which row the given y-position is.
+	 * This will also return rows for out of bounds positions.
 	 * @param posY the y-position
-	 * @return the row in which the given y-position is or <code>-1</code> if out of bounds.
+	 * @return the row in which the given y-position is.
 	 */
 	public int getRow(float posY)
 	{
