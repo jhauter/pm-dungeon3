@@ -6,18 +6,21 @@ import de.fhbielefeld.pmdungeon.quibble.DungeonStart;
 import de.fhbielefeld.pmdungeon.quibble.entity.Player;
 import de.fhbielefeld.pmdungeon.quibble.hud.HUDGroup;
 
-public class InputStrategyCloseChest extends InputStrategy{
-
+public class InputStrategyCloseChest extends InputStrategy
+{
+	
 	/**
 	 * Allows to close the Inventory HUD of a open Chest
 	 * @param player
 	 */
-	public InputStrategyCloseChest(Player player) {
+	public InputStrategyCloseChest(Player player)
+	{
 		super(player);
 	}
-
+	
 	@Override
-	public void handle() {
+	public void handle()
+	{
 		HUDGroup g = DungeonStart.getDungeonMain().getChestHud();
 		if(g != null)
 		{

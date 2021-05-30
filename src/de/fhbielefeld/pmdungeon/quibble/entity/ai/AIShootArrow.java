@@ -11,25 +11,25 @@ public class AIShootArrow extends AIShootProjectile
 	{
 		super(target);
 	}
-
+	
 	@Override
 	public Projectile createProjectile(NPC owner)
 	{
 		return new ArrowProjectile("Arrow", owner.getX(), owner.getY() + 0.5F, owner.getCurrentStats(), owner);
 	}
-
+	
 	@Override
 	public float getProjectileSpeed()
 	{
 		return 0.2F;
 	}
-
+	
 	@Override
 	public int getTicksBetweenActions()
 	{
 		return 30;
 	}
-
+	
 	@Override
 	public float getAimDistanceSq()
 	{

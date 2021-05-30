@@ -42,15 +42,20 @@ public class SpatialHashGrid<T>
 			result = prime * result + obj.hashCode();
 			return result;
 		}
-
+		
 		@Override
 		public boolean equals(Object obj)
 		{
-			if(this == obj) return true;
-			if(obj == null) return false;
-			if(this.getClass() != obj.getClass()) return false;
-			if(!this.boundingBox.equals(((Handle<?>)obj).boundingBox)) return false;
-			if(!this.obj.equals(((Handle<?>)obj).obj)) return false;
+			if(this == obj)
+				return true;
+			if(obj == null)
+				return false;
+			if(this.getClass() != obj.getClass())
+				return false;
+			if(!this.boundingBox.equals(((Handle<?>)obj).boundingBox))
+				return false;
+			if(!this.obj.equals(((Handle<?>)obj).obj))
+				return false;
 			return true;
 		}
 		

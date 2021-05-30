@@ -25,7 +25,8 @@ import com.badlogic.gdx.Input.Keys;
  * <li>items <code>Key's JustPressed in an ArrayList</code> which represents the
  * Inventory Slots and supposed to select an Item </blockquote>
  */
-public class KeyList {
+public class KeyList
+{
 	
 	public static final String OPEN_CHEST = "OpenChest";
 	public static final String USE_ITEM = "UseItem";
@@ -34,19 +35,19 @@ public class KeyList {
 	public static final String INTERACT_QUEST = "InteractQuest";
 	public static final String ACCEPT = "Accept";
 	public static final String DECLINE = "Decline";
-
+	
 	public static final String[] SELECT_ITEM = new String[9];
 	{
-	  for(int i = 0; i < SELECT_ITEM.length; ++i)
-	  {
-	    SELECT_ITEM[i] = "select_" + i;
-	  }
+		for(int i = 0; i < SELECT_ITEM.length; ++i)
+		{
+			SELECT_ITEM[i] = "select_" + i;
+		}
 	}
 	
-
 	private ArrayList<Key> keyList;
-
-	public KeyList() {
+	
+	public KeyList()
+	{
 		keyList = new ArrayList<>();
 		this.keyList.add(up());
 		this.keyList.add(right());
@@ -61,47 +62,51 @@ public class KeyList {
 		this.keyList.add(accept());
 		this.keyList.add(decline());
 	}
-
+	
 	/**
 	 * This have to be a <code>KeyMovement</code> because its carries a Vector for
 	 * movement calculation
 	 * 
 	 * @return a KeyMovement Key which supposed to let the Player go up
 	 */
-	KeyMovement up() {
+	KeyMovement up()
+	{
 		return new KeyMovement("up", Keys.W, 0, 1);
 	}
-
+	
 	/**
 	 * This have to be a <code>KeyMovement</code> because its carries a Vector for
 	 * movement calculation
 	 * 
 	 * @return a KeyMovement Key which supposed to let the Player go right
 	 */
-	KeyMovement right() {
+	KeyMovement right()
+	{
 		return new KeyMovement("right", Keys.D, 1, 0);
 	}
-
+	
 	/**
 	 * This have to be a <code>KeyMovement</code> because its carries a Vector for
 	 * movement calculation
 	 * 
 	 * @return a KeyMovement Key which supposed to let the Player go down
 	 */
-	KeyMovement down() {
+	KeyMovement down()
+	{
 		return new KeyMovement("down", Keys.S, 0, -1);
 	}
-
+	
 	/**
 	 * This have to be a <code>KeyMovement</code> because its carries a Vector for
 	 * movement calculation
 	 * 
 	 * @return a KeyMovement Key which supposed to let the Player go left
 	 */
-	KeyMovement left() {
+	KeyMovement left()
+	{
 		return new KeyMovement("left", Keys.A, -1, 0);
 	}
-
+	
 	/**
 	 * This have to be a <code>KeyMouseButton</code> because the ranged Combat
 	 * System require a Mouse Click
@@ -109,38 +114,44 @@ public class KeyList {
 	 * @return Key Mouse Button which is supposed to use if a selected Item should
 	 *         be used
 	 */
-	KeyMouseButton useItem() {
+	KeyMouseButton useItem()
+	{
 		return new KeyMouseButton(USE_ITEM, Buttons.LEFT);
 	}
-
+	
 	/**
 	 * 
 	 * @return a KeyJustPressed which is supposed to open a Chest
 	 */
-	KeyJustPressed openChest() {
+	KeyJustPressed openChest()
+	{
 		return new KeyJustPressed(OPEN_CHEST, Keys.E);
 	}
-
+	
 	/**
 	 * 
 	 * @return a KeyJustPressed which is supposed to pick up a drop from Ground
 	 */
-	KeyJustPressed pickUpDrop() {
+	KeyJustPressed pickUpDrop()
+	{
 		return new KeyJustPressed(PICK_UP_DROP, Keys.SPACE);
 	}
-
+	
 	/**
 	 * 
 	 * @return a KeyJustPressed which is supposed to close a Chest Inventory HUD
 	 */
-	KeyJustPressed closeChestInv() {
+	KeyJustPressed closeChestInv()
+	{
 		return new KeyJustPressed(CLOSE_CHEST_INV, Keys.SPACE);
 	}
+	
 	/**
 	 * 
 	 * @return a KeyJustPressed which is supposed to interact with the quest
 	 */
-	KeyJustPressed activateQuest() {
+	KeyJustPressed activateQuest()
+	{
 		return new KeyJustPressed(INTERACT_QUEST, Keys.Q);
 	}
 	
@@ -148,7 +159,8 @@ public class KeyList {
 	 * 
 	 * @return a KeyJustPressed which is supposed to interact with entities that could be accept
 	 */
-	KeyJustPressed accept() {
+	KeyJustPressed accept()
+	{
 		return new KeyJustPressed(ACCEPT, Keys.J);
 	}
 	
@@ -156,29 +168,33 @@ public class KeyList {
 	 * 
 	 * @return a KeyJustPressed which is supposed to interact with entities that could be accept
 	 */
-	KeyJustPressed decline() {
+	KeyJustPressed decline()
+	{
 		return new KeyJustPressed(DECLINE, Keys.N);
 	}
-
+	
 	/**
 	 * 
 	 * @return a List of KeysJustPressed which used to select Items
 	 */
-	public ArrayList<KeyJustPressed> items() {
+	public ArrayList<KeyJustPressed> items()
+	{
 		ArrayList<KeyJustPressed> keys = new ArrayList<>();
-		for (int i = 0; i < 9; i++) {
+		for(int i = 0; i < 9; i++)
+		{
 			KeyJustPressed k = new KeyJustPressed(SELECT_ITEM[i], 7 + i);
 			keys.add(k);
 		}
 		return keys;
 	}
-
+	
 	/**
 	 * 
 	 * @return the whole list of Key's and Button to play the full game
 	 */
-	public ArrayList<Key> getKeyList() {
+	public ArrayList<Key> getKeyList()
+	{
 		return keyList;
 	}
-
+	
 }

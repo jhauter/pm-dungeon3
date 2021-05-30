@@ -13,8 +13,9 @@ import de.fhbielefeld.pmdungeon.quibble.particle.ParticleMovement;
 import de.fhbielefeld.pmdungeon.quibble.particle.Swing;
 import de.fhbielefeld.pmdungeon.quibble.particle.Swing.SwingOrientation;
 
-public abstract class ItemWeaponRange extends ItemWeapon {
-
+public abstract class ItemWeaponRange extends ItemWeapon
+{
+	
 	/**
 	 * The superclass of the range weapons (magic spells, arrows etc. . ).
 	 * 
@@ -25,17 +26,19 @@ public abstract class ItemWeaponRange extends ItemWeapon {
 	 * @param visibleTime time in seconds that this weapon will be visible when used
 	 * @param texture     texture used to render this item
 	 */
-	protected ItemWeaponRange(String name, float itemWidth, float itemHeight, float visibleTime, String texture) {
+	protected ItemWeaponRange(String name, float itemWidth, float itemHeight, float visibleTime, String texture)
+	{
 		super(name, itemWidth, itemHeight, visibleTime, texture);
 	}
-
+	
 	@Override
-	public ParticleMovement getWeaponMovement(Creature user) {
+	public ParticleMovement getWeaponMovement(Creature user)
+	{
 		SwingOrientation swingDir = user.getLookingDirection() == LookingDirection.RIGHT ? SwingOrientation.RIGHT
-				: SwingOrientation.LEFT;
+			: SwingOrientation.LEFT;
 		return new Swing(swingDir, 0.0F);
 	}
-
+	
 	/**
 	 * The projectile that should be spawn if the weapon is used
 	 * 
@@ -47,7 +50,8 @@ public abstract class ItemWeaponRange extends ItemWeapon {
 	public abstract float getProjectileSpeed();
 	
 	@Override
-	public void onUse(Creature user) {
+	public void onUse(Creature user)
+	{
 		super.onUse(user);
 		if(user.getHitCooldown() > 0.0D)
 		{
@@ -57,7 +61,7 @@ public abstract class ItemWeaponRange extends ItemWeapon {
 		Projectile proj = spawnProjectile(user);
 		int mouseX = Gdx.input.getX();
 		int mouseY = Gdx.graphics.getHeight() - Gdx.input.getY();
-
+		
 		float dungeonX = DrawingUtil.screenToDungeonXCam(mouseX, DungeonStart.getDungeonMain().getCamPosX());
 		float dungeonY = DrawingUtil.screenToDungeonYCam(mouseY, DungeonStart.getDungeonMain().getCamPosY());
 		
@@ -68,5 +72,5 @@ public abstract class ItemWeaponRange extends ItemWeapon {
 		
 		user.getCurrentStats().setStat(CreatureStatsAttribs.HIT_COOLDOWN, 15);
 	}
-
+	
 }

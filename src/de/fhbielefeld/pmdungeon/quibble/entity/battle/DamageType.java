@@ -11,7 +11,6 @@ public abstract class DamageType
 	 */
 	public static final DamageType PHYSICAL = new DamagePhysical();
 	
-	
 	/**
 	 * Magical damage, an extra combat Damage, reduced by magical resistance
 	 */

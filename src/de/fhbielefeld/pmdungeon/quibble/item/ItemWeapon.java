@@ -47,7 +47,7 @@ public abstract class ItemWeapon extends Item
 			new ParticleWeapon(this, user.getX() + weaponOffset.x, user.getY() + weaponOffset.y, user),
 			this.getWeaponMovement(user));
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -56,7 +56,7 @@ public abstract class ItemWeapon extends Item
 	{
 		return false;
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -65,7 +65,7 @@ public abstract class ItemWeapon extends Item
 	{
 		return this.texture;
 	}
-
+	
 	/**
 	 * @return render width of this weapon
 	 */
@@ -73,7 +73,7 @@ public abstract class ItemWeapon extends Item
 	{
 		return itemWidth;
 	}
-
+	
 	/**
 	 * @return render height of this weapon
 	 */
@@ -81,7 +81,7 @@ public abstract class ItemWeapon extends Item
 	{
 		return itemHeight;
 	}
-
+	
 	/**
 	 * @return time in seconds that this weapon is visible when used
 	 */

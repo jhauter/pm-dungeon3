@@ -3,8 +3,9 @@ package de.fhbielefeld.pmdungeon.quibble.entity.projectile;
 import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
 
-public class ArrowProjectile extends ProjectilePhysical {
-
+public class ArrowProjectile extends ProjectilePhysical
+{
+	
 	/**
 	 * Creates an arrow projectile.
 	 * @param name text for log message. Has no other use.
@@ -19,13 +20,13 @@ public class ArrowProjectile extends ProjectilePhysical {
 		super(name, x, y, stats, owner);
 		this.animationHandler.addAsDefaultAnimation("", 1, 999, 1, 1, PROJECTILE_PATH + "arrow.png");
 	}
-
+	
 	@Override
 	public int getTicksLasting()
 	{
 		return 1000;
 	}
-
+	
 	@Override
 	public float getDamageDecreaseOverTime()
 	{

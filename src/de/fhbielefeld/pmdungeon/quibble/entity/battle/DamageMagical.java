@@ -16,7 +16,8 @@ public class DamageMagical extends DamageType
 	 * {@inheritDoc}
 	 */
 	@Override
-	public CreatureStatsAttribs getSourceDamageStat() {
+	public CreatureStatsAttribs getSourceDamageStat()
+	{
 		return CreatureStatsAttribs.DAMAGE_MAGIC;
 	}
 }

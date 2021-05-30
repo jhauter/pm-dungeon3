@@ -83,7 +83,7 @@ public class QuestHUD extends HUDElement
 	{
 		this.quests = quests;
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */

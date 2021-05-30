@@ -5,23 +5,26 @@ import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
 import de.fhbielefeld.pmdungeon.quibble.item.Item;
 import de.fhbielefeld.pmdungeon.vorgaben.tools.Point;
 
-public class Mage extends Player {
+public class Mage extends Player
+{
 	
-	public Mage(float x, float y) {
+	public Mage(float x, float y)
+	{
 		super(x, y);
 		
 		this.animationHandler.addAsDefaultAnimation(Creature.ANIM_NAME_IDLE, 4, 0.15F, 1, 4, "assets/textures/entity/mage/wizzard_m_idle.png");
 		this.animationHandler.addAnimation(Creature.ANIM_NAME_RUN, 4, 0.1F, 1, 4, "assets/textures/entity/mage/wizzard_m_run.png");
 		this.animationHandler.addAnimation(Creature.ANIM_NAME_HIT, 1, 0.5F, 1, 1, "assets/textures/entity/mage/wizzard_m_hit.png");
-	
+		
 		getEquippedItems().addItem(Item.RED_MAGIC_STAFF);
 		getEquippedItems().addItem(Item.SIMPLE_BOW);
 	}
 	
-	public Mage() {
+	public Mage()
+	{
 		this(0.0F, 0.0F);
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -82,5 +85,5 @@ public class Mage extends Player {
 	{
 		return 2;
 	}
-
+	
 }

@@ -2,8 +2,9 @@ package de.fhbielefeld.pmdungeon.quibble.input;
 
 import com.badlogic.gdx.Gdx;
 
-public class KeyJustPressed extends Key {
-
+public class KeyJustPressed extends Key
+{
+	
 	/**
 	 * A key that was just pressed. Contains a string representing the event to be
 	 * triggered by it, but only once a time. <br>
@@ -18,12 +19,14 @@ public class KeyJustPressed extends Key {
 	 *              <code>com.badlogic.gdx.Input.Keys<code>
 	 * 
 	 */
-	public KeyJustPressed(String event, int key) {
+	public KeyJustPressed(String event, int key)
+	{
 		super(event, key);
 	}
-
+	
 	@Override
-	protected boolean isPressed() {
+	protected boolean isPressed()
+	{
 		return Gdx.input.isKeyJustPressed(getKey());
 	}
 	

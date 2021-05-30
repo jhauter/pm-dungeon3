@@ -1,6 +1,7 @@
 package de.fhbielefeld.pmdungeon.quibble.input;
 
-public interface InputListener {
+public interface InputListener
+{
 	/**
 	 * Should be a KeyBoard Key
 	 * 
@@ -8,7 +9,7 @@ public interface InputListener {
 	 *            own Vector which is necessary to calculate the movement
 	 */
 	public void onMovement(KeyMovement key);
-
+	
 	/**
 	 * 
 	 * @param key that was pressed, contains a String to identify the certain event

@@ -55,7 +55,7 @@ public class BoundingBox
 	public boolean intersects(BoundingBox other)
 	{
 		return this.x < other.x + other.width && this.x + this.width > other.x &&
-			   this.y + this.height > other.y && this.y < other.y + other.height;
+			this.y + this.height > other.y && this.y < other.y + other.height;
 	}
 	
 	/**
@@ -89,7 +89,7 @@ public class BoundingBox
 	{
 		return "BoundingBox[" + this.x + ", " + this.y + ", " + this.width + ", " + this.height + "]";
 	}
-
+	
 	@Override
 	public int hashCode()
 	{
@@ -101,18 +101,25 @@ public class BoundingBox
 		result = prime * result + Float.floatToIntBits(y);
 		return result;
 	}
-
+	
 	@Override
 	public boolean equals(Object obj)
 	{
-		if(this == obj) return true;
-		if(obj == null) return false;
-		if(getClass() != obj.getClass()) return false;
+		if(this == obj)
+			return true;
+		if(obj == null)
+			return false;
+		if(getClass() != obj.getClass())
+			return false;
 		BoundingBox other = (BoundingBox)obj;
-		if(Float.floatToIntBits(height) != Float.floatToIntBits(other.height)) return false;
-		if(Float.floatToIntBits(width) != Float.floatToIntBits(other.width)) return false;
-		if(Float.floatToIntBits(x) != Float.floatToIntBits(other.x)) return false;
-		if(Float.floatToIntBits(y) != Float.floatToIntBits(other.y)) return false;
+		if(Float.floatToIntBits(height) != Float.floatToIntBits(other.height))
+			return false;
+		if(Float.floatToIntBits(width) != Float.floatToIntBits(other.width))
+			return false;
+		if(Float.floatToIntBits(x) != Float.floatToIntBits(other.x))
+			return false;
+		if(Float.floatToIntBits(y) != Float.floatToIntBits(other.y))
+			return false;
 		return true;
 	}
 }

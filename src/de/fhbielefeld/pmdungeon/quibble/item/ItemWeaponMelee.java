@@ -9,7 +9,7 @@ import de.fhbielefeld.pmdungeon.quibble.particle.Swing.SwingOrientation;
 public class ItemWeaponMelee extends ItemWeapon
 {
 	private final float swingSpeed;
-
+	
 	/**
 	 * Creates a melee weapon item.
 	 * @param name user friendly display name
@@ -24,7 +24,7 @@ public class ItemWeaponMelee extends ItemWeapon
 		super(name, itemWidth, itemHeight, visibleTime, texture);
 		this.swingSpeed = swingSpeed;
 	}
-
+	
 	/**
 	 * {@inheritDoc}<br>
 	 * 
@@ -41,7 +41,7 @@ public class ItemWeaponMelee extends ItemWeapon
 		}
 		user.attackAoE();
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -60,7 +60,7 @@ public class ItemWeaponMelee extends ItemWeapon
 		SwingOrientation swingDir = user.getLookingDirection() == LookingDirection.RIGHT ? SwingOrientation.RIGHT : SwingOrientation.LEFT;
 		return new Swing(swingDir, this.swingSpeed);
 	}
-
+	
 	/**
 	 * @return the speed at which this weapon will swing
 	 */

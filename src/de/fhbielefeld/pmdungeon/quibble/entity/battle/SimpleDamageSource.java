@@ -12,19 +12,19 @@ public class SimpleDamageSource implements DamageSource
 		this.y = y;
 		this.stats = stats;
 	}
-
+	
 	@Override
 	public float getX()
 	{
 		return this.x;
 	}
-
+	
 	@Override
 	public float getY()
 	{
 		return this.y;
 	}
-
+	
 	@Override
 	public CreatureStats getCurrentStats()
 	{

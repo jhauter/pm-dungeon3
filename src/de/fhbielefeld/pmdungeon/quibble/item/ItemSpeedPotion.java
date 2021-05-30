@@ -15,7 +15,7 @@ public class ItemSpeedPotion extends ItemPotion
 	 * @param ticks the frames the speed effect should be stay on
 	 * @param texture texture that is used to render the item
 	 */
-	public ItemSpeedPotion(String displayName, double speedAmount,int ticks, String texture)
+	public ItemSpeedPotion(String displayName, double speedAmount, int ticks, String texture)
 	{
 		super(displayName, texture);
 		this.speedAmount = speedAmount;

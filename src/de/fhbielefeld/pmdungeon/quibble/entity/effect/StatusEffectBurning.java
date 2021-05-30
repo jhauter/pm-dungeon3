@@ -58,19 +58,19 @@ public class StatusEffectBurning extends StatusEffect implements DamageSource
 		if(getCreature().getTicks() % 60 == 0)
 			this.getCreature().damage(this, DamageType.MAGICAL, cause, true);
 	}
-
+	
 	@Override
 	public float getX()
 	{
 		return 0;
 	}
-
+	
 	@Override
 	public float getY()
 	{
 		return 0;
 	}
-
+	
 	@Override
 	public CreatureStats getCurrentStats()
 	{

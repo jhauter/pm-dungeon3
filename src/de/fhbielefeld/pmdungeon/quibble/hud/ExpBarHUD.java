@@ -18,7 +18,7 @@ public class ExpBarHUD extends HUDElement
 		this.creature = creature;
 		this.setSize(256, 16);
 	}
-
+	
 	@Override
 	public String getTexturePath()
 	{

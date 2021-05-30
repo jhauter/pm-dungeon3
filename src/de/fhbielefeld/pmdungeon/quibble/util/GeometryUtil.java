@@ -19,7 +19,7 @@ public class GeometryUtil
 		{
 			return false;
 		}
-
+		
 		float t = crossProduct(x3 - x1, y3 - y1, x4 / crossRS, y4 / crossRS);
 		float u = crossProduct(x3 - x1, y3 - y1, x2 / crossRS, y2 / crossRS);
 		

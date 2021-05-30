@@ -50,7 +50,8 @@ public class RNGTable
 	{
 		if(this.positionTotal + probability > 1.0D)
 		{
-			throw new IllegalStateException("adding this option would cause the total probability to be " + (this.positionTotal + probability) + " which is not allowed");
+			throw new IllegalStateException(
+				"adding this option would cause the total probability to be " + (this.positionTotal + probability) + " which is not allowed");
 		}
 		this.options.add(new Option(this.positionTotal += probability, this.options.size() + 1));
 		return this.options.size();

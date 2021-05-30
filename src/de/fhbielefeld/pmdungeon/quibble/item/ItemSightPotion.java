@@ -30,10 +30,13 @@ public class ItemSightPotion extends ItemPotion
 	public void onUse(Creature user)
 	{
 		
-		List<Entity> t = (List<Entity>) user.getLevel().getEntitiesInRadius(5, 5, 9999, user);
-		for (Entity entity : t) {
-			if( entity instanceof Trap) {
-				((Trap)entity).setVisible(true, this.timeOfSight);;
+		List<Entity> t = (List<Entity>)user.getLevel().getEntitiesInRadius(5, 5, 9999, user);
+		for(Entity entity : t)
+		{
+			if(entity instanceof Trap)
+			{
+				((Trap)entity).setVisible(true, this.timeOfSight);
+				;
 			}
 		}
 	}

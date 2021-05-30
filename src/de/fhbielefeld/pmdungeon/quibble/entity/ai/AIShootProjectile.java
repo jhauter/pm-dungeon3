@@ -12,7 +12,7 @@ public abstract class AIShootProjectile extends AIDistantAction
 	{
 		super(target);
 	}
-
+	
 	@Override
 	public void onAction(NPC entity)
 	{

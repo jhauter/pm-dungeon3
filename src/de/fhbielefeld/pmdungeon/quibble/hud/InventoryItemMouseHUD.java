@@ -17,7 +17,7 @@ public class InventoryItemMouseHUD extends HUDElement
 		this.setSize(64, 64);
 		this.sourceSlot = sourceSlot;
 	}
-
+	
 	@Override
 	public String getTexturePath()
 	{
@@ -46,7 +46,7 @@ public class InventoryItemMouseHUD extends HUDElement
 				return;
 			}
 		}
-
+		
 		boolean isTargetABag = slotClickedOn.getInventoryReference().getItem(slotClickedOn.getInventorySlot()) instanceof BagInventoryItem<?, ?>;
 		if(this.sourceSlot.isInsideBag() && isTargetABag)
 		{

@@ -9,7 +9,8 @@ import de.fhbielefeld.pmdungeon.quibble.entity.event.CreatureHitTargetPostEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEvent;
 import de.fhbielefeld.pmdungeon.quibble.item.Item;
 
-public class RQuestKillMonster extends Quest {
+public class RQuestKillMonster extends Quest
+{
 	
 	private int toKill;
 	private int counter;
@@ -21,57 +22,68 @@ public class RQuestKillMonster extends Quest {
 	 * @param itemOnReward the item that is rewarded when the quest is completed
 	 * @param expOnReward the exp that are rewarded when the quest is completed
 	 */
-	public RQuestKillMonster(String questName, Player p, Item itemOnReward, int expOnReward, int toKill) {
+	public RQuestKillMonster(String questName, Player p, Item itemOnReward, int expOnReward, int toKill)
+	{
 		super(questName, p, itemOnReward, expOnReward);
 		this.toKill = toKill;
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String getTask() {
+	public String getTask()
+	{
 		return "Kill " + toKill + " Monsters";
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String onWork() {
+	public String onWork()
+	{
 		return counter + "/" + toKill;
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void handleEvent(EntityEvent event) {
-		if(event.getEventID() == Creature.EVENT_ID_HIT_TARGET_POST) {
+	public void handleEvent(EntityEvent event)
+	{
+		if(event.getEventID() == Creature.EVENT_ID_HIT_TARGET_POST)
+		{
 			final CreatureHitTargetPostEvent hitEvent = (CreatureHitTargetPostEvent)event;
-			if(hitEvent.getTarget().isDead() && hitEvent.getTarget().getDeadTicks() == 0) {
-				this.counter ++;
-				if(counter == toKill) {
+			if(hitEvent.getTarget().isDead() && hitEvent.getTarget().getDeadTicks() == 0)
+			{
+				this.counter++;
+				if(counter == toKill)
+				{
 					this.setCompleted(true);
 					LoggingHandler.logger.log(Level.INFO, "The quest " + this.getQuestName() + "was completed");
 				}
 			}
 		}
 	}
-
-	public int getToKill() {
+	
+	public int getToKill()
+	{
 		return toKill;
 	}
-
-	public void setToKill(int toKill) {
+	
+	public void setToKill(int toKill)
+	{
 		this.toKill = toKill;
 	}
-
-	public int getCounter() {
+	
+	public int getCounter()
+	{
 		return counter;
 	}
-
-	public void setCounter(int counter) {
+	
+	public void setCounter(int counter)
+	{
 		this.counter = counter;
 	}
 }

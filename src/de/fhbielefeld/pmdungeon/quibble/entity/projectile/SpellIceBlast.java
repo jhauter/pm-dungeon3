@@ -4,8 +4,9 @@ import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
 import de.fhbielefeld.pmdungeon.quibble.entity.effect.StatusEffectSpeed;
 
-public class SpellIceBlast extends ProjectileMagic {
-
+public class SpellIceBlast extends ProjectileMagic
+{
+	
 	/**
 	 * Creates an ice blast projectile which will slow down entities on impact.
 	 * @param name text for log message. Has no other use.
@@ -29,13 +30,13 @@ public class SpellIceBlast extends ProjectileMagic {
 		//Slows down hit creatures
 		hitCreature.addStatusEffect(new StatusEffectSpeed(hitCreature, 0.005), 100);
 	}
-
+	
 	@Override
 	public int getTicksLasting()
 	{
 		return 45;
 	}
-
+	
 	@Override
 	public float getDamageDecreaseOverTime()
 	{

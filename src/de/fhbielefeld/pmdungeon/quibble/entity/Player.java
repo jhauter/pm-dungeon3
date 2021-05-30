@@ -69,9 +69,10 @@ public abstract class Player extends Creature implements InputListener
 	}
 	
 	@Override
-	public void onEvent(Key key) {	
-			inputMap.get(key.getEvent()).handle();
-		}
+	public void onEvent(Key key)
+	{
+		inputMap.get(key.getEvent()).handle();
+	}
 	
 	/**
 	 * This must be called to reset the <code>triggeredNextLevel</code> flag
@@ -184,8 +185,8 @@ public abstract class Player extends Creature implements InputListener
 		return this.quests;
 	}
 	
-	
-	private HashMap<String, InputStrategy> fillInputMap(){
+	private HashMap<String, InputStrategy> fillInputMap()
+	{
 		HashMap<String, InputStrategy> map = new HashMap<>();
 		
 		map.put(KeyList.PICK_UP_DROP, new InputStrategyPickUpDrops(this));
@@ -203,12 +204,11 @@ public abstract class Player extends Creature implements InputListener
 		map.put(KeyList.DECLINE, new InputStrategyDecline(this));
 		
 		//Will create so a List in the range of Inventory Slots
-		for (int i = 0; i < 9; i++) {
-			map.put(KeyList.SELECT_ITEM[i], new InputStrategySelectItem(this, i)) ;
+		for(int i = 0; i < 9; i++)
+		{
+			map.put(KeyList.SELECT_ITEM[i], new InputStrategySelectItem(this, i));
 		}
 		return map;
 	}
-	
-
 	
 }

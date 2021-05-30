@@ -72,5 +72,5 @@ public class EntityEvent
 	public boolean isCancelled()
 	{
 		return this.cancelled;
-	} 
+	}
 }

@@ -9,8 +9,9 @@ import de.fhbielefeld.pmdungeon.quibble.entity.ai.AIShootArrow;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
 
-public class Chort extends NPC{
-
+public class Chort extends NPC
+{
+	
 	private boolean noticedPlayer;
 	
 	private boolean meleeMode;
@@ -24,7 +25,8 @@ public class Chort extends NPC{
 	 * @param x x-position
 	 * @param y y-position
 	 */
-	public Chort(float x, float y) {
+	public Chort(float x, float y)
+	{
 		super(x, y);
 		// Default idle animation will always be played if no other animation is being
 		// played
@@ -35,30 +37,33 @@ public class Chort extends NPC{
 		
 		this.animationHandler.addAnimation(Creature.ANIM_NAME_RUN, 4, 0.07F, 1, 4, "assets/textures/entity/chort/chort_run.png");
 	}
-
+	
 	/**
 	 * Creates a Lizard instance at <code>x = 0</code> and <code>y = 0</code>. The
 	 * coordinates can be changed after creating the knight by calling
 	 * {@link Chort#setPosition(float, float)}. This way it can be placed anywhere
 	 * in the dungeon.
 	 */
-	public Chort() {
+	public Chort()
+	{
 		this(0.0F, 0.0F);
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected BoundingBox getInitBoundingBox() {
+	protected BoundingBox getInitBoundingBox()
+	{
 		return new BoundingBox(-0.35F, 0.0F, 0.7F, 0.8F);
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected CreatureStats getBaseStatsForLevel(int level) {
+	protected CreatureStats getBaseStatsForLevel(int level)
+	{
 		CreatureStats stats = new CreatureStats();
 		stats.setStat(CreatureStatsAttribs.HEALTH, 4 + level);
 		stats.setStat(CreatureStatsAttribs.RESISTANCE_PHYS, level);
@@ -74,16 +79,17 @@ public class Chort extends NPC{
 		stats.setStat(CreatureStatsAttribs.HIT_COOLDOWN, 20.0D);
 		return stats;
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected void onEntityCollision(Entity otherEntity) {
+	protected void onEntityCollision(Entity otherEntity)
+	{
 		super.onEntityCollision(otherEntity);
-		if (otherEntity instanceof Player) // Attack player when touched
+		if(otherEntity instanceof Player) // Attack player when touched
 		{
-			this.attack((Player) otherEntity);
+			this.attack((Player)otherEntity);
 		}
 	}
 	
@@ -96,7 +102,8 @@ public class Chort extends NPC{
 		{
 			//Can happen if the player dies?
 			return;
-		};
+		}
+		;
 		if(!this.noticedPlayer && this.hasLineOfSightTo(new Vector2(players.get(0).getPosition().x, players.get(0).getPosition().y)))
 		{
 			this.noticedPlayer = true;
@@ -117,9 +124,10 @@ public class Chort extends NPC{
 			}
 		}
 	}
-
+	
 	@Override
-	public int getExpDrop() {
+	public int getExpDrop()
+	{
 		return 5;
 	}
 }

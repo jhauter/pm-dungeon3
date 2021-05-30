@@ -46,7 +46,7 @@ public class ItemBag<C extends Item> extends Item
 	{
 		return false;
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */

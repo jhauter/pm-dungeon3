@@ -6,10 +6,11 @@ import de.fhbielefeld.pmdungeon.quibble.particle.ParticleMovement;
 import de.fhbielefeld.pmdungeon.quibble.particle.Swing;
 import de.fhbielefeld.pmdungeon.quibble.particle.Swing.SwingOrientation;
 
-public abstract class ItemWeaponMagic extends ItemWeaponRange {
-
+public abstract class ItemWeaponMagic extends ItemWeaponRange
+{
+	
 	private float swingSpeed;
-
+	
 	/**
 	 * Creates a Magic weapon. Magic weapon mostly have status effects in the
 	 * certain Weapon
@@ -22,16 +23,18 @@ public abstract class ItemWeaponMagic extends ItemWeaponRange {
 	 * @param texture     texture used to render this item
 	 */
 	protected ItemWeaponMagic(String name, float itemWidth, float itemHeight, float swingSpeed, float visibleTime,
-			String texture) {
+		String texture)
+	{
 		super(name, itemWidth, itemHeight, visibleTime, texture);
 		this.swingSpeed = swingSpeed;
 	}
-
+	
 	@Override
-	public ParticleMovement getWeaponMovement(Creature user) {
-
+	public ParticleMovement getWeaponMovement(Creature user)
+	{
+		
 		SwingOrientation swingDir = user.getLookingDirection() == LookingDirection.RIGHT ? SwingOrientation.RIGHT
-				: SwingOrientation.LEFT;
+			: SwingOrientation.LEFT;
 		return new Swing(swingDir, this.swingSpeed);
 	}
 }

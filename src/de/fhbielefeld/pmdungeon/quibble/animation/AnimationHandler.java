@@ -57,7 +57,6 @@ public interface AnimationHandler
 	 */
 	public void addAsDefaultAnimation(String animName, int numFrames, float frameDuration, int rows, int columns, String fileName);
 	
-	
 	public void addAsDefaultAnimation(String animName, int numFrames, int firstFrame, float frameDuration, int rows, int columns, String fileName);
 	
 	/**

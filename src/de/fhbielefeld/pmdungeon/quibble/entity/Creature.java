@@ -151,7 +151,6 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		
 		this.statusEffects = new ArrayList<>();
 		
-		
 		this.inventory = new DefaultInventory<Item>(this.getInventorySlots());
 		this.equippedItems = new DefaultInventory<Item>(this.getEquipmentSlots());
 		this.equippedItems.addInventoryListener((slot, oldItem, newItem) ->
@@ -735,7 +734,8 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	 */
 	public void attackAoE()
 	{
-		List<Entity> entitiesInRadius = this.level.getEntitiesInRadius(this.getX(), this.getY(), (float)this.getCurrentStats().getStat(CreatureStatsAttribs.HIT_REACH) + this.getRadius(), this);
+		List<Entity> entitiesInRadius = this.level.getEntitiesInRadius(this.getX(), this.getY(),
+			(float)this.getCurrentStats().getStat(CreatureStatsAttribs.HIT_REACH) + this.getRadius(), this);
 		List<Creature> creatures = new ArrayList<Creature>();
 		for(Entity e : entitiesInRadius)
 		{

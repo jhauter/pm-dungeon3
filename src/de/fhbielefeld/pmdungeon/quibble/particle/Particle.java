@@ -24,7 +24,7 @@ public abstract class Particle
 	protected ParticleMovement particleMovement;
 	
 	private ParticleSource particleSource;
-
+	
 	private final float diffSourceX;
 	private final float diffSourceY;
 	

@@ -202,16 +202,16 @@ public class DungeonStart extends MainController implements EntityEventHandler
 		
 		/**** Populate dungeon ****/
 		
-		for(int i = 0; i < 10; ++i)
+		for(int i = 0; i < 0; ++i)
 		{
 			final Point pos = this.currentLevel.getDungeon().getRandomPointInDungeon();
-			final Creature toSpawn = switch (currentLevel.getRNG().nextInt(4)) {
+			final Creature toSpawn = switch(currentLevel.getRNG().nextInt(4))
+			{
 				case 0 -> new Demon();
 				case 1 -> new Goblin();
 				case 2 -> new Lizard();
 				case 3 -> new Chort();
-				default ->
-				throw new IllegalArgumentException("Unexpected value [spawn entity]");
+				default -> throw new IllegalArgumentException("Unexpected value [spawn entity]");
 			};
 			toSpawn.setPosition(pos.x, pos.y);
 			this.currentLevel.spawnEntity(toSpawn);
@@ -273,7 +273,7 @@ public class DungeonStart extends MainController implements EntityEventHandler
 			
 			LoggingHandler.logger.log(Level.INFO, "Player entered new level.");
 		}
-		
+		System.out.println(this.myHero.getHitCooldown());
 		this.currentLevel.getParticleSystem().update((System.currentTimeMillis() - this.lastFrameTimeStamp) / 1000.0F);
 		this.lastFrameTimeStamp = System.currentTimeMillis();
 	}
@@ -340,7 +340,7 @@ public class DungeonStart extends MainController implements EntityEventHandler
 				}
 			}
 		}
-
+		
 		this.debugRenderer.setColor(Color.GREEN);
 		Entity e;
 		for(int i = 0; i < currentLevel.getNumEntities(); ++i)

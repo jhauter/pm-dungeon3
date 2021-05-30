@@ -4,8 +4,9 @@ import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
 import de.fhbielefeld.pmdungeon.quibble.entity.effect.StatusEffectBurning;
 
-public class SpellFireBall extends ProjectileMagic{
-
+public class SpellFireBall extends ProjectileMagic
+{
+	
 	/**
 	 * Creates a fire ball projectile.
 	 * It will set a Creature on fire for a certain probability
@@ -23,18 +24,19 @@ public class SpellFireBall extends ProjectileMagic{
 	}
 	
 	@Override
-	public void onProjectileImpactCreature(Creature hitCreature) {
+	public void onProjectileImpactCreature(Creature hitCreature)
+	{
 		super.onProjectileImpactCreature(hitCreature);
 		if(this.getLevel().getRNG().nextInt(4) == 1)
 			hitCreature.addStatusEffect(new StatusEffectBurning(hitCreature, this.getOwner()), 200);
 	}
-
+	
 	@Override
 	public int getTicksLasting()
 	{
 		return 45;
 	}
-
+	
 	@Override
 	public float getDamageDecreaseOverTime()
 	{

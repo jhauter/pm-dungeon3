@@ -95,7 +95,8 @@ public class ParticleSystem
 			rot = p.particleMovement.getRotation(p.timeExisted);
 			
 			//SpriteBatch.draw(textureRegion, x, y, originX, originY, width, height, scaleX, scaleY, rotation);
-			DungeonStart.getGameBatch().draw(reg, x - width * 0.5F, y - height * 0.5F, p.originX * width, p.originY * height, width, height, p.particleMovement.getScaleX(p.timeExisted), p.particleMovement.getScaleY(p.timeExisted), rot);
+			DungeonStart.getGameBatch().draw(reg, x - width * 0.5F, y - height * 0.5F, p.originX * width, p.originY * height, width, height,
+				p.particleMovement.getScaleX(p.timeExisted), p.particleMovement.getScaleY(p.timeExisted), rot);
 			
 		}
 		DungeonStart.getGameBatch().end();

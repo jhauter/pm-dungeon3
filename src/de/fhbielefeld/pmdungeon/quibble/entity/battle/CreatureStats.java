@@ -86,8 +86,6 @@ public class CreatureStats
 		}
 	}
 	
-
-	
 	/**
 	 * Adds all values of the specified <code>CreatureStats</code> to the corresponding values
 	 * of this <code>CreatureStats</code>.
@@ -175,7 +173,7 @@ public class CreatureStats
 		{
 			return null;
 		}
-		final CreatureStatsEvent event =  new CreatureStatsEvent(stat, oldVal, newVal);
+		final CreatureStatsEvent event = new CreatureStatsEvent(stat, oldVal, newVal);
 		this.listener.onStatValueChange(event);
 		return event;
 	}

@@ -219,7 +219,7 @@ public class AnimationHandlerImpl implements AnimationHandler
 			//No need to log here because the ResourceHandler already logs
 			return null;
 		}
-
+		
 		final int tileWidth = texRes.getResource().getWidth() / animInfo.columns;
 		final int tileHeight = texRes.getResource().getHeight() / animInfo.rows;
 		TextureRegion[][] grid = TextureRegion.split(texRes.getResource(), tileWidth, tileHeight);

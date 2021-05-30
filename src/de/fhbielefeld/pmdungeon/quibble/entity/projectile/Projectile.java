@@ -70,7 +70,7 @@ public abstract class Projectile extends Entity
 	@Override
 	protected final void onEntityCollision(Entity otherEntity)
 	{
-		if(otherEntity == owner )
+		if(otherEntity == owner)
 		{
 			return;
 		}
