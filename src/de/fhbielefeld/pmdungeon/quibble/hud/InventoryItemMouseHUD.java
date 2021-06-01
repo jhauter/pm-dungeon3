@@ -27,7 +27,7 @@ public class InventoryItemMouseHUD extends HUDElement
 			this.markAsRemovable();
 			return null;
 		}
-		return Item.ITEMS_TEXTURE_PATH + item.getItemType().getTexture() + ".png";
+		return item.getItemType().getTextureFile();
 	}
 	
 	@Override

@@ -5,9 +5,12 @@ import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
 
 public class ItemSwordBlue extends ItemWeaponMelee
 {
-	protected ItemSwordBlue(String name, float itemWidth, float itemHeight, float swingSpeed, float visibleTime, String texture)
+	protected ItemSwordBlue()
 	{
-		super(name, itemWidth, itemHeight, swingSpeed, visibleTime, texture);
+		super("Blue Sword", 3.5F, 15, "assets/textures/items/sword_blue.png");
+		this.renderWidth = 1.25F;
+		this.renderHeight = 1.25F;
+		
 	}
 	
 	/**

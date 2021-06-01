@@ -1,6 +1,10 @@
 package de.fhbielefeld.pmdungeon.quibble.input.strategy;
 
+import com.badlogic.gdx.Gdx;
+
+import de.fhbielefeld.pmdungeon.quibble.DungeonStart;
 import de.fhbielefeld.pmdungeon.quibble.entity.Player;
+import de.fhbielefeld.pmdungeon.quibble.particle.DrawingUtil;
 
 public class InputStrategyUseItem extends InputStrategy
 {
@@ -21,7 +25,13 @@ public class InputStrategyUseItem extends InputStrategy
 		if(getPlayer().getSelectedEquipSlot() > -1
 			&& getPlayer().getSelectedEquipSlot() < getPlayer().getEquippedItems().getCapacity())
 		{
-			getPlayer().useEquippedItem(getPlayer().getSelectedEquipSlot());
+			int mouseX = Gdx.input.getX();
+			int mouseY = Gdx.graphics.getHeight() - Gdx.input.getY();
+			
+			float dungeonX = DrawingUtil.screenToDungeonXCam(mouseX, DungeonStart.getDungeonMain().getCamPosX());
+			float dungeonY = DrawingUtil.screenToDungeonYCam(mouseY, DungeonStart.getDungeonMain().getCamPosY());
+			
+			getPlayer().useEquippedItem(getPlayer().getSelectedEquipSlot(), dungeonX, dungeonY);
 		}
 	}
 }

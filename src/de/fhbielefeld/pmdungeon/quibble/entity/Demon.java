@@ -85,4 +85,10 @@ public class Demon extends NPC
 	{
 		return 4;
 	}
+	
+	@Override
+	public float getRadius()
+	{
+		return 1.0F;
+	}
 }

@@ -31,7 +31,6 @@ public class ParticleSystem
 	 */
 	public void addParticle(Particle particle, ParticleMovement movement)
 	{
-		movement.originValues(particle.getSpawnX(), particle.getSpawnY());
 		particle.particleMovement = movement;
 		this.particles.add(particle);
 	}

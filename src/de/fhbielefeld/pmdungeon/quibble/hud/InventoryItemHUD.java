@@ -118,7 +118,7 @@ public class InventoryItemHUD extends HUDElement
 		final InventoryItem<Item> shownItem = this.invRef.getItem(this.invSlot);
 		if(shownItem != null)
 		{
-			final String itemTexturePath = Item.ITEMS_TEXTURE_PATH + shownItem.getItemType().getTexture() + ".png";
+			final String itemTexturePath = shownItem.getItemType().getTextureFile();
 			DungeonResource<Texture> texture = ResourceHandler.requestResourceInstantly(itemTexturePath, ResourceType.TEXTURE);
 			if(texture.isLoaded())
 			{

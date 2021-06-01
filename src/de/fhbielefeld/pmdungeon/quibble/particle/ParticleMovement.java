@@ -7,13 +7,6 @@ package de.fhbielefeld.pmdungeon.quibble.particle;
 public interface ParticleMovement
 {
 	/**
-	 * Allows to set the coordinate where the particle spawned
-	 * @param x the spawn x position
-	 * @param y the spawn y position
-	 */
-	public void originValues(float x, float y);
-	
-	/**
 	 * @param time the time elapsed since the particle has spawned
 	 * @return rotation in relation to time
 	 */

@@ -81,13 +81,13 @@ public abstract class Entity implements ParticleSource
 	
 	/**
 	 * Rotation pivot relative to renderWidth.
-	 * <code>renderWidth * 0.5</code> means rotation around the center
+	 * <code>0.5</code> means rotation around the center
 	 */
 	protected float renderPivotX = 0.5F;
 	
 	/**
 	 * Rotation pivot relative to renderHeight.
-	 * <code>renderHeight * 0.5</code> means rotation around the center
+	 * <code>0.5</code> means rotation around the center
 	 */
 	protected float renderPivotY = 0.5F;
 	
@@ -378,8 +378,8 @@ public abstract class Entity implements ParticleSource
 		GameSetup.batch.draw(t,
 			this.getX() + this.getRenderOffsetX() - this.getRenderWidth() * 0.5F,
 			this.getY() + this.getRenderOffsetY() - this.getRenderHeight() * 0.5F,
-			this.getRenderPivotX(),
-			this.getRenderPivotY(),
+			this.getRenderPivotX() * this.getRenderWidth(),
+			this.getRenderPivotY() * this.getRenderHeight(),
 			this.getRenderWidth(),
 			this.getRenderHeight(),
 			this.getScaleX(),
@@ -719,7 +719,7 @@ public abstract class Entity implements ParticleSource
 	
 	/**
 	 * Rotation pivot relative to renderWidth.
-	 * <code>renderWidth * 0.5</code> means rotation around the center
+	 * <code>0.5</code> means rotation around the center
 	 */
 	public float getRenderPivotX()
 	{
@@ -728,7 +728,7 @@ public abstract class Entity implements ParticleSource
 	
 	/**
 	 * Rotation pivot relative to renderHeight.
-	 * <code>renderHeight * 0.5</code> means rotation around the center
+	 * <code>0.5</code> means rotation around the center
 	 */
 	public float getRenderPivotY()
 	{

@@ -77,6 +77,7 @@ public class ResourceHandler
 		{
 			return (DungeonResource<T>)res;
 		}
+		resourceMap.putResource(path, type, res);
 		res = type.newResourceInstance();
 		loadingQueue.push(new LoadingData(path, res, type));
 		return (DungeonResource<T>)res;
@@ -102,6 +103,7 @@ public class ResourceHandler
 			return (DungeonResource<T>)res;
 		}
 		res = type.newResourceInstance();
+		resourceMap.putResource(path, type, res);
 		loadResource(res, path, type);
 		return (DungeonResource<T>)res;
 	}
@@ -140,12 +142,11 @@ public class ResourceHandler
 		try
 		{
 			resourceInstance.load(path);
+			LoggingHandler.logger.fine("Loaded file: " + path);
 		}
 		catch(Exception e)
 		{
 			LoggingHandler.logger.log(Level.SEVERE, "Failed to load a resource: " + e);
 		}
-		//Put it in, even if exceptions are thrown because programs can get the resource and check with hasError()
-		resourceMap.putResource(path, type, resourceInstance);
 	}
 }

@@ -1,22 +1,23 @@
 package de.fhbielefeld.pmdungeon.quibble.item;
 
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+
+import de.fhbielefeld.pmdungeon.quibble.animation.AnimationFactory;
 import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
-import de.fhbielefeld.pmdungeon.quibble.entity.LookingDirection;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
 import de.fhbielefeld.pmdungeon.quibble.entity.projectile.ArrowProjectile;
 import de.fhbielefeld.pmdungeon.quibble.entity.projectile.Projectile;
-import de.fhbielefeld.pmdungeon.quibble.particle.ParticleMovement;
-import de.fhbielefeld.pmdungeon.quibble.particle.Swing;
-import de.fhbielefeld.pmdungeon.quibble.particle.Swing.SwingOrientation;
 
-public class ItemWeaponSimpleBow extends ItemWeaponRange
+public class ItemWeaponSimpleBow extends ItemWeaponRanged
 {
-	
-	protected ItemWeaponSimpleBow(String name, float itemWidth, float itemHeight, float visibleTime, String texture)
+	protected ItemWeaponSimpleBow()
 	{
-		super(name, itemWidth, itemHeight, visibleTime, texture);
-		// TODO Auto-generated constructor stub
+		super("Simple Bow", 15, "assets/textures/items/bow.png");
+		this.renderHeight = 1.75F;
+		this.renderWidth = 1F;
+		this.renderOffsetX = 0.5F;
 	}
 	
 	@Override
@@ -32,21 +33,18 @@ public class ItemWeaponSimpleBow extends ItemWeaponRange
 	{
 		Projectile arrow = new ArrowProjectile(this.getDisplayName() + " Projectile", user.getX(), user.getY() + 0.5F,
 			user.getCurrentStats().addCopy(getAttackStats()), user);
-		arrow.setVelocityX(1);
 		return arrow;
-	}
-	
-	@Override
-	public ParticleMovement getWeaponMovement(Creature user)
-	{
-		SwingOrientation swingDir = user.getLookingDirection() == LookingDirection.RIGHT ? SwingOrientation.RIGHT
-			: SwingOrientation.LEFT;
-		return new Swing(swingDir, 0.0F);
 	}
 	
 	@Override
 	public float getProjectileSpeed()
 	{
 		return 0.25F;
+	}
+	
+	@Override
+	public Animation<TextureRegion> loadAnimation()
+	{
+		return AnimationFactory.createAnimation("assets/textures/items/bow_anim.png", 4, 4, 0.01F);
 	}
 }

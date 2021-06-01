@@ -13,7 +13,8 @@ public class ItemSpeedPotion extends ItemPotion
 	 * @param displayName user friendly display name
 	 * @param speedAmount the amount this potion should increase speed
 	 * @param ticks the frames the speed effect should be stay on
-	 * @param texture texture that is used to render the item
+	 * @param texture file name of the texture without file extension.
+	 * File must be in {@value Item#ITEMS_TEXTURE_PATH}.
 	 */
 	public ItemSpeedPotion(String displayName, double speedAmount, int ticks, String texture)
 	{
@@ -26,9 +27,9 @@ public class ItemSpeedPotion extends ItemPotion
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void onUse(Creature user)
-	
+	public boolean onUse(Creature user, float targetX, float targetY)
 	{
 		user.addStatusEffect(new StatusEffectSpeed(user, speedAmount), ticks);
+		return true;
 	}
 }
