@@ -27,7 +27,7 @@ public abstract class ItemPotion extends Item
 	@Override
 	public boolean canBeConsumed()
 	{
-		return false;
+		return true;
 	}
 	
 	@Override
