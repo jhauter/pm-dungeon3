@@ -51,7 +51,7 @@ import de.fhbielefeld.pmdungeon.quibble.item.Item;
 import de.fhbielefeld.pmdungeon.quibble.particle.DrawingUtil;
 import de.fhbielefeld.pmdungeon.quibble.quest.QuestDummy;
 import de.fhbielefeld.pmdungeon.quibble.quest.QuestFactory;
-import de.fhbielefeld.pmdungeon.quibble.trap.TrapHealth;
+import de.fhbielefeld.pmdungeon.quibble.trap.TrapDamage;
 import de.fhbielefeld.pmdungeon.quibble.trap.TrapTeleport;
 import de.fhbielefeld.pmdungeon.vorgaben.dungeonCreator.dungeonconverter.Coordinate;
 import de.fhbielefeld.pmdungeon.vorgaben.game.GameSetup;
@@ -121,7 +121,7 @@ public class DungeonStart extends MainController implements EntityEventHandler
 	
 	/**************DEBUG UTILS*************/
 	
-	private boolean drawBoundingBoxes = false;
+	private boolean drawBoundingBoxes = true;
 	private boolean drawSHGCells = false;
 	private boolean drawSHGCNearby = false;
 	
@@ -243,7 +243,7 @@ public class DungeonStart extends MainController implements EntityEventHandler
 		// Placing a new Trap
 		
 		final Point pos3 = this.currentLevel.getDungeon().getRandomPointInDungeon();
-		this.currentLevel.spawnEntity(currentLevel.getRNG().nextInt(2) == 0 ? new TrapTeleport(pos3.x, pos3.y, true) : new TrapHealth(pos3.x, pos3.y, 2, true));
+		this.currentLevel.spawnEntity(currentLevel.getRNG().nextInt(2) == 0 ? new TrapTeleport(pos3.x, pos3.y) : new TrapDamage(pos3.x, pos3.y, 2));
 		
 		final Point pos4 = this.currentLevel.getDungeon().getRandomPointInDungeon();
 		this.currentLevel.spawnEntity(new QuestDummy(QuestFactory.getRandomQuest(), pos4.x, pos4.y));

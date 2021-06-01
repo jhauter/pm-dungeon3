@@ -40,7 +40,7 @@ public abstract class Item
 	public static final ItemHealingPotion POTION_RED_SMALL = new ItemHealingPotion("Small Healing Potion", 2.0D, "pot_red_small");
 	public static final ItemSpeedPotion POTION_YELLOW_BIG = new ItemSpeedPotion("Big Speed Potion", 1.4, 300, "pot_yellow_big");
 	public static final ItemSpeedPotion POTION_YELLOW_Small = new ItemSpeedPotion("Small Speed Potion", 1.3, 200, "pot_yellow_small");
-	public static final ItemSightPotion POTION_SIGHT_BIG = new ItemSightPotion("Big Sight Potion", 0.2D, "pot_green_big");
+	public static final ItemSightPotion POTION_SIGHT_BIG = new ItemSightPotion("Big Sight Potion", 1800, "pot_green_big");
 	public static final ItemWeaponMelee SWORD_BLUE = new ItemSwordBlue();
 	public static final ItemWeaponMelee SWORD_KATANA = new ItemKatana();
 	public static final ItemWeaponRanged RED_MAGIC_STAFF = new ItemRedMagicStaff();

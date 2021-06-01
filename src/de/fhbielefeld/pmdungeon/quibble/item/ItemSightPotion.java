@@ -7,19 +7,18 @@ import de.fhbielefeld.pmdungeon.quibble.trap.Trap;
 
 public class ItemSightPotion extends ItemPotion
 {
-	private final double timeOfSight;
+	private final int visibleTimeTicks;
 	
 	/**
-	 * Creates a healing potion item.
 	 * @param displayName user friendly display name
-	 * @param timeOfSight time invisible Objects are visible
+	 * @param visibleTimeTicks time in ticks during which traps are revealed
 	 * @param texture file name of the texture without file extension.
 	 * File must be in {@value Item#ITEMS_TEXTURE_PATH}.
 	 */
-	public ItemSightPotion(String displayName, double timeOfSight, String texture)
+	public ItemSightPotion(String displayName, int visibleTimeTicks, String texture)
 	{
 		super(displayName, texture);
-		this.timeOfSight = timeOfSight;
+		this.visibleTimeTicks = visibleTimeTicks;
 	}
 	
 	/**
@@ -29,7 +28,7 @@ public class ItemSightPotion extends ItemPotion
 	public boolean onUse(Creature user, float targetX, float targetY)
 	{
 		List<Trap> t = user.getLevel().getAllEntitiesOf(Trap.class);
-		t.forEach(trap -> trap.setVisible(true, this.timeOfSight));
+		t.forEach(trap -> trap.setVisible(this.visibleTimeTicks));
 		return true;
 	}
 }
