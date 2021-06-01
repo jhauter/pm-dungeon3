@@ -12,20 +12,18 @@ import de.fhbielefeld.pmdungeon.quibble.inventory.BagInventoryItem;
  */
 public class ItemBag<C extends Item> extends Item
 {
-	private final String texture;
-	
 	private final int bagCapacity;
 	
 	/**
 	 * Creates a bag item.
 	 * @param displayName a user friendly display name
 	 * @param capacity capacity of the bag
-	 * @param texture texture to render the item
+	 * @param texture file name of the texture without file extension.
+	 * File must be in {@value Item#ITEMS_TEXTURE_PATH}.
 	 */
 	public ItemBag(String displayName, int capacity, String texture)
 	{
-		super(displayName);
-		this.texture = texture;
+		super(displayName, 15, Item.ITEMS_TEXTURE_PATH + texture + ".png");
 		this.bagCapacity = capacity;
 	}
 	
@@ -33,9 +31,10 @@ public class ItemBag<C extends Item> extends Item
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void onUse(Creature user)
+	public boolean onUse(Creature user, float targetX, float targetY)
 	{
 		System.out.println("what to do when bag is used??");
+		return true;
 	}
 	
 	/**
@@ -45,15 +44,6 @@ public class ItemBag<C extends Item> extends Item
 	public boolean canBeConsumed()
 	{
 		return false;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getTexture()
-	{
-		return this.texture;
 	}
 	
 	/**

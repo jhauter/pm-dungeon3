@@ -24,16 +24,66 @@ public class Swing implements ParticleMovement
 	
 	private float swingSpeed;
 	
+	private float rotMult;
+	
+	private float rotOffset;
+	
 	private SwingOrientation orientation;
 	
 	/**
 	 * @param orientation the swing direction
 	 * @param speed the swing speed
+	 * @param reverseSwing whether to swing in the opposite direction
+	 * @param rotOffset rotation starting point in degrees
 	 */
-	public Swing(SwingOrientation orientation, float speed)
+	public Swing(SwingOrientation orientation, float speed, boolean reverseSwing, float rotOffset)
 	{
 		this.orientation = orientation;
 		this.swingSpeed = speed;
+		this.rotMult = reverseSwing ? -1 : 1;
+		this.rotOffset = rotOffset;
+	}
+	
+	/**
+	 * @param orientation values < 0 mean swing left; values >= 0 mean swing right
+	 * @param speed the swing speed
+	 * @param reverseSwing whether to swing in the opposite direction
+	 * @param rotOffset rotation starting point in degrees
+	 */
+	public Swing(int orientation, float speed, boolean reverseSwing, float rotOffset)
+	{
+		this(orientation < 0 ? SwingOrientation.LEFT : SwingOrientation.RIGHT, speed, reverseSwing, rotOffset);
+	}
+	
+	/**
+	 * @param orientation the swing direction
+	 * @param speed the swing speed
+	 * @param reverseSwing whether to swing in the opposite direction
+	 */
+	public Swing(SwingOrientation orientation, float speed, boolean reverseSwing)
+	{
+		this.orientation = orientation;
+		this.swingSpeed = speed;
+		this.rotMult = reverseSwing ? -1 : 1;
+	}
+	
+	/**
+	 * @param orientation values < 0 mean swing left; values >= 0 mean swing right
+	 * @param speed the swing speed
+	 * @param reverseSwing whether to swing in the opposite direction
+	 */
+	public Swing(int orientation, float speed, boolean reverseSwing)
+	{
+		this(orientation < 0 ? SwingOrientation.LEFT : SwingOrientation.RIGHT, speed, reverseSwing);
+	}
+	
+	/**
+	 * @param orientation values < 0 mean swing left; values >= 0 mean swing right
+	 * @param speed the swing speed
+	 */
+	public Swing(int orientation, float speed)
+	{
+		this(orientation, speed, false);
 	}
 	
 	/**
@@ -41,16 +91,7 @@ public class Swing implements ParticleMovement
 	 */
 	public Swing()
 	{
-		this(SwingOrientation.RIGHT, 1.0F);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void originValues(float x, float y)
-	{
-		
+		this(SwingOrientation.RIGHT, 1.0F, false);
 	}
 	
 	/**
@@ -59,7 +100,7 @@ public class Swing implements ParticleMovement
 	@Override
 	public float getRotation(float time)
 	{
-		return time * 100.0F * this.swingSpeed * -this.orientation.scaleX;
+		return this.rotOffset * this.orientation.scaleX + time * 100.0F * this.swingSpeed * -this.orientation.scaleX * this.rotMult;
 	}
 	
 	/**
@@ -86,7 +127,7 @@ public class Swing implements ParticleMovement
 	@Override
 	public float getScaleX(float time)
 	{
-		return this.orientation.scaleX;
+		return 1.0F;
 	}
 	
 	/**

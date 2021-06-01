@@ -5,9 +5,11 @@ import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
 
 public class ItemKatana extends ItemWeaponMelee
 {
-	protected ItemKatana(String name, float itemWidth, float itemHeight, float swingSpeed, float visibleTime, String texture)
+	protected ItemKatana()
 	{
-		super(name, itemWidth, itemHeight, swingSpeed, visibleTime, texture);
+		super("Katana", 3.5F, 15, "assets/textures/items/katana.png");
+		this.renderWidth = 1.25F;
+		this.renderHeight = 1.25F;
 	}
 	
 	/**

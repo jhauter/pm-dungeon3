@@ -1,13 +1,13 @@
 package de.fhbielefeld.pmdungeon.quibble.entity;
 
+import com.badlogic.gdx.math.Vector2;
+
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
 import de.fhbielefeld.pmdungeon.quibble.item.Item;
-import de.fhbielefeld.pmdungeon.vorgaben.tools.Point;
 
 public class Mage extends Player
 {
-	
 	public Mage(float x, float y)
 	{
 		super(x, y);
@@ -51,9 +51,9 @@ public class Mage extends Player
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Point getWeaponHoldOffset()
+	public Vector2 getItemHoldOffset()
 	{
-		return new Point(0.0F, 0.75F);
+		return new Vector2(0.15F, -0.2F);
 	}
 	
 	/**

@@ -203,7 +203,7 @@ public class DungeonStart extends MainController implements EntityEventHandler
 		
 		/**** Populate dungeon ****/
 		
-		for(int i = 0; i < 8; ++i)
+		for(int i = 0; i < 5; ++i)
 		{
 			final Point pos = this.currentLevel.getDungeon().getRandomPointInDungeon();
 			final Creature toSpawn = switch(currentLevel.getRNG().nextInt(4))

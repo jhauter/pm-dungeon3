@@ -25,8 +25,6 @@ public class Goblin extends NPC
 		//Render properties
 		this.renderWidth = 1.0F;
 		this.renderHeight = 1.0F;
-		this.renderPivotX = this.renderWidth * 0.5F;
-		this.renderPivotY = this.renderHeight * 0.5F;
 		this.renderOffsetY = this.renderHeight * 0.5F;
 	}
 	
