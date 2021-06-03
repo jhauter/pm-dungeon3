@@ -38,6 +38,12 @@ public class Goblin extends NPC
 		this(0.0F, 0.0F);
 	}
 	
+	@Override
+	public String getDisplayName()
+	{
+		return "Goblin";
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */

@@ -175,6 +175,18 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		this(0.0F, 0.0F);
 	}
 	
+	@Override
+	public boolean isDisplayNameVisible()
+	{
+		return true;
+	}
+	
+	@Override
+	public String getDisplayNamePrefix()
+	{
+		return "Lv. " + this.getCurrentExpLevel();
+	}
+	
 	/**
 	 * Returns the current walking speed of this entity measured in tiles per frame.
 	 * This is not the current speed.
@@ -421,6 +433,7 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	public void render()
 	{
 		super.render();
+		
 		if(this.renderedItem != null && renderItemMovement != null)
 		{
 			TextureRegion curFrame = null;
@@ -942,9 +955,9 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	}
 	
 	@Override
-	public boolean isInvisible()
+	public float getTransparency()
 	{
-		return this.deadTicks % 2 != 0 || this.invulnerableTicks % 2 != 0;
+		return this.deadTicks % 2 != 0 || this.invulnerableTicks % 2 != 0 ? 0.0F : super.getTransparency();
 	}
 	
 	@Override
@@ -1311,7 +1324,7 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	}
 	
 	/**
-	 * @return the level of the creature
+	 * @return the exp level of the creature
 	 */
 	public int getCurrentExpLevel()
 	{

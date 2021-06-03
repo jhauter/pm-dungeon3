@@ -36,6 +36,12 @@ public class Demon extends NPC
 		this(0.0F, 0.0F);
 	}
 	
+	@Override
+	public String getDisplayName()
+	{
+		return "Demon";
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -52,7 +58,7 @@ public class Demon extends NPC
 	protected CreatureStats getBaseStatsForLevel(int level)
 	{
 		CreatureStats stats = new CreatureStats();
-		stats.setStat(CreatureStatsAttribs.HEALTH, 6 + level);
+		stats.setStat(CreatureStatsAttribs.HEALTH, 10 + 2 * level);
 		stats.setStat(CreatureStatsAttribs.RESISTANCE_PHYS, level);
 		stats.setStat(CreatureStatsAttribs.RESISTANCE_MAGIC, level);
 		stats.setStat(CreatureStatsAttribs.MISS_CHANCE, 0.0D);

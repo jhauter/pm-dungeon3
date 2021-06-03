@@ -7,8 +7,12 @@ import java.util.logging.Level;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 
@@ -21,8 +25,9 @@ import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
 import de.fhbielefeld.pmdungeon.quibble.entity.Demon;
 import de.fhbielefeld.pmdungeon.quibble.entity.Entity;
 import de.fhbielefeld.pmdungeon.quibble.entity.Goblin;
+import de.fhbielefeld.pmdungeon.quibble.entity.Knight;
 import de.fhbielefeld.pmdungeon.quibble.entity.Lizard;
-import de.fhbielefeld.pmdungeon.quibble.entity.Mage;
+import de.fhbielefeld.pmdungeon.quibble.entity.NPC;
 import de.fhbielefeld.pmdungeon.quibble.entity.Player;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
 import de.fhbielefeld.pmdungeon.quibble.entity.effect.StatusEffect;
@@ -33,7 +38,9 @@ import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEventHandler;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.PlayerOpenChestEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.PlayerQuestsChangedEvent;
+import de.fhbielefeld.pmdungeon.quibble.file.DungeonResource;
 import de.fhbielefeld.pmdungeon.quibble.file.ResourceHandler;
+import de.fhbielefeld.pmdungeon.quibble.file.ResourceType;
 import de.fhbielefeld.pmdungeon.quibble.hud.ExpBarHUD;
 import de.fhbielefeld.pmdungeon.quibble.hud.HUDElement;
 import de.fhbielefeld.pmdungeon.quibble.hud.HUDGroup;
@@ -56,6 +63,7 @@ import de.fhbielefeld.pmdungeon.quibble.trap.TrapTeleport;
 import de.fhbielefeld.pmdungeon.vorgaben.dungeonCreator.dungeonconverter.Coordinate;
 import de.fhbielefeld.pmdungeon.vorgaben.game.GameSetup;
 import de.fhbielefeld.pmdungeon.vorgaben.game.Controller.MainController;
+import de.fhbielefeld.pmdungeon.vorgaben.tools.DungeonCamera;
 import de.fhbielefeld.pmdungeon.vorgaben.tools.Point;
 
 public class DungeonStart extends MainController implements EntityEventHandler
@@ -75,6 +83,11 @@ public class DungeonStart extends MainController implements EntityEventHandler
 		return GameSetup.batch;
 	}
 	
+	public static BitmapFont getDefaultFont()
+	{
+		return bitmapFontArial;
+	}
+	
 	/****************************************
 	 *                GAME                  *
 	 ****************************************/
@@ -86,6 +99,11 @@ public class DungeonStart extends MainController implements EntityEventHandler
 	public static final String INV_NAME_CHEST = "chest";
 	
 	public static final String FONT_ARIAL = "assets/textures/font/arial.ttf";
+	
+	private static BitmapFont bitmapFontArial;
+	
+	private static Matrix4 orthoProjMatrix = new Matrix4();
+	private static GlyphLayout glyphLayout = new GlyphLayout();
 	
 	private InventoryHUDSwitchListener invSwitchNormal;
 	private InventoryHUDSwitchListener invSwitchEquip;
@@ -121,7 +139,7 @@ public class DungeonStart extends MainController implements EntityEventHandler
 	
 	/**************DEBUG UTILS*************/
 	
-	private boolean drawBoundingBoxes = true;
+	private boolean drawBoundingBoxes = false;
 	private boolean drawSHGCells = false;
 	private boolean drawSHGCNearby = false;
 	
@@ -151,10 +169,14 @@ public class DungeonStart extends MainController implements EntityEventHandler
 	protected void setup()
 	{
 		super.setup();
+		
+		DungeonStart.bitmapFontArial = new BitmapFont();
+		
+		
 		//HudManager have to be made before the Player
 		// cause InputStrategy would got a null HUDManager
 		this.hudManager = new HUDManager();
-		this.myHero = new Mage();
+		this.myHero = new Knight();
 		this.myHero.getEquippedItems().addItem(Item.SWORD_BLUE);
 		this.myHero.addEntityEventHandler(this);
 		
@@ -281,14 +303,25 @@ public class DungeonStart extends MainController implements EntityEventHandler
 	protected void endFrame()
 	{
 		super.endFrame();
+		DungeonStart.orthoProjMatrix.setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		
 		if(this.cameraTarget != null)
 		{
 			this.camera.setFocusPoint(new Point(this.cameraTarget.getX(), this.cameraTarget.getY()));
 		}
 		
-		getGameBatch().begin();
+		this.renderEntities();
 		
+		this.currentLevel.getParticleSystem().draw(this.camera.position.x, this.camera.position.y);
+		
+		this.doDebugDrawing();
+		
+		this.getHudManager().update(); //Draw HUD last
+	}
+	
+	private void renderEntities()
+	{
+		getGameBatch().begin();
 		Entity currentEntity;
 		for(int i = 0; i < currentLevel.getNumEntities(); ++i)
 		{
@@ -296,6 +329,11 @@ public class DungeonStart extends MainController implements EntityEventHandler
 			
 			if(!currentEntity.isInvisible())
 			{
+				if(currentEntity.isDisplayNameVisible())
+				{
+					this.renderEntityName(currentEntity);
+				}
+				
 				currentEntity.render();
 				
 				if(currentEntity instanceof Creature)
@@ -305,18 +343,55 @@ public class DungeonStart extends MainController implements EntityEventHandler
 			}
 		}
 		getGameBatch().end();
+	}
+	
+	private void renderEntityName(Entity entity)
+	{
+		final String text = entity.getDisplayNamePrefix() + " " + entity.getDisplayName();
 		
-		this.currentLevel.getParticleSystem().draw(this.camera.position.x, this.camera.position.y);
+		final BitmapFont font = getDefaultFont();
+		font.getData().setScale(1.25F);
+		glyphLayout.setText(font, text);
+		DungeonStart.getGameBatch().setProjectionMatrix(orthoProjMatrix);
 		
-		this.doDebugDrawing();
+		//Note: entity.renderOffsetX,Y of 0.0F means that the entity texture is rendered centered on the entity
+		//position. For creatures this value is often height/2 so that the feet are at the actual position.
+		//=> Y = entity.getY() + entity.getRenderOffsetY() + entity.getRenderHeight() / 2
+		float barX = DrawingUtil.dungeonToScreenXCam(entity.getX() + entity.getRenderOffsetX(), this.getCamPosX());
+		float barY = DrawingUtil.dungeonToScreenYCam(entity.getY() + entity.getRenderOffsetY() + entity.getRenderHeight() / 2, this.getCamPosY());
 		
-		this.getHudManager().update(); //Draw HUD last
+		if(entity instanceof NPC)
+		{
+			this.renderHealthBar((Creature)entity, barX, barY);
+		}
+		
+		font.draw(DungeonStart.getGameBatch(), text, barX - glyphLayout.width / 2, barY + glyphLayout.height + 24);
+		
+		DungeonStart.getGameBatch().setProjectionMatrix(DungeonStart.getDungeonMain().getCamera().combined);
+	}
+	
+	private void renderHealthBar(Creature entity, float barX, float barY)
+	{
+		DungeonResource<Texture> barTex = ResourceHandler.requestResourceInstantly("assets/textures/entity/healthbar.png", ResourceType.TEXTURE);
+		if(!barTex.isLoaded())
+		{
+			return;
+		}
+		
+		float entityHealthP = (float)Math.max(entity.getCurrentHealth() / entity.getMaxHealth(), 0F);
+		
+		getGameBatch().setColor(1.0F, 0.65F - 0.65F * entityHealthP, 0.15F, 0.7F);
+		
+		//draw(Texture texture, float x, float y, float width, float height, int srcX, int srcY, int srcWidth, int srcHeight, boolean flipX, boolean flipY)
+		getGameBatch().draw(barTex.getResource(), barX - 32, barY, 64, 16, 0, 0, 64, 16, false, false);
+		getGameBatch().draw(barTex.getResource(), barX - 30, barY + 2, (int)(64 * entityHealthP), 12, 0, 16, 10, 12, false, false);
+
+		getGameBatch().setColor(1.0F, 1.0F, 1.0F, 1.0F);
 	}
 	
 	private void doDebugDrawing()
 	{
 		this.debugRenderer.begin();
-		
 		if(this.drawSHGCells) //Draw spatial hash grid cells of the player
 		{
 			final Handle<Entity> h = this.myHero.getSpatialHashGridHandle();
@@ -527,6 +602,11 @@ public class DungeonStart extends MainController implements EntityEventHandler
 	public float getCamPosY()
 	{
 		return this.camera.position.y;
+	}
+	
+	public DungeonCamera getCamera()
+	{
+		return this.camera;
 	}
 	
 	public HUDManager getHudManager()
