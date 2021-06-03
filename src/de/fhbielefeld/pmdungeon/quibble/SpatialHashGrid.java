@@ -1,7 +1,6 @@
 package de.fhbielefeld.pmdungeon.quibble;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -9,6 +8,7 @@ import java.util.Set;
 import com.badlogic.gdx.math.Vector2;
 
 import de.fhbielefeld.pmdungeon.quibble.entity.BoundingBox;
+import de.fhbielefeld.pmdungeon.quibble.util.HashTable;
 
 public class SpatialHashGrid<T>
 {
@@ -74,7 +74,7 @@ public class SpatialHashGrid<T>
 	private final float width;
 	private final float height;
 	
-	private final HashMap<Vector2, Set<Handle<T>>> cells;
+	private final HashTable<Vector2, Set<Handle<T>>> cells;
 	
 	/**
 	 * Creates a spatial hash grid, which a specified number of cells, width and height.
@@ -94,7 +94,7 @@ public class SpatialHashGrid<T>
 		this.columns = columns;
 		this.width = width;
 		this.height = height;
-		this.cells = new HashMap<>();
+		this.cells = new HashTable<>();
 	}
 	
 	/**
