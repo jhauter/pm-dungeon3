@@ -839,6 +839,11 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 			return;
 		}
 		
+		if(!this.hasLineOfSightTo(new Vector2(target.getX(), target.getY())))
+		{
+			return;
+		}
+		
 		InventoryItem<Item> selectedItem = null;
 		if(this.getSelectedEquipSlot() >= 0 && this.getSelectedEquipSlot() < this.equippedItems.getCapacity())
 		{
