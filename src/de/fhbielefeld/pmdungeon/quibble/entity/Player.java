@@ -57,6 +57,12 @@ public abstract class Player extends Creature implements InputListener
 	}
 	
 	@Override
+	public boolean isDisplayNameVisible()
+	{
+		return false;
+	}
+	
+	@Override
 	public void onMovement(KeyMovement key)
 	{
 		// This logic is to make a player stand still if keys of opposite directions are
