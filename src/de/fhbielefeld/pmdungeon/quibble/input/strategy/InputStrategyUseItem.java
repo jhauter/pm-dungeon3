@@ -6,24 +6,13 @@ import de.fhbielefeld.pmdungeon.quibble.DungeonStart;
 import de.fhbielefeld.pmdungeon.quibble.entity.Player;
 import de.fhbielefeld.pmdungeon.quibble.particle.DrawingUtil;
 
-public class InputStrategyUseItem extends InputStrategy
+public class InputStrategyUseItem implements InputStrategy
 {
-	
-	/**
-	 * Allows the Player to use an Item
-	 * To use A Range Weapon it has to be a Mouse Button
-	 * @param player user of the method
-	 */
-	public InputStrategyUseItem(Player player)
-	{
-		super(player);
-	}
-	
 	@Override
-	public void handle()
+	public void handle(Player player)
 	{
-		if(getPlayer().getSelectedEquipSlot() > -1
-			&& getPlayer().getSelectedEquipSlot() < getPlayer().getEquippedItems().getCapacity())
+		if(player.getSelectedEquipSlot() > -1
+			&& player.getSelectedEquipSlot() < player.getEquippedItems().getCapacity())
 		{
 			int mouseX = Gdx.input.getX();
 			int mouseY = Gdx.graphics.getHeight() - Gdx.input.getY();
@@ -31,7 +20,7 @@ public class InputStrategyUseItem extends InputStrategy
 			float dungeonX = DrawingUtil.screenToDungeonXCam(mouseX, DungeonStart.getDungeonMain().getCamPosX());
 			float dungeonY = DrawingUtil.screenToDungeonYCam(mouseY, DungeonStart.getDungeonMain().getCamPosY());
 			
-			getPlayer().useEquippedItem(getPlayer().getSelectedEquipSlot(), dungeonX, dungeonY);
+			player.useEquippedItem(player.getSelectedEquipSlot(), dungeonX, dungeonY);
 		}
 	}
 }
