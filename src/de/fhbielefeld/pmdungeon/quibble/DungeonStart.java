@@ -1,11 +1,10 @@
 package de.fhbielefeld.pmdungeon.quibble;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -14,7 +13,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 
 import de.fhbielefeld.pmdungeon.desktop.DesktopLauncher;
 import de.fhbielefeld.pmdungeon.quibble.SpatialHashGrid.Handle;
@@ -31,7 +29,6 @@ import de.fhbielefeld.pmdungeon.quibble.entity.NPC;
 import de.fhbielefeld.pmdungeon.quibble.entity.Player;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
 import de.fhbielefeld.pmdungeon.quibble.entity.effect.StatusEffect;
-import de.fhbielefeld.pmdungeon.quibble.entity.event.CreatureExpEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.CreatureHitTargetPostEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.CreatureStatChangeEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEvent;
@@ -41,25 +38,18 @@ import de.fhbielefeld.pmdungeon.quibble.entity.event.PlayerQuestsChangedEvent;
 import de.fhbielefeld.pmdungeon.quibble.file.DungeonResource;
 import de.fhbielefeld.pmdungeon.quibble.file.ResourceHandler;
 import de.fhbielefeld.pmdungeon.quibble.file.ResourceType;
-import de.fhbielefeld.pmdungeon.quibble.hud.ExpBarHUD;
-import de.fhbielefeld.pmdungeon.quibble.hud.HUDElement;
-import de.fhbielefeld.pmdungeon.quibble.hud.HUDGroup;
-import de.fhbielefeld.pmdungeon.quibble.hud.HUDManager;
-import de.fhbielefeld.pmdungeon.quibble.hud.HealthDisplayHUD;
-import de.fhbielefeld.pmdungeon.quibble.hud.InventoryHUDSwitchListener;
-import de.fhbielefeld.pmdungeon.quibble.hud.InventoryItemHUD;
-import de.fhbielefeld.pmdungeon.quibble.hud.QuestHUD;
-import de.fhbielefeld.pmdungeon.quibble.input.DungeonInputHandler;
-import de.fhbielefeld.pmdungeon.quibble.input.InputHandler;
-import de.fhbielefeld.pmdungeon.quibble.input.strategy.InputStrategyCloseChest;
-import de.fhbielefeld.pmdungeon.quibble.inventory.BagInventoryItem;
-import de.fhbielefeld.pmdungeon.quibble.inventory.Inventory;
+import de.fhbielefeld.pmdungeon.quibble.input.GameInput;
 import de.fhbielefeld.pmdungeon.quibble.item.Item;
 import de.fhbielefeld.pmdungeon.quibble.particle.DrawingUtil;
 import de.fhbielefeld.pmdungeon.quibble.quest.QuestDummy;
 import de.fhbielefeld.pmdungeon.quibble.quest.QuestFactory;
 import de.fhbielefeld.pmdungeon.quibble.trap.TrapDamage;
 import de.fhbielefeld.pmdungeon.quibble.trap.TrapTeleport;
+import de.fhbielefeld.pmdungeon.quibble.ui.UIFonts;
+import de.fhbielefeld.pmdungeon.quibble.ui.UILayerInventoryView;
+import de.fhbielefeld.pmdungeon.quibble.ui.UILayerPlayerHUD;
+import de.fhbielefeld.pmdungeon.quibble.ui.UILayerQuestView;
+import de.fhbielefeld.pmdungeon.quibble.ui.UIManager;
 import de.fhbielefeld.pmdungeon.vorgaben.dungeonCreator.dungeonconverter.Coordinate;
 import de.fhbielefeld.pmdungeon.vorgaben.game.GameSetup;
 import de.fhbielefeld.pmdungeon.vorgaben.game.Controller.MainController;
@@ -83,34 +73,16 @@ public class DungeonStart extends MainController implements EntityEventHandler
 		return GameSetup.batch;
 	}
 	
-	public static BitmapFont getDefaultFont()
-	{
-		return bitmapFontArial;
-	}
-	
 	/****************************************
 	 *                GAME                  *
 	 ****************************************/
 	
 	private static DungeonStart instance;
 	
-	public static final String INV_NAME_DEFAULT = "inv";
-	public static final String INV_NAME_EQUIP = "equip";
-	public static final String INV_NAME_CHEST = "chest";
-	
-	public static final String FONT_ARIAL = "assets/textures/font/arial.ttf";
-	
-	private static BitmapFont bitmapFontArial;
-	
-	private static Matrix4 orthoProjMatrix = new Matrix4();
+	public static Matrix4 orthoProjMatrix = new Matrix4();
 	private static GlyphLayout glyphLayout = new GlyphLayout();
 	
-	private InventoryHUDSwitchListener invSwitchNormal;
-	private InventoryHUDSwitchListener invSwitchEquip;
-	
 	private Player myHero;
-	
-	private InputHandler inputHandler;
 	
 	/**
 	 * Use this level to spawn entities instead of <code>this.entityController</code>!!
@@ -120,24 +92,15 @@ public class DungeonStart extends MainController implements EntityEventHandler
 	
 	private long lastFrameTimeStamp;
 	
-	private HUDManager hudManager;
-	
-	private ExpBarHUD expBarHUD;
-	private HealthDisplayHUD healthHUD;
-	
-	private QuestHUD questHUD;
-	
-	private Label expLabel;
-	private Label healthLabel;
-	
-	private int currentlyMarkedEquipSlot;
-	
-	private Map<String, HUDGroup> shownHUDGroups;
-	private Map<String, Label> shownLabels;
-	
-	private ShapeRenderer debugRenderer;
+	private UILayerPlayerHUD uiLayerHUD;
+	private UILayerInventoryView uiLayerPlayerEquipment;
+	private UILayerInventoryView uiLayerPlayerInventory;
+	private UILayerInventoryView uiLayerChestView;
+	private UILayerQuestView uiLayerQuestView;
 	
 	/**************DEBUG UTILS*************/
+	
+	private ShapeRenderer debugRenderer;
 	
 	private boolean drawBoundingBoxes = false;
 	private boolean drawSHGCells = false;
@@ -145,7 +108,12 @@ public class DungeonStart extends MainController implements EntityEventHandler
 	
 	/**************************************/
 	
+	private UIManager uiManager;
+	
 	private Entity cameraTarget;
+	
+	private GameInput gameInputProcessor;
+	private InputMultiplexer inputMultiplexer;
 	
 	//Prevents you from using entityController >:D -- use currentLevel instead!
 	@SuppressWarnings("unused")
@@ -159,9 +127,6 @@ public class DungeonStart extends MainController implements EntityEventHandler
 		}
 		instance = this;
 		
-		this.inputHandler = new DungeonInputHandler();
-		this.shownHUDGroups = new HashMap<>();
-		this.shownLabels = new HashMap<>();
 		LoggingHandler.logger.setLevel(Level.CONFIG);
 	}
 	
@@ -170,40 +135,46 @@ public class DungeonStart extends MainController implements EntityEventHandler
 	{
 		super.setup();
 		
-		DungeonStart.bitmapFontArial = new BitmapFont();
+		this.uiManager = new UIManager();
 		
+		this.uiLayerHUD = new UILayerPlayerHUD();
+		this.uiLayerHUD.setZIndex(0);
 		
-		//HudManager have to be made before the Player
-		// cause InputStrategy would got a null HUDManager
-		this.hudManager = new HUDManager();
+		this.uiLayerPlayerEquipment = new UILayerInventoryView("Equipment", 352, 80, 40, 8);
+		this.uiLayerPlayerEquipment.setZIndex(1);
+		
+		this.uiLayerPlayerInventory = new UILayerInventoryView("Inventory", 352, 16, 40, 8);
+		this.uiLayerPlayerInventory.setZIndex(1);
+		
+		this.uiLayerChestView = new UILayerInventoryView("Chest", 352, 144, 40, 8);
+		this.uiLayerChestView.setZIndex(1);
+		
+		this.uiLayerQuestView = new UILayerQuestView(16, 400);
+		this.uiLayerQuestView.setZIndex(1);
+		
+		this.uiManager.addUI(this.uiLayerHUD);
+		this.uiManager.addUI(this.uiLayerPlayerEquipment);
+		this.uiManager.addUI(this.uiLayerPlayerInventory);
+		this.uiManager.addUI(this.uiLayerChestView);
+		this.uiManager.addUI(this.uiLayerQuestView);
+		
+		this.gameInputProcessor = new GameInput();
+		this.inputMultiplexer = new InputMultiplexer(this.uiManager.getInputProcessors());
+		this.inputMultiplexer.addProcessor(this.gameInputProcessor);
+		
+		Gdx.input.setInputProcessor(this.inputMultiplexer);
+		
 		this.myHero = new Knight();
 		this.myHero.getEquippedItems().addItem(Item.SWORD_BLUE);
 		this.myHero.addEntityEventHandler(this);
 		
-		//Planning to remove these weird switches and replace them with a proper UI system
-		this.invSwitchNormal = new InventoryHUDSwitchListener(this, INV_NAME_DEFAULT, this.myHero.getInventory(), "Inventory", 16, 176);
-		this.invSwitchEquip = new InventoryHUDSwitchListener(this, INV_NAME_EQUIP, this.myHero.getEquippedItems(), "Equipment", 16, 76);
-		
-		this.myHero.getInventory().addInventoryListener(this.invSwitchNormal);
-		this.myHero.getEquippedItems().addInventoryListener(this.invSwitchEquip);
-		
-		this.expBarHUD = new ExpBarHUD(this.myHero, 16, 432);
-		this.healthHUD = new HealthDisplayHUD(this.myHero, 16, 368);
-		
-		this.inputHandler.addInputListener(myHero);
-		
-		this.getHudManager().addElement(this.expBarHUD);
-		this.getHudManager().addElement(this.healthHUD);
+		this.uiLayerHUD.setPlayer(myHero);
+		this.uiLayerPlayerEquipment.setInventory(myHero.getEquippedItems());
+		this.uiLayerPlayerInventory.setInventory(myHero.getInventory());
+		this.uiLayerQuestView.setPlayer(myHero);
 		
 		this.lastFrameTimeStamp = System.currentTimeMillis();
 		Gdx.app.getGraphics().setResizable(false);
-		
-		this.expLabel = this.textHUD.drawText("Level: 1", FONT_ARIAL, Color.WHITE, 24, 200, 64, 16, 432);
-		this.healthLabel = this.textHUD.drawText("Health", FONT_ARIAL, Color.WHITE, 24, 200, 64, 16, 384);
-		
-		this.questHUD = new QuestHUD(400, 400, this.textHUD);
-		this.questHUD.setQuests(this.myHero.getQuestList());
-		this.getHudManager().addElement(questHUD);
 		
 		this.debugRenderer = new ShapeRenderer();
 		this.debugRenderer.setAutoShapeType(true);
@@ -248,9 +219,6 @@ public class DungeonStart extends MainController implements EntityEventHandler
 		
 		this.currentLevel.spawnEntity(this.myHero);
 		
-		this.invSwitchNormal.show();
-		this.invSwitchEquip.show();
-		
 		/**
 		 * Spawn Chests
 		 */
@@ -283,7 +251,7 @@ public class DungeonStart extends MainController implements EntityEventHandler
 		
 		ResourceHandler.processQueue();
 		
-		this.inputHandler.updateHandler();
+		this.gameInputProcessor.update();
 		
 		this.currentLevel.update();
 		
@@ -316,7 +284,7 @@ public class DungeonStart extends MainController implements EntityEventHandler
 		
 		this.doDebugDrawing();
 		
-		this.getHudManager().update(); //Draw HUD last
+		this.uiManager.draw(); //Draw UI last
 	}
 	
 	private void renderEntities()
@@ -349,8 +317,7 @@ public class DungeonStart extends MainController implements EntityEventHandler
 	{
 		final String text = entity.getDisplayNamePrefix() + " " + entity.getDisplayName();
 		
-		final BitmapFont font = getDefaultFont();
-		font.getData().setScale(1.25F);
+		final BitmapFont font = UIFonts.DEFAULT.getFont();
 		glyphLayout.setText(font, text);
 		DungeonStart.getGameBatch().setProjectionMatrix(orthoProjMatrix);
 		
@@ -481,111 +448,12 @@ public class DungeonStart extends MainController implements EntityEventHandler
 		else if(event.getEventID() == PlayerOpenChestEvent.EVENT_ID)
 		{
 			final PlayerOpenChestEvent chestEvent = (PlayerOpenChestEvent)event;
-			
-			this.showInventory(INV_NAME_CHEST, chestEvent.getChest().getInv(), "Chest", 16, 288);
-		}
-		else if(event.getEventID() == Creature.EVENT_ID_EXP_CHANGE)
-		{
-			final CreatureExpEvent expEvent = (CreatureExpEvent)event;
-			
-			int oldLevel = expEvent.getEntity().expLevelFunction(expEvent.getPreviousTotalExp());
-			int newLevel = expEvent.getEntity().expLevelFunction(expEvent.getNewTotalExp());
-			if(newLevel > oldLevel)
-			{
-				LoggingHandler.logger.log(Level.INFO, "New Level: " + newLevel);
-				this.expLabel.setText("Level: " + newLevel);
-			}
+			this.uiLayerChestView.setInventory(chestEvent.getChest().getInv());
 		}
 		else if(event.getEventID() == PlayerQuestsChangedEvent.EVENT_ID)
 		{
-			this.questHUD.refreshQuests();
+			this.uiLayerQuestView.refreshQuests();
 		}
-	}
-	
-	public void showInventory(String id, Inventory<Item> inv, String name, int x, int y)
-	{
-		
-		new InputStrategyCloseChest(myHero);
-		HUDGroup g = this.generateInventoryHUD(inv, x, y - 60);
-		this.getHudManager().addGroup(g);
-		this.shownHUDGroups.put(id, g);
-		
-		Label label = this.shownLabels.get(id);
-		if(label == null)
-		{
-			label = this.textHUD.drawText(name, FONT_ARIAL, Color.WHITE, 24, 200, 32, x, y);
-			this.shownLabels.put(id, label);
-		}
-		else
-		{
-			label.setText(name);
-		}
-	}
-	
-	@SuppressWarnings("unchecked")
-	private HUDGroup generateInventoryHUD(Inventory<Item> inv, int x, int y)
-	{
-		HUDGroup g = new HUDGroup();
-		this.getHudManager().setElementOnMouse(null);
-		int nextItemX = x;
-		InventoryItemHUD currentHUDElement;
-		for(int i = 0; i < inv.getCapacity(); ++i)
-		{
-			if(inv.getItem(i) instanceof BagInventoryItem<?, ?>)
-			{
-				currentHUDElement = new InventoryItemHUD(inv, i, nextItemX, y, 64, 64);
-				nextItemX += 72;
-				
-				BagInventoryItem<?, ?> bag = (BagInventoryItem<?, ?>)inv.getItem(i);
-				Inventory<?> bagItems = bag.getBagItems();
-				for(int j = 0; j < bagItems.getCapacity(); ++j)
-				{
-					g.addHUDElement(new InventoryItemHUD((Inventory<Item>)bagItems, j, nextItemX, y + 32 * (j % 2), 32, 32, true));
-					nextItemX += 36 * (j % 2);
-				}
-				nextItemX += 36 * (bagItems.getCapacity() % 2);
-			}
-			else
-			{
-				currentHUDElement = new InventoryItemHUD(inv, i, nextItemX, y, 64, 64);
-				nextItemX += 72;
-			}
-			if(inv == this.myHero.getEquippedItems() && i == this.myHero.getSelectedEquipSlot())
-			{
-				currentHUDElement.setMarked(true);
-			}
-			g.addHUDElement(currentHUDElement);
-		}
-		return g;
-	}
-	
-	/**
-	 * Sets the slot that is marked in the hotbar.
-	 * @param slot the slot index
-	 */
-	public void setMarkedEquipSlot(int slot)
-	{
-		HUDElement e;
-		for(int i = 0; i < this.getHudManager().getNumElements(); ++i)
-		{
-			e = this.getHudManager().getElement(i);
-			if(e instanceof InventoryItemHUD)
-			{
-				final InventoryItemHUD invSlot = (InventoryItemHUD)e;
-				if(invSlot.getInventoryReference() == this.myHero.getEquippedItems())
-				{
-					if(this.currentlyMarkedEquipSlot == invSlot.getInventorySlot())
-					{
-						invSlot.setMarked(false);
-					}
-					if(slot == invSlot.getInventorySlot())
-					{
-						invSlot.setMarked(true);
-					}
-				}
-			}
-		}
-		this.currentlyMarkedEquipSlot = slot;
 	}
 	
 	/**
@@ -609,19 +477,24 @@ public class DungeonStart extends MainController implements EntityEventHandler
 		return this.camera;
 	}
 	
-	public HUDManager getHudManager()
+	public UIManager getUIManager()
 	{
-		return hudManager;
+		return this.uiManager;
 	}
 	
-	public Label getChestLabel()
+	public UILayerInventoryView getUIChestView()
 	{
-		return this.shownLabels.get(INV_NAME_CHEST);
+		return this.uiLayerChestView;
 	}
 	
-	public HUDGroup getChestHud()
+	public UILayerInventoryView getUIInventoryView()
 	{
-		return this.shownHUDGroups.get(INV_NAME_CHEST);
+		return this.uiLayerPlayerInventory;
+	}
+	
+	public UILayerInventoryView getUIEquipmentView()
+	{
+		return this.uiLayerPlayerEquipment;
 	}
 	
 	public Player getPlayer()
