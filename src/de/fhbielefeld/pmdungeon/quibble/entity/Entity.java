@@ -16,11 +16,10 @@ import de.fhbielefeld.pmdungeon.quibble.animation.AnimationHandler;
 import de.fhbielefeld.pmdungeon.quibble.animation.AnimationHandlerImpl;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEventHandler;
-import de.fhbielefeld.pmdungeon.quibble.particle.ParticleSource;
 import de.fhbielefeld.pmdungeon.quibble.util.GeometryUtil;
 import de.fhbielefeld.pmdungeon.vorgaben.tools.Point;
 
-public abstract class Entity implements ParticleSource
+public abstract class Entity
 {
 	/**
 	 * Event ID for entity spawn events.

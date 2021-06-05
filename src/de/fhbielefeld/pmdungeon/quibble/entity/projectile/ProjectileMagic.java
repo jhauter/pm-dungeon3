@@ -30,7 +30,7 @@ public abstract class ProjectileMagic extends Projectile
 	}
 	
 	@Override
-	public CreatureStatsAttribs getDamageFromStat()
+	public CreatureStatsAttribs getDamageStat()
 	{
 		return CreatureStatsAttribs.DAMAGE_MAGIC;
 	}

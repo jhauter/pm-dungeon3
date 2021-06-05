@@ -17,7 +17,7 @@ public class QuestLevelUp extends QuestItemReward
 	 * @param rewardItems the items that are given to the player when the quest is completed
 	 * @param expOnReward the exp that are rewarded when the quest is completed
 	 */
-	public QuestLevelUp(String questName,  int levelToReach, int expOnReward, Item ... rewardItems)
+	public QuestLevelUp(String questName, int levelToReach, int expOnReward, Item ... rewardItems)
 	{
 		super(questName, expOnReward, rewardItems);
 		this.levelToReach = levelToReach;

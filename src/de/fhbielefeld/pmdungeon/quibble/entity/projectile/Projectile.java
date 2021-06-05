@@ -99,7 +99,7 @@ public abstract class Projectile extends Entity
 	/**
 	 * @return which stat represents the damage stat (e.g. DAMAGE_MAGIC for the magic damage stat)
 	 */
-	public abstract CreatureStatsAttribs getDamageFromStat();
+	public abstract CreatureStatsAttribs getDamageStat();
 	
 	/**
 	 * 
@@ -139,8 +139,8 @@ public abstract class Projectile extends Entity
 	public void onProjectileImpactCreature(Creature hitCreature)
 	{
 		//Can modify the stats here without copy because the projectile gets deleted on impact anyway
-		double damage = stats.getStat(this.getDamageFromStat());
-		stats.setStat(this.getDamageFromStat(), Math.ceil(damage - this.getDamageDecreaseOverTime()));
+		double damage = stats.getStat(this.getDamageStat());
+		stats.setStat(this.getDamageStat(), Math.ceil(damage - this.getDamageDecreaseOverTime()));
 		
 		SimpleDamageSource dmgSrc = new SimpleDamageSource(this.getX(), this.getY(), this.stats);
 		
