@@ -32,15 +32,6 @@ public class Splash implements ParticleMovement
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void originValues(float x, float y)
-	{
-		
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
 	public float getRotation(float time)
 	{
 		return 0.0F;

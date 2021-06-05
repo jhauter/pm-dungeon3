@@ -11,33 +11,31 @@ import de.fhbielefeld.pmdungeon.quibble.entity.Player;
 import de.fhbielefeld.pmdungeon.quibble.inventory.InventoryItem;
 import de.fhbielefeld.pmdungeon.quibble.item.Item;
 
-public class InputStrategySelectItem extends InputStrategy
+public class InputStrategySelectItem implements InputStrategy
 {
-	
 	private int index;
 	
-	public InputStrategySelectItem(Player player, int index)
+	public InputStrategySelectItem(int index)
 	{
-		super(player);
 		this.index = index;
 	}
 	
 	@Override
-	public void handle()
+	public void handle(Player player)
 	{
 		if(Gdx.input.isKeyPressed(Input.Keys.Q))
 		{
-			InventoryItem<Item> droppedItem = getPlayer().getInventory().getItem(index - 1);
-			if(getPlayer().drop(index - 1) && droppedItem != null)
+			InventoryItem<Item> droppedItem = player.getInventory().getItem(index);
+			if(player.drop(index) && droppedItem != null)
 			{
 				LoggingHandler.logger.log(Level.INFO, "Dropped item: " + droppedItem.getDisplayText());
 			}
 		}
 		else
 		{
-			getPlayer().setSelectedEquipSlot(index - 1);
-			DungeonStart.getDungeonMain().setMarkedEquipSlot(index - 1);
-			LoggingHandler.logger.log(Level.INFO, "Selected equipment slot " + (index));
+			player.setSelectedEquipSlot(index);
+			DungeonStart.getDungeonMain().getUIEquipmentView().setMarkedSlot(index);
+			LoggingHandler.logger.log(Level.INFO, "Selected equipment slot " + (index + 1));
 		}
 	}
 	

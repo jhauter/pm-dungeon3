@@ -1,9 +1,8 @@
 package de.fhbielefeld.pmdungeon.quibble.entity;
 
-import java.util.List;
-
 import com.badlogic.gdx.math.Vector2;
 
+import de.fhbielefeld.pmdungeon.quibble.DungeonStart;
 import de.fhbielefeld.pmdungeon.quibble.entity.ai.AIShootFireball;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
@@ -45,6 +44,12 @@ public class Lizard extends NPC
 	public Lizard()
 	{
 		this(0.0F, 0.0F);
+	}
+	
+	@Override
+	public String getDisplayName()
+	{
+		return "Lizard";
 	}
 	
 	/**
@@ -95,17 +100,11 @@ public class Lizard extends NPC
 	public void calculateCurrentBehavior()
 	{
 		//Shoot fire balls
-		List<Player> players = this.level.getPlayers();
-		if(players.isEmpty())
-		{
-			//Can happen if the player dies?
-			return;
-		}
-		;
-		if(!this.noticedPlayer && this.hasLineOfSightTo(new Vector2(players.get(0).getPosition().x, players.get(0).getPosition().y)))
+		Player player = DungeonStart.getDungeonMain().getPlayer();
+		if(!this.noticedPlayer && this.hasLineOfSightTo(new Vector2(player.getPosition().x, player.getPosition().y)))
 		{
 			this.noticedPlayer = true;
-			this.setAIStrategy(new AIShootFireball(players.get(0)));
+			this.setAIStrategy(new AIShootFireball(player));
 		}
 	}
 	

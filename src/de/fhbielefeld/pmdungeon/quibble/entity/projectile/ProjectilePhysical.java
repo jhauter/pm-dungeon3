@@ -30,7 +30,7 @@ public abstract class ProjectilePhysical extends Projectile
 	}
 	
 	@Override
-	public CreatureStatsAttribs getDamageFromStat()
+	public CreatureStatsAttribs getDamageStat()
 	{
 		return CreatureStatsAttribs.DAMAGE_PHYS;
 	}

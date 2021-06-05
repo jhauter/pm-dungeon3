@@ -6,22 +6,13 @@ import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
 import de.fhbielefeld.pmdungeon.quibble.entity.projectile.Projectile;
 import de.fhbielefeld.pmdungeon.quibble.entity.projectile.SpellFireBall;
 
-public class ItemRedMagicStaff extends ItemWeaponMagic
+public class ItemRedMagicStaff extends ItemStaff
 {
-	
-	/**
-	 * 
-	 * @param name        user friendly display name
-	 * @param itemWidth   render width of this weapon
-	 * @param itemHeight  render height of this weapon
-	 * @param swingSpeed  the speed at which this weapon will swing
-	 * @param visibleTime time in seconds that this weapon will be visible when used
-	 * @param texture     texture used to render this item
-	 */
-	protected ItemRedMagicStaff(String name, float itemWidth, float itemHeight, float swingTime, float visibleTime,
-		String texture)
+	protected ItemRedMagicStaff()
 	{
-		super(name, itemWidth, itemHeight, swingTime, visibleTime, texture);
+		super("Red Staff", 2.5F, 15, "assets/textures/items/red_magic_staff.png");
+		this.renderWidth = 1.0F;
+		this.renderHeight = 1.0F;
 	}
 	
 	/**

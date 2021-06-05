@@ -6,24 +6,17 @@ import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
 import de.fhbielefeld.pmdungeon.quibble.entity.projectile.Projectile;
 import de.fhbielefeld.pmdungeon.quibble.entity.projectile.SpellIceBlast;
 
-public class ItemBlueMagicStaff extends ItemWeaponMagic
+public class ItemBlueMagicStaff extends ItemStaff
 {
-	
 	/**
 	 * A Green Magic staff which fires Ice Blast. Ice Blast's will slow down the hit
-	 * creature
-	 * 
-	 * @param name        user friendly display name
-	 * @param itemWidth   render width of this weapon
-	 * @param itemHeight  render height of this weapon
-	 * @param swingSpeed  the speed at which this weapon will swing
-	 * @param visibleTime time in seconds that this weapon will be visible when used
-	 * @param texture     texture used to render this item
+	 * creature.
 	 */
-	protected ItemBlueMagicStaff(String name, float itemWidth, float itemHeight, float swingSpeed, float visibleTime,
-		String texture)
+	protected ItemBlueMagicStaff()
 	{
-		super(name, itemWidth, itemHeight, swingSpeed, visibleTime, texture);
+		super("Blue Staff", 2.5F, 15, "assets/textures/items/blue_magic_staff.png");
+		this.renderWidth = 1.0F;
+		this.renderHeight = 1.0F;
 	}
 	
 	/**

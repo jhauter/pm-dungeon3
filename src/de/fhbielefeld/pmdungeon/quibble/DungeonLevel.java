@@ -9,7 +9,6 @@ import java.util.logging.Level;
 import de.fhbielefeld.pmdungeon.quibble.SpatialHashGrid.Handle;
 import de.fhbielefeld.pmdungeon.quibble.entity.BoundingBox;
 import de.fhbielefeld.pmdungeon.quibble.entity.Entity;
-import de.fhbielefeld.pmdungeon.quibble.entity.Player;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEvent;
 import de.fhbielefeld.pmdungeon.quibble.particle.ParticleSystem;
 import de.fhbielefeld.pmdungeon.vorgaben.dungeonCreator.DungeonWorld;
@@ -221,31 +220,50 @@ public class DungeonLevel
 	 */
 	public List<Entity> getEntitiesInRadius(float x, float y, float radius, Entity... exclude)
 	{
-		List<Entity> entitiesInRadius = new ArrayList<Entity>();
+		return this.getEntitiesInRadius(x, y, radius, Entity.class, exclude);
+	}
+	
+	/**
+	 * Returns a list of all entities in a radius around the specified coordinate that are of
+	 * the specified type.
+	 * @param <T> the entity type that the returned list should have
+	 * @param x the x coordinate
+	 * @param y the y coordinate
+	 * @param radius the radius around the specified coordinate
+	 * @param type the type that the entities must match
+	 * @param exclude entities to exclude when they are inside the radius
+	 * @return entities in the specified radius
+	 */
+	@SuppressWarnings("unchecked")
+	public <T extends Entity> List<T> getEntitiesInRadius(float x, float y, float radius, Class<T> type, Entity... exclude)
+	{
+		List<T> entitiesInRadius = new ArrayList<>();
 		Entity currentEntity;
 		for(int i = 0; i < this.entities.size(); ++i)
 		{
 			currentEntity = this.entities.get(i);
+			if(!type.isInstance(currentEntity))
+			{
+				continue;
+			}
 			if(Math.pow(currentEntity.getX() - x, 2) + Math.pow(currentEntity.getY() - y, 2) <= Math.pow(radius + currentEntity.getRadius(), 2)
 				&& !Arrays.asList(exclude).contains(currentEntity))
 			{
-				entitiesInRadius.add(currentEntity);
+				entitiesInRadius.add((T)currentEntity);
 			}
 		}
 		return entitiesInRadius;
 	}
 	
-	public List<Player> getPlayers()
+	/**
+	 * Returns a list of all entities that are of the specified type.
+	 * @param <T> the entity type that the returned list should have
+	 * @param type the type that the entities must match
+	 * @param exclude entities to exclude from the list
+	 * @return all entities that are of the specified type
+	 */
+	public <T extends Entity> List<T> getAllEntitiesOf(Class<T> type, Entity... exclude)
 	{
-		List<Player> players = new ArrayList<Player>();
-		for(int i = 0; i < this.entities.size(); ++i)
-		{
-			if(this.entities.get(i) instanceof Player)
-			{
-				players.add((Player)this.entities.get(i));
-				break;
-			}
-		}
-		return players;
+		return this.getEntitiesInRadius(0.0F, 0.0F, 9999F, type, exclude);
 	}
 }

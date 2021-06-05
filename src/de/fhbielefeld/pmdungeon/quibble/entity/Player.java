@@ -1,29 +1,15 @@
 package de.fhbielefeld.pmdungeon.quibble.entity;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 
 import de.fhbielefeld.pmdungeon.quibble.LoggingHandler;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.PlayerQuestsChangedEvent;
-import de.fhbielefeld.pmdungeon.quibble.input.InputListener;
-import de.fhbielefeld.pmdungeon.quibble.input.Key;
-import de.fhbielefeld.pmdungeon.quibble.input.KeyList;
-import de.fhbielefeld.pmdungeon.quibble.input.KeyMovement;
-import de.fhbielefeld.pmdungeon.quibble.input.strategy.InputStrategy;
-import de.fhbielefeld.pmdungeon.quibble.input.strategy.InputStrategyAccept;
-import de.fhbielefeld.pmdungeon.quibble.input.strategy.InputStrategyActivateQuest;
-import de.fhbielefeld.pmdungeon.quibble.input.strategy.InputStrategyCloseChest;
-import de.fhbielefeld.pmdungeon.quibble.input.strategy.InputStrategyDecline;
-import de.fhbielefeld.pmdungeon.quibble.input.strategy.InputStrategyOpenChest;
-import de.fhbielefeld.pmdungeon.quibble.input.strategy.InputStrategyPickUpDrops;
-import de.fhbielefeld.pmdungeon.quibble.input.strategy.InputStrategySelectItem;
-import de.fhbielefeld.pmdungeon.quibble.input.strategy.InputStrategyUseItem;
 import de.fhbielefeld.pmdungeon.quibble.quest.Quest;
 
-public abstract class Player extends Creature implements InputListener
+public abstract class Player extends Creature
 {
 	private boolean triggeredNextLevel;
 	
@@ -36,8 +22,6 @@ public abstract class Player extends Creature implements InputListener
 	
 	private List<Quest> quests = new ArrayList<Quest>();
 	
-	private HashMap<String, InputStrategy> inputMap;
-	
 	/**
 	 * @param x x-coordinate
 	 * @param y y-coordinate
@@ -45,7 +29,6 @@ public abstract class Player extends Creature implements InputListener
 	public Player(float x, float y)
 	{
 		super(x, y);
-		inputMap = fillInputMap();
 	}
 	
 	/**
@@ -57,21 +40,9 @@ public abstract class Player extends Creature implements InputListener
 	}
 	
 	@Override
-	public void onMovement(KeyMovement key)
+	public boolean isDisplayNameVisible()
 	{
-		// This logic is to make a player stand still if keys of opposite directions are
-		// pressed
-		
-		this.controlMinX = Math.min(this.controlMinX, key.getMovement().x);
-		this.controlMaxX = Math.max(this.controlMaxX, key.getMovement().x);
-		this.controlMinY = Math.min(this.controlMinY, key.getMovement().y);
-		this.controlMaxY = Math.max(this.controlMaxY, key.getMovement().y);
-	}
-	
-	@Override
-	public void onEvent(Key key)
-	{
-		inputMap.get(key.getEvent()).handle();
+		return false;
 	}
 	
 	/**
@@ -167,6 +138,14 @@ public abstract class Player extends Creature implements InputListener
 		this.controlMaxY = 0.0F;
 	}
 	
+	public void influenceControlAxisMinMax(float x, float y)
+	{
+		this.controlMinX = Math.min(this.controlMinX, x);
+		this.controlMaxX = Math.max(this.controlMaxX, x);
+		this.controlMinY = Math.min(this.controlMinY, y);
+		this.controlMaxY = Math.max(this.controlMaxY, y);
+	}
+	
 	/**
 	 * Adds a quest to the player that the player can complete
 	 * @param quest the quest to be added
@@ -186,31 +165,4 @@ public abstract class Player extends Creature implements InputListener
 	{
 		return this.quests;
 	}
-	
-	private HashMap<String, InputStrategy> fillInputMap()
-	{
-		HashMap<String, InputStrategy> map = new HashMap<>();
-		
-		map.put(KeyList.PICK_UP_DROP, new InputStrategyPickUpDrops(this));
-		
-		map.put(KeyList.OPEN_CHEST, new InputStrategyOpenChest(this));
-		
-		map.put(KeyList.CLOSE_CHEST_INV, new InputStrategyCloseChest(this));
-		
-		map.put(KeyList.USE_ITEM, new InputStrategyUseItem(this));
-		
-		map.put(KeyList.INTERACT_QUEST, new InputStrategyActivateQuest(this));
-		
-		map.put(KeyList.ACCEPT, new InputStrategyAccept(this));
-		
-		map.put(KeyList.DECLINE, new InputStrategyDecline(this));
-		
-		//Will create so a List in the range of Inventory Slots
-		for(int i = 0; i < 9; i++)
-		{
-			map.put(KeyList.SELECT_ITEM[i], new InputStrategySelectItem(this, i));
-		}
-		return map;
-	}
-	
 }

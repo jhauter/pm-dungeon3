@@ -5,8 +5,11 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.badlogic.gdx.ai.pfa.GraphPath;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
+import de.fhbielefeld.pmdungeon.quibble.DungeonStart;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsEventListener;
@@ -20,6 +23,9 @@ import de.fhbielefeld.pmdungeon.quibble.entity.event.CreatureHitTargetEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.CreatureHitTargetPostEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.CreatureStatChangeEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEvent;
+import de.fhbielefeld.pmdungeon.quibble.file.DungeonResource;
+import de.fhbielefeld.pmdungeon.quibble.file.ResourceHandler;
+import de.fhbielefeld.pmdungeon.quibble.file.ResourceType;
 import de.fhbielefeld.pmdungeon.quibble.inventory.DefaultInventory;
 import de.fhbielefeld.pmdungeon.quibble.inventory.Inventory;
 import de.fhbielefeld.pmdungeon.quibble.inventory.InventoryItem;
@@ -27,9 +33,9 @@ import de.fhbielefeld.pmdungeon.quibble.item.Item;
 import de.fhbielefeld.pmdungeon.quibble.particle.Levitate;
 import de.fhbielefeld.pmdungeon.quibble.particle.ParticleFightText;
 import de.fhbielefeld.pmdungeon.quibble.particle.ParticleFightText.Type;
+import de.fhbielefeld.pmdungeon.quibble.particle.ParticleMovement;
 import de.fhbielefeld.pmdungeon.quibble.particle.Splash;
 import de.fhbielefeld.pmdungeon.vorgaben.dungeonCreator.tiles.Tile;
-import de.fhbielefeld.pmdungeon.vorgaben.tools.Point;
 
 public abstract class Creature extends Entity implements DamageSource, CreatureStatsEventListener
 {
@@ -123,6 +129,10 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	
 	private List<StatusEffect> statusEffects;
 	
+	private Item renderedItem;
+	private int renderedItemTicksRem;
+	private ParticleMovement renderItemMovement;
+	
 	/**
 	 * @param x x-coordinate
 	 * @param y y-coordinate
@@ -134,8 +144,6 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		//Render properties - can be overridden by any creature
 		this.renderWidth = 1.75F;
 		this.renderHeight = 1.75F;
-		this.renderPivotX = this.renderWidth * 0.5F;
-		this.renderPivotY = this.renderHeight * 0.5F;
 		this.renderOffsetY = this.renderHeight * 0.25F;
 		
 		//Default looking direction should be right
@@ -165,6 +173,18 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	public Creature()
 	{
 		this(0.0F, 0.0F);
+	}
+	
+	@Override
+	public boolean isDisplayNameVisible()
+	{
+		return true;
+	}
+	
+	@Override
+	public String getDisplayNamePrefix()
+	{
+		return "Lv. " + this.getCurrentExpLevel();
 	}
 	
 	/**
@@ -280,6 +300,8 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	/**
 	 * Whether this entity should automatically use default animation that
 	 * has a walk and run animation.
+	 * In order for this to work, an animation with the name {@value #ANIM_NAME_RUN}
+	 * must be registered on this creature's animation handler.
 	 * This method must be overridden to change this behavior.
 	 * @return whether this entity should use default animation
 	 */
@@ -291,6 +313,8 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	/**
 	 * Whether this entity should use an attack animation when it attacks.
 	 * This method must be overridden to change this behavior.
+	 * In order for this to work, an animation with the name {@value #ANIM_NAME_ATTACK}
+	 * must be registered on this creature's animation handler.
 	 * The default for this method is false.
 	 * @return whether this entity should use an attack animation
 	 */
@@ -302,6 +326,8 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	/**
 	 * Whether this entity should use a hit animation when it gets hit.
 	 * This method must be overridden to change this behavior.
+	 * In order for this to work, an animation with the name {@value #ANIM_NAME_HIT}
+	 * must be registered on this creature's animation handler.
 	 * The default for this method is false.
 	 * @return whether this entity should use a hit animation
 	 */
@@ -331,6 +357,16 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		if(this.beingMoved && this.getVelocity().len2() <= this.beingMovedThreshold)
 		{
 			this.beingMoved = false;
+		}
+		
+		if(this.renderedItemTicksRem > 0)
+		{
+			--this.renderedItemTicksRem;
+			if(this.renderedItemTicksRem == 0)
+			{
+				this.renderedItem = null;
+				this.renderItemMovement = null;
+			}
 		}
 		
 		if(this.getCurrentStats().getStat(CreatureStatsAttribs.HIT_COOLDOWN) > 0.0D)
@@ -391,6 +427,68 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		this.isWalking = false;
 		
 		super.updateEnd();
+	}
+	
+	@Override
+	public void render()
+	{
+		super.render();
+		
+		if(this.renderedItem != null && renderItemMovement != null)
+		{
+			TextureRegion curFrame = null;
+			final int maxTicks = this.renderedItem.getVisibleTicks();
+			final float stateTime = (maxTicks - this.renderedItemTicksRem) * 1.0F / 30;
+			if(this.renderedItem.getAnimation() != null)
+			{
+				curFrame = this.renderedItem.getAnimation().getKeyFrame(stateTime);
+			}
+			else
+			{
+				DungeonResource<Texture> tex = ResourceHandler.requestResource(this.renderedItem.getTextureFile(), ResourceType.TEXTURE);
+				if(tex.isLoaded())
+				{
+					curFrame = new TextureRegion(tex.getResource());
+				}
+			}
+			
+			//curFrame can still be null
+			if(curFrame != null)
+			{
+				Vector2 drawPos = new Vector2();
+				drawPos.add(this.getX(), this.getY());
+				drawPos.add(this.getRenderOffsetX(), this.getRenderOffsetY());
+				
+				drawPos.add(this.renderItemMovement.getOffsetX(stateTime) * this.getScaleX(), this.renderItemMovement.getOffsetY(stateTime) * this.getScaleY());
+				drawPos.add(this.renderedItem.getRenderOffsetX() * this.renderedItem.getRenderWidth(), this.renderedItem.getRenderOffsetY() * this.renderedItem.getRenderHeight());
+				drawPos.add(this.renderedItem.getHoldOffsetX() * this.getScaleX(), this.renderedItem.getHoldOffsetY() * this.getScaleY());
+				drawPos.add(-this.renderedItem.getRenderWidth() * 0.5F, -this.renderedItem.getRenderHeight() * 0.5F);
+				drawPos.add(this.getItemHoldOffset().scl(this.getScaleX(), this.getScaleY()));
+
+				float appliedScaleX = this.getScaleX();
+				float appliedScaleY = this.getScaleY();
+				
+				if(!this.renderedItem.getRenderAllowNegativeEntityScale())
+				{
+					appliedScaleX = Math.abs(appliedScaleX);
+					appliedScaleY = Math.abs(appliedScaleY);
+				}
+				
+				//SpriteBatch.draw(textureRegion, x, y, originX, originY, width, height, scaleX, scaleY, rotation);
+				DungeonStart.getGameBatch().draw(
+					curFrame,
+					drawPos.x,
+					drawPos.y,
+					this.renderedItem.getRenderPivotX() * this.renderedItem.getRenderWidth(),
+					this.renderedItem.getRenderPivotY() * this.renderedItem.getRenderHeight(),
+					this.renderedItem.getRenderWidth(),
+					this.renderedItem.getRenderHeight(),
+					appliedScaleX * this.renderItemMovement.getScaleX(stateTime),
+					appliedScaleY * this.renderItemMovement.getScaleY(stateTime),
+					this.getRotation() + this.renderItemMovement.getRotation(stateTime)
+					);
+			}
+		}
 	}
 	
 	/**
@@ -519,6 +617,14 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		return this.invulnerableTicks > 0;
 	}
 	
+	public void updateInvulnerabilityTicks(int ticks)
+	{
+		if(ticks > this.invulnerableTicks)
+		{
+			this.invulnerableTicks = ticks;
+		}
+	}
+	
 	/**
 	 * Returns the current health of the creature.
 	 * @return current health
@@ -553,6 +659,32 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	}
 	
 	/**
+	 * This is a convenience method. For more info see {@link #damage(DamageSource, DamageType, Creature, boolean, boolean)}.
+	 * 
+	 * @param damageSource the damage source (ex.: the entity that deals the damage)
+	 * @param damageType the damage type which determines how damage is calculated according to stats
+	 * @param cause the creature that calls this method. The "cause" is rewarded exp when the target is killed.
+	 */
+	public void damage(DamageSource damageSource, DamageType damageType, Creature cause)
+	{
+		this.damage(damageSource, damageType, cause, false, true);
+	}
+	
+	/**
+	 * This is a convenience method. For more info see {@link #damage(DamageSource, DamageType, Creature, boolean, boolean)}.
+	 * 
+	 * @param damageSource the damage source (ex.: the entity that deals the damage)
+	 * @param damageType the damage type which determines how damage is calculated according to stats
+	 * @param cause the creature that calls this method. The "cause" is rewarded exp when the target is killed.
+	 * @param ignoreInvincibleTicks whether the entity should take damage even though
+	 * it is actually invincible due to it being hit recently
+	 */
+	public void damage(DamageSource damageSource, DamageType damageType, Creature cause, boolean ignoreInvincibleTicks)
+	{
+		this.damage(damageSource, damageType, cause, ignoreInvincibleTicks, true);
+	}
+	
+	/**
 	 * Causes damage to this creature. The damage value is altered according to the stats of the creature.
 	 * The creature is knocked back according to its stats and the stats of the damage source.
 	 * Creatures that take damage are invincible for a short amount of time.
@@ -577,8 +709,10 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	 * @param cause the creature that calls this method. The "cause" is rewarded exp when the target is killed.
 	 * @param ignoreInvincibleTicks whether the entity should take damage even though
 	 * it is actually invincible due to it being hit recently
+	 * @param makeInvulnerable whether the creature should be invulnerable
+	 * for a short amount of time after being damaged
 	 */
-	public void damage(DamageSource damageSource, DamageType damageType, Creature cause, boolean ignoreInvincibleTicks)
+	public void damage(DamageSource damageSource, DamageType damageType, Creature cause, boolean ignoreInvincibleTicks, boolean makeInvulnerable)
 	{
 		if(!ignoreInvincibleTicks && this.isInvulnerable())
 		{
@@ -646,7 +780,10 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		this.setBeingMoved();
 		
 		//-----Misc-----
-		this.invulnerableTicks = this.getInvulnerabilityTicksWhenHit();
+		if(makeInvulnerable && this.getInvulnerabilityTicksWhenHit() > this.invulnerableTicks)
+		{
+			this.invulnerableTicks = this.getInvulnerabilityTicksWhenHit();
+		}
 		
 		this.spawnDamageParticles(event.getDamageActual());
 		if(this.useHitAnimation())
@@ -698,6 +835,11 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		double distance = Math.sqrt(Math.pow(this.getX() - target.getX(), 2) + Math.pow(this.getY() - target.getY(), 2)) - this.getRadius()
 			- target.getRadius();
 		if(distance > this.getCurrentStats().getStat(CreatureStatsAttribs.HIT_REACH))
+		{
+			return;
+		}
+		
+		if(!this.hasLineOfSightTo(new Vector2(target.getX(), target.getY())))
 		{
 			return;
 		}
@@ -818,9 +960,9 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	}
 	
 	@Override
-	public boolean isInvisible()
+	public float getTransparency()
 	{
-		return this.deadTicks % 2 != 0 || this.invulnerableTicks % 2 != 0;
+		return this.deadTicks % 2 != 0 || this.invulnerableTicks % 2 != 0 ? 0.0F : super.getTransparency();
 	}
 	
 	@Override
@@ -830,11 +972,13 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	}
 	
 	/**
-	 * @return the point at which the weapon should be rendered if this creature uses weapons
+	 * Returns the point at which the item should be rendered if this creature uses an item.
+	 * The point is relative to the render position of the entity (the center).
+	 * @return the point at which the item should be rendered
 	 */
-	public Point getWeaponHoldOffset()
+	public Vector2 getItemHoldOffset()
 	{
-		return new Point(0, 0);
+		return new Vector2(0, 0);
 	}
 	
 	/**
@@ -995,12 +1139,14 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	
 	/**
 	 * Makes the creature use the item in the specified equipment slot.
-	 * In order to achieve this, the {@link Item#onUse(Creature)} method is called.
+	 * In order to achieve this, the {@link Item#onUse(Creature, float, float)} method is called.
 	 * If the item can be consumed, the item will be removed from the slot.
 	 * If the specified equipment slot is empty, this will do nothing
 	 * @param slot index of the equipment slot
+	 * @param targetX the x-position in the dungeon that the creature targets (mouse click for players)
+	 * @param targetY the y-position in the dungeon that the creature targets (mouse click for players)
 	 */
-	public void useEquippedItem(int slot)
+	public void useEquippedItem(int slot, float targetX, float targetY)
 	{
 		if(this.isDead)
 		{
@@ -1012,11 +1158,21 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 			return;
 		}
 		Item itemType = item.getItemType();
-		itemType.onUse(this);
+		if(itemType.onUse(this, targetX, targetY))
+		{
+			this.playUseItemAnimation(itemType, targetX, targetY);
+		}
 		if(itemType.canBeConsumed())
 		{
 			this.equippedItems.removeItem(slot);
 		}
+	}
+	
+	public void playUseItemAnimation(Item item, float targetX, float targetY)
+	{
+		this.renderedItem = item;
+		this.renderItemMovement = item.getOnUseMovement(this, targetX, targetY);
+		this.renderedItemTicksRem = item.getVisibleTicks();
 	}
 	
 	/**
@@ -1039,6 +1195,38 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	public int getSelectedEquipSlot()
 	{
 		return this.selectedEquipSlot;
+	}
+	
+	/**
+	 * Tries to add the given itemType to the equipped items.
+	 * If the equipped items are full, then tries to add the item
+	 * to the normal inventory.
+	 * @param itemType the item type to add.
+	 * @return <code>true</code> if adding the item was successful
+	 */
+	public boolean addItem(Item itemType)
+	{
+		if(!this.equippedItems.addItem(itemType))
+		{
+			return this.inventory.addItem(itemType);
+		}
+		return true;
+	}
+	
+	/**
+	 * Tries to add the given item to the equipped items.
+	 * If the equipped items are full, then tries to add the item
+	 * to the normal inventory.
+	 * @param item the item to add.
+	 * @return <code>true</code> if adding the item was successful
+	 */
+	public boolean addItem(InventoryItem<Item> item)
+	{
+		if(!this.equippedItems.addItem(item))
+		{
+			return this.inventory.addItem(item);
+		}
+		return true;
 	}
 	
 	/**
@@ -1109,7 +1297,6 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		return (int)Math.pow((3 * expLevel - 3), 2);
 	}
 	
-	
 	/**
 	 * Sets the total exp of this creature. The level will update automatically.
 	 * @param exp the new total exp
@@ -1142,7 +1329,7 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	}
 	
 	/**
-	 * @return the level of the creature
+	 * @return the exp level of the creature
 	 */
 	public int getCurrentExpLevel()
 	{

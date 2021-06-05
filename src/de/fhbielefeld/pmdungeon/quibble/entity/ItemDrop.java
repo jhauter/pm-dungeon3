@@ -13,7 +13,7 @@ public class ItemDrop extends Entity
 	{
 		super(x, y);
 		this.item = item;
-		this.animationHandler.addAsDefaultAnimation("", 1, 999, 1, 1, Item.ITEMS_TEXTURE_PATH + item.getItemType().getTexture() + ".png");
+		this.animationHandler.addAsDefaultAnimation("", 1, 999, 1, 1, item.getItemType().getTextureFile());
 	}
 	
 	public ItemDrop(InventoryItem<Item> item)

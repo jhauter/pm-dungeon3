@@ -1,9 +1,10 @@
 package de.fhbielefeld.pmdungeon.quibble.entity;
 
+import com.badlogic.gdx.math.Vector2;
+
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
 import de.fhbielefeld.pmdungeon.quibble.item.Item;
-import de.fhbielefeld.pmdungeon.vorgaben.tools.Point;
 
 public class Knight extends Player
 {
@@ -37,6 +38,12 @@ public class Knight extends Player
 	public Knight()
 	{
 		this(0.0F, 0.0F);
+	}
+	
+	@Override
+	public String getDisplayName()
+	{
+		return "Knight";
 	}
 	
 	/**
@@ -74,9 +81,9 @@ public class Knight extends Player
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Point getWeaponHoldOffset()
+	public Vector2 getItemHoldOffset()
 	{
-		return new Point(0.0F, 1.25F);
+		return new Vector2(0.0F, 0.0F);
 	}
 	
 	/**

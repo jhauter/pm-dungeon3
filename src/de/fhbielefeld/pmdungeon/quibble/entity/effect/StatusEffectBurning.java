@@ -44,8 +44,8 @@ public class StatusEffectBurning extends StatusEffect implements DamageSource
 		GameSetup.batch.draw(anim.getKeyFrame(getStateTime(), true),
 			getCreature().getX() + getCreature().getRenderOffsetX() - getCreature().getRenderWidth() * 0.5F,
 			getCreature().getY() + getCreature().getRenderOffsetY() - getCreature().getRenderHeight() * 0.5F,
-			getCreature().getRenderPivotX(),
-			getCreature().getRenderPivotY(),
+			getCreature().getRenderPivotX() * getCreature().getRenderWidth(),
+			getCreature().getRenderPivotY() * getCreature().getRenderHeight(),
 			getCreature().getRenderWidth(),
 			getCreature().getRenderHeight(),
 			getCreature().getScaleX(),
@@ -60,7 +60,9 @@ public class StatusEffectBurning extends StatusEffect implements DamageSource
 		
 		//every 50 Ticks a creature will get damage
 		if(getCreature().getTicks() % 60 == 0)
-			this.getCreature().damage(this, DamageType.MAGICAL, this.getCause(), true);
+		{
+			this.getCreature().damage(this, DamageType.MAGICAL, this.getCause(), true, false);
+		}
 	}
 	
 	@Override

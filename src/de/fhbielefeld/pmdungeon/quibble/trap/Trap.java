@@ -2,86 +2,68 @@ package de.fhbielefeld.pmdungeon.quibble.trap;
 
 import de.fhbielefeld.pmdungeon.quibble.entity.BoundingBox;
 import de.fhbielefeld.pmdungeon.quibble.entity.Entity;
+import de.fhbielefeld.pmdungeon.quibble.entity.Player;
 
 public abstract class Trap extends Entity
 {
-	
 	public final static String TRAP_TEXTURE_PATH = "assets/textures/traps/";
 	
-	protected boolean noActivationLimit;
+	private boolean shouldDespawn;
 	
-	protected boolean depleted;
+	private boolean visible;
 	
-	protected boolean visible;
+	private int ticksVisibleRemaining;
 	
-	private double ticksTillInvisible;
+	private int activationLimit = 0;//0 => unlimited activations
 	
-	protected int activationLimit;
+	private int activationCount;
 	
-	protected int coolDown;
+	private int coolDown;
 	
-	/**
-	 * Creates a trap on a certain position
-	 * 
-	 * @param x               the x value of the current level
-	 * @param y               the y value of the current level
-	 * @param texture         the displayed texture for the trap
-	 * @param activationLimit true if a trap doesn't has a ActivationLimit
-	 */
-	public Trap(float x, float y, boolean noActivationLimit)
+	public Trap(float x, float y)
 	{
 		super(x, y);
-		this.noActivationLimit = noActivationLimit;
-	}
-	
-	/**
-	 * Creates a trap on a certain position
-	 * 
-	 * @param x               the x value of the current level
-	 * @param y               the y value of the current level
-	 * @param texture         the displayed texture for the trap
-	 * @param activationLimit will set a Number how often this Trap will get
-	 *                        activated till its depleted
-	 */
-	public Trap(float x, float y, int activationLimit)
-	{
-		super(x, y);
-		this.activationLimit = activationLimit;
 	}
 	
 	@Override
-	protected void onEntityCollision(Entity otherEntity)
+	protected final void onEntityCollision(Entity otherEntity)
 	{
 		super.onEntityCollision(otherEntity);
-		if(coolDown > 0)
-			return;
-		else if(coolDown <= 0)
+		if(otherEntity instanceof Player && coolDown <= 0)
 		{
-			isActiv(otherEntity);
+			onPlayerStepOnTrap((Player)otherEntity);
+			this.coolDown = this.getCoolDownTicks();
+			if(this.revealWhenSteppedOn())
+			{
+				this.visible = true;
+			}
+			++this.activationCount;
 		}
 	}
 	
 	/**
-	 * If the Trap is active
-	 * 
-	 * @param e The Entity which will be effect
+	 * Called when a player steps on the trap.
+	 * @param p the player that activated the trap
 	 */
-	public abstract void isActiv(Entity e);
+	public abstract void onPlayerStepOnTrap(Player p);
 	
 	/**
-	 * Is called if activation limit is reached
-	 * 
-	 * @return
+	 * @return time in ticks until the trap can be activated again
 	 */
-	public boolean depleted()
+	public abstract int getCoolDownTicks();
+	
+	/**
+	 * @return <code>true</code> if the trap should become visible when a player activates it
+	 */
+	public boolean revealWhenSteppedOn()
 	{
-		return depleted;
+		return true;
 	}
 	
 	/**
-	 * Set the Number of activations
-	 * 
-	 * @param i limit of Activation
+	 * Sets how many times the trap can be activated until it despawns.
+	 * <code>0</code> means the trap can be activated infinitely.
+	 * @param i the number of remaining activations or <code>0</code> for unlimited activations
 	 */
 	public void setActivationLimit(int i)
 	{
@@ -91,13 +73,13 @@ public abstract class Trap extends Entity
 	@Override
 	public boolean isInvisible()
 	{
-		return (!(visible));
+		return !visible;
 	}
 	
 	@Override
 	public boolean shouldDespawn()
 	{
-		return depleted;
+		return shouldDespawn;
 	}
 	
 	@Override
@@ -105,15 +87,19 @@ public abstract class Trap extends Entity
 	{
 		super.updateLogic();
 		if(coolDown > 0)
-			coolDown--;
-		
-		if(activationLimit < 0 && (!(noActivationLimit)))
-			depleted = true;
-		
-		if(ticksTillInvisible > 0)
 		{
-			ticksTillInvisible--;
-			if(ticksTillInvisible == 0)
+			coolDown--;
+		}
+		
+		if(this.activationLimit > 0 && this.activationCount >= this.activationLimit)
+		{
+			shouldDespawn = true;
+		}
+		
+		if(ticksVisibleRemaining > 0)
+		{
+			ticksVisibleRemaining--;
+			if(ticksVisibleRemaining == 0)
 			{
 				visible = false;
 			}
@@ -121,8 +107,7 @@ public abstract class Trap extends Entity
 	}
 	
 	/**
-	 * 
-	 * @param b           true for visible traps
+	 * @param b whether the trap should be visible
 	 */
 	public void setVisible(boolean b)
 	{
@@ -130,14 +115,13 @@ public abstract class Trap extends Entity
 	}
 	
 	/**
-	 * 
-	 * @param b           true for visible traps
-	 * @param timeOfSight Time until the trap becomes invisible again
+	 * Makes the trap visible for a set number of ticks.
+	 * @param visibleTicks number of ticks until the trap vanishes again
 	 */
-	public void setVisible(boolean b, double timeOfSight)
+	public void setVisible(int visibleTicks)
 	{
-		this.visible = b;
-		this.ticksTillInvisible = timeOfSight;
+		this.visible = true;
+		this.ticksVisibleRemaining = visibleTicks;
 	}
 	
 	@Override

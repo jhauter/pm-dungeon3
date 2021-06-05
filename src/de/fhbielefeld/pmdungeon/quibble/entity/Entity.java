@@ -10,17 +10,16 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
 import de.fhbielefeld.pmdungeon.quibble.DungeonLevel;
+import de.fhbielefeld.pmdungeon.quibble.DungeonStart;
 import de.fhbielefeld.pmdungeon.quibble.SpatialHashGrid;
 import de.fhbielefeld.pmdungeon.quibble.animation.AnimationHandler;
 import de.fhbielefeld.pmdungeon.quibble.animation.AnimationHandlerImpl;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEventHandler;
-import de.fhbielefeld.pmdungeon.quibble.particle.ParticleSource;
 import de.fhbielefeld.pmdungeon.quibble.util.GeometryUtil;
-import de.fhbielefeld.pmdungeon.vorgaben.game.GameSetup;
 import de.fhbielefeld.pmdungeon.vorgaben.tools.Point;
 
-public abstract class Entity implements ParticleSource
+public abstract class Entity
 {
 	/**
 	 * Event ID for entity spawn events.
@@ -81,13 +80,13 @@ public abstract class Entity implements ParticleSource
 	
 	/**
 	 * Rotation pivot relative to renderWidth.
-	 * <code>renderWidth * 0.5</code> means rotation around the center
+	 * <code>0.5</code> means rotation around the center
 	 */
 	protected float renderPivotX = 0.5F;
 	
 	/**
 	 * Rotation pivot relative to renderHeight.
-	 * <code>renderHeight * 0.5</code> means rotation around the center
+	 * <code>0.5</code> means rotation around the center
 	 */
 	protected float renderPivotY = 0.5F;
 	
@@ -148,6 +147,27 @@ public abstract class Entity implements ParticleSource
 	public Entity()
 	{
 		this(0.0F, 0.0F);
+	}
+	
+	/**
+	 * Returns the display name of the entity which may be shown at some points in the game,
+	 * including being shown above creatures. This method may get removed in the future and be
+	 * replaced by a name field in an entity register.
+	 * @return display name of the entity
+	 */
+	public String getDisplayName()
+	{
+		return this.getClass().getSimpleName();
+	}
+	
+	public boolean isDisplayNameVisible()
+	{
+		return false;
+	}
+	
+	public String getDisplayNamePrefix()
+	{
+		return "";
 	}
 	
 	/**
@@ -375,16 +395,20 @@ public abstract class Entity implements ParticleSource
 	{
 		TextureRegion t = this.getActiveAnimation().getKeyFrame(this.animationHandler.getCurrentAnimationState(), true);
 		
-		GameSetup.batch.draw(t,
+		DungeonStart.getGameBatch().setColor(1.0F, 1.0F, 1.0F, this.getTransparency());
+		
+		DungeonStart.getGameBatch().draw(t,
 			this.getX() + this.getRenderOffsetX() - this.getRenderWidth() * 0.5F,
 			this.getY() + this.getRenderOffsetY() - this.getRenderHeight() * 0.5F,
-			this.getRenderPivotX(),
-			this.getRenderPivotY(),
+			this.getRenderPivotX() * this.getRenderWidth(),
+			this.getRenderPivotY() * this.getRenderHeight(),
 			this.getRenderWidth(),
 			this.getRenderHeight(),
 			this.getScaleX(),
 			this.getScaleY(),
 			this.getRotation());
+		
+		DungeonStart.getGameBatch().setColor(1.0F, 1.0F, 1.0F, 1.0F);
 	}
 	
 	/**
@@ -719,7 +743,7 @@ public abstract class Entity implements ParticleSource
 	
 	/**
 	 * Rotation pivot relative to renderWidth.
-	 * <code>renderWidth * 0.5</code> means rotation around the center
+	 * <code>0.5</code> means rotation around the center
 	 */
 	public float getRenderPivotX()
 	{
@@ -728,7 +752,7 @@ public abstract class Entity implements ParticleSource
 	
 	/**
 	 * Rotation pivot relative to renderHeight.
-	 * <code>renderHeight * 0.5</code> means rotation around the center
+	 * <code>0.5</code> means rotation around the center
 	 */
 	public float getRenderPivotY()
 	{
@@ -742,5 +766,10 @@ public abstract class Entity implements ParticleSource
 	public float getRotation()
 	{
 		return this.renderRotation;
+	}
+	
+	public float getTransparency()
+	{
+		return 1.0F;
 	}
 }
