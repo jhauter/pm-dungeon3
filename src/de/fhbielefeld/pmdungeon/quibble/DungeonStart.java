@@ -38,7 +38,7 @@ import de.fhbielefeld.pmdungeon.quibble.entity.event.PlayerQuestsChangedEvent;
 import de.fhbielefeld.pmdungeon.quibble.file.DungeonResource;
 import de.fhbielefeld.pmdungeon.quibble.file.ResourceHandler;
 import de.fhbielefeld.pmdungeon.quibble.file.ResourceType;
-import de.fhbielefeld.pmdungeon.quibble.input.GameInput;
+import de.fhbielefeld.pmdungeon.quibble.input.DungeonInputHandler;
 import de.fhbielefeld.pmdungeon.quibble.item.Item;
 import de.fhbielefeld.pmdungeon.quibble.particle.DrawingUtil;
 import de.fhbielefeld.pmdungeon.quibble.quest.QuestDummy;
@@ -112,7 +112,7 @@ public class DungeonStart extends MainController implements EntityEventHandler
 	
 	private Entity cameraTarget;
 	
-	private GameInput gameInputProcessor;
+	private DungeonInputHandler gameInputProcessor;
 	private InputMultiplexer inputMultiplexer;
 	
 	//Prevents you from using entityController >:D -- use currentLevel instead!
@@ -158,7 +158,7 @@ public class DungeonStart extends MainController implements EntityEventHandler
 		this.uiManager.addUI(this.uiLayerChestView);
 		this.uiManager.addUI(this.uiLayerQuestView);
 		
-		this.gameInputProcessor = new GameInput();
+		this.gameInputProcessor = new DungeonInputHandler();
 		this.inputMultiplexer = new InputMultiplexer(this.uiManager.getInputProcessors());
 		this.inputMultiplexer.addProcessor(this.gameInputProcessor);
 		
