@@ -81,7 +81,7 @@ public class QuestKillMonster extends QuestItemReward
 	}
 	
 	@Override
-	public String getIconPath()
+	public String getIconFile()
 	{
 		return "red_flag";
 	}

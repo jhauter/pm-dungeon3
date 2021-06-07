@@ -72,7 +72,7 @@ public class QuestLevelUp extends QuestItemReward
 	}
 	
 	@Override
-	public String getIconPath()
+	public String getIconFile()
 	{
 		return "yellow_flag";
 	}

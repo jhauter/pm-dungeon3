@@ -37,7 +37,7 @@ public class DungeonInputHandler implements InputProcessor
 	
 	public void setupEventMap()
 	{
-		//============ ENTER NEW INPUT HERE ============
+		//Here all input event names are mapped to input strategies
 		
 		this.mapEventToStrategy("up", new InputStrategyPlayerController(0.0F, 1.0F));
 		this.mapEventToStrategy("down", new InputStrategyPlayerController(0.0F, -1.0F));

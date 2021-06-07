@@ -102,7 +102,10 @@ public abstract class Quest implements EntityEventHandler
 		return this.rewardExp;
 	}
 	
-	public String getIconPath()
+	/**
+	 * @return the name of the icon file in the "assets/textures/quest/" folder without the ".png" extension
+	 */
+	public String getIconFile()
 	{
 		//default icon; can be overridden
 		return "gray_flag";

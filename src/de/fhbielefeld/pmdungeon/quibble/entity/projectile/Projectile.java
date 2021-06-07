@@ -103,7 +103,7 @@ public abstract class Projectile extends Entity
 	
 	/**
 	 * 
-	 * @return if its depleted it will be deleted
+	 * @return if it's depleted it will be deleted
 	 */
 	public boolean isDepleted()
 	{

@@ -123,6 +123,11 @@ public abstract class Item
 		return new CreatureStats();
 	}
 	
+	/**
+	 * These stats will be used to damage an entity when hit with this item if this item is a weapon.
+	 * Projectiles will also get the stats that this method returns.
+	 * @return attack stats of this item
+	 */
 	public CreatureStats getAttackStats()
 	{
 		return new CreatureStats();
@@ -136,16 +141,33 @@ public abstract class Item
 		return this.displayName;
 	}
 	
+	/**
+	 * @return the complete relative file path to the texture of this item
+	 */
 	public String getTextureFile()
 	{
 		return this.textureFile;
 	}
 	
+	/**
+	 * This method loads an animation if one should be used.
+	 * If this method returns <code>null</code> then no animation is used.
+	 * The animation is used when an item is used and rendered in the world.
+	 * In order to load an animation, override this method.
+	 * @return the animation to use when the item is shown in the level
+	 */
 	public Animation<TextureRegion> loadAnimation()
 	{
 		return null;
 	}
 	
+	/**
+	 * This method returns the animation that is played on the item when
+	 * a creature uses it and it is rendered in the world.
+	 * If this returns <code>null</code> then no animation is used and the normal
+	 * item icon is shown instead.
+	 * @return the animation that is played when the item is shown in the level
+	 */
 	public final Animation<TextureRegion> getAnimation()
 	{
 		return this.animWhenUsing;
@@ -214,6 +236,10 @@ public abstract class Item
 		return holdOffsetY;
 	}
 	
+	/**
+	 * @return whether this item will be rendered with negative scale values if the creature using it
+	 * is rendered with negative scale values (ex: looking to the left)
+	 */
 	public boolean getRenderAllowNegativeEntityScale()
 	{
 		return this.renderAllowNegativeEntityScale;

@@ -44,12 +44,11 @@ public class ParticleFightText extends Particle
 	 * @param numberIndex if <code>type</code> is <code>NUMBER</code> this selects the number to show
 	 * @param spawnX the x coordinate to spawn on
 	 * @param spawnY the y coordinate to spawn on
-	 * @param particleSource optional particle source that defines an object
 	 * with which this particle keep a constant offset with 
 	 */
-	public ParticleFightText(Type type, int numberIndex, float spawnX, float spawnY, ParticleSource particleSource)
+	public ParticleFightText(Type type, int numberIndex, float spawnX, float spawnY)
 	{
-		super(spawnX, spawnY, particleSource);
+		super(spawnX, spawnY);
 		this.type = type;
 		this.numberIndex = numberIndex;
 	}
@@ -58,12 +57,10 @@ public class ParticleFightText extends Particle
 	 * @param type determines the text that should be displayed
 	 * @param spawnX the x coordinate to spawn on
 	 * @param spawnY the y coordinate to spawn on
-	 * @param particleSource optional particle source that defines an object
-	 * with which this particle keep a constant offset with 
 	 */
-	public ParticleFightText(Type type, float spawnX, float spawnY, ParticleSource particleSource)
+	public ParticleFightText(Type type, float spawnX, float spawnY)
 	{
-		this(type, -1, spawnX, spawnY, particleSource);
+		this(type, -1, spawnX, spawnY);
 	}
 	
 	/**

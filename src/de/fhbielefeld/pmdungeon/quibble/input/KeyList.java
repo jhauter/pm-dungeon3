@@ -27,7 +27,6 @@ import com.badlogic.gdx.Input.Keys;
  */
 public class KeyList
 {
-	
 	private ArrayList<Key> keyList;
 	
 	public KeyList()
@@ -44,6 +43,12 @@ public class KeyList
 		this.keyList.add(close());
 		this.keyList.add(acceptQuest());
 		this.keyList.add(declineQuest());
+		
+		//===============================
+		//If you want to add a new input, then
+		//you have to add a "Key" object to this list.
+		//Then you have to map the event name to the input strategy like in DungeonInputHandler
+		//===============================
 	}
 	
 	/**

@@ -82,15 +82,20 @@ public class DungeonStart extends MainController implements EntityEventHandler
 	public static Matrix4 orthoProjMatrix = new Matrix4();
 	private static GlyphLayout glyphLayout = new GlyphLayout();
 	
-	private Player myHero;
-	
 	/**
-	 * Use this level to spawn entities instead of <code>this.entityController</code>!!
-	 * This <code>Level</code> object makes it easier to let entities spawn other entities by themselves.
+	 * Do not use the <code>this.entityController</code> as it will not work correctly with our system
+	 * <code>Entity</code> does not implement <code>IEntity</code> anymore!!
 	 */
 	private DungeonLevel currentLevel;
+	private Player myHero;
+	private Entity cameraTarget;
 	
 	private long lastFrameTimeStamp;
+	
+	private DungeonInputHandler gameInputProcessor;
+	private InputMultiplexer inputMultiplexer;
+	
+	private UIManager uiManager;
 	
 	private UILayerPlayerHUD uiLayerHUD;
 	private UILayerInventoryView uiLayerPlayerEquipment;
@@ -103,21 +108,15 @@ public class DungeonStart extends MainController implements EntityEventHandler
 	private ShapeRenderer debugRenderer;
 	
 	private boolean drawBoundingBoxes = false;
+	//Draws spatial hash grid cells of the level
 	private boolean drawSHGCells = false;
 	private boolean drawSHGCNearby = false;
 	
 	/**************************************/
 	
-	private UIManager uiManager;
-	
-	private Entity cameraTarget;
-	
-	private DungeonInputHandler gameInputProcessor;
-	private InputMultiplexer inputMultiplexer;
-	
-	//Prevents you from using entityController >:D -- use currentLevel instead!
+	//Prevents you (almost) from using entityController >:D -- use currentLevel instead!
 	@SuppressWarnings("unused")
-	private Object entityController;
+	private final Object entityController = null;
 	
 	private DungeonStart() //Private constructor because singleton
 	{
