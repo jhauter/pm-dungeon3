@@ -160,11 +160,18 @@ public abstract class Entity
 		return this.getClass().getSimpleName();
 	}
 	
+	/**
+	 * If this returns <code>false</code> then the display name will not be shown above the entity
+	 * @return whether the display name should be shown above the entity
+	 */
 	public boolean isDisplayNameVisible()
 	{
 		return false;
 	}
 	
+	/**
+	 * @return a string that will be put before the display name that is shown above the entity
+	 */
 	public String getDisplayNamePrefix()
 	{
 		return "";
@@ -572,7 +579,9 @@ public abstract class Entity
 	}
 	
 	/**
-	 * Whether this entity should not be rendered.
+	 * Whether this entity should not be rendered including display name.
+	 * This is also intended to control if the entity can get focused by other entities.
+	 * An entity should not be able to "see" another entity the other entity is invisible.
 	 * @return true if invisible
 	 */
 	public boolean isInvisible()
@@ -635,8 +644,8 @@ public abstract class Entity
 	
 	/**
 	 * Checks whether there is a straight line between this entity and the specified point that
-	 * is not blocked by an inaccessible tile like a wall, i. e. whether
-	 * this entity can "see" the specified point.
+	 * is not blocked by an inaccessible tile like a wall (whether
+	 * this entity can "see" the specified point).
 	 * @param p the point at which the line of sight will end
 	 * @return whether there is a line of sight between this entity and the specified point
 	 */
@@ -667,7 +676,7 @@ public abstract class Entity
 	}
 	
 	/**
-	 * Handle used for spatial hash grid collision testing.
+	 * Handle used for spatial hash grid collision detection.
 	 * @return spatial hash grid handle
 	 */
 	public final SpatialHashGrid.Handle<Entity> getSpatialHashGridHandle()
@@ -768,6 +777,12 @@ public abstract class Entity
 		return this.renderRotation;
 	}
 	
+	/**
+	 * Returns how transparent the entity should be rendered.
+	 * <code>1.0</code> means the entity is fully visible.
+	 * <code>0.0</code> means the entity is invisible.
+	 * @return
+	 */
 	public float getTransparency()
 	{
 		return 1.0F;

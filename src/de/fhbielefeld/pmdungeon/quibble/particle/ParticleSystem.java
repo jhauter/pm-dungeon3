@@ -64,7 +64,7 @@ public class ParticleSystem
 	 */
 	public void draw(float camX, float camY)
 	{
-		float x, y, width, height, rot, srcOffsetX, srcOffsetY;
+		float x, y, width, height, rot;
 		DungeonResource<Texture> particleTexture;
 		
 		DungeonStart.getGameBatch().begin();
@@ -77,18 +77,8 @@ public class ParticleSystem
 				continue;
 			}
 			final TextureRegion reg = new TextureRegion(particleTexture.getResource());
-			if(p.getParticleSource() != null)
-			{
-				srcOffsetX = (p.getParticleSource().getX() + p.getSourceDiffX()) - p.getSpawnX();
-				srcOffsetY = (p.getParticleSource().getY() + p.getSourceDiffY()) - p.getSpawnY();
-			}
-			else
-			{
-				srcOffsetX = 0.0F;
-				srcOffsetY = 0.0F;
-			}
-			x = p.particleMovement.getOffsetX(p.timeExisted) + p.getSpawnX() + srcOffsetX;
-			y = p.particleMovement.getOffsetY(p.timeExisted) + p.getSpawnY() + srcOffsetY;
+			x = p.particleMovement.getOffsetX(p.timeExisted) + p.getSpawnX();
+			y = p.particleMovement.getOffsetY(p.timeExisted) + p.getSpawnY();
 			width = p.getWidth();
 			height = p.getHeight();
 			rot = p.particleMovement.getRotation(p.timeExisted);

@@ -23,32 +23,14 @@ public abstract class Particle
 	
 	protected ParticleMovement particleMovement;
 	
-	private ParticleSource particleSource;
-	
-	private final float diffSourceX;
-	private final float diffSourceY;
-	
 	/**
 	 * @param spawnX the x coordinate to appear on
 	 * @param spawnY the y coordinate to appear on
-	 * @param particleSource optional particle source that defines an object
-	 * with which this particle keep a constant offset with
 	 */
-	public Particle(float spawnX, float spawnY, ParticleSource particleSource)
+	public Particle(float spawnX, float spawnY)
 	{
 		this.spawnX = spawnX;
 		this.spawnY = spawnY;
-		this.particleSource = particleSource;
-		if(this.particleSource != null)
-		{
-			this.diffSourceX = this.spawnX - this.particleSource.getX();
-			this.diffSourceY = this.spawnY - this.particleSource.getY();
-		}
-		else
-		{
-			this.diffSourceX = 0.0F;
-			this.diffSourceY = 0.0F;
-		}
 	}
 	
 	/**
@@ -74,31 +56,6 @@ public abstract class Particle
 	public final float getSpawnY()
 	{
 		return this.spawnY;
-	}
-	
-	/**
-	 * @return particle source that defines an object
-	 * with which this particle keep a constant offset with (can be null)
-	 */
-	public ParticleSource getParticleSource()
-	{
-		return this.particleSource;
-	}
-	
-	/**
-	 * @return the particle's x offset to the particle source when the particle spawned
-	 */
-	public float getSourceDiffX()
-	{
-		return this.diffSourceX;
-	}
-	
-	/**
-	 * @return the particle's y offset to the particle source when the particle spawned
-	 */
-	public float getSourceDiffY()
-	{
-		return this.diffSourceY;
 	}
 	
 	/**

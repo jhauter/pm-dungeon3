@@ -26,7 +26,7 @@ public class QuestDummy extends Entity
 		super(x, y);
 		this.quest = quest;
 		this.animationHandler.addAsDefaultAnimation("", 1, 999, 1, 1,
-			Quest.QUEST_TEXTURE_PATH + quest.getIconPath() + ".png");
+			Quest.QUEST_TEXTURE_PATH + quest.getIconFile() + ".png");
 	}
 	
 	/**

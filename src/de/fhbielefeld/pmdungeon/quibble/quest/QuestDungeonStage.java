@@ -48,7 +48,7 @@ public class QuestDungeonStage extends QuestItemReward
 	}
 	
 	@Override
-	public String getIconPath()
+	public String getIconFile()
 	{
 		return "blue_flag";
 	}

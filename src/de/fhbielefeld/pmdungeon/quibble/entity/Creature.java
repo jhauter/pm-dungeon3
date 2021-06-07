@@ -726,7 +726,7 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		
 		if(this.level.getRNG().nextFloat() <= damageSource.getCurrentStats().getStat(CreatureStatsAttribs.MISS_CHANCE))
 		{
-			this.level.getParticleSystem().addParticle(new ParticleFightText(Type.MISS, this.getX(), this.getY() + 0.5F, null),
+			this.level.getParticleSystem().addParticle(new ParticleFightText(Type.MISS, this.getX(), this.getY() + 0.5F),
 				new Splash());
 			return;
 		}
@@ -813,7 +813,7 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 		for(int i = 0; i < dmgStr.length(); ++i)
 		{
 			this.level.getParticleSystem().addParticle(
-				new ParticleFightText(Type.NUMBER, dmgStr.charAt(i) - '0', this.getX() + i * 0.3F, this.getY() + 0.5F, null),
+				new ParticleFightText(Type.NUMBER, dmgStr.charAt(i) - '0', this.getX() + i * 0.3F, this.getY() + 0.5F),
 				new Levitate());
 		}
 	}
@@ -974,6 +974,8 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	/**
 	 * Returns the point at which the item should be rendered if this creature uses an item.
 	 * The point is relative to the render position of the entity (the center).
+	 * This point determines the hold offset if the creature is looking to the right.
+	 * If this creature looks to the left then this point is mirrored by the y-axis.
 	 * @return the point at which the item should be rendered
 	 */
 	public Vector2 getItemHoldOffset()

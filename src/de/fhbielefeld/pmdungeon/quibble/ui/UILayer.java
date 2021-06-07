@@ -34,6 +34,9 @@ public class UILayer
 		this.stage.addListener(new UIManagerHandler());
 	}
 	
+	/**
+	 * Rendering/update method
+	 */
 	public void draw()
 	{
 		this.stage.act();
@@ -44,16 +47,28 @@ public class UILayer
 		}
 	}
 	
+	/**
+	 * Should be called when the UILayer is removed and not used anymore.
+	 */
 	public final void dispose()
 	{
 		this.stage.dispose();
 	}
 	
+	/**
+	 * @return the LibGDX stage
+	 */
 	public final Stage getStage()
 	{
 		return this.stage;
 	}
 	
+	/**
+	 * Sets how far in the foreground this UILayer should be drawn.
+	 * This must be done before adding the UILayer to the UIManager.
+	 * Otherwise UIManager.zOrderChanged() must be called afterwards.
+	 * @param zIndex new z index
+	 */
 	public void setZIndex(int zIndex)
 	{
 		this.zIndex = zIndex;
@@ -69,6 +84,14 @@ public class UILayer
 		return this.uiManager;
 	}
 	
+	/**
+	 * Like PM dungeon lib's addText(). This method automatically adds the text on the screen.
+	 * @param text the text as string
+	 * @param font what font to use
+	 * @param x x-position on the screen
+	 * @param y y-position on the screen
+	 * @return the new Label
+	 */
 	public final Label addText(String text, UIFonts font, float x, float y)
 	{
 		LabelStyle style = new LabelStyle();
@@ -84,6 +107,15 @@ public class UILayer
 		textLabel.remove();
 	}
 	
+	/**
+	 * Adds an image to the screen. If the file cannot be loaded then an error is logged and this method returns null.
+	 * @param path file path to the image
+	 * @param x x-position of the image
+	 * @param y y-position of the image
+	 * @param width width of the image
+	 * @param height height of the image
+	 * @return the added image handle
+	 */
 	public final Image addImage(String path, float x, float y, float width, float height)
 	{
 		DungeonResource<Texture> res = ResourceHandler.requestResourceInstantly(path, ResourceType.TEXTURE);
@@ -97,6 +129,15 @@ public class UILayer
 		return img;
 	}
 	
+	/**
+	 * Adds an image to the screen.
+	 * @param texture the texture to show
+	 * @param x x-position of the image
+	 * @param y y-position of the image
+	 * @param width width of the image
+	 * @param height height of the image
+	 * @return the added image handle
+	 */
 	public final Image addImage(TextureRegion texture, float x, float y, float width, float height)
 	{
 		Image img = new Image(texture);
@@ -110,6 +151,10 @@ public class UILayer
 		image.remove();
 	}
 	
+	/**
+	 * Adds a custom UI element to the screen.
+	 * @param element the element to add
+	 */
 	public final void addUIElement(UIElement element)
 	{
 		if(this.uiElements.contains(element))

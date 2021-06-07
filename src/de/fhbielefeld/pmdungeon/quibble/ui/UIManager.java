@@ -41,6 +41,15 @@ public class UIManager
 		}
 	}
 	
+	/**
+	 * Adds an <code>UILayer</code> to the UI.
+	 * UILayers are layers on the screen that contain UI elements, like text...
+	 * For example, the health and level HUD is on a UILayer.
+	 * Each inventory that is open is on a different UILayer.
+	 * Override <code>UILayer</code>, add stuff to it and add it here afterwards to show it on the screen!
+	 * Take a look at existing UILayers for more examples.
+	 * @param ui the UILayer to add
+	 */
 	public void addUI(UILayer ui)
 	{
 		if(this.uiList.contains(ui))
