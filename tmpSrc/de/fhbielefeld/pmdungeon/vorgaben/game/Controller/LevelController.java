@@ -42,7 +42,7 @@ public class LevelController {
     /**
      * the next level
      */
-    private Stage nextStage = Stage.A;
+    private Stage nextStage = Stage.D;
 
 
     /**

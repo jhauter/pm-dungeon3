@@ -1,9 +1,11 @@
 package de.fhbielefeld.pmdungeon.quibble;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
 import java.util.logging.Level;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -40,6 +42,7 @@ import de.fhbielefeld.pmdungeon.quibble.file.ResourceHandler;
 import de.fhbielefeld.pmdungeon.quibble.file.ResourceType;
 import de.fhbielefeld.pmdungeon.quibble.input.DungeonInputHandler;
 import de.fhbielefeld.pmdungeon.quibble.item.Item;
+import de.fhbielefeld.pmdungeon.quibble.level.DungeonStageLoader;
 import de.fhbielefeld.pmdungeon.quibble.particle.DrawingUtil;
 import de.fhbielefeld.pmdungeon.quibble.quest.QuestDummy;
 import de.fhbielefeld.pmdungeon.quibble.quest.QuestFactory;
@@ -51,6 +54,7 @@ import de.fhbielefeld.pmdungeon.quibble.ui.UILayerPlayerHUD;
 import de.fhbielefeld.pmdungeon.quibble.ui.UILayerQuestView;
 import de.fhbielefeld.pmdungeon.quibble.ui.UIManager;
 import de.fhbielefeld.pmdungeon.vorgaben.dungeonCreator.dungeonconverter.Coordinate;
+import de.fhbielefeld.pmdungeon.vorgaben.dungeonCreator.dungeonconverter.DungeonConverter;
 import de.fhbielefeld.pmdungeon.vorgaben.game.GameSetup;
 import de.fhbielefeld.pmdungeon.vorgaben.game.Controller.MainController;
 import de.fhbielefeld.pmdungeon.vorgaben.tools.DungeonCamera;
@@ -87,6 +91,9 @@ public class DungeonStart extends MainController implements EntityEventHandler
 	 * <code>Entity</code> does not implement <code>IEntity</code> anymore!!
 	 */
 	private DungeonLevel currentLevel;
+
+	private DungeonStageLoader stageLoader;
+
 	private Player myHero;
 	private Entity cameraTarget;
 	
@@ -102,6 +109,8 @@ public class DungeonStart extends MainController implements EntityEventHandler
 	private UILayerInventoryView uiLayerPlayerInventory;
 	private UILayerInventoryView uiLayerChestView;
 	private UILayerQuestView uiLayerQuestView;
+
+	private DungeonConverter converter;
 	
 	/**************DEBUG UTILS*************/
 	
@@ -133,7 +142,8 @@ public class DungeonStart extends MainController implements EntityEventHandler
 	protected void setup()
 	{
 		super.setup();
-		
+		converter = new DungeonConverter();
+		stageLoader = new DungeonStageLoader(this.levelController);
 		this.uiManager = new UIManager();
 		
 		this.uiLayerHUD = new UILayerPlayerHUD();
@@ -185,6 +195,7 @@ public class DungeonStart extends MainController implements EntityEventHandler
 	public void onLevelLoad()
 	{
 		super.onLevelLoad();
+		this.myHero.onNextLevelEntered();
 		//Clear entities from previous level
 		if(this.currentLevel != null) //For the first level its null
 		{
@@ -240,7 +251,8 @@ public class DungeonStart extends MainController implements EntityEventHandler
 		//Set the camera to follow the hero
 		this.cameraTarget = this.myHero;
 		LoggingHandler.logger.log(Level.INFO, "New level loaded.");
-		
+
+
 	}
 	
 	@Override
@@ -253,13 +265,20 @@ public class DungeonStart extends MainController implements EntityEventHandler
 		this.gameInputProcessor.update();
 		
 		this.currentLevel.update();
-		
+
+		//NOTE: Zum Testen
+		if(Gdx.input.isKeyPressed(Input.Keys.F12)) {
+			stageLoader.loadNextStage();
+			LoggingHandler.logger.log(Level.INFO, "Player entered new level.");
+
+		}
+
 		//Check the triggeredNextLevel flag of the player
 		if(this.myHero.triggeredNextLevel())
 		{
-			this.levelController.triggerNextStage();
-			this.myHero.onNextLevelEntered();
-			
+		    stageLoader.loadNextStage();
+			//this.myHero.onNextLevelEntered();
+
 			LoggingHandler.logger.log(Level.INFO, "Player entered new level.");
 		}
 		this.currentLevel.getParticleSystem().update((System.currentTimeMillis() - this.lastFrameTimeStamp) / 1000.0F);
