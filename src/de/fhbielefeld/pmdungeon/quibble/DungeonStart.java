@@ -281,6 +281,8 @@ public class DungeonStart extends MainController implements EntityEventHandler
 		
 		this.currentLevel.getParticleSystem().draw(this.camera.position.x, this.camera.position.y);
 		
+		this.currentLevel.getFogOfWarController().render();
+		
 		this.doDebugDrawing();
 		
 		this.uiManager.draw(); //Draw UI last
