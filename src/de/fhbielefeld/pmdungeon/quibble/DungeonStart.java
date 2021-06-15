@@ -111,6 +111,9 @@ public class DungeonStart extends MainController implements EntityEventHandler
 	//Draws spatial hash grid cells of the level
 	private boolean drawSHGCells = false;
 	private boolean drawSHGCNearby = false;
+
+	//Draws the quad trees of the fog of war controller
+	private boolean drawFoWQuadTrees = false;
 	
 	/**************************************/
 	
@@ -395,6 +398,8 @@ public class DungeonStart extends MainController implements EntityEventHandler
 		}
 		
 		this.debugRenderer.end();
+		
+		this.currentLevel.getFogOfWarController().renderDebug(debugRenderer);
 	}
 	
 	private void drawBoundingBox(BoundingBox bb)
@@ -501,5 +506,25 @@ public class DungeonStart extends MainController implements EntityEventHandler
 	public Player getPlayer()
 	{
 		return this.myHero;
+	}
+
+	public boolean getDrawBoundingBoxes()
+	{
+		return drawBoundingBoxes;
+	}
+
+	public boolean getDrawSHGCells()
+	{
+		return drawSHGCells;
+	}
+
+	public boolean getDrawSHGCNearby()
+	{
+		return drawSHGCNearby;
+	}
+
+	public boolean getDrawFoWQuadTrees()
+	{
+		return drawFoWQuadTrees;
 	}
 }

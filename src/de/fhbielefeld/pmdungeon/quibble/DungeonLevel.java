@@ -43,7 +43,7 @@ public class DungeonLevel
 		this.newEntityBuffer = new ArrayList<Entity>();
 		this.rng = new Random();
 		this.spatialHashGrid = new SpatialHashGrid<>(shgRow, shgCol, shgWidth, shgHeight);
-		this.fogOfWarController = new FogOfWarController(0.25F, (int)shgWidth, (int)shgHeight);
+		this.fogOfWarController = new FogOfWarController(8, 64, (int)shgWidth, (int)shgHeight, 0.9F);
 		this.fogOfWarController.loadTexture("assets/textures/dungeon/fog.png", 4F, 8, 16, 0.1F);
 	}
 	

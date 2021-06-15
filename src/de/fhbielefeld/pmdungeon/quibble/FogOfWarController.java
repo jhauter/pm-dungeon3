@@ -8,6 +8,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 import de.fhbielefeld.pmdungeon.quibble.file.DungeonResource;
 import de.fhbielefeld.pmdungeon.quibble.file.ResourceHandler;
@@ -20,35 +21,65 @@ public class FogOfWarController
 	private int fogTextureTileFit;
 	private float fogAnimStateTime;
 	
-	private final float[][] fogTiles;
+	private final float fogTileSize;
+	private float defaultFogValue;
 	private final int fogOfWarWidth;
 	private final int fogOfWarHeight;
-	private final float fogTileSize;
+	private final float fogTilesPerSector;
 	
-	public FogOfWarController(float fogTileSize, int levelWidth, int levelHeight)
+	private FogOfWarQuadTree[][] sectors;
+	private final int sectorsX;
+	private final int sectorsY;
+	
+	private List<FogOfWarLightSource> lightSources;
+	
+	public FogOfWarController(int sectorSize, int fogTilesPerSector, int levelWidth, int levelHeight, float defaultFogValue)
 	{
-		if(fogTileSize <= 0.0F)
+		if(fogTilesPerSector <= 0)
 		{
-			throw new IllegalArgumentException("fogTileSize cannot be <= 0");
+			throw new IllegalArgumentException("fogTilesPerSector cannot be <= 0");
+		}
+		if((fogTilesPerSector & (fogTilesPerSector - 1)) != 0)
+		{
+			throw new IllegalArgumentException("fogTilesPerSector must be power of two");
+		}
+		if(sectorSize <= 0)
+		{
+			throw new IllegalArgumentException("sectorSize cannot be <= 0");
 		}
 		if(levelWidth <= 0 || levelHeight <= 0)
 		{
 			throw new IllegalArgumentException("level dimensions cannot be <= 0");
 		}
-		
-		this.fogOfWarWidth = (int)Math.ceil(levelWidth / fogTileSize);
-		this.fogOfWarHeight = (int)Math.ceil(levelHeight / fogTileSize);
-		this.fogTiles = new float[this.fogOfWarWidth][this.fogOfWarHeight];
-		this.fogTileSize = fogTileSize;
-		this.fogAnimTiles = new ArrayList<>();
-		
-		for(int x = 0; x < this.fogOfWarWidth; ++x)
+		if(defaultFogValue < 0.0F || defaultFogValue > 1.0F)
 		{
-			for(int y = 0; y < this.fogOfWarHeight; ++y)
+			throw new IllegalArgumentException("defaultFogValue must be between 0 and 1");
+		}
+		
+		this.sectorsX = (int)Math.ceil(levelWidth / (double)sectorSize);
+		this.sectorsY = (int)Math.ceil(levelHeight / (double)sectorSize);
+		this.fogOfWarWidth = this.sectorsX * fogTilesPerSector;
+		this.fogOfWarHeight= this.sectorsY * fogTilesPerSector;
+		this.defaultFogValue = defaultFogValue;
+		this.fogTileSize = sectorSize / (float)fogTilesPerSector;
+		this.fogTilesPerSector = fogTilesPerSector;
+		this.fogAnimTiles = new ArrayList<>();
+		this.sectors = new FogOfWarQuadTree[this.sectorsX][this.sectorsY];
+		int x, y;
+		for(x = 0; x < this.sectorsX; ++x)
+		{
+			for(y = 0; y < this.sectorsY; ++y)
 			{
-				this.fogTiles[x][y] = 0.85F;
+				this.sectors[x][y] = new FogOfWarQuadTree(
+					x * fogTilesPerSector,
+					y * fogTilesPerSector,
+					x * fogTilesPerSector + fogTilesPerSector,
+					y * fogTilesPerSector + fogTilesPerSector,
+					defaultFogValue);
 			}
 		}
+		
+		this.lightSources = new ArrayList<>();
 	}
 	
 	public void loadTexture(String path, float fogTextureSize, int spriteSheetRows, int spriteSheetCols, float frameDuration)
@@ -92,7 +123,8 @@ public class FogOfWarController
 	
 	public void update()
 	{
-		
+		this.clearFog();
+		this.processLightSources();
 	}
 	
 	public void render()
@@ -116,12 +148,43 @@ public class FogOfWarController
 			{
 				fogIntensity = this.getFogValueAt(x, y);
 				DungeonStart.getGameBatch().setColor(1.0F, 1.0F, 1.0F, fogIntensity);
-				DungeonStart.getGameBatch().draw(this.fogAnimTiles.get(getFogTileIndex(x, y, fogTextureTileFit)).getKeyFrame(fogAnimStateTime, true), x * fogTileSize, y * fogTileSize, fogTileSize, fogTileSize);
+				DungeonStart.getGameBatch().draw(this.fogAnimTiles.get(getFogTileIndex(x, y, fogTextureTileFit)).getKeyFrame(fogAnimStateTime, true),
+					x * fogTileSize, y * fogTileSize, fogTileSize, fogTileSize);
 			}
 		}
-
+		
 		DungeonStart.getGameBatch().setColor(1.0F, 1.0F, 1.0F, 1.0F);
 		DungeonStart.getGameBatch().end();
+	}
+	
+	public void renderDebug(ShapeRenderer renderer)
+	{
+		if(!DungeonStart.getDungeonMain().getDrawFoWQuadTrees())
+		{
+			return;
+		}
+		
+		renderer.begin();
+		
+		final float camX = DungeonStart.getDungeonMain().getCamPosX();
+		final float camY = DungeonStart.getDungeonMain().getCamPosY();
+		
+		int x, y;
+		for(x = 0; x < this.sectorsX; ++x)
+		{
+			for(y = 0; y < this.sectorsY; ++y)
+			{
+				this.sectors[x][y].traversePreorder(n ->
+				{
+					float rx = DrawingUtil.dungeonToScreenXCam(n.getMinX() * this.fogTileSize, camX);
+					float ry = DrawingUtil.dungeonToScreenYCam(n.getMinY() * this.fogTileSize, camY);
+					float rwidth = DrawingUtil.dungeonToScreenX(n.getMaxX() - n.getMinX()) * this.fogTileSize;
+					float rheight = DrawingUtil.dungeonToScreenY(n.getMaxY() - n.getMinY()) * this.fogTileSize;
+					renderer.rect(rx, ry, rwidth, rheight);
+				});
+			}
+		}
+		renderer.end();
 	}
 	
 	public int getFogTileIndex(int fogX, int fogY, int fogTextureTileFit)
@@ -135,16 +198,6 @@ public class FogOfWarController
 			fogY = (fogY % fogTextureTileFit) + fogTextureTileFit;
 		}
 		return fogX % fogTextureTileFit + (fogTextureTileFit - 1 - (fogY % fogTextureTileFit)) * fogTextureTileFit;
-	}
-	
-	public int getFogOfWarWidth()
-	{
-		return this.fogOfWarWidth;
-	}
-	
-	public int getFogOfWarHeight()
-	{
-		return this.fogOfWarHeight;
 	}
 	
 	public float getFogTileSize()
@@ -162,17 +215,99 @@ public class FogOfWarController
 		return (int)(dungeonY / this.fogTileSize);
 	}
 	
+	public int getFogOfWarWidth()
+	{
+		return this.fogOfWarWidth;
+	}
+	
+	public int getFogOfWarHeight()
+	{
+		return this.fogOfWarHeight;
+	}
+	
+	public int getSectorX(int fogX)
+	{
+		return (int)(fogX / this.fogTilesPerSector);
+	}
+	
+	public int getSectorY(int fogY)
+	{
+		return (int)(fogY / this.fogTilesPerSector);
+	}
+	
+	public int getSectorsX()
+	{
+		return this.sectorsX;
+	}
+	
+	public int getSectorsY()
+	{
+		return this.sectorsY;
+	}
+	
 	public float getFogValueAt(int fogX, int fogY)
 	{
-		if(fogX < 0 || fogY < 0)
+		if(fogX < 0 || fogY < 0 || fogX >= this.fogOfWarWidth || fogY >= this.fogOfWarHeight)
 		{
-			return 1.0F;
+			return this.defaultFogValue;
 		}
-		return this.fogTiles[fogX][fogY];
+		return this.sectors[getSectorX(fogX)][getSectorY(fogY)].get(fogX, fogY);
 	}
 	
 	public float getFogValueAt(float dungeonX, float dungeonY)
 	{
-		return this.fogTiles[this.getFogX(dungeonX)][this.getFogY(dungeonY)];
+		return this.getFogValueAt(this.getFogX(dungeonX), this.getFogY(dungeonY));
+	}
+	
+	private void setFogValueAt(int fogX, int fogY, float value)
+	{
+		if(fogX < 0 || fogY < 0 || fogX >= this.fogOfWarWidth || fogY >= this.fogOfWarHeight)
+		{
+			return;
+		}
+		this.sectors[getSectorX(fogX)][getSectorY(fogY)].set(fogX, fogY, value);
+	}
+	
+	public void clearFog()
+	{
+		int x, y;
+		for(x = 0; x < this.sectorsX; ++x)
+		{
+			for(y = 0; y < this.sectorsY; ++y)
+			{
+				this.sectors[x][y].clear(this.defaultFogValue);
+			}
+		}
+	}
+	
+	public void light(float dungeonX, float dungeonY, float intensity)
+	{
+		this.lightSources.add(new FogOfWarLightSource(this.getFogX(dungeonX), this.getFogY(dungeonY), intensity));
+	}
+	
+	private void processLightSources()
+	{
+		for(int i = 0, n = this.lightSources.size(); i < n; ++i)
+		{
+			this.processLightSource(this.lightSources.get(i));
+		}
+		this.lightSources.clear();
+	}
+	
+	private void processLightSource(FogOfWarLightSource src)
+	{
+		for(int x = (int)(src.getX() - 5 / this.fogTileSize); x < src.getX() + 5 / this.fogTileSize; ++x)
+		{
+			for(int y = (int)(src.getY() - 5 / this.fogTileSize); y < src.getY() + 5 / this.fogTileSize; ++y)
+			{
+				int diffX = src.getX() - x;
+				int diffY = src.getY() - y;
+				float f = (float)Math.min((Math.pow(diffX, 2) + Math.pow(diffY, 2)) / (150F / fogTileSize), defaultFogValue);
+				if(f < defaultFogValue)
+				{
+					this.setFogValueAt(x, y, f);
+				}
+			}
+		}
 	}
 }
