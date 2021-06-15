@@ -1,4 +1,4 @@
-package de.fhbielefeld.pmdungeon.quibble;
+package de.fhbielefeld.pmdungeon.quibble.fow;
 
 import static org.junit.Assert.assertEquals;
 

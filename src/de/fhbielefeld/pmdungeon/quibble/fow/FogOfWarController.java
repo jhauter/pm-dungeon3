@@ -1,4 +1,4 @@
-package de.fhbielefeld.pmdungeon.quibble;
+package de.fhbielefeld.pmdungeon.quibble.fow;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +10,8 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
+import de.fhbielefeld.pmdungeon.quibble.DungeonStart;
+import de.fhbielefeld.pmdungeon.quibble.LoggingHandler;
 import de.fhbielefeld.pmdungeon.quibble.file.DungeonResource;
 import de.fhbielefeld.pmdungeon.quibble.file.ResourceHandler;
 import de.fhbielefeld.pmdungeon.quibble.file.ResourceType;

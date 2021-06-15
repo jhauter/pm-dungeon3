@@ -1,10 +1,11 @@
-package de.fhbielefeld.pmdungeon.quibble;
+package de.fhbielefeld.pmdungeon.quibble.fow;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
-import de.fhbielefeld.pmdungeon.quibble.FogOfWarQuadTree.Node;
+import de.fhbielefeld.pmdungeon.quibble.fow.FogOfWarQuadTree.Node;
 
 public class FogOfWarQuadTreeTest
 {

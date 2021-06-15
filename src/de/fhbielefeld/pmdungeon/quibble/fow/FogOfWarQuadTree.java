@@ -1,4 +1,4 @@
-package de.fhbielefeld.pmdungeon.quibble;
+package de.fhbielefeld.pmdungeon.quibble.fow;
 
 import java.util.function.Consumer;
 
