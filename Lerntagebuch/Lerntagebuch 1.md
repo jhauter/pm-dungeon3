@@ -1,4 +1,6 @@
-```
+---
+title: "Meilenstein 1"
+...
 
 
 ## Dynamisches Speichern
@@ -140,4 +142,56 @@ Um die verschiedenen Angriffsmuster und Aktionen des Bosses darzustellen, erstel
 - Adds spawnen
 - Unverwundbarkeit
 - zielsuchende Projektile (folgen dem Spieler)
-```
+
+## Fog of War
+
+### Ansatz und Modellierung
+
+Für das Fog of War-System haben wir uns überlegt, dass die Schnittstelle die folgenden Grundfunktionen liefert:
+
+* Eine Funktion, die den Nebel-Wert einer Stelle im Dungeon liefert.
+Der Rückgabewert soll im Bereich 0 bis 1 sein, wobei 1 komplett vernebelt darstellt und 0 komplett nebenfrei darstellt.
+    ```java
+    float getFogIntensity(float x, float y)
+    ```
+* Eine Funktion, die den Dungeon an einer Stelle erhellt, so dass ein Lichtkegel an dieser Stelle entsteht, der den Neben vertreibt.
+`intensity` soll hierbei die Stärke des Lichtes sein. In welcher Einheit diese gemessen wird ist noch unklar.
+Diese Funktion soll den Lichtkegel genau ein Frame lang erscheinen lassen. Soll der Lichtkegel bestehen bleiben, muss diese Funktion
+jedes Frame erneut aufgerufen werden.
+    ```java
+    void light(float x, float y, float intensity)
+    ```
+Zu erst dachten wir, dass ein 2D-Array von float-Werten geeignet wäre, um den Nebel darzustellen.
+Es ist zwar geeignet, aber eher langsam, in Betracht dessen, dass jedes "Nebel-Element" am Ende des Frames gelöscht werden muss,
+damit durch `light()` erzeugtes Licht nur ein Frame lang da ist.
+Es ist langsam dadurch, dass man zum Resetten durch das ganze Array iterieren muss.
+Außerdem ist der Speicherverbrauch sehr hoch, dafür dass die allermeisten Stellen im Dungeon den selben Nebel-Wert haben,
+da das meiste Dunkel ist.
+
+Aus dem Grund haben wir uns dazu entschieden, Quadtrees zu benutzen, da diese in beiden Hinsichten effizienter sind.
+Unsere Quadtrees sind Bäume, die entweder 0 oder 4 Kinder haben. Dabei ist Jeder Baumknoten eine eingegrenzte Fläche im Dungeon.
+Jeder Baumknoten/Fläche speichert einen Float-Wert, der die Nebelstärke darstellt, wie zuvor.
+Die Fläche des Roots ist zum Beispiel 8x8 Blöcke groß. Diese 8x8-Fläche hat einen bestimmten Nebel-Wert. Das ist schon
+viel speichereffizienter als der Array-Ansatz.
+Nur wenn sich innerhalb dieser Fläche ein Nebel-Wert für eine Position ändert, wird die 8x8-Fläche in 4 2x2-Flächen geteilt.
+Das geht so weiter bis zu einer festgelegten Baumtiefe, welche dann die Auflösung des Nebels festlegt.
+
+Für das Löschen der Nebel-Elemente muss bloß das Root des Quadtrees gelöscht werden.
+Zwar wäre das Rendern mit einem 2D-Array schneller, da Array-Zugriffe per Index schneller sind, aber wir finden, dass das ein guter Kompromiss ist.
+
+Wir benutzen aber nicht nur einen Quadtree für das ganze Level, sondern haben ein 2D-Array aus Quadtrees, welche wir Sektoren nennen.
+Das hilft dabei, keinen Platz zu verschwenden, wenn das Level rechteckig ist, denn einfache Quadtrees können nur quadratisch sein.
+Außerdem werden zu große Quadtrees nur langsamer.
+
+Was das optische angeht, haben wir uns entschieden, nicht bloß eine transparente einfarbige Textur über den Dungeon zu legen, welche
+dann für jeden Nebel-Block angezeigt wird. Wir möchten einen schönen animierten Nebel haben.
+Dazu haben wir mit einem Programm eine Nebel-Animation erstellt und daraus ein Spritesheet erstellt.
+Dieses Spritesheet ergibt eine Nebel-Animation, die an den Seiten nahtlos ist, wenn man sie aneinander zeichnet.
+Die Nebel-Animation ist dazu gedacht, ein Nebel-Quadrat von ca. 3 Blöcken seitenlänge darzustellen.
+Jedoch ist die Nebel-Auflösung sehr fein und ein Nebel-Block hat somit eine Seitenlänge von nur wenigen Pixeln.
+
+Somit muss jeder Nebelblock durch einen kleinen Ausschnitt der Nebel-Animation dargestellt werden.
+Wir teilen das Spritesheet also in nochmal viel kleinere Spritesheets/Animationen.
+Die entstehenden Animationen speichern wir in eine Liste.
+Das Koordinatensystem wird dann auf die Indices der Liste gemappt.
+Dadurch kann beim Rendering berechnet werden, welches animierte "Nebel-Stück" an einer Stelle angezeit wird.
