@@ -116,7 +116,7 @@ public class DungeonStart extends MainController implements EntityEventHandler
 	
 	private ShapeRenderer debugRenderer;
 	
-	private boolean drawBoundingBoxes = false;
+	private boolean drawBoundingBoxes = true;
 	//Draws spatial hash grid cells of the level
 	private boolean drawSHGCells = false;
 	private boolean drawSHGCNearby = false;
@@ -201,6 +201,7 @@ public class DungeonStart extends MainController implements EntityEventHandler
 		{
 			this.currentLevel.clearEntities();
 		}
+
 		//Set current level from the level controller and entity controller
 		this.currentLevel = new DungeonLevel(this.levelController.getDungeon(), 50, 50, 150, 150);
 		
@@ -267,7 +268,7 @@ public class DungeonStart extends MainController implements EntityEventHandler
 		this.currentLevel.update();
 
 		//NOTE: Zum Testen
-		if(Gdx.input.isKeyPressed(Input.Keys.F12)) {
+		if(Gdx.input.isKeyJustPressed(Input.Keys.F12)) {
 			stageLoader.loadNextStage();
 			LoggingHandler.logger.log(Level.INFO, "Player entered new level.");
 
@@ -295,13 +296,11 @@ public class DungeonStart extends MainController implements EntityEventHandler
 		{
 			this.camera.setFocusPoint(new Point(this.cameraTarget.getX(), this.cameraTarget.getY()));
 		}
-		
 		this.renderEntities();
 		
 		this.currentLevel.getParticleSystem().draw(this.camera.position.x, this.camera.position.y);
 		
 		this.doDebugDrawing();
-		
 		this.uiManager.draw(); //Draw UI last
 	}
 	
@@ -494,7 +493,10 @@ public class DungeonStart extends MainController implements EntityEventHandler
 	{
 		return this.camera;
 	}
-	
+
+	public void setCameraTarget(Entity e) {
+	   	cameraTarget = e;
+	}
 	public UIManager getUIManager()
 	{
 		return this.uiManager;
@@ -519,4 +521,6 @@ public class DungeonStart extends MainController implements EntityEventHandler
 	{
 		return this.myHero;
 	}
+
+
 }

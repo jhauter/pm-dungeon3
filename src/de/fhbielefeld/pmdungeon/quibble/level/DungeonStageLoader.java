@@ -1,9 +1,13 @@
 package de.fhbielefeld.pmdungeon.quibble.level;
 
 
+import com.badlogic.gdx.math.Vector2;
 import de.fhbielefeld.pmdungeon.quibble.DungeonLevel;
 import de.fhbielefeld.pmdungeon.quibble.DungeonStart;
 import de.fhbielefeld.pmdungeon.quibble.LoggingHandler;
+import de.fhbielefeld.pmdungeon.quibble.animation.AnimationHandlerImpl;
+import de.fhbielefeld.pmdungeon.quibble.boss.*;
+import de.fhbielefeld.pmdungeon.quibble.boss.golem.GolemBossBattle;
 import de.fhbielefeld.pmdungeon.quibble.chest.GoldenChest;
 import de.fhbielefeld.pmdungeon.quibble.entity.*;
 import de.fhbielefeld.pmdungeon.quibble.quest.QuestDummy;
@@ -17,6 +21,7 @@ import de.fhbielefeld.pmdungeon.vorgaben.tools.Constants;
 import de.fhbielefeld.pmdungeon.vorgaben.tools.Point;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.logging.Level;
 
@@ -30,14 +35,15 @@ public class DungeonStageLoader {
 
     private int dungeonProgressCounter = 1;
     private int bossStageRequirement = 5;
-    private DungeonConverter converter;
+    private int currentStageNum = 1;
 
+    private DungeonConverter converter;
     private Random rng;
 
     private StageType currentStageType = StageType.Normal;
 
     /**
-     * Loader for new Dungeonstages
+     * Custom loader for DungeonStages
      * @param controller LevelController
      */
     public DungeonStageLoader(LevelController controller) {
@@ -54,8 +60,7 @@ public class DungeonStageLoader {
         loadRandomStage();
     }
 
-    public void onStageLoad(DungeonLevel level) {
-        /**** Populate dungeon ****/
+    private void placeDungeonEnemies(DungeonLevel level) {
         for(int i = 0; i < 5; ++i)
         {
             final Point pos = level.getDungeon().getRandomPointInDungeon();
@@ -70,10 +75,9 @@ public class DungeonStageLoader {
             toSpawn.setPosition(pos.x, pos.y);
             level.spawnEntity(toSpawn);
         }
+    }
 
-        /**************************/
-
-        //Spawn the hero at the right spot
+    private void placeHero(DungeonLevel level) {
         Coordinate startingPoint = level.getDungeon().getStartingLocation();
 
         var hero = DungeonStart.getDungeonMain().getPlayer();
@@ -81,9 +85,9 @@ public class DungeonStageLoader {
 
         level.spawnEntity(hero);
 
-        /**
-         * Spawn Chests
-         */
+    }
+
+    private void placeMiscEntities(DungeonLevel level) {
         final int num = level.getRNG().nextInt(1) + 1;
         for(int i = 0; i < num; i++)
         {
@@ -92,45 +96,62 @@ public class DungeonStageLoader {
             LoggingHandler.logger.log(Level.INFO, "New Chest added.");
         }
 
-        // Placing a new Trap
-
+        //Place Traps
         final Point pos3 = level.getDungeon().getRandomPointInDungeon();
         level.spawnEntity(level.getRNG().nextInt(2) == 0 ? new TrapTeleport(pos3.x, pos3.y) : new TrapDamage(pos3.x, pos3.y, 2));
 
         final Point pos4 = level.getDungeon().getRandomPointInDungeon();
         level.spawnEntity(new QuestDummy(QuestFactory.getRandomQuest(), pos4.x, pos4.y));
 
-        //Set the camera to follow the hero
+        //NOTE(Jonathan) Right now this is only for testing purposes and assumes that we will be using the default
+        // "boss-map" which we won't!
+        if(getCurrentStageType() == StageType.Boss) {
+
+            //TODO: Scaling ist seltsam
+
+            Trigger t = new Trigger(15, 23);
+            level.spawnEntity(t);
+
+        }
+    }
+
+    public void onStageLoad(DungeonLevel level) {
+        placeDungeonEnemies(level);
+        placeHero(level);
+        placeMiscEntities(level);
+        System.out.println("Moinsen");
+
         LoggingHandler.logger.log(Level.INFO, "New level loaded.");
     }
 
     /**
      * @return Type of the currently loaded stage
      */
-    public StageType getCurrentStageType () {
+    public StageType getCurrentStageType() {
         return currentStageType;
     }
 
     private void loadRandomStage() {
         try {
             dungeonProgressCounter+=1;
+            System.out.println(dungeonProgressCounter);
 
             if(dungeonProgressCounter >= bossStageRequirement) {
                 currentStageType = StageType.Boss;
                 controller.loadDungeon(converter.dungeonFromJson(Constants.PATHTOLEVEL + "boss_dungeon.json"));
                 dungeonProgressCounter = 1;
-                return;
+            } else {
+                switch (rng.nextInt(2)) {
+                    case 0 -> controller.loadDungeon(converter.dungeonFromJson(Constants.PATHTOLEVEL + "small_dungeon.json"));
+                    case 1 -> controller.loadDungeon(converter.dungeonFromJson(Constants.PATHTOLEVEL + "simple_dungeon_2.json"));
+                    case 2 -> controller.loadDungeon(converter.dungeonFromJson(Constants.PATHTOLEVEL + "simple_dungeon.json"));
+                }
+                currentStageType = StageType.Normal;
             }
-            switch (rng.nextInt(2)) {
-               case 0 -> controller.loadDungeon(converter.dungeonFromJson(Constants.PATHTOLEVEL + "small_dungeon.json"));
-               case 1 -> controller.loadDungeon(converter.dungeonFromJson(Constants.PATHTOLEVEL + "simple_dungeon_2.json"));
-               case 2 -> controller.loadDungeon(converter.dungeonFromJson(Constants.PATHTOLEVEL + "simple_dungeon.json"));
-            }
-            currentStageType = StageType.Normal;
         } catch (InvocationTargetException e) {
-            //TODO: Add Error handling
+            e.printStackTrace();
         } catch (IllegalAccessException e) {
-            //TODO: Add Error handling
+            e.printStackTrace();
         }
     }
 }

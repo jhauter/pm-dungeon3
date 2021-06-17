@@ -9,6 +9,7 @@ import java.util.logging.Level;
 import de.fhbielefeld.pmdungeon.quibble.SpatialHashGrid.Handle;
 import de.fhbielefeld.pmdungeon.quibble.entity.BoundingBox;
 import de.fhbielefeld.pmdungeon.quibble.entity.Entity;
+import de.fhbielefeld.pmdungeon.quibble.entity.Player;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEvent;
 import de.fhbielefeld.pmdungeon.quibble.particle.ParticleSystem;
 import de.fhbielefeld.pmdungeon.vorgaben.dungeonCreator.DungeonWorld;
@@ -85,9 +86,13 @@ public class DungeonLevel
 		
 		this.entities.set(index, this.entities.get(this.entities.size() - 1));
 		this.entities.remove(this.entities.size() - 1);
-		
 	}
-	
+
+	private void removeEntity(Entity entity) {
+		entity.onDespawn();
+		this.spatialHashGrid.remove(entity.getSpatialHashGridHandle());
+		this.entities.remove(entity);
+	}
 	/**
 	 * This is the preferred way to add entities to a level.
 	 * This ensures that all entity resources are loaded and level reference of the entity is set correctly.
@@ -173,7 +178,7 @@ public class DungeonLevel
 			this.removeEntity(0); //Important because onDespawn and to remove from hash grid
 		}
 	}
-	
+
 	/**
 	 * @return the <code>Random</code> instance of this level
 	 */
