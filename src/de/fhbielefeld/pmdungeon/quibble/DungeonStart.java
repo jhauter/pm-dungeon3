@@ -18,6 +18,7 @@ import com.badlogic.gdx.math.Vector2;
 
 import de.fhbielefeld.pmdungeon.desktop.DesktopLauncher;
 import de.fhbielefeld.pmdungeon.quibble.SpatialHashGrid.Handle;
+import de.fhbielefeld.pmdungeon.quibble.boss.UIBossBar;
 import de.fhbielefeld.pmdungeon.quibble.chest.GoldenChest;
 import de.fhbielefeld.pmdungeon.quibble.entity.BoundingBox;
 import de.fhbielefeld.pmdungeon.quibble.entity.Chort;
@@ -103,7 +104,7 @@ public class DungeonStart extends MainController implements EntityEventHandler
 	private InputMultiplexer inputMultiplexer;
 	
 	private UIManager uiManager;
-	
+
 	private UILayerPlayerHUD uiLayerHUD;
 	private UILayerInventoryView uiLayerPlayerEquipment;
 	private UILayerInventoryView uiLayerPlayerInventory;
@@ -166,7 +167,7 @@ public class DungeonStart extends MainController implements EntityEventHandler
 		this.uiManager.addUI(this.uiLayerPlayerInventory);
 		this.uiManager.addUI(this.uiLayerChestView);
 		this.uiManager.addUI(this.uiLayerQuestView);
-		
+
 		this.gameInputProcessor = new DungeonInputHandler();
 		this.inputMultiplexer = new InputMultiplexer(this.uiManager.getInputProcessors());
 		this.inputMultiplexer.addProcessor(this.gameInputProcessor);

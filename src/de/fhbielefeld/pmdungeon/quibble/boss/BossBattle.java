@@ -40,7 +40,9 @@ public abstract class BossBattle extends Entity {
     public void start() {
         var builder = getBossInformation();
         boss = createBoss(builder);
-
+        UIBossBar bossUi = new UIBossBar();
+        bossUi.setBoss(boss);
+        DungeonStart.getDungeonMain().getUIManager().addUI(bossUi);
         boss.setPosition(getInitialBossPosition());
 
         this.level.spawnEntity(boss);
