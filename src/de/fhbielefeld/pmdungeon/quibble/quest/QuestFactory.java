@@ -4,6 +4,7 @@ import java.util.Random;
 
 import de.fhbielefeld.pmdungeon.quibble.DungeonStart;
 import de.fhbielefeld.pmdungeon.quibble.item.Item;
+import de.fhbielefeld.pmdungeon.quibble.item.RandomItemGenerator;
 
 public class QuestFactory
 {
@@ -12,10 +13,11 @@ public class QuestFactory
 	public static Quest getRandomQuest()
 	{
 		int val = QUEST_RNG.nextInt(3);
+		Item randomItem = RandomItemGenerator.getInstance().generateRandomItem(DungeonStart.getDungeonMain().getLevelCount());
 		return switch (val) {
-			case 0 -> new QuestLevelUp("Level Up Quest", DungeonStart.getDungeonMain().getPlayer().getCurrentExpLevel() + 2, 20, Item.BAG_DEFAULT);
-			case 1 -> new QuestDungeonStage("Reach next Stage Quest", 20, Item.BLUE_MAGIC_STAFF);
-			case 2 -> new QuestKillMonster("Kill Monster Quest", 5, 20, Item.POTION_YELLOW_BIG);
+			case 0 -> new QuestLevelUp("Level Up Quest", DungeonStart.getDungeonMain().getPlayer().getCurrentExpLevel() + 2, 20, randomItem);
+			case 1 -> new QuestDungeonStage("Reach next Stage Quest", 20, randomItem);
+			case 2 -> new QuestKillMonster("Kill Monster Quest", 5, 20, randomItem);
 			
 			default ->
 			throw new IllegalArgumentException("Unexpected value: " + val);

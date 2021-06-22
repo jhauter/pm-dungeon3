@@ -9,27 +9,30 @@ import de.fhbielefeld.pmdungeon.quibble.entity.projectile.SpellIceBlast;
 public class ItemBlueMagicStaff extends ItemStaff
 {
 	/**
-	 * A Green Magic staff which fires Ice Blast. Ice Blast's will slow down the hit
+	 * A Blue Magic staff which fires Ice Blast. Ice Blast's will slow down the hit
 	 * creature.
 	 */
 	protected ItemBlueMagicStaff()
 	{
-		super("Blue Staff", 2.5F, 15, "assets/textures/items/blue_magic_staff.png");
+		this("Blue Staff");
+	}
+
+	/**
+	 * A Blue Magic staff which fires Ice Blast. Ice Blast's will slow down the hit
+	 * creature.
+	 *
+	 * This constructor can be used to give the staff a custom name.
+	 */
+	protected ItemBlueMagicStaff(String displayName){
+		super(displayName, 2.5F, 15, "assets/textures/items/blue_magic_staff.png");
 		this.renderWidth = 1.0F;
 		this.renderHeight = 1.0F;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public CreatureStats getAttackStats()
-	{
+
 		CreatureStats stats = new CreatureStats();
 		stats.setStat(CreatureStatsAttribs.DAMAGE_MAGIC, 2.0D);
-		return stats;
+		this.setAttackStats(stats);
 	}
-	
+
 	@Override
 	public Projectile spawnProjectile(Creature user)
 	{

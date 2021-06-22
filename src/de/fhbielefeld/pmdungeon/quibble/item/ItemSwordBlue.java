@@ -7,20 +7,17 @@ public class ItemSwordBlue extends ItemWeaponMelee
 {
 	protected ItemSwordBlue()
 	{
-		super("Blue Sword", 3.5F, 15, "assets/textures/items/sword_blue.png");
-		this.renderWidth = 1.25F;
-		this.renderHeight = 1.25F;
+		this("Blue Sword");
 		
 	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public CreatureStats getAttackStats()
-	{
+
+	protected ItemSwordBlue(String displayName){
+		super(displayName, 3.5F, 15, "assets/textures/items/sword_blue.png");
+		this.renderWidth = 1.25F;
+		this.renderHeight = 1.25F;
+
 		CreatureStats stats = new CreatureStats();
 		stats.setStat(CreatureStatsAttribs.DAMAGE_PHYS, 4.0D);
-		return stats;
+		this.setAttackStats(stats);
 	}
 }

@@ -53,6 +53,8 @@ public abstract class Item
 	private final String textureFile;
 	
 	private final int visibleTicks;
+
+	private CreatureStats attackStats = new CreatureStats();
 	
 	//--------- Render Settings ------------
 	protected float renderWidth = 1.0F;
@@ -130,7 +132,16 @@ public abstract class Item
 	 */
 	public CreatureStats getAttackStats()
 	{
-		return new CreatureStats();
+		return attackStats;
+	}
+
+	/**
+	 * These stats will be used to damage an entity when hit with this item if this item is a weapon.
+	 * Projectiles will also get the stats that this method gets.
+	 * @param stats the stats for the item
+	 */
+	public void setAttackStats(CreatureStats stats){
+		this.attackStats = stats;
 	}
 	
 	/**

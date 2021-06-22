@@ -39,7 +39,7 @@ import de.fhbielefeld.pmdungeon.quibble.file.DungeonResource;
 import de.fhbielefeld.pmdungeon.quibble.file.ResourceHandler;
 import de.fhbielefeld.pmdungeon.quibble.file.ResourceType;
 import de.fhbielefeld.pmdungeon.quibble.input.DungeonInputHandler;
-import de.fhbielefeld.pmdungeon.quibble.item.Item;
+import de.fhbielefeld.pmdungeon.quibble.item.RandomItemGenerator;
 import de.fhbielefeld.pmdungeon.quibble.particle.DrawingUtil;
 import de.fhbielefeld.pmdungeon.quibble.quest.QuestDummy;
 import de.fhbielefeld.pmdungeon.quibble.quest.QuestFactory;
@@ -87,6 +87,7 @@ public class DungeonStart extends MainController implements EntityEventHandler
 	 * <code>Entity</code> does not implement <code>IEntity</code> anymore!!
 	 */
 	private DungeonLevel currentLevel;
+	private int levelCount = 0;
 	private Player myHero;
 	private Entity cameraTarget;
 	
@@ -164,7 +165,7 @@ public class DungeonStart extends MainController implements EntityEventHandler
 		Gdx.input.setInputProcessor(this.inputMultiplexer);
 		
 		this.myHero = new Knight();
-		this.myHero.getEquippedItems().addItem(Item.SWORD_BLUE);
+		this.myHero.getEquippedItems().addItem(RandomItemGenerator.getInstance().generateMeleeWeapon(1));
 		this.myHero.addEntityEventHandler(this);
 		
 		this.uiLayerHUD.setPlayer(myHero);
@@ -185,6 +186,7 @@ public class DungeonStart extends MainController implements EntityEventHandler
 	public void onLevelLoad()
 	{
 		super.onLevelLoad();
+		this.levelCount++;
 		//Clear entities from previous level
 		if(this.currentLevel != null) //For the first level its null
 		{
@@ -499,5 +501,9 @@ public class DungeonStart extends MainController implements EntityEventHandler
 	public Player getPlayer()
 	{
 		return this.myHero;
+	}
+
+	public int getLevelCount() {
+		return levelCount;
 	}
 }

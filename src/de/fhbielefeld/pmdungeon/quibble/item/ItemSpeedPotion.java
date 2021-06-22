@@ -22,7 +22,7 @@ public class ItemSpeedPotion extends ItemPotion
 		this.speedAmount = speedAmount;
 		this.ticks = ticks;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */

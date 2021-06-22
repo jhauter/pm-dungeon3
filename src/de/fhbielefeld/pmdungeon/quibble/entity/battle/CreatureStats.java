@@ -161,6 +161,17 @@ public class CreatureStats
 			}
 		}
 	}
+
+	/**
+	 * Multiplies all stats by a certain value. Is used to change the strengh of an item entirely without changing the
+	 * proportions of the stats
+	 * @param value the value by which every stats should be multiplied
+	 */
+	public void multiplyAllStats(double value){
+		for(int i = 0; i < stats.length; i++){
+			stats[i] *= value;
+		}
+	}
 	
 	/**
 	 * Sets the event listener which should be notified if stat values change.
