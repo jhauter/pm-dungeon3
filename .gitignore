@@ -5,6 +5,11 @@
 *.project
 *.classpath
 
+# IntelliJ project files
+/.idea/**
+/out/**
+*.iml
+
 # visual paradigm files
 **/*.vpp.bak*
 **/*.vpp.lck

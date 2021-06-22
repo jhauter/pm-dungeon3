@@ -14,7 +14,6 @@ public abstract class ItemWeaponRanged extends ItemWeapon
 	 * The superclass of the range weapons (magic spells, arrows etc. . ).
 	 * 
 	 * @param name        user friendly display name
-	 * @param swingSpeed  the speed at which this weapon will swing
 	 * @param visibleTime the number of ticks that the item is displayed at the creature
 	 * @param texture the texture that is used to render the item. This is the
 	 * complete relative path to the texture including the file extension.

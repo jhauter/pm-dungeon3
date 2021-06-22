@@ -14,26 +14,25 @@ public class ItemWeaponSimpleBow extends ItemWeaponRanged
 {
 	protected ItemWeaponSimpleBow()
 	{
-		super("Simple Bow", 15, "assets/textures/items/bow.png");
+		this("Simple Bow");
+	}
+
+	protected ItemWeaponSimpleBow(String displayName){
+		super(displayName, 15, "assets/textures/items/bow.png");
 		this.renderHeight = 1.75F;
 		this.renderWidth = 1F;
 		this.renderOffsetX = 0.5F;
-	}
-	
-	@Override
-	public CreatureStats getAttackStats()
-	{
+
 		CreatureStats stats = new CreatureStats();
 		stats.setStat(CreatureStatsAttribs.DAMAGE_PHYS, 2);
-		return stats;
+		this.setAttackStats(stats);
 	}
 	
 	@Override
 	public Projectile spawnProjectile(Creature user)
 	{
-		Projectile arrow = new ArrowProjectile(this.getDisplayName() + " Projectile", user.getX(), user.getY() + 0.5F,
+		return new ArrowProjectile(this.getDisplayName() + " Projectile", user.getX(), user.getY() + 0.5F,
 			user.getCurrentStats().addCopy(getAttackStats()), user);
-		return arrow;
 	}
 	
 	@Override
