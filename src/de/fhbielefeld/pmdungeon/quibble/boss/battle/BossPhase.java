@@ -22,35 +22,49 @@ public abstract class BossPhase {
         currentAction = getActions().get(0);
         currentAction.onActionBegin(battle);
         active = true;
+        index = 0;
     }
 
     public void switchAction() {
-        if(this.getActions().size() > 1) {
-            durationCounter++;
-            cooldownCounter++;
+        durationCounter++;
+        cooldownCounter++;
 
-            if(durationCounter >= currentAction.duration) {
-                currentAction.completed = true;
-                currentAction.onActionEnd();
-            }
+        if(this.index >= getActions().size()) {
+            System.out.println("Re");
+            this.index = 0;
+            currentAction = getActions().get(index);
+            currentAction.onActionBegin(battle);
+            durationCounter = 0;
+            cooldownCounter = 0;
+        }
 
-            if(cooldownCounter >= currentAction.cooldown) {
+        if(!currentAction.completed && durationCounter >= currentAction.duration) {
+            currentAction.completed = true;
+            currentAction.onActionEnd();
+            durationCounter = 0;
+        }
+
+        if(cooldownCounter >= currentAction.cooldown) {
                 index++;
-                currentAction = getActions().get(index);
-                currentAction.onActionBegin(battle);
-            }
+                if(this.getActions().size() > 1) {
+                    currentAction = getActions().get(index);
+                    currentAction.onActionBegin(battle);
+                    cooldownCounter = 0;
+                }
         }
     }
     public void run() {
-        switchAction();
-        currentAction.execute();
+        if(active) {
+            switchAction();
+            currentAction.execute();
+        }
     }
 
     public void cleanStage() {
         var actions = getActions();
+
         for (var a : actions) {
             a.onActionEnd();
-
         }
     }
 

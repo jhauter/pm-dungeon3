@@ -22,6 +22,7 @@ public class BoundedMovePattern extends ProjectileMovementPattern {
 
     @Override
     void execute() {
+        System.out.println("Execute!");
         current += state * speed;
 
         if(current >= upperBounds) {

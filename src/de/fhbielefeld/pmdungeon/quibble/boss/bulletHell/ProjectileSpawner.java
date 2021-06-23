@@ -25,7 +25,7 @@ public class ProjectileSpawner extends Entity {
     private List<ProjectileMovementPattern> patterns;
 
     private Vector2 facing = new Vector2(1,1);
-
+    private float angle;
     private float projectileSpeed = 0.5F;
     private SpinMovementPattern test;
     private SpinBoundsPattern test2;
@@ -33,9 +33,9 @@ public class ProjectileSpawner extends Entity {
     public Entity parent;
 
     public Vector2 offset;
-
     public boolean despawnFlag = false;
     public BulletCreationFunction bulletCreationFunction;
+    public float currentBulletSpeed = 1;
 
     public ProjectileSpawner(int shootingIntervall, CreatureStats parentStats, Vector2 position, BulletCreationFunction func) {
         this.shootingIntervall = shootingIntervall;
@@ -85,18 +85,18 @@ public class ProjectileSpawner extends Entity {
             this.setPosition(offset.x + parent.getX(), offset.y + parent.getY());
         }
         if(shootingIntervallCounter >= shootingIntervall) {
-            shoot();
+            shoot(currentBulletSpeed);
             shootingIntervallCounter = 0;
         }
     }
 
-    public void shoot() {
+    public void shoot(float speed) {
         //Projectile proj = new ArrowProjectile("Arrow", this.getX(), this.getY(), parentStats, BossBattle.boss);
         Projectile proj = bulletCreationFunction.createProjectile();
         proj.setPosition(this.getX(), this.getY());
         Vector2 dir = facing;
         dir.setLength(projectileSpeed);
-        proj.setVelocity(dir.x, dir.y);
+        proj.setVelocity(dir.x * speed, dir.y * speed);
         level.spawnEntity(proj);
     }
     @Override
@@ -126,7 +126,13 @@ public class ProjectileSpawner extends Entity {
     }
 
     public void setFacing(float angle) {
+        this.angle = angle;
+
         this.facing = facing.setAngleDeg(angle);
+    }
+
+    public float getAngle() {
+        return this.angle;
     }
 
     @Override

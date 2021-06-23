@@ -13,13 +13,47 @@ import de.fhbielefeld.pmdungeon.quibble.entity.projectile.ArrowProjectile;
 import de.fhbielefeld.pmdungeon.quibble.entity.projectile.Projectile;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 public class GolemStartPhase extends BossPhase {
-
+    private ArrayList<BossAction> actions = new ArrayList<>();
     public GolemStartPhase() {
+        var bullet = new BulletCreationFunction() {
+            @Override
+            public Projectile createProjectile() {
+                return new GolemProjectile("def", 0, 0, new CreatureStats(), BossBattle.boss);
+            }
+        };
 
+        var projectile1 = new ProjectileSpawner(50, new CreatureStats(), new Vector2(-3,0), bullet, BossBattle.boss);
+        var projectile2 = new ProjectileSpawner(50, new CreatureStats(), new Vector2(3,0), bullet, BossBattle.boss);
+        var projectile3 = new ProjectileSpawner(50, new CreatureStats(), new Vector2(0,-3), bullet, BossBattle.boss);
+        var projectile4 = new ProjectileSpawner(50, new CreatureStats(), new Vector2(0,3), bullet, BossBattle.boss);
+
+        var projectile5 = new ProjectileSpawner(50, new CreatureStats(), new Vector2(0,5), bullet, BossBattle.boss);
+        var projectile6 = new ProjectileSpawner(50, new CreatureStats(), new Vector2(0,-5), bullet, BossBattle.boss);
+
+        projectile2.setFacing(10);
+        projectile4.setFacing(180);
+
+        projectile1.currentBulletSpeed = 0.1f;
+        projectile2.currentBulletSpeed = 0.1f;
+        projectile3.currentBulletSpeed = 0.1f;
+        projectile4.currentBulletSpeed = 0.1f;
+
+        projectile1.addPattern(new SpinMovementPattern(projectile1));
+        projectile2.addPattern(new SpinMovementPattern(projectile2));
+        projectile3.addPattern(new SpinMovementPattern(projectile3));
+        projectile4.addPattern(new SpinMovementPattern(projectile4));
+        projectile5.addPattern(new SpinMovementPattern(projectile5));
+        projectile6.addPattern(new SpinMovementPattern(projectile6));
+
+        var testProjectileAction = new ProjectileBossAction(new ArrayList<>(Arrays.asList(projectile1, projectile2,
+                projectile3, projectile4, projectile5, projectile6)));
+
+        actions.add(testProjectileAction);
     }
 
     @Override
@@ -29,20 +63,7 @@ public class GolemStartPhase extends BossPhase {
 
     @Override
     protected List<BossAction> getActions() {
-        var bullet = new BulletCreationFunction() {
-            @Override
-            public Projectile createProjectile() {
-                return new ArrowProjectile("Arrow", 0, 0, new CreatureStats(), BossBattle.boss);
-            }
-        };
-
-        var projectile = new ProjectileSpawner(10, new CreatureStats(), new Vector2(0,0), bullet, BossBattle.boss);
-
-        projectile.addPattern(new SpinMovementPattern(projectile));
-
-        var testProjectileAction = new ProjectileBossAction(new ArrayList<>(Collections.singletonList(projectile)));
-
-        return Collections.singletonList(testProjectileAction);
+        return actions;
 
     }
 }

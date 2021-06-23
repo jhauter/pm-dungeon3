@@ -20,10 +20,14 @@ public abstract class BossBattle extends Entity {
         Represents the current state of the fight independent from the stage queue.
      */
     public DungeonLevel level;
-
+    private boolean active = true;
+    private UIBossBar bossBar;
     public BossBattle(DungeonLevel level) {
         this.level = level;
         level.spawnEntity(this);
+
+        var builder = getBossInformation();
+        boss = createBoss(builder);
     }
 
     public static Boss boss;
@@ -35,13 +39,12 @@ public abstract class BossBattle extends Entity {
     }
 
     public void start() {
+        this.level.spawnEntity(this);
         prepareArea();
-        var builder = getBossInformation();
-        boss = createBoss(builder);
-        UIBossBar bossUi = new UIBossBar();
-        bossUi.setBoss(boss);
+        bossBar = new UIBossBar();
+        bossBar.setBoss(boss);
 
-        DungeonStart.getDungeonMain().getUIManager().addUI(bossUi);
+        DungeonStart.getDungeonMain().getUIManager().addUI(bossBar);
         boss.setPosition(getInitialBossPosition());
 
         this.level.spawnEntity(boss);
@@ -55,14 +58,26 @@ public abstract class BossBattle extends Entity {
         enemies.forEach(Creature::setDead);
     }
 
-    public void onBossBattleEnd() {
-
+    private void onBossBattleEnd() {
+        getCurrentPhase().cleanStage();
+        bossBar.setBoss(null);
+        DungeonStart.getDungeonMain().getUIManager().removeUI(bossBar);
+        active = false;
+        System.out.println("Battle End");
     }
+
+    abstract protected boolean isBattleOver();
+
 
     @Override
     protected void updateLogic() {
-        switchPhase();
-        currentPhase.run();
+        if(isBattleOver()) {
+            onBossBattleEnd();
+        } else {
+            switchPhase();
+            getCurrentPhase().run();
+        }
+
     }
 
     @Override
@@ -91,5 +106,11 @@ public abstract class BossBattle extends Entity {
 
     public boolean isInvisible() {
         return true;
+    }
+
+    @Override
+    public boolean shouldDespawn() {
+        return !this.active;
+
     }
 }

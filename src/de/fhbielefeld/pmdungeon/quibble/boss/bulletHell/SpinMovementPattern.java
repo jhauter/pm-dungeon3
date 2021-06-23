@@ -13,7 +13,7 @@ public class SpinMovementPattern extends ProjectileMovementPattern {
         if(counter >= 361) {
             counter = 0;
         }
-        this.spawner.setFacing(counter);
+        this.spawner.setFacing(spawner.getAngle() + counter);
     }
 
     @Override

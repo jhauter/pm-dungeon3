@@ -16,6 +16,9 @@ public class ProjectileBossAction extends BossAction {
     public ProjectileBossAction(List<ProjectileSpawner> spawnerList) {
         this.spawnerList = spawnerList;
 
+        this.duration = 100;
+        this.cooldown = 100;
+
         for(var i : spawnerList) {
             i.setPosition(new Vector2(BossBattle.boss.getPosition().x + i.getX(), BossBattle.boss.getY() + i.getY()));
         }
@@ -24,10 +27,13 @@ public class ProjectileBossAction extends BossAction {
 
     @Override
     public void onActionBegin(BossBattle battle) {
+        super.onActionBegin(battle);
         System.out.println("OnActionBegin");
         this.battle = battle;
 
         for(var i : spawnerList) {
+            System.out.println("Spawn");
+            i.despawnFlag = false;
             battle.level.spawnEntity(i);
         }
     }
@@ -39,8 +45,9 @@ public class ProjectileBossAction extends BossAction {
 
     @Override
     public void onActionEnd() {
-        System.out.println("End");
+        System.out.println("OnActionEnd");
         for(var i: spawnerList) {
+            System.out.println("Despawn");
             i.despawnFlag = true;
         }
     }
