@@ -1,7 +1,6 @@
-package de.fhbielefeld.pmdungeon.quibble.boss;
+package de.fhbielefeld.pmdungeon.quibble.boss.battle;
 
-import de.fhbielefeld.pmdungeon.quibble.entity.NPC;
-import de.fhbielefeld.pmdungeon.quibble.entity.ai.AIStrategy;
+import de.fhbielefeld.pmdungeon.quibble.boss.battle.BossBattle;
 
 public abstract class BossAction {
     public int duration;

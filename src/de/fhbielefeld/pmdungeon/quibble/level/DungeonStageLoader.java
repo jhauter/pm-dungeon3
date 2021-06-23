@@ -107,8 +107,6 @@ public class DungeonStageLoader {
         // "boss-map" which we won't!
         if(getCurrentStageType() == StageType.Boss) {
 
-            //TODO: Scaling ist seltsam
-
             Trigger t = new Trigger(15, 23);
             level.spawnEntity(t);
 

@@ -1,6 +1,5 @@
-package de.fhbielefeld.pmdungeon.quibble.boss;
+package de.fhbielefeld.pmdungeon.quibble.boss.battle;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public abstract class BossPhase {

@@ -964,7 +964,12 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	{
 		return this.deadTicks % 2 != 0 || this.invulnerableTicks % 2 != 0 ? 0.0F : super.getTransparency();
 	}
-	
+
+	public void setDead() {
+		this.isDead = true;
+		this.deadTicks = this.getDeadTicksBeforeDelete();
+	}
+
 	@Override
 	public boolean shouldDespawn()
 	{

@@ -1,13 +1,10 @@
-package de.fhbielefeld.pmdungeon.quibble.boss;
+package de.fhbielefeld.pmdungeon.quibble.boss.battle;
 
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.math.Vector2;
 import de.fhbielefeld.pmdungeon.quibble.animation.AnimationHandlerImpl;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,6 +31,7 @@ public class BossBuilder {
         this.difficulty = Optional.ofNullable(diff);
         return this;
     }
+
     public BossBuilder setMaxHP(CreatureStats stats) {
         this.baseStats = Optional.ofNullable(stats);
         return this;

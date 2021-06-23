@@ -87,12 +87,6 @@ public class DungeonLevel
 		this.entities.set(index, this.entities.get(this.entities.size() - 1));
 		this.entities.remove(this.entities.size() - 1);
 	}
-
-	private void removeEntity(Entity entity) {
-		entity.onDespawn();
-		this.spatialHashGrid.remove(entity.getSpatialHashGridHandle());
-		this.entities.remove(entity);
-	}
 	/**
 	 * This is the preferred way to add entities to a level.
 	 * This ensures that all entity resources are loaded and level reference of the entity is set correctly.

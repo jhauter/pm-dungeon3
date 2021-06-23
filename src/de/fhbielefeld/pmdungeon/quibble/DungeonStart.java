@@ -1,6 +1,5 @@
 package de.fhbielefeld.pmdungeon.quibble;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
 import java.util.logging.Level;
 
@@ -18,16 +17,10 @@ import com.badlogic.gdx.math.Vector2;
 
 import de.fhbielefeld.pmdungeon.desktop.DesktopLauncher;
 import de.fhbielefeld.pmdungeon.quibble.SpatialHashGrid.Handle;
-import de.fhbielefeld.pmdungeon.quibble.boss.UIBossBar;
-import de.fhbielefeld.pmdungeon.quibble.chest.GoldenChest;
 import de.fhbielefeld.pmdungeon.quibble.entity.BoundingBox;
-import de.fhbielefeld.pmdungeon.quibble.entity.Chort;
 import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
-import de.fhbielefeld.pmdungeon.quibble.entity.Demon;
 import de.fhbielefeld.pmdungeon.quibble.entity.Entity;
-import de.fhbielefeld.pmdungeon.quibble.entity.Goblin;
 import de.fhbielefeld.pmdungeon.quibble.entity.Knight;
-import de.fhbielefeld.pmdungeon.quibble.entity.Lizard;
 import de.fhbielefeld.pmdungeon.quibble.entity.NPC;
 import de.fhbielefeld.pmdungeon.quibble.entity.Player;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
@@ -45,16 +38,11 @@ import de.fhbielefeld.pmdungeon.quibble.input.DungeonInputHandler;
 import de.fhbielefeld.pmdungeon.quibble.item.Item;
 import de.fhbielefeld.pmdungeon.quibble.level.DungeonStageLoader;
 import de.fhbielefeld.pmdungeon.quibble.particle.DrawingUtil;
-import de.fhbielefeld.pmdungeon.quibble.quest.QuestDummy;
-import de.fhbielefeld.pmdungeon.quibble.quest.QuestFactory;
-import de.fhbielefeld.pmdungeon.quibble.trap.TrapDamage;
-import de.fhbielefeld.pmdungeon.quibble.trap.TrapTeleport;
 import de.fhbielefeld.pmdungeon.quibble.ui.UIFonts;
 import de.fhbielefeld.pmdungeon.quibble.ui.UILayerInventoryView;
 import de.fhbielefeld.pmdungeon.quibble.ui.UILayerPlayerHUD;
 import de.fhbielefeld.pmdungeon.quibble.ui.UILayerQuestView;
 import de.fhbielefeld.pmdungeon.quibble.ui.UIManager;
-import de.fhbielefeld.pmdungeon.vorgaben.dungeonCreator.dungeonconverter.Coordinate;
 import de.fhbielefeld.pmdungeon.vorgaben.dungeonCreator.dungeonconverter.DungeonConverter;
 import de.fhbielefeld.pmdungeon.vorgaben.game.GameSetup;
 import de.fhbielefeld.pmdungeon.vorgaben.game.Controller.MainController;

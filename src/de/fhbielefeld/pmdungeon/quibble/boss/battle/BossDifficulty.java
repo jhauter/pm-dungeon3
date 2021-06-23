@@ -1,4 +1,4 @@
-package de.fhbielefeld.pmdungeon.quibble.boss;
+package de.fhbielefeld.pmdungeon.quibble.boss.battle;
 
 public enum BossDifficulty {
     Easy,

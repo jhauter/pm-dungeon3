@@ -1,14 +1,18 @@
 package de.fhbielefeld.pmdungeon.quibble.boss.golem;
 
 import com.badlogic.gdx.math.Vector2;
-import de.fhbielefeld.pmdungeon.quibble.boss.*;
+import de.fhbielefeld.pmdungeon.quibble.boss.battle.BossAction;
+import de.fhbielefeld.pmdungeon.quibble.boss.battle.BossBattle;
+import de.fhbielefeld.pmdungeon.quibble.boss.battle.BossPhase;
+import de.fhbielefeld.pmdungeon.quibble.boss.battle.ProjectileBossAction;
+import de.fhbielefeld.pmdungeon.quibble.boss.bulletHell.BulletCreationFunction;
+import de.fhbielefeld.pmdungeon.quibble.boss.bulletHell.ProjectileSpawner;
+import de.fhbielefeld.pmdungeon.quibble.boss.bulletHell.SpinMovementPattern;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
-import de.fhbielefeld.pmdungeon.quibble.entity.event.CreatureExpEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.projectile.ArrowProjectile;
 import de.fhbielefeld.pmdungeon.quibble.entity.projectile.Projectile;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 

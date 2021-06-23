@@ -1,16 +1,15 @@
-package de.fhbielefeld.pmdungeon.quibble.boss;
+package de.fhbielefeld.pmdungeon.quibble.boss.bulletHell;
 
 import com.badlogic.gdx.math.Vector2;
 import de.fhbielefeld.pmdungeon.quibble.DungeonLevel;
+import de.fhbielefeld.pmdungeon.quibble.boss.bulletHell.BoundedMovePattern;
 import de.fhbielefeld.pmdungeon.quibble.entity.BoundingBox;
 import de.fhbielefeld.pmdungeon.quibble.entity.Entity;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
-import de.fhbielefeld.pmdungeon.quibble.entity.projectile.ArrowProjectile;
 import de.fhbielefeld.pmdungeon.quibble.entity.projectile.Projectile;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Queue;
 
 public class ProjectileSpawner extends Entity {
     private DungeonLevel level;

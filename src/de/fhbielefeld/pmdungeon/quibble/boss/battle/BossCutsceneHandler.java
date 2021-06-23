@@ -1,4 +1,4 @@
-package de.fhbielefeld.pmdungeon.quibble.boss;
+package de.fhbielefeld.pmdungeon.quibble.boss.battle;
 
 import com.badlogic.gdx.math.Vector2;
 import de.fhbielefeld.pmdungeon.quibble.DungeonStart;

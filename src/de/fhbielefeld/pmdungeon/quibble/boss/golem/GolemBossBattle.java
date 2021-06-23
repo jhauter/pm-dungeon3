@@ -3,9 +3,9 @@ package de.fhbielefeld.pmdungeon.quibble.boss.golem;
 import com.badlogic.gdx.math.Vector2;
 import de.fhbielefeld.pmdungeon.quibble.DungeonLevel;
 import de.fhbielefeld.pmdungeon.quibble.animation.AnimationHandlerImpl;
-import de.fhbielefeld.pmdungeon.quibble.boss.BossBattle;
-import de.fhbielefeld.pmdungeon.quibble.boss.BossBuilder;
-import de.fhbielefeld.pmdungeon.quibble.boss.BossPhase;
+import de.fhbielefeld.pmdungeon.quibble.boss.battle.BossBattle;
+import de.fhbielefeld.pmdungeon.quibble.boss.battle.BossBuilder;
+import de.fhbielefeld.pmdungeon.quibble.boss.battle.BossPhase;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
 

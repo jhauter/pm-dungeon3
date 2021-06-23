@@ -1,14 +1,11 @@
-package de.fhbielefeld.pmdungeon.quibble.boss;
+package de.fhbielefeld.pmdungeon.quibble.boss.battle;
 
 import com.badlogic.gdx.math.Vector2;
 import de.fhbielefeld.pmdungeon.quibble.DungeonLevel;
 import de.fhbielefeld.pmdungeon.quibble.DungeonStart;
 import de.fhbielefeld.pmdungeon.quibble.entity.BoundingBox;
+import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
 import de.fhbielefeld.pmdungeon.quibble.entity.Entity;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Queue;
 
 /**
  * Contains information and functionality required to controll
@@ -38,10 +35,12 @@ public abstract class BossBattle extends Entity {
     }
 
     public void start() {
+        prepareArea();
         var builder = getBossInformation();
         boss = createBoss(builder);
         UIBossBar bossUi = new UIBossBar();
         bossUi.setBoss(boss);
+
         DungeonStart.getDungeonMain().getUIManager().addUI(bossUi);
         boss.setPosition(getInitialBossPosition());
 
@@ -51,7 +50,9 @@ public abstract class BossBattle extends Entity {
     }
 
     public void prepareArea() {
-        //Entities spawnen und Phasen vorbereiten
+        var enemies = this.level.getAllEntitiesOf(Creature.class,
+                DungeonStart.getDungeonMain().getPlayer());
+        enemies.forEach(Creature::setDead);
     }
 
     @Override

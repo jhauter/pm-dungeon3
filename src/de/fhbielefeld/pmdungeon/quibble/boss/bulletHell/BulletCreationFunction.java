@@ -1,4 +1,4 @@
-package de.fhbielefeld.pmdungeon.quibble.boss;
+package de.fhbielefeld.pmdungeon.quibble.boss.bulletHell;
 
 import de.fhbielefeld.pmdungeon.quibble.entity.projectile.Projectile;
 

@@ -1,9 +1,9 @@
-package de.fhbielefeld.pmdungeon.quibble.boss;
+package de.fhbielefeld.pmdungeon.quibble.boss.battle;
 
 import com.badlogic.gdx.math.Vector2;
-import de.fhbielefeld.pmdungeon.quibble.DungeonLevel;
-import de.fhbielefeld.pmdungeon.quibble.DungeonStart;
-import de.fhbielefeld.pmdungeon.quibble.entity.NPC;
+import de.fhbielefeld.pmdungeon.quibble.boss.battle.BossAction;
+import de.fhbielefeld.pmdungeon.quibble.boss.battle.BossBattle;
+import de.fhbielefeld.pmdungeon.quibble.boss.bulletHell.ProjectileSpawner;
 
 import java.util.List;
 
@@ -40,7 +40,7 @@ public class ProjectileBossAction extends BossAction {
     @Override
     public void onActionEnd() {
         for(var i: spawnerList) {
-            i.despawnFlag = false;
+            i.despawnFlag = true;
         }
     }
 }

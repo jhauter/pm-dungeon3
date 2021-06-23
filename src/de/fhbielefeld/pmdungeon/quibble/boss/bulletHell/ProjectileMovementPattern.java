@@ -1,4 +1,4 @@
-package de.fhbielefeld.pmdungeon.quibble.boss;
+package de.fhbielefeld.pmdungeon.quibble.boss.bulletHell;
 
 public abstract class ProjectileMovementPattern {
     protected ProjectileSpawner spawner;
