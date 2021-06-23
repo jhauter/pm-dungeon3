@@ -55,6 +55,10 @@ public abstract class BossBattle extends Entity {
         enemies.forEach(Creature::setDead);
     }
 
+    public void onBossBattleEnd() {
+
+    }
+
     @Override
     protected void updateLogic() {
         switchPhase();
@@ -70,6 +74,7 @@ public abstract class BossBattle extends Entity {
     public void onSpawn(DungeonLevel level) {
         super.onSpawn(level);
     }
+
     abstract protected void switchPhase();
 
     abstract public Vector2 getInitialBossPosition();

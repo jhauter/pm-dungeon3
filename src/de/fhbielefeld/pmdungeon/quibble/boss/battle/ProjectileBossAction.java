@@ -39,6 +39,7 @@ public class ProjectileBossAction extends BossAction {
 
     @Override
     public void onActionEnd() {
+        System.out.println("End");
         for(var i: spawnerList) {
             i.despawnFlag = true;
         }

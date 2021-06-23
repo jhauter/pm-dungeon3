@@ -193,52 +193,8 @@ public class DungeonStart extends MainController implements EntityEventHandler
 
 		//Set current level from the level controller and entity controller
 		this.currentLevel = new DungeonLevel(this.levelController.getDungeon(), 50, 50, 150, 150);
-		
-		/**** Populate dungeon ****/
-		
-		for(int i = 0; i < 5; ++i)
-		{
-			final Point pos = this.currentLevel.getDungeon().getRandomPointInDungeon();
-			final Creature toSpawn = switch(currentLevel.getRNG().nextInt(4))
-			{
-				case 0 -> new Demon();
-				case 1 -> new Goblin();
-				case 2 -> new Lizard();
-				case 3 -> new Chort();
-				default -> throw new IllegalArgumentException("Unexpected value [spawn entity]");
-			};
-			toSpawn.setPosition(pos.x, pos.y);
-			this.currentLevel.spawnEntity(toSpawn);
-		}
-		
-		/**************************/
-		
-		//Spawn the hero at the right spot
-		Coordinate startingPoint = this.levelController.getDungeon().getStartingLocation();
-		this.myHero.setPosition(startingPoint.getX(), startingPoint.getY());
-		
-		this.currentLevel.spawnEntity(this.myHero);
-		
-		/**
-		 * Spawn Chests
-		 */
-		final int num = currentLevel.getRNG().nextInt(1) + 1;
-		for(int i = 0; i < num; i++)
-		{
-			final Point pos2 = this.currentLevel.getDungeon().getRandomPointInDungeon();
-			this.currentLevel.spawnEntity(new GoldenChest(pos2.x, pos2.y));
-			LoggingHandler.logger.log(Level.INFO, "New Chest added.");
-		}
-		
-		// Placing a new Trap
-		
-		final Point pos3 = this.currentLevel.getDungeon().getRandomPointInDungeon();
-		this.currentLevel.spawnEntity(currentLevel.getRNG().nextInt(2) == 0 ? new TrapTeleport(pos3.x, pos3.y) : new TrapDamage(pos3.x, pos3.y, 2));
-		
-		final Point pos4 = this.currentLevel.getDungeon().getRandomPointInDungeon();
-		this.currentLevel.spawnEntity(new QuestDummy(QuestFactory.getRandomQuest(), pos4.x, pos4.y));
-		
-		//Set the camera to follow the hero
+
+		stageLoader.onStageLoad(currentLevel);
 		this.cameraTarget = this.myHero;
 		LoggingHandler.logger.log(Level.INFO, "New level loaded.");
 

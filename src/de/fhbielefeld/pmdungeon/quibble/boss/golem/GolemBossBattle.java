@@ -32,7 +32,9 @@ public class GolemBossBattle extends BossBattle {
         var hpPercent = boss.getCurrentHealth() / boss.getMaxStats().getStat(CreatureStatsAttribs.HEALTH);
         if(hpPercent <= 0.75) {
             System.out.println("Heheehh");
+            currentPhase.cleanStage();
             currentPhase = phases.get("second");
+
 
             if(!currentPhase.active) {
                 currentPhase.init(this);

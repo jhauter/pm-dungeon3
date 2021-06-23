@@ -47,6 +47,11 @@ public abstract class BossPhase {
     }
 
     public void cleanStage() {
+        var actions = getActions();
+        for (var a : actions) {
+            a.onActionEnd();
+
+        }
     }
 
     protected abstract List<BossAction> getActions();
