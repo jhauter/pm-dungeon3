@@ -22,6 +22,8 @@ public abstract class BossBattle extends Entity {
     public DungeonLevel level;
     private boolean active = true;
     private UIBossBar bossBar;
+    private BossCutsceneHandler cutscene;
+
     public BossBattle(DungeonLevel level) {
         this.level = level;
         level.spawnEntity(this);
@@ -50,6 +52,10 @@ public abstract class BossBattle extends Entity {
         this.level.spawnEntity(boss);
         currentPhase = getCurrentPhase();
         currentPhase.init(this);
+        var hero = DungeonStart.getDungeonMain().getPlayer();
+        this.cutscene = new BossCutsceneHandler(boss,level, hero);
+        this.cutscene.playCutscene();
+
     }
 
     public void prepareArea() {

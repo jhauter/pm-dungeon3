@@ -36,7 +36,7 @@ public class GolemBossBattle extends BossBattle {
     protected void switchPhase() {
         var hpPercent = boss.getCurrentHealth() / boss.getMaxStats().getStat(CreatureStatsAttribs.HEALTH);
         if(hpPercent <= 0.75) {
-            if(currentPhase.active && currentPhase != phases.get("second")) {
+            if(currentPhase.active && currentPhase == phases.get("start")) {
                 timePassed = 0;
                 var nextPhase= phases.get("second");
                 currentPhase.cleanStage();
@@ -48,7 +48,7 @@ public class GolemBossBattle extends BossBattle {
             }
         }
         if(currentPhase.active && currentPhase == phases.get("second")) {
-            if(timePassed >= 1500) {
+            if(timePassed >= 1000) {
                 timePassed = 0;
                 var nextPhase = phases.get("third");
                 currentPhase.cleanStage();
@@ -58,11 +58,16 @@ public class GolemBossBattle extends BossBattle {
                 getCurrentPhase().init(this);
             }
         }
+
+        if(hpPercent <= 0.25) {
+
+        }
     }
 
     @Override
     protected void updateLogic() {
         super.updateLogic();
+        timePassed++;
     }
 
     @Override
@@ -85,6 +90,7 @@ public class GolemBossBattle extends BossBattle {
         animList.add(animInfoGroundSlam);
         animList.add(animInfoShield);
         animList.add(animInfoShieldIdle);
+        animList.add(animInfoArmTransform);
 
         var bossBuilder = new BossBuilder();
         CreatureStats bossStats = new CreatureStats();

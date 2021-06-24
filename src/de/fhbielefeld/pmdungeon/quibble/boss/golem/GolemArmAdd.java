@@ -7,6 +7,13 @@ import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
 
 public class GolemArmAdd extends NPC {
+    public GolemArmAdd(float x, float y) {
+        super(x,y);
+        this.animationHandler.addAsDefaultAnimation("idle", 1, 99f, 1, 1,
+                "assets/textures/entity/golem/arm_add.png");
+        this.renderScaleX = 0.5f;
+        this.renderScaleY = 0.5f;
+    }
 
     @Override
     protected CreatureStats getBaseStatsForLevel(int level) {
@@ -20,8 +27,8 @@ public class GolemArmAdd extends NPC {
         stats.setStat(CreatureStatsAttribs.KNOCKBACK_RES, 0.3D);
         stats.setStat(CreatureStatsAttribs.DAMAGE_PHYS, 3.0D);
         stats.setStat(CreatureStatsAttribs.DAMAGE_MAGIC, 1.0D);
-        stats.setStat(CreatureStatsAttribs.WALKING_SPEED, 0.5D);
-        stats.setStat(CreatureStatsAttribs.HIT_REACH, 0.3D);
+        stats.setStat(CreatureStatsAttribs.WALKING_SPEED, 0.09D);
+        stats.setStat(CreatureStatsAttribs.HIT_REACH, 0.2D);
         stats.setStat(CreatureStatsAttribs.HIT_COOLDOWN, 10.0D);
         return stats;
     }

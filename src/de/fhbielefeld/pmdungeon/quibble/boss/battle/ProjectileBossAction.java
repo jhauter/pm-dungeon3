@@ -26,6 +26,19 @@ public class ProjectileBossAction extends BossAction {
 
     }
 
+    public ProjectileBossAction(List<ProjectileSpawner> spawnerList, int duration, int cooldown) {
+        this.spawnerList = spawnerList;
+
+        this.duration = duration;
+        this.cooldown = cooldown;
+
+        for(var i : spawnerList) {
+            i.setPosition(new Vector2(BossBattle.boss.getPosition().x + i.getX(),
+                    BossBattle.boss.getY() + i.getY()));
+        }
+
+    }
+
     @Override
     public void onActionBegin(BossBattle battle) {
         super.onActionBegin(battle);
