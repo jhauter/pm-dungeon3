@@ -16,11 +16,12 @@ public class ProjectileBossAction extends BossAction {
     public ProjectileBossAction(List<ProjectileSpawner> spawnerList) {
         this.spawnerList = spawnerList;
 
-        this.duration = 100;
-        this.cooldown = 100;
+        this.duration = 200;
+        this.cooldown = 210;
 
         for(var i : spawnerList) {
-            i.setPosition(new Vector2(BossBattle.boss.getPosition().x + i.getX(), BossBattle.boss.getY() + i.getY()));
+            i.setPosition(new Vector2(BossBattle.boss.getPosition().x + i.getX(),
+                    BossBattle.boss.getY() + i.getY()));
         }
 
     }

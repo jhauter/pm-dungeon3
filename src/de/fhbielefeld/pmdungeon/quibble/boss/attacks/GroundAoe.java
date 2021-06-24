@@ -7,14 +7,16 @@ import de.fhbielefeld.pmdungeon.quibble.entity.battle.DamageSource;
 
 public abstract class GroundAoe extends Entity implements DamageSource {
     protected int ticksUntilAction;
-    protected int actionCounter;
+    protected int actionCounter = 0;
+    protected int radius;
 
-    private boolean shouldDespawn;
+    public boolean shouldDespawn = false;
 
     protected abstract void onRoam();
     protected abstract void onTrigger();
 
-    public GroundAoe() {
+    public GroundAoe(int radius) {
+        this.radius = radius;
     }
 
     @Override
@@ -24,6 +26,8 @@ public abstract class GroundAoe extends Entity implements DamageSource {
 
         if(actionCounter >= ticksUntilAction) {
             onTrigger();
+            actionCounter = 0;
+            this.shouldDespawn = true;
         } else {
             onRoam();
         }
@@ -31,7 +35,8 @@ public abstract class GroundAoe extends Entity implements DamageSource {
 
     @Override
     public CreatureStats getCurrentStats() {
-        return null;
+        //?
+        return new CreatureStats();
     }
 
     @Override

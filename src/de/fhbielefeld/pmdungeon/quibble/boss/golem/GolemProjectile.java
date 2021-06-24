@@ -22,7 +22,8 @@ public class GolemProjectile extends ProjectileMagic {
     public GolemProjectile(String name, float x, float y, CreatureStats stats, Creature owner) {
         super(name, x, y, stats, owner);
         //this.animationHandler.addAsDefaultAnimation("", 8, 0.1F, 1, 8, PROJECTILE_PATH + "fireBall.png");
-        this.animationHandler.addAsDefaultAnimation("", 7, 0.01F, 1, 7, "assets/textures/entity/golem/laser2.png");
+        this.animationHandler.addAsDefaultAnimation("", 1, 0.01F, 1, 1,
+                "assets/textures/entity/golem/laser_projectile.png");
     }
 
     @Override

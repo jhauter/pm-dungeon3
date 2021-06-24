@@ -1,15 +1,14 @@
 package de.fhbielefeld.pmdungeon.quibble.boss.golem;
 
 import com.badlogic.gdx.math.Vector2;
-import de.fhbielefeld.pmdungeon.quibble.boss.battle.BossAction;
-import de.fhbielefeld.pmdungeon.quibble.boss.battle.BossBattle;
-import de.fhbielefeld.pmdungeon.quibble.boss.battle.BossPhase;
-import de.fhbielefeld.pmdungeon.quibble.boss.battle.ProjectileBossAction;
+import de.fhbielefeld.pmdungeon.quibble.boss.attacks.SpawnGroundAOE;
+import de.fhbielefeld.pmdungeon.quibble.boss.battle.*;
 import de.fhbielefeld.pmdungeon.quibble.boss.bulletHell.BoundedMovePattern;
 import de.fhbielefeld.pmdungeon.quibble.boss.bulletHell.BulletCreationFunction;
 import de.fhbielefeld.pmdungeon.quibble.boss.bulletHell.ProjectileSpawner;
 import de.fhbielefeld.pmdungeon.quibble.boss.bulletHell.SpinMovementPattern;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
+import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
 import de.fhbielefeld.pmdungeon.quibble.entity.projectile.ArrowProjectile;
 import de.fhbielefeld.pmdungeon.quibble.entity.projectile.Projectile;
 
@@ -28,19 +27,31 @@ public class GolemDemoSecondPhase extends BossPhase {
                 return new GolemProjectile("def", 0, 0, new CreatureStats(), BossBattle.boss);
             }
         };
-        var projectile = new ProjectileSpawner(10, new CreatureStats(), new Vector2(3,3), bullet, BossBattle.boss);
-        var projectile2 = new ProjectileSpawner(10, new CreatureStats(), new Vector2(1,1), bullet, BossBattle.boss);
+        var projectile = new ProjectileSpawner(15, new CreatureStats(), new Vector2(0,0), bullet, BossBattle.boss);
 
-        projectile.addPattern(new SpinMovementPattern(projectile));
+        projectile.addPattern(new SpinMovementPattern(projectile, 7));
+        projectile.currentBulletSpeed = 0.05f;
 
-        projectile2.addPattern(new SpinMovementPattern(projectile));
+        var testProjectileAction = new ProjectileBossAction(Arrays.asList(projectile));
 
-        var testProjectileAction = new ProjectileBossAction(Arrays.asList(projectile, projectile2));
+        var spawnAction = new GroundEffectBossAction(new SpawnGroundAOE(2),30 , 50, 2,new Vector2(0,0));
+
+        actions.add(spawnAction);
         actions.add(testProjectileAction);
     }
+
     @Override
     public void init(BossBattle battle) {
         super.init(battle);
+        BossBattle.boss.playAttackAnimation("shield", false, 1);
+        BossBattle.boss.physBuff = 1000;
+        BossBattle.boss.updateMaxStats();
+    }
+
+    @Override
+    public void run() {
+        super.run();
+        BossBattle.boss.playAttackAnimation("shield_idle", true, 0);
     }
 
     @Override

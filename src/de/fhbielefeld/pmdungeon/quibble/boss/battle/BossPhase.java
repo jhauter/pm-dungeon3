@@ -29,8 +29,8 @@ public abstract class BossPhase {
         durationCounter++;
         cooldownCounter++;
 
+
         if(this.index >= getActions().size()) {
-            System.out.println("Re");
             this.index = 0;
             currentAction = getActions().get(index);
             currentAction.onActionBegin(battle);
@@ -39,24 +39,27 @@ public abstract class BossPhase {
         }
 
         if(!currentAction.completed && durationCounter >= currentAction.duration) {
-            currentAction.completed = true;
             currentAction.onActionEnd();
+            currentAction.completed = true;
             durationCounter = 0;
         }
-
         if(cooldownCounter >= currentAction.cooldown) {
-                index++;
-                if(this.getActions().size() > 1) {
+            index++;
+            if(this.getActions().size() > 1) {
+                try {
                     currentAction = getActions().get(index);
                     currentAction.onActionBegin(battle);
                     cooldownCounter = 0;
+                } catch (IndexOutOfBoundsException e) {
+
                 }
+            }
         }
     }
     public void run() {
         if(active) {
-            switchAction();
             currentAction.execute();
+            switchAction();
         }
     }
 

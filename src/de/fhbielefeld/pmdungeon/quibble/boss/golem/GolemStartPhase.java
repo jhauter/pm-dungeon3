@@ -1,10 +1,8 @@
 package de.fhbielefeld.pmdungeon.quibble.boss.golem;
 
 import com.badlogic.gdx.math.Vector2;
-import de.fhbielefeld.pmdungeon.quibble.boss.battle.BossAction;
-import de.fhbielefeld.pmdungeon.quibble.boss.battle.BossBattle;
-import de.fhbielefeld.pmdungeon.quibble.boss.battle.BossPhase;
-import de.fhbielefeld.pmdungeon.quibble.boss.battle.ProjectileBossAction;
+import de.fhbielefeld.pmdungeon.quibble.boss.attacks.KnockbackGroundAOE;
+import de.fhbielefeld.pmdungeon.quibble.boss.battle.*;
 import de.fhbielefeld.pmdungeon.quibble.boss.bulletHell.BulletCreationFunction;
 import de.fhbielefeld.pmdungeon.quibble.boss.bulletHell.ProjectileSpawner;
 import de.fhbielefeld.pmdungeon.quibble.boss.bulletHell.SpinMovementPattern;
@@ -43,17 +41,20 @@ public class GolemStartPhase extends BossPhase {
         projectile3.currentBulletSpeed = 0.1f;
         projectile4.currentBulletSpeed = 0.1f;
 
-        projectile1.addPattern(new SpinMovementPattern(projectile1));
-        projectile2.addPattern(new SpinMovementPattern(projectile2));
-        projectile3.addPattern(new SpinMovementPattern(projectile3));
-        projectile4.addPattern(new SpinMovementPattern(projectile4));
-        projectile5.addPattern(new SpinMovementPattern(projectile5));
-        projectile6.addPattern(new SpinMovementPattern(projectile6));
+        projectile1.addPattern(new SpinMovementPattern(projectile1, 2));
+        projectile2.addPattern(new SpinMovementPattern(projectile2, 1));
+        projectile3.addPattern(new SpinMovementPattern(projectile3,2 ));
+        projectile4.addPattern(new SpinMovementPattern(projectile4, 1));
+        projectile5.addPattern(new SpinMovementPattern(projectile5, 2));
+        projectile6.addPattern(new SpinMovementPattern(projectile6, 1));
 
         var testProjectileAction = new ProjectileBossAction(new ArrayList<>(Arrays.asList(projectile1, projectile2,
                 projectile3, projectile4, projectile5, projectile6)));
 
+        var knockbackAction = new GroundEffectBossAction(new KnockbackGroundAOE(2), 2, new Vector2(0, -1));
+
         actions.add(testProjectileAction);
+        actions.add(knockbackAction);
     }
 
     @Override

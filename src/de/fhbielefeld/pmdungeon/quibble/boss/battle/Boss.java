@@ -10,10 +10,12 @@ import java.util.ArrayList;
 
 public class Boss extends NPC {
     public BossDifficulty difficulty;
-    private CreatureStats _baseStats;
-
+    private CreatureStats buff;
     //Not yet used
     private Boss child;
+
+    //TODO: NEIN!
+    public int physBuff = 0;
 
     public Boss(BossBuilder builder) {
         super(0, 0);
@@ -35,6 +37,7 @@ public class Boss extends NPC {
 
         var stats = new CreatureStats();
 
+
         //NOTE: These are weird defaults REPLACE
         stats.setStat(CreatureStatsAttribs.HEALTH, 500);
         stats.setStat(CreatureStatsAttribs.RESISTANCE_PHYS, 100);
@@ -49,7 +52,6 @@ public class Boss extends NPC {
         stats.setStat(CreatureStatsAttribs.HIT_REACH, 0.4D);
         stats.setStat(CreatureStatsAttribs.HIT_COOLDOWN, 20.0D);
 
-        this._baseStats = builder.baseStats.orElseGet(() -> stats);
 
         this.child = builder.child.orElseGet(() -> null);
 
@@ -76,11 +78,15 @@ public class Boss extends NPC {
         return 50;
     }
 
+    public void playAttackAnimation(String animName, boolean cyclic, int priority) {
+        animationHandler.playAnimation(animName, priority, cyclic);
+    }
+
     @Override
     protected CreatureStats getBaseStatsForLevel(int level) {
         CreatureStats stats = new CreatureStats();
         stats.setStat(CreatureStatsAttribs.HEALTH, 100 + 2 * level);
-        stats.setStat(CreatureStatsAttribs.RESISTANCE_PHYS, level);
+        stats.setStat(CreatureStatsAttribs.RESISTANCE_PHYS, level + physBuff);
         stats.setStat(CreatureStatsAttribs.RESISTANCE_MAGIC, level);
         stats.setStat(CreatureStatsAttribs.MISS_CHANCE, 0.0D);
         stats.setStat(CreatureStatsAttribs.CRIT_CHANCE, 0.1D);

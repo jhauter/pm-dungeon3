@@ -16,6 +16,7 @@ public class GolemBossBattle extends BossBattle {
 
     private HashMap<String, BossPhase> phases;
     private BossPhase currentPhase;
+    private long timePassed;
 
     public GolemBossBattle(DungeonLevel level) {
         super(level);
@@ -23,7 +24,7 @@ public class GolemBossBattle extends BossBattle {
         phases = new HashMap<>();
         phases.put("start", new GolemStartPhase());
         phases.put("second", new GolemDemoSecondPhase());
-
+        phases.put("third", new GolemDemoThirdPhase());
         currentPhase = phases.get("start");
     }
     @Override
@@ -36,7 +37,7 @@ public class GolemBossBattle extends BossBattle {
         var hpPercent = boss.getCurrentHealth() / boss.getMaxStats().getStat(CreatureStatsAttribs.HEALTH);
         if(hpPercent <= 0.75) {
             if(currentPhase.active && currentPhase != phases.get("second")) {
-                System.out.println("huhhuuu");
+                timePassed = 0;
                 var nextPhase= phases.get("second");
                 currentPhase.cleanStage();
                 currentPhase.active = false;
@@ -44,7 +45,17 @@ public class GolemBossBattle extends BossBattle {
                 currentPhase = nextPhase;
                 getCurrentPhase().init(this);
                 //currentPhase.init(this);
+            }
+        }
+        if(currentPhase.active && currentPhase == phases.get("second")) {
+            if(timePassed >= 1500) {
+                timePassed = 0;
+                var nextPhase = phases.get("third");
+                currentPhase.cleanStage();
+                currentPhase.active = false;
 
+                currentPhase = nextPhase;
+                getCurrentPhase().init(this);
             }
         }
     }
@@ -57,16 +68,30 @@ public class GolemBossBattle extends BossBattle {
     @Override
     protected BossBuilder getBossInformation() {
         var animList = new ArrayList<AnimationHandlerImpl.AnimationInfo>();
-        var animInfo = new AnimationHandlerImpl.AnimationInfo("idle", 4,
+        var animInfoIdle = new AnimationHandlerImpl.AnimationInfo("idle", 4,
                 0, 0.5f, 1,
                 4, "assets/textures/entity/golem/golem_idle_test.png");
-        animList.add(animInfo);
+        var animInfoGroundSlam = new AnimationHandlerImpl.AnimationInfo("slam", 7, 0, 0.1f, 1, 7,
+                "assets/textures/entity/golem/golem_slam.png");
+        var animInfoShield = new AnimationHandlerImpl.AnimationInfo("shield", 7, 0, 0.8f, 1, 7,
+                "assets/textures/entity/golem/golem_shield.png");
+        var animInfoShieldIdle = new AnimationHandlerImpl.AnimationInfo("shield_idle", 1, 0, 0.3f, 1, 1,
+                "assets/textures/entity/golem/golem_shield_idle.png");
+
+        var animInfoArmTransform = new AnimationHandlerImpl.AnimationInfo("arm_transform", 9, 0, 0.3f, 1, 9,
+                "assets/textures/entity/golem/golem_arm_transform.png");
+
+        animList.add(animInfoIdle);
+        animList.add(animInfoGroundSlam);
+        animList.add(animInfoShield);
+        animList.add(animInfoShieldIdle);
+
         var bossBuilder = new BossBuilder();
         CreatureStats bossStats = new CreatureStats();
         bossStats.setStat(CreatureStatsAttribs.HEALTH, 3000);
 
         bossBuilder = bossBuilder
-                .setRenderScale(new Vector2(2f,1.2f))
+                .setRenderScale(new Vector2(1f,1f))
                 .setAnimation(animList)
                 .setMaxHP(bossStats);
         return bossBuilder;

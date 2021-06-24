@@ -8,7 +8,7 @@ public class SpinBoundsPattern extends SpinMovementPattern{
 
     int state = 1;
     public SpinBoundsPattern(ProjectileSpawner spawner, float lower, float upperBounds, float speed) {
-        super(spawner);
+        super(spawner, (int) speed);
         this.lowerBounds = lower;
         this.upperBounds = upperBounds;
         this.speed = speed;

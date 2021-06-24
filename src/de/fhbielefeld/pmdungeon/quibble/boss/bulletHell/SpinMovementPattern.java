@@ -2,14 +2,15 @@ package de.fhbielefeld.pmdungeon.quibble.boss.bulletHell;
 
 public class SpinMovementPattern extends ProjectileMovementPattern {
     private int counter;
-
-    public SpinMovementPattern(ProjectileSpawner spawner) {
+    private int speed;
+    public SpinMovementPattern(ProjectileSpawner spawner, int speed) {
         super(spawner);
+        this.speed = speed;
     }
 
     @Override
     public void execute() {
-        counter++;
+        counter+=speed;
         if(counter >= 361) {
             counter = 0;
         }
