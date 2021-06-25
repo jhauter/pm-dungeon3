@@ -114,6 +114,9 @@ public class DungeonStart extends MainController implements EntityEventHandler
 	//Draws spatial hash grid cells of the level
 	private boolean drawSHGCells = false;
 	private boolean drawSHGCNearby = false;
+
+	//Draws the quad trees of the fog of war controller
+	private boolean drawFoWQuadTrees = false;
 	
 	/**************************************/
 	
@@ -288,6 +291,8 @@ public class DungeonStart extends MainController implements EntityEventHandler
 		
 		this.currentLevel.getParticleSystem().draw(this.camera.position.x, this.camera.position.y);
 		
+		this.currentLevel.getFogOfWarController().render();
+		
 		this.doDebugDrawing();
 		
 		this.uiManager.draw(); //Draw UI last
@@ -395,6 +400,8 @@ public class DungeonStart extends MainController implements EntityEventHandler
 		}
 		
 		this.debugRenderer.end();
+		
+		this.currentLevel.getFogOfWarController().renderDebug(debugRenderer);
 	}
 	
 	private void drawBoundingBox(BoundingBox bb)
@@ -502,15 +509,37 @@ public class DungeonStart extends MainController implements EntityEventHandler
 	{
 		return this.myHero;
 	}
+	
+	public boolean getDrawBoundingBoxes()
+	{
+		return drawBoundingBoxes;
+	}
 
-	public int getLevelCount() {
+	public boolean getDrawSHGCells()
+	{
+		return drawSHGCells;
+	}
+
+	public boolean getDrawSHGCNearby()
+	{
+		return drawSHGCNearby;
+	}
+
+	public boolean getDrawFoWQuadTrees()
+	{
+		return drawFoWQuadTrees;
+	}
+	
+	public int getLevelCount()
+	{
 		return levelCount;
 	}
+	
 	/**
 	 * Starts the gameloop
 	 */
-	public static void startGame(){
+	public static void startGame()
+	{
 		DesktopLauncher.run(new DungeonStart());
 	}
-
 }

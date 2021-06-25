@@ -123,6 +123,8 @@ public abstract class Player extends Creature
 			}
 			
 		}
+		
+		this.level.getFogOfWarController().light(this.getX(), this.getY(), 1.0F);
 	}
 	
 	/**

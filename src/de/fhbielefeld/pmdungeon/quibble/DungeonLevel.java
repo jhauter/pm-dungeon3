@@ -10,6 +10,8 @@ import de.fhbielefeld.pmdungeon.quibble.SpatialHashGrid.Handle;
 import de.fhbielefeld.pmdungeon.quibble.entity.BoundingBox;
 import de.fhbielefeld.pmdungeon.quibble.entity.Entity;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEvent;
+import de.fhbielefeld.pmdungeon.quibble.fow.FogOfWarController;
+import de.fhbielefeld.pmdungeon.quibble.particle.DrawingUtil;
 import de.fhbielefeld.pmdungeon.quibble.particle.ParticleSystem;
 import de.fhbielefeld.pmdungeon.vorgaben.dungeonCreator.DungeonWorld;
 
@@ -27,13 +29,15 @@ public class DungeonLevel
 	
 	private SpatialHashGrid<Entity> spatialHashGrid;
 	
+	private FogOfWarController fogOfWarController;
+	
 	/**
 	 * Creates a Level that wraps a <code>DungeonWorld</code> and contains all entities in the level.
 	 * The <code>MainController.entityController</code> should not be used anymore as all entities are now in
 	 * <code>DungeonLevel</code>.
 	 * @param world dungeon reference
 	 */
-	public DungeonLevel(DungeonWorld world, int shgRow, int shgCol, float shgWidth, float shgHeight)
+	public DungeonLevel(DungeonWorld world, int shgRow, int shgCol, int shgWidth, int shgHeight)
 	{
 		this.world = world;
 		this.particleSystem = new ParticleSystem();
@@ -41,6 +45,13 @@ public class DungeonLevel
 		this.newEntityBuffer = new ArrayList<Entity>();
 		this.rng = new Random();
 		this.spatialHashGrid = new SpatialHashGrid<>(shgRow, shgCol, shgWidth, shgHeight);
+		this.fogOfWarController = new FogOfWarController(this, 8, 32, (int)shgWidth, (int)shgHeight, 0.9F);
+		this.fogOfWarController.loadTexture("assets/textures/dungeon/fog.png", 4F, 8, 16, 0.1F);
+		
+		//dimensions in dungeon coordinates:
+		int screenWidth = (int)Math.ceil(DrawingUtil.screenToDungeonX(DrawingUtil.CURRENT_SCREEN_WIDTH.get()));
+		int screenHeight = (int)Math.ceil(DrawingUtil.screenToDungeonY(DrawingUtil.CURRENT_SCREEN_HEIGHT.get()));
+		this.fogOfWarController.setLightmapSize(screenWidth, screenHeight);
 	}
 	
 	/**
@@ -49,6 +60,11 @@ public class DungeonLevel
 	public DungeonWorld getDungeon()
 	{
 		return this.world;
+	}
+	
+	public FogOfWarController getFogOfWarController()
+	{
+		return this.fogOfWarController;
 	}
 	
 	public void update()
@@ -72,6 +88,7 @@ public class DungeonLevel
 			final BoundingBox entityBB = current.getBoundingBox().offset(current.getX(), current.getY());
 			this.spatialHashGrid.update(current.getSpatialHashGridHandle(), entityBB);
 		}
+		this.fogOfWarController.update();
 	}
 	
 	/**
