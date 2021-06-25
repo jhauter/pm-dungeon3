@@ -52,8 +52,12 @@ gepackt. Welche Klasse dann genau instanziiert wird, wird dann zufällig ausgew�
 
 Am Dienstag, dem 08.06.2021, wurde mit dem zweiten Feature angefangen. Dies hat ca. 5 Stunden gedauert.
 Am Mittwoch, dem 16.06.2021, wurde das zweite Feature weitergeführt und das dritte angefangen. Dies hat ca. 5 Stunden gedauert.
+Am Dienstag, dem 22.06.2021, wurde das dritte Feature beendet und in das Hauptrepository gemergt. Das hat ca. 4 Stunden gedauert.
+Am Donnerstag, dem 24.06.2021, wurde das zweite Feature beendet. Dies hat ca. 2 Stunden gedauert.
 
 # Postmortem
 
-Aktuell ist rückblickend noch nichts zu sagen, da noch kein Feature vollständig fertiggestellt wurde und somit noch aussteht, ob die Lösungsansätze gut
-oder schlecht waren.
+In Bezug auf den RandomItemGenerator war geplant, dass die einzelnen Itemklassen per Reflection erfasst werden. Da aber die Bibliothek, die dafür benutzt 
+werden sollte, nicht mit der aktuellen Javaversion läuft, können wir diese nicht in unserem Projekt benutzen. Daher haben wir uns dazu entschieden die 
+Items doch zu hardcoden, da es so funktioniert und auch nicht geplant ist, dass noch Items hinzugefügt werden, und somit auch die Benutzung von Reflection
+an der Stelle nicht ganz nötig ist. Für die Eingabe des Spielernamen traten keine Probleme auf.

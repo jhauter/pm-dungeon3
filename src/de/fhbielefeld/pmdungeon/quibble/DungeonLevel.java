@@ -161,6 +161,14 @@ public class DungeonLevel
 	{
 		return this.entities.get(index);
 	}
+
+	/**
+	 * Retures all entities of this level
+	 * @return all entities of this level
+	 */
+	public List<Entity> getAllEntities(){
+		return this.entities;
+	}
 	
 	/**
 	 * Removes all entities from the level.

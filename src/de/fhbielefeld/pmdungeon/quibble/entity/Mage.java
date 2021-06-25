@@ -24,13 +24,7 @@ public class Mage extends Player
 	{
 		this(0.0F, 0.0F);
 	}
-	
-	@Override
-	public String getDisplayName()
-	{
-		return "Mage";
-	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
