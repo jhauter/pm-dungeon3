@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Set;
 import java.util.logging.Level;
 
+import javax.swing.UnsupportedLookAndFeelException;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Color;
@@ -61,7 +63,17 @@ import de.fhbielefeld.pmdungeon.vorgaben.tools.Point;
 
 public class DungeonStart extends MainController implements EntityEventHandler
 {
-	public static void main(String[] args) {
+	public static void main(String[] args)
+	{	
+		try
+		{
+			javax.swing.UIManager.setLookAndFeel(javax.swing.UIManager.getSystemLookAndFeelClassName());
+		}
+		catch(ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e)
+		{
+			e.printStackTrace();
+		}
+		
 		WindowForPlayername.initiateWindowForPlayername();
 	}
 	

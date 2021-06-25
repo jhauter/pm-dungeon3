@@ -336,9 +336,9 @@ public class FogOfWarController
 	
 	private void processLightSource(FogOfWarLightSource src)
 	{
-				long start = System.currentTimeMillis();
+//				long start = System.currentTimeMillis();
 		this.spreadLight(src.getX(), src.getY(), 0, src.getIntensity(), src.getLightSpreadFunction());
-				System.out.println(System.currentTimeMillis() - start);
+//				System.out.println(System.currentTimeMillis() - start);
 	}
 	
 	private void spreadLight(int fowX, int fowY, int dist, float intensity, LightSpreadFunction function)
