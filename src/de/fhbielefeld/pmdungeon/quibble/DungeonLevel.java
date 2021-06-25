@@ -11,6 +11,7 @@ import de.fhbielefeld.pmdungeon.quibble.entity.BoundingBox;
 import de.fhbielefeld.pmdungeon.quibble.entity.Entity;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEvent;
 import de.fhbielefeld.pmdungeon.quibble.fow.FogOfWarController;
+import de.fhbielefeld.pmdungeon.quibble.particle.DrawingUtil;
 import de.fhbielefeld.pmdungeon.quibble.particle.ParticleSystem;
 import de.fhbielefeld.pmdungeon.vorgaben.dungeonCreator.DungeonWorld;
 
@@ -44,8 +45,13 @@ public class DungeonLevel
 		this.newEntityBuffer = new ArrayList<Entity>();
 		this.rng = new Random();
 		this.spatialHashGrid = new SpatialHashGrid<>(shgRow, shgCol, shgWidth, shgHeight);
-		this.fogOfWarController = new FogOfWarController(8, 64, (int)shgWidth, (int)shgHeight, 0.9F);
+		this.fogOfWarController = new FogOfWarController(this, 8, 32, (int)shgWidth, (int)shgHeight, 0.9F);
 		this.fogOfWarController.loadTexture("assets/textures/dungeon/fog.png", 4F, 8, 16, 0.1F);
+		
+		//dimensions in dungeon coordinates:
+		int screenWidth = (int)Math.ceil(DrawingUtil.screenToDungeonX(DrawingUtil.CURRENT_SCREEN_WIDTH.get()));
+		int screenHeight = (int)Math.ceil(DrawingUtil.screenToDungeonY(DrawingUtil.CURRENT_SCREEN_HEIGHT.get()));
+		this.fogOfWarController.setLightmapSize(screenWidth, screenHeight);
 	}
 	
 	/**
