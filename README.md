@@ -15,35 +15,6 @@ author:
 - Vivien Traue (vivien.traue@fh-bielefeld.de)
 ...
 
-# Gruppe Adrian, Paul, Michael
-
-## Aufgabe
-
-Wir haben uns vorgenommen zwei Features zu implementieren. Das erste Feature ist, dass Gegner mit jeder Ebene stärker werden, und dass 
-im Verlauf des Dungeons neue Gegnertypen erscheinen. D.h. dass nicht alle Gegnertypen von Anfang an erscheinen, sondern erst später in
-stärkerer Form.
-
-Das zweite Feature ist, dass der Spieler den Namen des Heldens am Anfang des Spieles angeben soll. Hierbei gibt es gültige und ungültige
-Spielernamen. So darf der Name, z.B. nur aus Buchstaben und wenigen Leerzeichen bestehen. 
-
-
-## Ansatz und Modellierung
-
-Das erste Feature wird mit Hilfe der Level der Gegner umgesetzt. So wird bei jedem Ebenenübergang für jede Ebene eine vorgegebene 
-Methode aufgerufen, die alle Monster der vorherigen Ebene löscht und neue Monster erstellt, die ein höheres Level haben und damit
-auch stärker sind. So wird also für jede Ebene vorgegebenen welche, wie viele und wie starke Monster gespawnt werden. Hierdurch
-entsteht eine einfache Möglichkeit die Monster und jede Ebene für sich zu balancen und somit ein rundes Spielerlebnis zu ermöglichen.
-
-Probleme sind hierbei nicht zu erwarten, da alle, für die Implementierung nötige, Grundlagen, wie das Level für Gegner, bereits
-existieren und somit nurnoch diese Möglichkeiten zusammengeführt werden müssen, um das Feature zu erstellen.
-
-
-Das zweite Feature soll mit Swing arbeiten, um den Namen des Spielers einzugeben. Ob der eingegebene Name gültig ist oder nicht, 
-soll dann mit Hilfe eines RegEx ermittelt werden. Hierbei muss darauf geachtet werden, dass der RegEx wirklich nur die Namen 
-akzeptiert, die auch akzeptiert werden sollen und keine Namen akzeptiert werden, die ungültig sind.
-
-Der akzeptierte Name wird dann als simples Attribut dem Hero hinzugefügt, damit von überall einfach darauf zugegriffen werden kann.
-
 # Gruppe Andreas, Malte, Mathis
 
 ## Fog of War
@@ -196,7 +167,7 @@ Sobald der Spieler besiegt wird, wird ein Bild mit abnehmender Transparenz auf d
     - Zufällige Namen abhängig von Stats: Zusammengesetzt aus vordefinierten Namenschnippseln: Beispiel: "Verzauberter Saphir Stab" oder "Schneller mörderischer Dolch"
     - Liste aus Namensprädikaten - Vielleicht speichern und auslesen in einer Textdatei/JSON zur einfacherere Bearbeitung
     
-### Währund und Händler:
+### Währung und Händler:
 - Währung (Gold): Seperate Resource die nicht im Inventar gesammelt wird
 - Droppt bei Quests, Monstern. -> Semi-Zufällig oder fixe Mengen
 - Währung kann bei speziellen Händernpcs die auf einigen Ebenen spawnen ausgegeben werden
@@ -207,3 +178,49 @@ Sobald der Spieler besiegt wird, wird ein Bild mit abnehmender Transparenz auf d
 ### Grundsätzlich
 - Brauchen viele Animationen/Sprites für Bosse (Von itch.io, Opengameart?)
 - Räume könnten schwierig weredn
+
+# Gruppe Adrian, Paul, Michael
+
+## Aufgabe
+
+Wir haben uns vorgenommen zwei Features zu implementieren. Das erste Feature ist, dass Gegner mit jeder Ebene stärker werden, und dass 
+im Verlauf des Dungeons neue Gegnertypen erscheinen. D.h. dass nicht alle Gegnertypen von Anfang an erscheinen, sondern erst später in
+stärkerer Form.
+
+Das zweite Feature ist, dass der Spieler den Namen des Heldens am Anfang des Spieles angeben soll. Hierbei gibt es gültige und ungültige
+Spielernamen. So darf der Name, z.B. nur aus Buchstaben und wenigen Leerzeichen bestehen. 
+
+
+## Ansatz und Modellierung
+
+Das erste Feature wird mit Hilfe der Level der Gegner umgesetzt. So wird bei jedem Ebenenübergang für jede Ebene eine vorgegebene 
+Methode aufgerufen, die alle Monster der vorherigen Ebene löscht und neue Monster erstellt, die ein höheres Level haben und damit
+auch stärker sind. So wird also für jede Ebene vorgegebenen welche, wie viele und wie starke Monster gespawnt werden. Hierdurch
+entsteht eine einfache Möglichkeit die Monster und jede Ebene für sich zu balancen und somit ein rundes Spielerlebnis zu ermöglichen.
+
+Probleme sind hierbei nicht zu erwarten, da alle, für die Implementierung nötige, Grundlagen, wie das Level für Gegner, bereits
+existieren und somit nurnoch diese Möglichkeiten zusammengeführt werden müssen, um das Feature zu erstellen.
+
+
+Das zweite Feature soll mit Swing arbeiten, um den Namen des Spielers einzugeben. Ob der eingegebene Name gültig ist oder nicht, 
+soll dann mit Hilfe eines RegEx ermittelt werden. Hierbei muss darauf geachtet werden, dass der RegEx wirklich nur die Namen 
+akzeptiert, die auch akzeptiert werden sollen und keine Namen akzeptiert werden, die ungültig sind.
+
+Der akzeptierte Name wird dann als simples Attribut dem Hero hinzugefügt, damit von überall einfach darauf zugegriffen werden kann.
+
+## Zusatz
+
+Wenn wir mit unseren Aufgaben fertig sind, bevor die letzte Abgabe stattfindet, werden wie die anderen beiden
+ursprünglichen Teams in diesem Projekt bei ihren Aufgaben unterstützen, bzw. diese übernehmen, da sie sich mehr vorgenommen haben als
+gefordert ist.
+Besonders als Ziel gesetzt haben wir uns hierfür die Credits am Ende des Spiels und den Game Over-Bildschirm der Gruppe [Andreas, Malte, Mathis]
+und die zufälligen Items und die Währung und Händler der Gruppe [Jonathan, Vivien, Fabius].
+
+# Git-Workflow
+- Wir arbeiten mit einem "develop"-Branch, auf welchen wir die Änderungen pushen. Erst wenn das Programm für einen Release / Abgabe bereit ist,
+wird in den "master"-Branch gemerged.
+- Der "master"-Branch wird immer stable gehalten.
+- Der Branch, der am aktuellsten ist, ist der "develop"-Branch.
+- Jedes Projektteammitglied forked dieses Repository, um einen verteilten Git-Workflow zu üben.
+- Wir planen, ein Buildsystem, wie Ant, Maven oder Gradle zu benutzen, um das Projekt zu builden.
+- Es gibt ein Teammitglied, das hauptsächlich die Merge-Requests übernimmt. Code-Reviews werden durchgeführt, wenn es angebracht ist.

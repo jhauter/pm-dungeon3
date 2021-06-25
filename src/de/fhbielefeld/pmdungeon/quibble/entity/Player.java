@@ -21,6 +21,8 @@ public abstract class Player extends Creature
 	private float controlMaxY;
 	
 	private List<Quest> quests = new ArrayList<Quest>();
+
+	private String name;
 	
 	/**
 	 * @param x x-coordinate
@@ -42,7 +44,7 @@ public abstract class Player extends Creature
 	@Override
 	public boolean isDisplayNameVisible()
 	{
-		return false;
+		return true;
 	}
 	
 	/**
@@ -166,5 +168,21 @@ public abstract class Player extends Creature
 	public List<Quest> getQuestList()
 	{
 		return this.quests;
+	}
+
+	/**
+	 * @return the name of the player
+	 */
+	@Override
+	public String getDisplayName() {
+		return name;
+	}
+
+	/**
+	 * Sets a new player name
+	 * @param name the new name for the player
+	 */
+	public void setName(String name) {
+		this.name = name;
 	}
 }
