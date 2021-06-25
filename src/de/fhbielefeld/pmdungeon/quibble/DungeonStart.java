@@ -1,5 +1,6 @@
 package de.fhbielefeld.pmdungeon.quibble;
 
+import java.util.ArrayList;
 import java.util.Set;
 import java.util.logging.Level;
 
@@ -40,6 +41,8 @@ import de.fhbielefeld.pmdungeon.quibble.file.ResourceHandler;
 import de.fhbielefeld.pmdungeon.quibble.file.ResourceType;
 import de.fhbielefeld.pmdungeon.quibble.input.DungeonInputHandler;
 import de.fhbielefeld.pmdungeon.quibble.item.RandomItemGenerator;
+import de.fhbielefeld.pmdungeon.quibble.input.WindowForPlayername;
+import de.fhbielefeld.pmdungeon.quibble.item.Item;
 import de.fhbielefeld.pmdungeon.quibble.particle.DrawingUtil;
 import de.fhbielefeld.pmdungeon.quibble.quest.QuestDummy;
 import de.fhbielefeld.pmdungeon.quibble.quest.QuestFactory;
@@ -58,9 +61,8 @@ import de.fhbielefeld.pmdungeon.vorgaben.tools.Point;
 
 public class DungeonStart extends MainController implements EntityEventHandler
 {
-	public static void main(String[] args)
-	{
-		DesktopLauncher.run(new DungeonStart());
+	public static void main(String[] args) {
+		WindowForPlayername.initiateWindowForPlayername();
 	}
 	
 	public static DungeonStart getDungeonMain()
@@ -167,6 +169,9 @@ public class DungeonStart extends MainController implements EntityEventHandler
 		this.myHero = new Knight();
 		this.myHero.getEquippedItems().addItem(RandomItemGenerator.getInstance().generateMeleeWeapon(1));
 		this.myHero.addEntityEventHandler(this);
+
+		this.myHero.setName(WindowForPlayername.getPlayerName());
+		System.out.println(this.myHero.getDisplayName());
 		
 		this.uiLayerHUD.setPlayer(myHero);
 		this.uiLayerPlayerEquipment.setInventory(myHero.getEquippedItems());
@@ -291,23 +296,18 @@ public class DungeonStart extends MainController implements EntityEventHandler
 	private void renderEntities()
 	{
 		getGameBatch().begin();
-		Entity currentEntity;
-		for(int i = 0; i < currentLevel.getNumEntities(); ++i)
-		{
-			currentEntity = currentLevel.getEntity(i);
-			
-			if(!currentEntity.isInvisible())
-			{
-				if(currentEntity.isDisplayNameVisible())
-				{
-					this.renderEntityName(currentEntity);
+		ArrayList<Entity> entities = new ArrayList<>(currentLevel.getAllEntities());
+		entities.add(this.getPlayer());
+		for (Entity entity : entities) {
+			if (!entity.isInvisible()) {
+				if (entity.isDisplayNameVisible()) {
+					this.renderEntityName(entity);
 				}
-				
-				currentEntity.render();
-				
-				if(currentEntity instanceof Creature)
-				{
-					this.drawCreatureStatusEffects((Creature)currentEntity);
+
+				entity.render();
+
+				if (entity instanceof Creature) {
+					this.drawCreatureStatusEffects((Creature) entity);
 				}
 			}
 		}
@@ -415,7 +415,7 @@ public class DungeonStart extends MainController implements EntityEventHandler
 			e.renderStatusEffect();
 		}
 	}
-	
+
 	@Override
 	public void handleEvent(EntityEvent event) //There are events for myHero
 	{
@@ -506,4 +506,11 @@ public class DungeonStart extends MainController implements EntityEventHandler
 	public int getLevelCount() {
 		return levelCount;
 	}
+	/**
+	 * Starts the gameloop
+	 */
+	public static void startGame(){
+		DesktopLauncher.run(new DungeonStart());
+	}
+
 }
