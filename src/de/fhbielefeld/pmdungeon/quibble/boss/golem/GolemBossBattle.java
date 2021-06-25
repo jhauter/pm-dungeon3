@@ -1,13 +1,17 @@
 package de.fhbielefeld.pmdungeon.quibble.boss.golem;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 import de.fhbielefeld.pmdungeon.quibble.DungeonLevel;
+import de.fhbielefeld.pmdungeon.quibble.DungeonStart;
 import de.fhbielefeld.pmdungeon.quibble.animation.AnimationHandlerImpl;
 import de.fhbielefeld.pmdungeon.quibble.boss.battle.BossBattle;
 import de.fhbielefeld.pmdungeon.quibble.boss.battle.BossBuilder;
 import de.fhbielefeld.pmdungeon.quibble.boss.battle.BossPhase;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
+import de.fhbielefeld.pmdungeon.quibble.input.Key;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,7 +29,9 @@ public class GolemBossBattle extends BossBattle {
         phases.put("start", new GolemStartPhase());
         phases.put("second", new GolemDemoSecondPhase());
         phases.put("third", new GolemDemoThirdPhase());
-        currentPhase = phases.get("start");
+        phases.put("last", new GolemLastPhase());
+
+        currentPhase = phases.get("last");
     }
     @Override
     protected boolean isBattleOver() {
@@ -60,12 +66,21 @@ public class GolemBossBattle extends BossBattle {
         }
 
         if(hpPercent <= 0.25) {
+            timePassed = 0;
+            var nextPhase = phases.get("last");
+            currentPhase.cleanStage();
+            currentPhase.active = false;
 
+            currentPhase = nextPhase;
+            getCurrentPhase().init(this);
         }
     }
 
     @Override
     protected void updateLogic() {
+        if(Gdx.input.isKeyJustPressed(Input.Keys.F11)) {
+            DungeonStart.getDungeonMain().getPlayer().heal(10000);
+        }
         super.updateLogic();
         timePassed++;
     }

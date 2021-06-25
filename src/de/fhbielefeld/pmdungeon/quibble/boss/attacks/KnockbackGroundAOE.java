@@ -36,7 +36,6 @@ public class KnockbackGroundAOE extends GroundAoe implements DamageSource {
     protected void onTrigger() {
         var entitiesInReach = level.getEntitiesInRadius(this.getPosition().x, this.getPosition().y, radius);
         entitiesInReach.stream().filter(e -> e instanceof Player).findFirst().ifPresent(p -> {
-            System.out.println("Moin");
             Player player = (Player) p;
             player.damage(this, DamageType.PHYSICAL,  null);
         });
