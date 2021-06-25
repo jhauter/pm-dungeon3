@@ -17,11 +17,21 @@ public class Boss extends NPC {
     //TODO: NEIN!
     public int physBuff = 0;
 
+
+    /**
+     * Boss entity
+     * @param builder Boss-Info
+     */
     public Boss(BossBuilder builder) {
         super(0, 0);
         this.build(builder);
     }
 
+
+    /**
+     * Builds a boss entity described by the BossBuilder structure
+     * @param builder Boss-info
+     */
     public void build(BossBuilder builder) {
 
         setPosition(0,0);
@@ -78,6 +88,13 @@ public class Boss extends NPC {
         return 50;
     }
 
+
+    /**
+     * Plays an animation
+     * @param animName Name of the animation held by the animationHandler
+     * @param cyclic Cyclic NOTE: See AnimationHandler
+     * @param priority Priority NOTE: See AnimationHandler
+     */
     public void playAttackAnimation(String animName, boolean cyclic, int priority) {
         animationHandler.playAnimation(animName, priority, cyclic);
     }

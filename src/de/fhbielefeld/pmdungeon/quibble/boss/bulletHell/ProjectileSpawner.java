@@ -11,6 +11,9 @@ import de.fhbielefeld.pmdungeon.quibble.entity.projectile.Projectile;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Invisible entity that shoots projectiles in the direction that the spawner is currently facing
+ */
 public class ProjectileSpawner extends Entity {
     private DungeonLevel level;
 
@@ -37,6 +40,13 @@ public class ProjectileSpawner extends Entity {
     public BulletCreationFunction bulletCreationFunction;
     public float currentBulletSpeed = 1;
 
+
+    /**
+     * @param shootingIntervall Amount of time between each projectile spawn
+     * @param parentStats Stats of the projectiles that are shot by this instance
+     * @param position Initial Position
+     * @param func Method describing the proectile that is emitted by this instance
+     */
     public ProjectileSpawner(int shootingIntervall, CreatureStats parentStats, Vector2 position, BulletCreationFunction func) {
         this.shootingIntervall = shootingIntervall;
         this.parentStats = parentStats;
@@ -60,6 +70,11 @@ public class ProjectileSpawner extends Entity {
         this.bulletCreationFunction = func;
         this.parent = parent;
     }
+
+    /**
+     *
+     * @param pattern Movementpattern that is supposed to be added to this instance. Multiple patterns may be combined
+     */
     public void addPattern(ProjectileMovementPattern pattern) {
         patterns.add(pattern);
     }
@@ -90,6 +105,10 @@ public class ProjectileSpawner extends Entity {
         }
     }
 
+    /**
+     * Manually shoot a projectile with the given speed
+     * @param speed Speed of the projectile
+     */
     public void shoot(float speed) {
         //Projectile proj = new ArrowProjectile("Arrow", this.getX(), this.getY(), parentStats, BossBattle.boss);
         Projectile proj = bulletCreationFunction.createProjectile();
@@ -125,6 +144,11 @@ public class ProjectileSpawner extends Entity {
         return true;
     }
 
+
+    /**
+     * Sets the direction that the spawner is facing
+     * @param angle Angle in degrees
+     */
     public void setFacing(float angle) {
         this.angle = angle;
 

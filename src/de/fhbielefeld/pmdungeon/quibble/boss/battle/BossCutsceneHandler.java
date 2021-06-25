@@ -16,6 +16,11 @@ public class BossCutsceneHandler implements EntityEventHandler {
     private DungeonLevel level;
     private Player hero;
 
+    /**
+     * @param boss as target
+     * @param level to get Camera
+     * @param hero as target
+     */
     public BossCutsceneHandler(Boss boss,DungeonLevel level,Player hero)
     {
         this.boss = boss;
@@ -23,6 +28,9 @@ public class BossCutsceneHandler implements EntityEventHandler {
         this.hero = hero;
     }
 
+    /**
+     * Spawns CutsceneCamera Entity and set boss and hero as target
+     */
     public void playCutscene() {
         if(played) {
             return;
@@ -40,8 +48,16 @@ public class BossCutsceneHandler implements EntityEventHandler {
         //TODO: Lerp! Camera towards boss
         //TODO: Print Bossname
         //TODO: (OPTIONAL) Zoom Camera
+        //TODO: (OPTIONAL) Music
+        //TODO: (OPTIONAL) Spawn Animation
+
+
+
     }
 
+    /**
+     * @param event the event object is currently not used
+     */
     @Override
     public void handleEvent(EntityEvent event) {
         //? do we need this event?

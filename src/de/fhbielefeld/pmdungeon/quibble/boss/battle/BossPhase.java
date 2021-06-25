@@ -17,6 +17,11 @@ public abstract class BossPhase {
 
     }
 
+
+    /**
+     * Called once after switche to this phase
+     * @param battle Reference to the battle
+     */
     public void init(BossBattle battle) {
         this.battle = battle;
         currentAction = getActions().get(0);
@@ -56,6 +61,9 @@ public abstract class BossPhase {
             }
         }
     }
+    /*
+        Called each frame while BossPhase is active
+     */
     public void run() {
         if(active) {
             currentAction.execute();
@@ -63,6 +71,9 @@ public abstract class BossPhase {
         }
     }
 
+    /*
+        Called on end of fight or if switching to another phase
+     */
     public void cleanStage() {
         var actions = getActions();
 

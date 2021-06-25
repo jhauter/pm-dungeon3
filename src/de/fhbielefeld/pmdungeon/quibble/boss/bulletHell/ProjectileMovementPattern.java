@@ -1,5 +1,9 @@
 package de.fhbielefeld.pmdungeon.quibble.boss.bulletHell;
 
+
+/**
+ * Describes a movement path for a ProjectileSpawner
+ */
 public abstract class ProjectileMovementPattern {
     protected ProjectileSpawner spawner;
 

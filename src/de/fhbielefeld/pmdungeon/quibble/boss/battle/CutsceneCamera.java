@@ -16,28 +16,37 @@ public class CutsceneCamera extends Entity {
     private Entity target;
     private Entity hero;
     private boolean deleteFlag;
-    private float zoom = 2.0f;
+    private float zoom = 3.0f;
     private boolean camReturn = false;
-    private float speed = 0.1f;
+    private float speed = 0.01f;
 
+
+    /**
+     * set position
+     */
     public CutsceneCamera(float x, float y) {
         super(x,y);
         this.deleteFlag = false;
     }
 
+    /**
+     * @param hero Set hero to get hero position
+     */
     public void setHero(Entity hero) {
         this.hero = hero;
     }
-
+    /**
+     * @param target Set hero to get target position
+     */
     public void setTarget(Entity target) {
         this.target = target;
     }
 
-    @Override
-    protected void updateBegin() {
 
-    }
-
+    /**
+     * Override updateLogic to get into update loop
+     * move camera to the boss and back to the player
+     */
     @Override
     protected void updateLogic() {
         super.updateLogic();
@@ -54,17 +63,20 @@ public class CutsceneCamera extends Entity {
     }
 
 
+    /**
+     * @return delete if target player reached
+     */
     @Override
     public boolean shouldDespawn()
     {
         return deleteFlag;
     }
 
-    @Override
-    protected void updateEnd() {
-        super.updateEnd();
-    }
 
+    /**
+     * @param level set level ...
+     * set Camera target to CutsceneCamera
+     */
     @Override
     public void onSpawn(DungeonLevel level) {
         this.level = level;
@@ -73,21 +85,26 @@ public class CutsceneCamera extends Entity {
 
     }
 
+    /**
+     * @return BoundingBox of one pixel
+     */
     @Override
     protected BoundingBox getInitBoundingBox() {
         return new BoundingBox(0, 0, 0.01f, 0.01f);
     }
 
-    @Override
-    public boolean useAnimationHandler() {
-        return false;
-    }
 
+    /**
+     * @return Invisible
+     */
     @Override
     public boolean isInvisible() {
         return true;
     }
 
+    /**
+     * @param otherEntity the entity this entity is colliding with boss or player changes direction
+     */
     @Override
     protected void onEntityCollision(Entity otherEntity) {
         super.onEntityCollision(otherEntity);
@@ -102,7 +119,7 @@ public class CutsceneCamera extends Entity {
             System.out.println("Collision Boss");
             this.setTarget(hero);
             this.camReturn = true;
-            this.speed = 1f;
+            this.speed = 0.1f;
 
         }
 

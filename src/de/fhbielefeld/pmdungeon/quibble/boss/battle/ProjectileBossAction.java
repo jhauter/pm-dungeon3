@@ -13,6 +13,11 @@ public class ProjectileBossAction extends BossAction {
     List<ProjectileSpawner> spawnerList;
     private BossBattle battle;
 
+
+    /**
+     * Creates a new action that spawns projectileSpawners
+     * @param spawnerList  List of projectile spawners that are supposed to spawn upon executing this action
+     */
     public ProjectileBossAction(List<ProjectileSpawner> spawnerList) {
         this.spawnerList = spawnerList;
 

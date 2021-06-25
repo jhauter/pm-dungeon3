@@ -15,6 +15,12 @@ public class GroundEffectBossAction extends BossAction {
     private BossBattle battle;
     private GroundAoe effect;
 
+    /**
+     * Constructs a GroundEffect that can be used by a boss
+     * @param effect Effect
+     * @param radius Max Radius of the GroundEffect
+     * @param bossRelativePosition Position of the GroundEffect relative to the boss
+     */
     public GroundEffectBossAction(GroundAoe effect, int radius, Vector2 bossRelativePosition) {
         this.effect = effect;
 
@@ -24,6 +30,13 @@ public class GroundEffectBossAction extends BossAction {
         this.position = bossRelativePosition;
     }
 
+    /**
+     * @param effect Effect
+     * @param duration Time until action is finished
+     * @param cooldown Time until next action may be executed
+     * @param radius Max Radius
+     * @param bossRelativePosition Position of the GroundEffect relative to the boss
+     */
     public GroundEffectBossAction(GroundAoe effect, int duration, int cooldown, int radius, Vector2 bossRelativePosition) {
         this.effect = effect;
 

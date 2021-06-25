@@ -20,10 +20,18 @@ public abstract class BossBattle extends Entity {
         Represents the current state of the fight independent from the stage queue.
      */
     public DungeonLevel level;
+
+    /**
+     * Indicates whether the boss battle is still running or should be ended
+     */
     private boolean active = true;
     private UIBossBar bossBar;
     private BossCutsceneHandler cutscene;
 
+    /**
+     *
+     * @param level Current level
+     */
     public BossBattle(DungeonLevel level) {
         this.level = level;
         level.spawnEntity(this);
@@ -32,14 +40,28 @@ public abstract class BossBattle extends Entity {
         boss = createBoss(builder);
     }
 
+    /**
+     * Instance of the boss
+     */
     public static Boss boss;
 
+    /**
+     * Phase that is currently being executed
+     */
     protected BossPhase currentPhase;
 
+    /**
+     * Builds a new boss from a BossBuilder structure
+     * @param boss Information
+     * @return Built Boss-entity
+     */
     public Boss createBoss(BossBuilder boss) {
         return new Boss(boss);
     }
 
+    /**
+     * Starts the boss-battle
+     */
     public void start() {
         this.level.spawnEntity(this);
         prepareArea();
@@ -54,15 +76,18 @@ public abstract class BossBattle extends Entity {
         currentPhase.init(this);
         var hero = DungeonStart.getDungeonMain().getPlayer();
         this.cutscene = new BossCutsceneHandler(boss,level, hero);
-        // this.cutscene.playCutscene();
 
     }
 
+    /**
+     * Prepared the area if needed by removing enemy entities
+     */
     public void prepareArea() {
         var enemies = this.level.getAllEntitiesOf(Creature.class,
                 DungeonStart.getDungeonMain().getPlayer());
         enemies.forEach(Creature::setDead);
     }
+
 
     private void onBossBattleEnd() {
         getCurrentPhase().cleanStage();
@@ -96,8 +121,15 @@ public abstract class BossBattle extends Entity {
         super.onSpawn(level);
     }
 
+    /**
+     * Executed each frame, checks if current phase should be switched
+     */
     abstract protected void switchPhase();
 
+
+    /**
+     * @return The position that the Boss is supposed to spawn at
+     */
     abstract public Vector2 getInitialBossPosition();
     abstract protected BossBuilder getBossInformation();
     abstract protected BossPhase getCurrentPhase();
