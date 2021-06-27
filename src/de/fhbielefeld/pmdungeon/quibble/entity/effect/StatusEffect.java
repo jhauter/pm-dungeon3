@@ -32,7 +32,7 @@ public abstract class StatusEffect
 	/**
 	 * Creates a status effect that can be placed on a creature.
 	 * The effect still needs to be added with {@link Creature#addStatusEffect(StatusEffect, int)}
-	 * @param cause the creature that caused the effect (may be <code>null</code>)
+	 * @param creature the creature to influence
 	 */
 	public StatusEffect(Creature creature)
 	{

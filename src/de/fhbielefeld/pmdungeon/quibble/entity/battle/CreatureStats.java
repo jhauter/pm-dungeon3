@@ -169,7 +169,7 @@ public class CreatureStats
 	 */
 	public void multiplyAllStats(double value){
 		for(int i = 0; i < stats.length; i++){
-			stats[i] *= value;
+			this.setStat(CreatureStatsAttribs.values()[i], this.stats[i] * value);
 		}
 	}
 	

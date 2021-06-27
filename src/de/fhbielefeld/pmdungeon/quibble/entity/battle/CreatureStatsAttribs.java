@@ -62,7 +62,12 @@ public enum CreatureStatsAttribs
 	/**
 	 * Ticks remaining until a creature can hit again. Zero means no cool down and ready to hit.
 	 */
-	HIT_COOLDOWN(false);
+	HIT_COOLDOWN(false),
+	
+	/**
+	 * How much light the creature emits. Is currently only used for players.
+	 */
+	FOW_SIGHT(true);
 	
 	private final boolean fillIfNewMax;
 	

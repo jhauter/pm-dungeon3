@@ -47,6 +47,7 @@ public abstract class Item
 	public static final ItemWeaponRanged BLUE_MAGIC_STAFF = new ItemBlueMagicStaff();
 	public static final ItemWeaponRanged SIMPLE_BOW = new ItemWeaponSimpleBow();
 	public static final ItemBag<Item> BAG_DEFAULT = new ItemBag<Item>("Bag", 3, "bag");
+	public static final ItemFogSightPotion POTION_FOG_SIGHT = new ItemFogSightPotion("Fog Sight Potion", 0.5, 1800, "pot_fog_sight");
 	
 	private final String displayName;
 	
