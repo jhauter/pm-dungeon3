@@ -44,6 +44,7 @@ public class Mage extends Player
 		stats.setStat(CreatureStatsAttribs.WALKING_SPEED, 0.1D + level * 0.003D);
 		stats.setStat(CreatureStatsAttribs.HIT_REACH, 0.6D);
 		stats.setStat(CreatureStatsAttribs.HIT_COOLDOWN, 15.0D);
+		stats.setStat(CreatureStatsAttribs.FOW_SIGHT, 1.0D);
 		return stats;
 	}
 	

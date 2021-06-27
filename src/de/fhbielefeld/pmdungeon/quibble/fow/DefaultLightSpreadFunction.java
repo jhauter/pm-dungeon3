@@ -19,4 +19,10 @@ public class DefaultLightSpreadFunction implements LightSpreadFunction
 	{
 		return fogTileSize * 1.5F;
 	}
+
+	@Override
+	public float getIntensityOverTime(float startIntensity, float delta)
+	{
+		return startIntensity - delta;
+	}
 }

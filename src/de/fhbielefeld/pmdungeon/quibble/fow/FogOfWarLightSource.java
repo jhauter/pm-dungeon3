@@ -6,6 +6,8 @@ public class FogOfWarLightSource
 	private final int y;
 	private final float intensity;
 	
+	private float deltaTime;
+	
 	private final LightSpreadFunction function;
 	
 	public FogOfWarLightSource(int x, int y, float intensity)
@@ -39,5 +41,15 @@ public class FogOfWarLightSource
 	public LightSpreadFunction getLightSpreadFunction()
 	{
 		return this.function;
+	}
+	
+	public void addDeltaTime(float deltaTime)
+	{
+		this.deltaTime += deltaTime;
+	}
+	
+	public float getDeltaTime()
+	{
+		return this.deltaTime;
 	}
 }

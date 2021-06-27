@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import de.fhbielefeld.pmdungeon.quibble.LoggingHandler;
+import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.PlayerQuestsChangedEvent;
 import de.fhbielefeld.pmdungeon.quibble.quest.Quest;
@@ -123,8 +124,7 @@ public abstract class Player extends Creature
 			}
 			
 		}
-		
-		this.level.getFogOfWarController().light(this.getX(), this.getY(), 1.0F);
+		this.level.getFogOfWarController().light(this.getX(), this.getY(), (float)this.getCurrentStats().getStat(CreatureStatsAttribs.FOW_SIGHT));
 	}
 	
 	/**

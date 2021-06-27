@@ -42,4 +42,11 @@ public class SpellFireBall extends ProjectileMagic
 	{
 		return this.getTicks() * 0.06F;
 	}
+	
+	@Override
+	protected void updateLogic()
+	{
+		super.updateLogic();
+		this.level.getFogOfWarController().light(this.getX(), this.getY(), 0.5F);
+	}
 }
