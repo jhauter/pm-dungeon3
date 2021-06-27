@@ -589,6 +589,11 @@ public abstract class Entity
 		return false;
 	}
 	
+	public boolean isVisibleInFogOfWar(float lightValue)
+	{
+		return lightValue >= 0.2F;
+	}
+	
 	/**
 	 * Can be overridden in order to not use the animation handler to prevent it from automatically loading
 	 * animations and throwing an exception if no animation is added.

@@ -313,22 +313,34 @@ public class DungeonStart extends MainController implements EntityEventHandler
 	private void renderEntities()
 	{
 		getGameBatch().begin();
-		ArrayList<Entity> entities = new ArrayList<>(currentLevel.getAllEntities());
-		entities.add(this.getPlayer());
-		for (Entity entity : entities) {
-			if (!entity.isInvisible()) {
-				if (entity.isDisplayNameVisible()) {
-					this.renderEntityName(entity);
-				}
-
-				entity.render();
-
-				if (entity instanceof Creature) {
-					this.drawCreatureStatusEffects((Creature) entity);
-				}
+		Entity currentEntity;
+		for(int i = 0; i < currentLevel.getNumEntities(); ++i)
+		{
+			currentEntity = currentLevel.getEntity(i);
+			
+			if(currentEntity.isInvisible())
+			{
+				continue;
+			}
+			if(!currentEntity.isVisibleInFogOfWar(currentEntity.getLevel().getFogOfWarController().getLightValueAt(currentEntity.getX(), currentEntity.getY())))
+			{
+				continue;
+			}
+			
+			if(currentEntity.isDisplayNameVisible())
+			{
+				this.renderEntityName(currentEntity);
+			}
+			
+			currentEntity.render();
+			
+			if(currentEntity instanceof Creature)
+			{
+				this.drawCreatureStatusEffects((Creature)currentEntity);
 			}
 		}
 		getGameBatch().end();
+
 	}
 	
 	private void renderEntityName(Entity entity)
