@@ -27,7 +27,7 @@ public class FogOfWarController
 	private float fogAnimStateTime;
 	
 	private final float fogTileSize;
-	private float defaultFogValue;
+	private float defaultLightValue;
 	private final int fogOfWarWidth;
 	private final int fogOfWarHeight;
 	private final float fogTilesPerSector;
@@ -35,6 +35,8 @@ public class FogOfWarController
 	private FogOfWarQuadTree[][] sectors;
 	private final int sectorsX;
 	private final int sectorsY;
+	
+	private final float fullFogAlphaValue = 0.9F;
 	
 	private List<FogOfWarLightSource> lightSources;
 	
@@ -46,7 +48,7 @@ public class FogOfWarController
 	
 	private FrameBuffer frameBuffer;
 	
-	public FogOfWarController(DungeonLevel level, int sectorSize, int fogTilesPerSector, int levelWidth, int levelHeight, float defaultFogValue)
+	public FogOfWarController(DungeonLevel level, int sectorSize, int fogTilesPerSector, int levelWidth, int levelHeight, float defaultLightValue)
 	{
 		if(fogTilesPerSector <= 0)
 		{
@@ -64,9 +66,9 @@ public class FogOfWarController
 		{
 			throw new IllegalArgumentException("level dimensions cannot be <= 0");
 		}
-		if(defaultFogValue < 0.0F || defaultFogValue > 1.0F)
+		if(defaultLightValue < 0.0F)
 		{
-			throw new IllegalArgumentException("defaultFogValue must be between 0 and 1");
+			throw new IllegalArgumentException("defaultLightValue must be >= 0");
 		}
 		
 		this.level = level;
@@ -74,7 +76,7 @@ public class FogOfWarController
 		this.sectorsY = (int)Math.ceil(levelHeight / (double)sectorSize);
 		this.fogOfWarWidth = this.sectorsX * fogTilesPerSector;
 		this.fogOfWarHeight = this.sectorsY * fogTilesPerSector;
-		this.defaultFogValue = defaultFogValue;
+		this.defaultLightValue = defaultLightValue;
 		this.fogTileSize = sectorSize / (float)fogTilesPerSector;
 		this.fogTilesPerSector = fogTilesPerSector;
 		this.sectors = new FogOfWarQuadTree[this.sectorsX][this.sectorsY];
@@ -88,7 +90,7 @@ public class FogOfWarController
 					y * fogTilesPerSector,
 					x * fogTilesPerSector + fogTilesPerSector,
 					y * fogTilesPerSector + fogTilesPerSector,
-					defaultFogValue);
+					defaultLightValue);
 			}
 		}
 		
@@ -117,7 +119,7 @@ public class FogOfWarController
 	
 	public void update()
 	{
-		this.clearFog();
+		this.resetFog();
 		this.processLightSources();
 	}
 	
@@ -130,6 +132,8 @@ public class FogOfWarController
 		this.fogAnimStateTime += Gdx.graphics.getDeltaTime();
 		float camXDungeon = DungeonStart.getDungeonMain().getCamPosX();
 		float camYDungeon = DungeonStart.getDungeonMain().getCamPosY();
+		
+		//==== Create the low res light map ====
 		
 		//in fog coordinates:
 		int screenWidth = (int)Math.ceil(this.lightMap.getWidth());
@@ -146,9 +150,9 @@ public class FogOfWarController
 		{
 			for(y = 0; y < screenHeight; ++y)
 			{
-				fogIntensity = this.getFogValueAt(minX + x, minY + y);
+				fogIntensity = Math.max((1.0F - this.getLightValueAt(minX + x, minY + y)) * this.fullFogAlphaValue, 0);
 				
-				this.lightMap.setColor(fogIntensity, fogIntensity, fogIntensity, fogIntensity);
+				this.lightMap.setColor(1.0F, 1.0F, 1.0F, fogIntensity);
 				this.lightMap.drawPixel(x, screenHeight - y - 1);
 			}
 		}
@@ -162,6 +166,8 @@ public class FogOfWarController
 		
 		DungeonStart.getGameBatch().draw(lightMapTexture, minX * this.fogTileSize, minY * this.fogTileSize, this.lightMap.getWidth() * this.fogTileSize,
 			this.lightMap.getHeight() * this.fogTileSize);
+		
+		//==== Draw the fog texture, masking with the light map
 		
 		int srcFunc = DungeonStart.getGameBatch().getBlendSrcFunc();
 		int dstFunc = DungeonStart.getGameBatch().getBlendDstFunc();
@@ -227,19 +233,6 @@ public class FogOfWarController
 		renderer.end();
 	}
 	
-	public int getFogTileIndex(int fogX, int fogY, int fogTextureTileFit)
-	{
-		if(fogX < 0)
-		{
-			fogX = (fogX % fogTextureTileFit) + fogTextureTileFit;
-		}
-		if(fogY < 0)
-		{
-			fogY = (fogY % fogTextureTileFit) + fogTextureTileFit;
-		}
-		return fogX % fogTextureTileFit + (fogTextureTileFit - 1 - (fogY % fogTextureTileFit)) * fogTextureTileFit;
-	}
-	
 	public float getFogTileSize()
 	{
 		return this.fogTileSize;
@@ -285,21 +278,21 @@ public class FogOfWarController
 		return this.sectorsY;
 	}
 	
-	public float getFogValueAt(int fogX, int fogY)
+	public float getLightValueAt(int fogX, int fogY)
 	{
 		if(fogX < 0 || fogY < 0 || fogX >= this.fogOfWarWidth || fogY >= this.fogOfWarHeight)
 		{
-			return this.defaultFogValue;
+			return this.defaultLightValue;
 		}
 		return this.sectors[getSectorX(fogX)][getSectorY(fogY)].get(fogX, fogY);
 	}
 	
-	public float getFogValueAt(float dungeonX, float dungeonY)
+	public float getLightValueAt(float dungeonX, float dungeonY)
 	{
-		return this.getFogValueAt(this.getFogX(dungeonX), this.getFogY(dungeonY));
+		return this.getLightValueAt(this.getFogX(dungeonX), this.getFogY(dungeonY));
 	}
 	
-	private void setFogValueAt(int fogX, int fogY, float value)
+	private void setLightValueAt(int fogX, int fogY, float value)
 	{
 		if(fogX < 0 || fogY < 0 || fogX >= this.fogOfWarWidth || fogY >= this.fogOfWarHeight)
 		{
@@ -308,14 +301,14 @@ public class FogOfWarController
 		this.sectors[getSectorX(fogX)][getSectorY(fogY)].set(fogX, fogY, value);
 	}
 	
-	public void clearFog()
+	public void resetFog()
 	{
 		int x, y;
 		for(x = 0; x < this.sectorsX; ++x)
 		{
 			for(y = 0; y < this.sectorsY; ++y)
 			{
-				this.sectors[x][y].clear(this.defaultFogValue);
+				this.sectors[x][y].clear(this.defaultLightValue);
 			}
 		}
 	}
@@ -327,29 +320,45 @@ public class FogOfWarController
 	
 	private void processLightSources()
 	{
-		for(int i = 0, n = this.lightSources.size(); i < n; ++i)
+//		long start = System.currentTimeMillis();
+		FogOfWarLightSource source;
+		for(int i = 0; i < this.lightSources.size(); ++i)
 		{
-			this.processLightSource(this.lightSources.get(i));
+			source = this.lightSources.get(i);
+			this.processLightSource(source);
+			if(!this.processLightSource(source))
+			{
+				this.lightSources.set(i, this.lightSources.get(this.lightSources.size() - 1));
+				this.lightSources.remove(this.lightSources.size() - 1);
+			}
+			source.addDeltaTime(Gdx.graphics.getDeltaTime());
+			
 		}
-		this.lightSources.clear();
+//		System.out.println(System.currentTimeMillis() - start);
 	}
 	
-	private void processLightSource(FogOfWarLightSource src)
+	private boolean processLightSource(FogOfWarLightSource src)
 	{
-//				long start = System.currentTimeMillis();
-		this.spreadLight(src.getX(), src.getY(), 0, src.getIntensity(), src.getLightSpreadFunction());
-//				System.out.println(System.currentTimeMillis() - start);
+		float intensity = src.getLightSpreadFunction().getIntensityOverTime(src.getIntensity(), src.getDeltaTime());
+		if(intensity <= 0.0F)
+		{
+			return false;
+		}
+		//long start = System.currentTimeMillis();
+		this.spreadLight(src.getX(), src.getY(), 0, intensity, src.getLightSpreadFunction());
+		//System.out.println(System.currentTimeMillis() - start);
+		return true;
 	}
 	
 	private void spreadLight(int fowX, int fowY, int dist, float intensity, LightSpreadFunction function)
 	{
-		float newFogVal = 1.0F - intensity;
-		float currentFogValue = this.getFogValueAt(fowX, fowY);
-		if(newFogVal >= currentFogValue || fowX < 0 || fowY < 0 || dist > function.getMaxDist(this.fogTileSize))
+		float newLightVal = Math.max(intensity, 0);
+		float currentLightValue = this.getLightValueAt(fowX, fowY);
+		if(newLightVal <= currentLightValue || fowX < 0 || fowY < 0 || dist > function.getMaxDist(this.fogTileSize))
 		{
 			return;
 		}
-		this.setFogValueAt(fowX, fowY, newFogVal);
+		this.setLightValueAt(fowX, fowY, newLightVal);
 		if(!this.level.getDungeon().isTileAccessible((int)(fowX * this.fogTileSize), (int)(fowY * this.fogTileSize)))
 		{
 			intensity -= function.getLightIntensityFallOffBlocked(dist + 1, this.fogTileSize);
@@ -370,6 +379,5 @@ public class FogOfWarController
 		this.spreadLight(fowX + 1, fowY - 1, dist + 1, intensity * 0.9F, function);
 		this.spreadLight(fowX - 1, fowY + 1, dist + 1, intensity * 0.9F, function);
 		this.spreadLight(fowX - 1, fowY - 1, dist + 1, intensity * 0.9F, function);
-		//TODO get rid of recursion
 	}
 }

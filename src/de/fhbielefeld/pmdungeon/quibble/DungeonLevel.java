@@ -36,22 +36,41 @@ public class DungeonLevel
 	 * The <code>MainController.entityController</code> should not be used anymore as all entities are now in
 	 * <code>DungeonLevel</code>.
 	 * @param world dungeon reference
+	 * @param shgRow number of rows in the spatial hash grid
+	 * @param shgCol number of columns in the spatial hash grid
+	 * @param levelWidth width of the level in dungeon blocks (how far the fog will be shown/collisions are detected)
+	 * @param levelHeight height of the level in dungeon blocks (how far the fog will be shown/collisions are detected)
 	 */
-	public DungeonLevel(DungeonWorld world, int shgRow, int shgCol, int shgWidth, int shgHeight)
+	public DungeonLevel(DungeonWorld world, int shgRow, int shgCol, int levelWidth, int levelHeight, float defaultLightValue)
 	{
 		this.world = world;
 		this.particleSystem = new ParticleSystem();
 		this.entities = new ArrayList<Entity>();
 		this.newEntityBuffer = new ArrayList<Entity>();
 		this.rng = new Random();
-		this.spatialHashGrid = new SpatialHashGrid<>(shgRow, shgCol, shgWidth, shgHeight);
-		this.fogOfWarController = new FogOfWarController(this, 8, 32, (int)shgWidth, (int)shgHeight, 0.9F);
+		this.spatialHashGrid = new SpatialHashGrid<>(shgRow, shgCol, levelWidth, levelHeight);
+		this.fogOfWarController = new FogOfWarController(this, 8, 32, (int)levelWidth, (int)levelHeight, defaultLightValue);
 		this.fogOfWarController.loadTexture("assets/textures/dungeon/fog.png", 4F, 8, 16, 0.1F);
 		
 		//dimensions in dungeon coordinates:
 		int screenWidth = (int)Math.ceil(DrawingUtil.screenToDungeonX(DrawingUtil.CURRENT_SCREEN_WIDTH.get()));
 		int screenHeight = (int)Math.ceil(DrawingUtil.screenToDungeonY(DrawingUtil.CURRENT_SCREEN_HEIGHT.get()));
 		this.fogOfWarController.setLightmapSize(screenWidth, screenHeight);
+	}
+	
+	/**
+	 * Creates a Level that wraps a <code>DungeonWorld</code> and contains all entities in the level.
+	 * The <code>MainController.entityController</code> should not be used anymore as all entities are now in
+	 * <code>DungeonLevel</code>.
+	 * @param world dungeon reference
+	 * @param shgRow number of rows in the spatial hash grid
+	 * @param shgCol number of columns in the spatial hash grid
+	 * @param levelWidth width of the level in dungeon blocks (how far the fog will be shown/collisions are detected)
+	 * @param levelHeight height of the level in dungeon blocks (how far the fog will be shown/collisions are detected)
+	 */
+	public DungeonLevel(DungeonWorld world, int shgRow, int shgCol, int shgWidth, int shgHeight)
+	{
+		this(world, shgRow, shgCol, shgWidth, shgHeight, 0.0F);
 	}
 	
 	/**

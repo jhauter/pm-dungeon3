@@ -7,4 +7,6 @@ public interface LightSpreadFunction
 	public float getLightIntensityFallOffBlocked(int dist, float fogTileSize);
 	
 	public int getMaxDist(float fogTileSize);
+	
+	public float getIntensityOverTime(float startIntensity, float delta);
 }
