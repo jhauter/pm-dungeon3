@@ -101,4 +101,10 @@ public class Knight extends Player
 	{
 		return 3;
 	}
+	
+	@Override
+	public String getPortraitImagePath()
+	{
+		return "assets/textures/entity/knight/knight_m_portrait.png";
+	}
 }
