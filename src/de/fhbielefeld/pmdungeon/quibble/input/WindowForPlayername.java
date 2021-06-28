@@ -1,11 +1,22 @@
 package de.fhbielefeld.pmdungeon.quibble.input;
 
-import de.fhbielefeld.pmdungeon.desktop.DesktopLauncher;
+import java.awt.BorderLayout;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.EventQueue;
+import java.awt.Font;
+
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+
 import de.fhbielefeld.pmdungeon.quibble.DungeonStart;
 import de.fhbielefeld.pmdungeon.quibble.LoggingHandler;
-
-import javax.swing.*;
-import java.awt.*;
 
 /**
  * Creates a window in which the player has to enter a name for the hero. It then checks if the entered name is accepted
@@ -63,7 +74,7 @@ public class WindowForPlayername{
             LoggingHandler.logger.info("The entered name for the hero is accepted.");
             playerName = textField.getText();
             frame.dispose();
-            DungeonStart.startGame();
+            new Thread(() -> DungeonStart.startGame(), "DungeonThread").start();
         } else {
             JOptionPane.showMessageDialog(frame, "The entered name was not accepted.");
             this.showNameRestrictions();
