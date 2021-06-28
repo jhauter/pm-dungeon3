@@ -185,4 +185,6 @@ public abstract class Player extends Creature
 	public void setName(String name) {
 		this.name = name;
 	}
+	
+	public abstract String getPortraitImagePath();
 }

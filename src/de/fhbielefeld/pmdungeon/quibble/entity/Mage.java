@@ -86,5 +86,10 @@ public class Mage extends Player
 	{
 		return 2;
 	}
-	
+
+	@Override
+	public String getPortraitImagePath()
+	{
+		return "assets/textures/entity/mage/wizzard_m_portrait.png";
+	}
 }

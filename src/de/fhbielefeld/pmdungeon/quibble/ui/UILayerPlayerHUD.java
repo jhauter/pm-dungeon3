@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar.ProgressBarStyle;
@@ -21,6 +22,8 @@ public class UILayerPlayerHUD extends UILayer
 	private ProgressBar barLevel;
 	private ProgressBar barHealth;
 	
+	private Image playerPortrait;
+	
 	private Player player;
 	
 	public UILayerPlayerHUD()
@@ -32,6 +35,9 @@ public class UILayerPlayerHUD extends UILayer
 			return;
 		}
 		
+		this.playerPortrait = new Image();
+		this.playerPortrait.setBounds(26, 10, 76, 76);
+		this.getStage().addActor(this.playerPortrait);
 		this.addImage(new TextureRegion(charTex.getResource(), 0, 0, 320, 128), 16, 0, 320, 128);
 		
 		Pixmap transparent = new Pixmap(1, 1, Format.RGBA8888);
@@ -59,13 +65,18 @@ public class UILayerPlayerHUD extends UILayer
 		this.barHealth.setWidth(200);
 		this.getStage().addActor(this.barHealth);
 		
-		this.labelLevel = this.addText("Lv. 1", UIFonts.TITLE, 32, 16);
+		this.labelLevel = this.addText("Lv. 1", UIFonts.TITLE, 32, 10);
 		this.labelHealth = this.addText("Health", UIFonts.DEFAULT, 160, 41);
 	}
 	
 	public void setPlayer(Player player)
 	{
 		this.player = player;
+		DungeonResource<Texture> res = ResourceHandler.requestResourceInstantly(player.getPortraitImagePath(), ResourceType.TEXTURE);
+		if(res.isLoaded())
+		{
+			this.playerPortrait.setDrawable(new TextureRegionDrawable(res.getResource()));
+		}
 	}
 	
 	@Override
