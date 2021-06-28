@@ -48,7 +48,7 @@ public abstract class Item
 	public static final ItemWeaponRanged SIMPLE_BOW = new ItemWeaponSimpleBow();
 	public static final ItemBag<Item> BAG_DEFAULT = new ItemBag<Item>("Bag", 3, "bag");
 	
-	private final String displayName;
+	private String displayName;
 	
 	private final String textureFile;
 	
@@ -147,9 +147,14 @@ public abstract class Item
 	/**
 	 * @return user friendly display name
 	 */
-	public final String getDisplayName()
+	public String getDisplayName()
 	{
 		return this.displayName;
+	}
+	
+	public void setDisplayName(String displayName)
+	{
+		this.displayName = displayName;
 	}
 	
 	/**
