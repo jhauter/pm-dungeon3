@@ -122,6 +122,10 @@ public class CutsceneCamera extends Entity {
             this.speed = 0.1f;
 
         }
+    }
 
+    @Override
+    public boolean useAnimationHandler() {
+        return false;
     }
 }

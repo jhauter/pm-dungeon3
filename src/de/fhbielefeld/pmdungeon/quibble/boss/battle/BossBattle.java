@@ -76,7 +76,7 @@ public abstract class BossBattle extends Entity {
         currentPhase.init(this);
         var hero = DungeonStart.getDungeonMain().getPlayer();
         this.cutscene = new BossCutsceneHandler(boss,level, hero);
-
+        cutscene.playCutscene();
     }
 
     /**
