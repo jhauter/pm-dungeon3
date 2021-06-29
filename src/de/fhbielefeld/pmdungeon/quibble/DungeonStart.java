@@ -1,6 +1,5 @@
 package de.fhbielefeld.pmdungeon.quibble;
 
-import java.util.ArrayList;
 import java.util.Set;
 import java.util.logging.Level;
 
@@ -43,17 +42,16 @@ import de.fhbielefeld.pmdungeon.quibble.file.DungeonResource;
 import de.fhbielefeld.pmdungeon.quibble.file.ResourceHandler;
 import de.fhbielefeld.pmdungeon.quibble.file.ResourceType;
 import de.fhbielefeld.pmdungeon.quibble.input.DungeonInputHandler;
-import de.fhbielefeld.pmdungeon.quibble.item.RandomItemGenerator;
 import de.fhbielefeld.pmdungeon.quibble.input.WindowForPlayername;
-import de.fhbielefeld.pmdungeon.quibble.item.Item;
+import de.fhbielefeld.pmdungeon.quibble.item.RandomItemGenerator;
 import de.fhbielefeld.pmdungeon.quibble.particle.DrawingUtil;
 import de.fhbielefeld.pmdungeon.quibble.quest.QuestDummy;
 import de.fhbielefeld.pmdungeon.quibble.quest.QuestFactory;
 import de.fhbielefeld.pmdungeon.quibble.trap.TrapDamage;
 import de.fhbielefeld.pmdungeon.quibble.trap.TrapTeleport;
 import de.fhbielefeld.pmdungeon.quibble.ui.UIFonts;
-import de.fhbielefeld.pmdungeon.quibble.ui.UILayer;
 import de.fhbielefeld.pmdungeon.quibble.ui.UILayerCredits;
+import de.fhbielefeld.pmdungeon.quibble.ui.UILayerGameOverScreen;
 import de.fhbielefeld.pmdungeon.quibble.ui.UILayerInventoryView;
 import de.fhbielefeld.pmdungeon.quibble.ui.UILayerPlayerHUD;
 import de.fhbielefeld.pmdungeon.quibble.ui.UILayerQuestView;
@@ -121,6 +119,7 @@ public class DungeonStart extends MainController implements EntityEventHandler
 	private UILayerInventoryView uiLayerChestView;
 	private UILayerQuestView uiLayerQuestView;
 	private UILayerCredits uiLayerCredits;
+	private UILayerGameOverScreen uiLayerGameOverScreen;
 	
 	/**************DEBUG UTILS*************/
 	
@@ -176,12 +175,16 @@ public class DungeonStart extends MainController implements EntityEventHandler
 		this.uiLayerCredits = new UILayerCredits();
 		this.uiLayerCredits.setZIndex(100);
 		
+		this.uiLayerGameOverScreen = new UILayerGameOverScreen(Color.FIREBRICK);
+		this.uiLayerGameOverScreen.setZIndex(99);
+		
 		this.uiManager.addUI(this.uiLayerHUD);
 		this.uiManager.addUI(this.uiLayerPlayerEquipment);
 		this.uiManager.addUI(this.uiLayerPlayerInventory);
 		this.uiManager.addUI(this.uiLayerChestView);
 		this.uiManager.addUI(this.uiLayerQuestView);
 		this.uiManager.addUI(this.uiLayerCredits);
+		this.uiManager.addUI(this.uiLayerGameOverScreen);
 		
 		this.gameInputProcessor = new DungeonInputHandler();
 		this.inputMultiplexer = new InputMultiplexer(this.uiManager.getInputProcessors());
@@ -294,6 +297,16 @@ public class DungeonStart extends MainController implements EntityEventHandler
 		}
 		this.currentLevel.getParticleSystem().update((System.currentTimeMillis() - this.lastFrameTimeStamp) / 1000.0F);
 		this.lastFrameTimeStamp = System.currentTimeMillis();
+		
+
+		if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE))
+		{
+			this.uiLayerGameOverScreen.play();
+		}
+		if(Gdx.input.isKeyJustPressed(Input.Keys.P))
+		{
+			this.uiLayerGameOverScreen.reset();
+		}
 	}
 	
 	@Override
@@ -468,6 +481,7 @@ public class DungeonStart extends MainController implements EntityEventHandler
 				if(statEvent.getNewValue() <= 0.0D)
 				{
 					LoggingHandler.logger.log(Level.INFO, "Game over!");
+					this.getUIGameOverScreen().play();
 				}
 			}
 		}
@@ -540,6 +554,11 @@ public class DungeonStart extends MainController implements EntityEventHandler
 	public UILayerCredits getUICredits()
 	{
 		return this.uiLayerCredits;
+	}
+	
+	public UILayerGameOverScreen getUIGameOverScreen()
+	{
+		return this.uiLayerGameOverScreen;
 	}
 	
 	public Player getPlayer()
