@@ -27,14 +27,14 @@ public class GolemDemoSecondPhase extends BossPhase {
                 return new GolemProjectile("def", 0, 0, new CreatureStats(), BossBattle.boss);
             }
         };
-        var projectile = new ProjectileSpawner(15, new CreatureStats(), new Vector2(0,0), bullet, BossBattle.boss);
+        var projectile = new ProjectileSpawner(100, new CreatureStats(), new Vector2(0,0), bullet, BossBattle.boss);
 
-        projectile.addPattern(new SpinMovementPattern(projectile, 7));
+        projectile.addPattern(new SpinMovementPattern(projectile, 10));
         projectile.currentBulletSpeed = 0.05f;
 
-        var testProjectileAction = new ProjectileBossAction(Arrays.asList(projectile));
+        var testProjectileAction = new ProjectileBossAction(Arrays.asList(projectile), 100, 100);
 
-        var spawnAction = new GroundEffectBossAction(new SpawnGroundAOE(2),30 , 50, 2,new Vector2(0,0));
+        var spawnAction = new GroundEffectBossAction(new SpawnGroundAOE(2),180 , 140, 2,new Vector2(0,0));
 
         actions.add(spawnAction);
         actions.add(testProjectileAction);
@@ -51,7 +51,7 @@ public class GolemDemoSecondPhase extends BossPhase {
     @Override
     public void run() {
         super.run();
-        BossBattle.boss.playAttackAnimation("shield_idle", true, 0);
+        BossBattle.boss.playAttackAnimation("shield_idle", false, 0);
     }
 
     @Override

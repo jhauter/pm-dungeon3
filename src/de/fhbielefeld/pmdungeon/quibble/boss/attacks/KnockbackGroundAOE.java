@@ -21,7 +21,6 @@ public class KnockbackGroundAOE extends GroundAoe implements DamageSource {
         super(radius);
         this.animationHandler.addAsDefaultAnimation("slam",
                 4, 0.01f, 1, 4, "assets/textures/entity/golem/groundAOE.png");
-        ticksUntilAction = 2;
         this.ticksUntilAction = 2;
         this.renderScaleX = 3;
         this.renderScaleY = 3;

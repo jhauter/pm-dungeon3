@@ -9,9 +9,8 @@ import java.util.List;
 
 public class ProjectileBossAction extends BossAction {
 
-    //NOTE: Die Positionen der Projectiles sollen Boss-Relative sein. Ist noch unschön und net eindeutig
+    //NOTE: Die Positionen der Projectiles sollen Boss-Relative sein. Ist noch unschï¿½n und net eindeutig
     List<ProjectileSpawner> spawnerList;
-    private BossBattle battle;
 
 
     /**
@@ -47,8 +46,7 @@ public class ProjectileBossAction extends BossAction {
     @Override
     public void onActionBegin(BossBattle battle) {
         super.onActionBegin(battle);
-        System.out.println("OnActionBegin");
-        this.battle = battle;
+        BossBattle.boss.playAttackAnimation("shoot" , false, 10);
 
         for(var i : spawnerList) {
             System.out.println("Spawn");
@@ -59,14 +57,13 @@ public class ProjectileBossAction extends BossAction {
 
     @Override
     public void execute() {
-        //Hmmm?
+        super.execute();
     }
 
     @Override
     public void onActionEnd() {
-        System.out.println("OnActionEnd");
         for(var i: spawnerList) {
-            System.out.println("Despawn");
+            System.out.println("Unspawn");
             i.despawnFlag = true;
         }
     }

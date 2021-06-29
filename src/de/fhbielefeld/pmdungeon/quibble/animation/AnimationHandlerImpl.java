@@ -233,14 +233,13 @@ public class AnimationHandlerImpl implements AnimationHandler
 		final int tileWidth = texRes.getResource().getWidth() / animInfo.columns;
 		final int tileHeight = texRes.getResource().getHeight() / animInfo.rows;
 		TextureRegion[][] grid = TextureRegion.split(texRes.getResource(), tileWidth, tileHeight);
-		for(int n = animInfo.firstFrame; n < animInfo.numFrames + animInfo.firstFrame; ++n)
-		{
+		for(int n = animInfo.firstFrame; n < animInfo.numFrames + animInfo.firstFrame; ++n) {
 			frames.add(grid[n / animInfo.columns][n % animInfo.columns]);
 		}
 		Animation<TextureRegion> anim = new Animation<>(animInfo.frameDuration, frames.toArray(new TextureRegion[0]));
 		return new LoadedAnimation(anim);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */

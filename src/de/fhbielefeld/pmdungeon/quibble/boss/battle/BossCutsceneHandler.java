@@ -7,6 +7,7 @@ import de.fhbielefeld.pmdungeon.quibble.entity.Player;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEventHandler;
 import de.fhbielefeld.pmdungeon.vorgaben.tools.Point;
+import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
 
 public class BossCutsceneHandler implements EntityEventHandler {
 
@@ -15,7 +16,7 @@ public class BossCutsceneHandler implements EntityEventHandler {
     private boolean played = false;
     private DungeonLevel level;
     private Player hero;
-
+    private CutsceneCamera c;
     /**
      * @param boss as target
      * @param level to get Camera
@@ -37,22 +38,30 @@ public class BossCutsceneHandler implements EntityEventHandler {
         }
         this.played = true;
 
-        CutsceneCamera c = new CutsceneCamera(15, 23);
-        //CutsceneHelper c = new CutsceneHelper(15, 23);
+        c = new CutsceneCamera(this.hero.getX(), this.hero.getY());
 
         level.spawnEntity(c);
         c.setTarget(boss);
+        c.setBoss(boss);
         c.setHero(hero);
 
-        //TODO: Prevent player and Boss from moving
+        // Prevent player and Boss from moving
+        hero.getCurrentStats().setStat(CreatureStatsAttribs.WALKING_SPEED,0);
+        boss.getCurrentStats().setStat(CreatureStatsAttribs.WALKING_SPEED,0);
+
+
         //TODO: Lerp! Camera towards boss
         //TODO: Print Bossname
         //TODO: (OPTIONAL) Zoom Camera
         //TODO: (OPTIONAL) Music
         //TODO: (OPTIONAL) Spawn Animation
+    }
 
-
-
+    public boolean isFinished() {
+        return c.shouldDespawn();
+    }
+    public boolean bossReached() {
+        return c.getCamReturn();
     }
 
     /**

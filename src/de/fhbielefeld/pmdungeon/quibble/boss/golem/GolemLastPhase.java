@@ -26,52 +26,34 @@ public class GolemLastPhase extends BossPhase {
 
 
     public GolemLastPhase() {
-        refreshActions();
-    }
-
-    private void refreshActions() {
         var bullet = new BulletCreationFunction() {
             @Override
             public Projectile createProjectile() {
                 return new GolemProjectile("def", 0, 0, new CreatureStats(), BossBattle.boss);
             }
         };
-        projSpawner.forEach(s -> s.despawnFlag = true);
-        projSpawner.clear();
-
-        for(int i = 0; i<5; ++i) {
+        for(int i = 0; i<3; ++i) {
             var face = rand.nextInt(360);
-            var spawner = new ProjectileSpawner(35, new CreatureStats(), new Vector2(0,0), bullet, BossBattle.boss);
-            spawner.currentBulletSpeed = 0.1f;
-
+            var spawner = new ProjectileSpawner(3000, new CreatureStats(), new Vector2(0,0), bullet, BossBattle.boss);
             spawner.setFacing(face);
+            spawner.addPattern(new SpinMovementPattern(spawner, 200));
+            spawner.currentBulletSpeed = 0.08f;
+
             projSpawner.add(spawner);
         }
 
-        actions.clear();
-        //actions.add(new GroundEffectBossAction(new KnockbackGroundAOE(2), 2, new Vector2(0, -1)));
-        actions.add(new ProjectileBossAction(projSpawner, 800, 100));
+        actions.add(new ProjectileBossAction(projSpawner, 60,100 ));
     }
 
     @Override
     public void run() {
         super.run();
-        teleportCDCounter++;
-        System.out.println(mage.getPosition());
-        System.out.println(BossBattle.boss.getPosition());
-
-        if(teleportCDCounter >= teleportCD) {
-            mage.setPosition(BossBattle.boss.getPosition());
-            teleportCDCounter = 0;
-            refreshActions();
-        }
     }
 
     @Override
     public void init(BossBattle battle) {
         super.init(battle);
         this.battle = battle;
-        battle.level.spawnEntity(mage);
     }
 
     @Override

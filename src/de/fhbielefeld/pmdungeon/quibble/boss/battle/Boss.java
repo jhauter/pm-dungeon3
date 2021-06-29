@@ -38,9 +38,8 @@ public class Boss extends NPC {
 
         var scale = builder.renderScale
                 .orElseGet(() -> new Vector2(1,1));
-        this.renderScaleX = scale.x;
-        this.renderScaleY = scale.y;
-
+        this.renderWidth = scale.x;
+        this.renderHeight = scale.y;
         //NOTE: Maybe only give it to context instead
         this.difficulty = builder.difficulty
                 .orElseGet(() -> BossDifficulty.Easy);

@@ -6,6 +6,7 @@ import de.fhbielefeld.pmdungeon.quibble.DungeonStart;
 import de.fhbielefeld.pmdungeon.quibble.entity.BoundingBox;
 import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
 import de.fhbielefeld.pmdungeon.quibble.entity.Entity;
+import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
 
 /**
  * Contains information and functionality required to controll
@@ -27,6 +28,11 @@ public abstract class BossBattle extends Entity {
     private boolean active = true;
     private UIBossBar bossBar;
     private BossCutsceneHandler cutscene;
+    private boolean initialized = false;
+
+    private float initialPlayerSpeed = 0;
+    private float initialBossSpeed = 0;
+
 
     /**
      *
@@ -58,7 +64,6 @@ public abstract class BossBattle extends Entity {
     public Boss createBoss(BossBuilder boss) {
         return new Boss(boss);
     }
-
     /**
      * Starts the boss-battle
      */
@@ -70,13 +75,15 @@ public abstract class BossBattle extends Entity {
 
         DungeonStart.getDungeonMain().getUIManager().addUI(bossBar);
         boss.setPosition(getInitialBossPosition());
-
         this.level.spawnEntity(boss);
-        currentPhase = getCurrentPhase();
-        currentPhase.init(this);
-        var hero = DungeonStart.getDungeonMain().getPlayer();
-        this.cutscene = new BossCutsceneHandler(boss,level, hero);
+        this.cutscene = new BossCutsceneHandler(boss, level, DungeonStart.getDungeonMain().getPlayer());
+        this.initialPlayerSpeed = DungeonStart.getDungeonMain().getPlayer().getWalkingSpeed();
+        this.initialBossSpeed = boss.getWalkingSpeed();
+
         cutscene.playCutscene();
+
+        // TODO: set boss invisable?
+        // moved spawn animation to updateLogic
     }
 
     /**
@@ -88,6 +95,13 @@ public abstract class BossBattle extends Entity {
         enemies.forEach(Creature::setDead);
     }
 
+    public void nextAction() {
+        currentPhase.nextAction();
+    }
+
+    public void removeAction(BossAction action) {
+        currentPhase.removeAction(action);
+    }
 
     private void onBossBattleEnd() {
         getCurrentPhase().cleanStage();
@@ -102,13 +116,25 @@ public abstract class BossBattle extends Entity {
 
     @Override
     protected void updateLogic() {
-        if(isBattleOver()) {
-            onBossBattleEnd();
+        if(!initialized) {
+            if (cutscene.bossReached()){
+                boss.playAttackAnimation("spawn", false, 10);
+            }
+            if(cutscene.isFinished()) {
+                currentPhase = getCurrentPhase();
+                currentPhase.init(this);
+                this.initialized = true;
+                boss.getCurrentStats().setStat(CreatureStatsAttribs.WALKING_SPEED, initialBossSpeed);
+                DungeonStart.getDungeonMain().getPlayer().getCurrentStats().setStat(CreatureStatsAttribs.WALKING_SPEED, initialPlayerSpeed);
+            }
         } else {
-            switchPhase();
-            getCurrentPhase().run();
+            if(isBattleOver()) {
+                onBossBattleEnd();
+            } else {
+                switchPhase();
+                getCurrentPhase().run();
+            }
         }
-
     }
 
     @Override

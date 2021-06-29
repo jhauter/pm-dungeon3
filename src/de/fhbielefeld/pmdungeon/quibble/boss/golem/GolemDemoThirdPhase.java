@@ -50,13 +50,13 @@ public class GolemDemoThirdPhase extends BossPhase {
         projectile5.currentBulletSpeed = 0.2f;
         projectile6.currentBulletSpeed = 0.2f;
 
-        var spawnAction = new GroundEffectBossAction(new SpawnGroundAOE(2),30 , 30, 2,new Vector2(0,0));
+        var spawnAction = new GroundEffectBossAction(new SpawnGroundAOE(2),230 , 200, 2,new Vector2(0,0));
 
-        var testProjectileAction = new ProjectileBossAction(Arrays.asList(projectile, projectile2, projectile3, projectile4, projectile5, projectile6), 200, 300);
-        var knockbackAction = new GroundEffectBossAction(new KnockbackGroundAOE(2), 2, new Vector2(0, -1));
+        var testProjectileAction = new ProjectileBossAction(Arrays.asList(projectile, projectile2, projectile3, projectile4, projectile5, projectile6), 200, 100);
+        var knockbackAction = new GroundEffectBossAction(new KnockbackGroundAOE(2),  140, 120, 2, new Vector2(0,0));
 
-        actions.add(knockbackAction);
         actions.add(spawnAction);
+        actions.add(knockbackAction);
         actions.add(testProjectileAction);
     }
 
@@ -71,9 +71,9 @@ public class GolemDemoThirdPhase extends BossPhase {
         BossBattle.boss.physBuff = 3;
         BossBattle.boss.updateMaxStats();
 
-        BossBattle.boss.setPosition(battle.getInitialBossPosition());
+        //BossBattle.boss.setPosition(battle.getInitialBossPosition());
 
-        BossBattle.boss.playAttackAnimation("arm_transform", false, 2);
+        BossBattle.boss.playAttackAnimation("arm_transform", false, 1);
 
         var arm = new GolemArmAdd(BossBattle.boss.getPosition().x, BossBattle.boss.getPosition().y);
 

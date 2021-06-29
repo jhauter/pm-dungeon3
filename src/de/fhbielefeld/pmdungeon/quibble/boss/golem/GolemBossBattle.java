@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class GolemBossBattle extends BossBattle {
-
     private HashMap<String, BossPhase> phases;
     private BossPhase currentPhase;
     private long timePassed;
@@ -31,7 +30,7 @@ public class GolemBossBattle extends BossBattle {
         phases.put("third", new GolemDemoThirdPhase());
         phases.put("last", new GolemLastPhase());
 
-        currentPhase = phases.get("last");
+        currentPhase = phases.get("start");
     }
     @Override
     protected boolean isBattleOver() {
@@ -88,20 +87,28 @@ public class GolemBossBattle extends BossBattle {
     @Override
     protected BossBuilder getBossInformation() {
         var animList = new ArrayList<AnimationHandlerImpl.AnimationInfo>();
-        var animInfoIdle = new AnimationHandlerImpl.AnimationInfo("idle", 4,
-                0, 0.5f, 1,
-                4, "assets/textures/entity/golem/golem_idle_test.png");
-        var animInfoGroundSlam = new AnimationHandlerImpl.AnimationInfo("slam", 7, 0, 0.1f, 1, 7,
-                "assets/textures/entity/golem/golem_slam.png");
-        var animInfoShield = new AnimationHandlerImpl.AnimationInfo("shield", 7, 0, 0.8f, 1, 7,
-                "assets/textures/entity/golem/golem_shield.png");
-        var animInfoShieldIdle = new AnimationHandlerImpl.AnimationInfo("shield_idle", 1, 0, 0.3f, 1, 1,
-                "assets/textures/entity/golem/golem_shield_idle.png");
+        var animSpawn = new AnimationHandlerImpl.AnimationInfo("spawn", 8, 10, 0.8f, 10, 10,
+                "assets/textures/entity/golem/Character_sheet.png");
 
-        var animInfoArmTransform = new AnimationHandlerImpl.AnimationInfo("arm_transform", 9, 0, 0.3f, 1, 9,
-                "assets/textures/entity/golem/golem_arm_transform.png");
+        var animInfoIdle = new AnimationHandlerImpl.AnimationInfo("idle", 4,
+                0, 0.5f, 10,
+                10, "assets/textures/entity/golem/Character_sheet.png");
+        var animShoot = new AnimationHandlerImpl.AnimationInfo("shoot", 7, 50, 0.5f, 10,
+                10, "assets/textures/entity/golem/Character_sheet.png");
+
+        var animInfoGroundSlam = new AnimationHandlerImpl.AnimationInfo("slam", 7, 40, 0.35f, 10, 10,
+                "assets/textures/entity/golem/Character_sheet.png");
+        var animInfoShield = new AnimationHandlerImpl.AnimationInfo("shield", 7, 30, 0.3f, 10, 10,
+                "assets/textures/entity/golem/Character_sheet.png");
+        var animInfoShieldIdle = new AnimationHandlerImpl.AnimationInfo("shield_idle", 1, 36, 0.3f, 10, 10,
+                "assets/textures/entity/golem/Character_sheet.png");
+
+        var animInfoArmTransform = new AnimationHandlerImpl.AnimationInfo("arm_transform", 9, 20, 0.4f, 10, 10,
+                "assets/textures/entity/golem/Character_sheet.png");
 
         animList.add(animInfoIdle);
+        animList.add(animSpawn);
+        animList.add(animShoot);
         animList.add(animInfoGroundSlam);
         animList.add(animInfoShield);
         animList.add(animInfoShieldIdle);
@@ -112,7 +119,7 @@ public class GolemBossBattle extends BossBattle {
         bossStats.setStat(CreatureStatsAttribs.HEALTH, 3000);
 
         bossBuilder = bossBuilder
-                .setRenderScale(new Vector2(1f,1f))
+                .setRenderScale(new Vector2(6,5))
                 .setAnimation(animList)
                 .setMaxHP(bossStats);
         return bossBuilder;

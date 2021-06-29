@@ -1,5 +1,6 @@
 package de.fhbielefeld.pmdungeon.quibble.boss.battle;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -24,32 +25,29 @@ public class UIBossBar extends UILayer {
         int barHeight = 16;
         int posX = 220;
         int posY = 450;
-
-        DungeonResource<Texture> charTex = ResourceHandler.requestResourceInstantly("assets/textures/hud/expbar.png", ResourceType.TEXTURE);
-
+        DungeonResource<Texture> charTex = ResourceHandler.requestResourceInstantly("assets/textures/hud/bossbar.png", ResourceType.TEXTURE);
         if(!charTex.isLoaded())
         {
             return;
         }
-
         this.addImage(new TextureRegion(charTex.getResource(), 0, 0, barWidth, barHeight), posX, posY, barWidth, barHeight);
 
         Pixmap transparent = new Pixmap(16, 16, Pixmap.Format.RGBA8888);
         transparent.setColor(0.0F, 0.0F, 0.0F, 0.0F);
         transparent.fill();
-        Texture transparentTexture = new Texture(transparent);
 
         ProgressBar.ProgressBarStyle healthStyle = new ProgressBar.ProgressBarStyle();
-        healthStyle.knobBefore = new TextureRegionDrawable(new TextureRegion(charTex.getResource(), 330, 0, 21, 16));
-        healthStyle.knob = new TextureRegionDrawable(transparentTexture);
-        //
+        healthStyle.knobBefore = new TextureRegionDrawable(new TextureRegion(charTex.getResource(), 0, 16, 12, 12));
+        healthStyle.knob = new TextureRegionDrawable(new Texture(transparent));
+
         this.barHealth = new ProgressBar(0.0F, 1.0F, 0.05F, false, healthStyle);
-        this.barHealth.setPosition(posX+2, posY);
+        this.barHealth.setPosition(posX+4, posY);
         this.barHealth.setValue(1F);
-        this.barHealth.setWidth(barWidth-2);
+        this.barHealth.setColor(0.6f,0.0f,0.0f,1.0f);
+        this.barHealth.setWidth(barWidth);
         this.getStage().addActor(this.barHealth);
 
-        this.labelHealth = this.addText("Boss", UIFonts.DEFAULT, 230, 445);
+        this.labelHealth = this.addText("Boss", UIFonts.DEFAULT, 230, 451);
     }
 
     public void setBoss(NPC boss)
@@ -69,8 +67,12 @@ public class UIBossBar extends UILayer {
         {
             this.barHealth.setValue((float)Math.max(0, this.boss.getCurrentHealth() / this.boss.getMaxHealth()));
         }
-        System.out.println(this.boss.getCurrentHealth());
-
         this.labelHealth.setText(this.boss.getDisplayName()+" " + (int)this.boss.getCurrentHealth() + " / " + (int)this.boss.getMaxHealth());
+    }
+    public void changeBossHPColor(Color color){
+        this.barHealth.setColor(color);
+    }
+    public void changeBossHPColor(float r,float g,float b,float a){
+        this.barHealth.setColor(r,g,b,a);
     }
 }

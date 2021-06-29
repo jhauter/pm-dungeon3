@@ -30,9 +30,6 @@ public class ProjectileSpawner extends Entity {
     private Vector2 facing = new Vector2(1,1);
     private float angle;
     private float projectileSpeed = 0.5F;
-    private SpinMovementPattern test;
-    private SpinBoundsPattern test2;
-    private BoundedMovePattern test3;
     public Entity parent;
 
     public Vector2 offset;
@@ -152,7 +149,7 @@ public class ProjectileSpawner extends Entity {
     public void setFacing(float angle) {
         this.angle = angle;
 
-        this.facing = facing.setAngleDeg(angle);
+        this.facing = this.facing.setAngleDeg(angle);
     }
 
     public float getAngle() {

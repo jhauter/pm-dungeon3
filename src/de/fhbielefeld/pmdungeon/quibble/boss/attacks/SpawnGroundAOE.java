@@ -24,7 +24,7 @@ public class SpawnGroundAOE extends GroundAoe{
         animationHandler.addAnimation("spawn", 5, 0.3f, 1, 5,
                 "assets/textures/entity/golem/ground_fire.png");
 
-        this.ticksUntilAction = 20;
+        this.ticksUntilAction = 30;
     }
 
     @Override

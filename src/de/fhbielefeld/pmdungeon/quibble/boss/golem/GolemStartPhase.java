@@ -10,13 +10,12 @@ import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
 import de.fhbielefeld.pmdungeon.quibble.entity.projectile.ArrowProjectile;
 import de.fhbielefeld.pmdungeon.quibble.entity.projectile.Projectile;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class GolemStartPhase extends BossPhase {
-    private ArrayList<BossAction> actions = new ArrayList<>();
+    private final ArrayList<BossAction> actions = new ArrayList<>();
+    private Random rand = new Random();
+
     public GolemStartPhase() {
         var bullet = new BulletCreationFunction() {
             @Override
@@ -25,33 +24,19 @@ public class GolemStartPhase extends BossPhase {
             }
         };
 
-        var projectile1 = new ProjectileSpawner(50, new CreatureStats(), new Vector2(-3,0), bullet, BossBattle.boss);
-        var projectile2 = new ProjectileSpawner(50, new CreatureStats(), new Vector2(3,0), bullet, BossBattle.boss);
-        var projectile3 = new ProjectileSpawner(50, new CreatureStats(), new Vector2(0,-3), bullet, BossBattle.boss);
-        var projectile4 = new ProjectileSpawner(50, new CreatureStats(), new Vector2(0,3), bullet, BossBattle.boss);
+        List<ProjectileSpawner> projSpawner = new ArrayList<>();
 
-        var projectile5 = new ProjectileSpawner(50, new CreatureStats(), new Vector2(0,5), bullet, BossBattle.boss);
-        var projectile6 = new ProjectileSpawner(50, new CreatureStats(), new Vector2(0,-5), bullet, BossBattle.boss);
+        for(int i = 0; i<3; ++i) {
+            var face = rand.nextInt(360);
+            var proj = new ProjectileSpawner(50, new CreatureStats(), new Vector2(0,0), bullet, BossBattle.boss);
+            proj.addPattern(new SpinMovementPattern(proj, 200));
+            proj.currentBulletSpeed = 0.08f;
+            proj.setFacing(face);
+            projSpawner.add(proj);
+        }
+        var testProjectileAction = new ProjectileBossAction(projSpawner, 80, 40);
 
-        projectile2.setFacing(10);
-        projectile4.setFacing(180);
-
-        projectile1.currentBulletSpeed = 0.1f;
-        projectile2.currentBulletSpeed = 0.1f;
-        projectile3.currentBulletSpeed = 0.1f;
-        projectile4.currentBulletSpeed = 0.1f;
-
-        projectile1.addPattern(new SpinMovementPattern(projectile1, 2));
-        projectile2.addPattern(new SpinMovementPattern(projectile2, 1));
-        projectile3.addPattern(new SpinMovementPattern(projectile3,2 ));
-        projectile4.addPattern(new SpinMovementPattern(projectile4, 1));
-        projectile5.addPattern(new SpinMovementPattern(projectile5, 2));
-        projectile6.addPattern(new SpinMovementPattern(projectile6, 1));
-
-        var testProjectileAction = new ProjectileBossAction(new ArrayList<>(Arrays.asList(projectile1, projectile2,
-                projectile3, projectile4, projectile5, projectile6)));
-
-        var knockbackAction = new GroundEffectBossAction(new KnockbackGroundAOE(2), 2, new Vector2(0, -1));
+        var knockbackAction = new GroundEffectBossAction(new KnockbackGroundAOE(2), 2, new Vector2(0, 0));
 
         actions.add(testProjectileAction);
         actions.add(knockbackAction);
