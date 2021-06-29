@@ -7,6 +7,7 @@ import java.util.logging.Level;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -51,6 +52,8 @@ import de.fhbielefeld.pmdungeon.quibble.quest.QuestFactory;
 import de.fhbielefeld.pmdungeon.quibble.trap.TrapDamage;
 import de.fhbielefeld.pmdungeon.quibble.trap.TrapTeleport;
 import de.fhbielefeld.pmdungeon.quibble.ui.UIFonts;
+import de.fhbielefeld.pmdungeon.quibble.ui.UILayer;
+import de.fhbielefeld.pmdungeon.quibble.ui.UILayerCredits;
 import de.fhbielefeld.pmdungeon.quibble.ui.UILayerInventoryView;
 import de.fhbielefeld.pmdungeon.quibble.ui.UILayerPlayerHUD;
 import de.fhbielefeld.pmdungeon.quibble.ui.UILayerQuestView;
@@ -117,6 +120,7 @@ public class DungeonStart extends MainController implements EntityEventHandler
 	private UILayerInventoryView uiLayerPlayerInventory;
 	private UILayerInventoryView uiLayerChestView;
 	private UILayerQuestView uiLayerQuestView;
+	private UILayerCredits uiLayerCredits;
 	
 	/**************DEBUG UTILS*************/
 	
@@ -158,22 +162,26 @@ public class DungeonStart extends MainController implements EntityEventHandler
 		this.uiLayerHUD.setZIndex(0);
 		
 		this.uiLayerPlayerEquipment = new UILayerInventoryView("Equipment", 352, 80, 40, 8);
-		this.uiLayerPlayerEquipment.setZIndex(1);
+		this.uiLayerPlayerEquipment.setZIndex(0);
 		
 		this.uiLayerPlayerInventory = new UILayerInventoryView("Inventory", 352, 16, 40, 8);
-		this.uiLayerPlayerInventory.setZIndex(1);
+		this.uiLayerPlayerInventory.setZIndex(0);
 		
 		this.uiLayerChestView = new UILayerInventoryView("Chest", 352, 144, 40, 8);
-		this.uiLayerChestView.setZIndex(1);
+		this.uiLayerChestView.setZIndex(0);
 		
 		this.uiLayerQuestView = new UILayerQuestView(16, 400);
 		this.uiLayerQuestView.setZIndex(1);
+		
+		this.uiLayerCredits = new UILayerCredits();
+		this.uiLayerCredits.setZIndex(100);
 		
 		this.uiManager.addUI(this.uiLayerHUD);
 		this.uiManager.addUI(this.uiLayerPlayerEquipment);
 		this.uiManager.addUI(this.uiLayerPlayerInventory);
 		this.uiManager.addUI(this.uiLayerChestView);
 		this.uiManager.addUI(this.uiLayerQuestView);
+		this.uiManager.addUI(this.uiLayerCredits);
 		
 		this.gameInputProcessor = new DungeonInputHandler();
 		this.inputMultiplexer = new InputMultiplexer(this.uiManager.getInputProcessors());
@@ -527,6 +535,11 @@ public class DungeonStart extends MainController implements EntityEventHandler
 	public UILayerInventoryView getUIEquipmentView()
 	{
 		return this.uiLayerPlayerEquipment;
+	}
+	
+	public UILayerCredits getUICredits()
+	{
+		return this.uiLayerCredits;
 	}
 	
 	public Player getPlayer()

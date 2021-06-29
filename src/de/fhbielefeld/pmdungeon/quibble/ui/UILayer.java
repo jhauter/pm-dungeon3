@@ -50,7 +50,7 @@ public class UILayer
 	/**
 	 * Should be called when the UILayer is removed and not used anymore.
 	 */
-	public final void dispose()
+	public void dispose()
 	{
 		this.stage.dispose();
 	}
@@ -201,6 +201,15 @@ public class UILayer
 		return this.uiElements.iterator();
 	}
 	
+	/**
+	 * Called when an input event is received by this <code>UILayer</code> (for example a mouse click).
+	 * @return whether the event was handled, i.e. if <code>true</code> then other UILayers will not receive this click event.
+	 */
+	public boolean handleClick(InputEvent event, float x, float y, int pointer, int button)
+	{
+		return false;
+	}
+	
 	private class UIManagerHandler extends ClickListener
 	{
 		@Override
@@ -224,7 +233,7 @@ public class UILayer
 			
 			//If a GDX button was pressed or something..
 			//This is after the for loop, meaning all UIElements are processed first
-			return event.getRelatedActor() != null;
+			return UILayer.this.handleClick(event, x, y, pointer, button) || event.getRelatedActor() != null;
 		}
 	}
 }
