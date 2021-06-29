@@ -242,11 +242,18 @@ public class DungeonStart extends MainController implements EntityEventHandler
 		this.debugRenderer.setAutoShapeType(true);
 		
        
+		if(isSaveGame)
 		try {
 			this.levelController.loadDungeon(new DungeonConverter().dungeonFromJson(MemoryDataHandler.getInstance().getSavedLevel()));
 		} catch (InvocationTargetException | IllegalAccessException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+		else {
+			try {
+				this.levelController.loadDungeon(new DungeonConverter().dungeonFromJson(Constants.PATHTOLEVEL + "small_dungeon.json"));
+			} catch (InvocationTargetException | IllegalAccessException e) {
+				e.printStackTrace();
+			}
 		}
 
 		LoggingHandler.logger.log(Level.INFO, "Setup done.");
@@ -605,8 +612,6 @@ public class DungeonStart extends MainController implements EntityEventHandler
 	 */
 	public static void startGame(boolean isSaveGame, int playerType) {
 		DungeonStart.isSaveGame = isSaveGame;
-		if(isSaveGame)
-			firstFrame = false;
 		DungeonStart.playerType = playerType;
 		DesktopLauncher.run(new DungeonStart());
 	}

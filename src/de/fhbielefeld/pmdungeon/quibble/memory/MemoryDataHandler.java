@@ -60,42 +60,65 @@ public class MemoryDataHandler {
 	 *         <li>Life Points
 	 */
 	public Creature getSavedPlayer() {
-		Creature player = getSavedCreatureType();
+		Player player = getSavedCreatureType();
 
 		player.setPosition(getMemory().getFloat(SaveType.POSITION_X.name()),
 				getMemory().getFloat(SaveType.POSITION_Y.name()));
-		((Player) player).setName(getMemory().getString(SaveType.NAME.name()));
+		player.setName(getMemory().getString(SaveType.NAME.name()));
 
 		player.setTotalExp(getMemory().getInteger(SaveType.TOTAL_EXP.name()));
 		setPlayerAttrib((Player) player);
 
-		addItems(getMemory().getInteger(SaveType.EQUPPEMENT_SLOTS.name()), (Player) player,
-				SaveType.EQUIPPED_ITEM.name());
-
+		loadEqu(getMemory().getInteger(SaveType.EQUPPEMENT_SLOTS.name()), SaveType.EQUIPPED_ITEM, player);
+		loadInv(getMemory().getInteger(SaveType.INVENTORY_SLOTS.name()), SaveType.INVENTORY_ITEM, player);
 		LoggingHandler.logger.log(Level.INFO, "Loaded Player from Memory");
 		return player;
 	}
-
-	private void addItems(int size, Player player, String saveType) {
-		for (int i = 0; i < size; i++) {
-			loadItems(player.getEquippedItems(), getMemory().getString(saveType + i),
-					getMemory().getString(saveType) + i + "displayName");
+	
+	private void loadInv(int lenghtOfInventory, SaveType invType, Player player) {
+		Item item = null;
+		for (int i = 0; i < lenghtOfInventory; i++) {
+			String memory = getMemory().getString(invType.name() + i);
+			if(!memory.isBlank()) {
+				item = getItem(memory);
+				setItemAttrib(item, invType.name() + i);
+				item.setDisplayName(getMemory().getString(invType.name() + i + "displayName"));
+				player.getInventory().addItem(item);
+			}
+		}
+	}
+	private void loadEqu(int lenghtOfInventory, SaveType invType, Player player) {
+		Item item = null;
+		for (int i = 0; i < lenghtOfInventory; i++) {
+			String memory = getMemory().getString(invType.name() + i);
+			if(!memory.isBlank()) {
+				item = getItem(memory);
+				setItemAttrib(item, invType.name() + i);
+				player.getEquippedItems().addItem(item);
+			}
 		}
 	}
 
-	private void loadItems(Inventory<Item> inventory, String saveType, String displayName) {
-		Item loadetItem = null;
-		SimpleClassReflection item = new SimpleClassReflection(saveType, true);
-		try {
-			loadetItem = (Item) item.cTor.newInstance();
-		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-				| InvocationTargetException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+
+	private void addItems(int lenghtOfInventory, String InventoryType, Inventory<Item> inv) {
+		Item item = null;
+		for (int i = 0; i < lenghtOfInventory; i++) {
+			String memory = getMemory().getString(InventoryType + i);
+			if(!memory.isBlank()) {
+				item = getItem(memory);
+				setItemAttrib(item, InventoryType + i);
+				item.setDisplayName(getMemory().getString(InventoryType + i + "displayName"));
+				inv.addItem(item);
+			}
 		}
-		loadetItem.setDisplayName(displayName);
-		setItemAttrib(loadetItem, saveType);
-		inventory.addItem(loadetItem);
+	}
+
+	private Item getItem(String type) {
+		for (Item item : Item.getRegisteredItems()) {
+			if (type.equals(item.getClass().getTypeName()))
+				return item;
+		}
+		return null;
 	}
 
 	private void setItemAttrib(Item item, String saveType) {
@@ -145,12 +168,12 @@ public class MemoryDataHandler {
 	 * 
 	 * @return The saved Creature.
 	 */
-	private Creature getSavedCreatureType() {
-		Creature creature = null;
+	private Player getSavedCreatureType() {
+		Player creature = null;
 		String type = getMemory().getString(SaveType.CLASS.name());
 		SimpleClassReflection sc = new SimpleClassReflection(type, false);
 		try {
-			creature = (Creature) sc.getConstructor().newInstance();
+			creature = (Player) sc.getConstructor().newInstance();
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
 				| InvocationTargetException e) {
 			e.printStackTrace();

@@ -260,4 +260,8 @@ public abstract class Item
 	{
 		return this.renderAllowNegativeEntityScale;
 	}
+	
+	public static List<Item> getRegisteredItems() {
+		return registeredItems;
+	}
 }

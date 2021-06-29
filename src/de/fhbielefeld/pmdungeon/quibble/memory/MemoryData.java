@@ -46,29 +46,31 @@ public class MemoryData {
 		saveDungeonLevel();
 
 		getMemory().putInteger(SaveType.TOTAL_EXP.name(), creature.getTotalExp());
-		
+
 		saveCreatureStats();
-		
+
 		saveItems();
-		
+
 		getMemory().flush();
 	}
 
 	private void saveItems() {
 		getMemory().putInteger(SaveType.EQUPPEMENT_SLOTS.name(), creature.getEquipmentSlots());
-		getMemory().putInteger(SaveType.ITEM_SLOTS.name(), creature.getInventorySlots());
-		saveItemInformations(creature.getEquipmentSlots(), creature.getEquippedItems(), SaveType.EQUIPPED_ITEM.name());
-		saveItemInformations(creature.getInventorySlots(), creature.getInventory(), SaveType.INVENTORY_ITEM.name());
+		getMemory().putInteger(SaveType.INVENTORY_SLOTS.name(), creature.getInventorySlots());
+		saveItemInformations(creature.getInventorySlots(), SaveType.INVENTORY_ITEM);
+		saveItemInformations(creature.getEquipmentSlots(), SaveType.EQUIPPED_ITEM);
 	}
-	private void saveItemInformations(int size, Inventory<Item> inventory, String saveType) {
-		for (int i = 0; i < size; i++) {
-			if(inventory.getItem(i) != null) {
-				getMemory().putString(saveType + i, inventory.getItem(i).getItemType().getClass().getTypeName());
-				getMemory().putString(saveType + i + "displayName", inventory.getItem(i).getDisplayText());
-				writeStats(inventory.getItem(i).getItemType().getAttackStats(), saveType + i);
+
+	private void saveItemInformations(int slotLenght, SaveType invType) {
+		for (int i = 0; i < slotLenght; i++) {
+			if (creature.getInventory().getItem(i) != null) {
+				getMemory().putString(invType.name() + i,
+						creature.getInventory().getItem(i).getItemType().getClass().getTypeName());
+				getMemory().putString(invType.name() + i + "displayName", creature.getInventory().getItem(i).getDisplayText());
+				writeStats(creature.getInventory().getItem(i).getItemType().getAttackStats(), invType.name() + i);
 			}
-		}	
-	}                             
+		}
+	}
 
 	private void saveCreatureStats() {
 		writeStats(this.creature.getCurrentStats(), SaveType.NAME.name());
@@ -86,7 +88,7 @@ public class MemoryData {
 			this.levelCount += 1;
 		getMemory().putInteger(SaveType.CURRENT_LEVEL.name(), levelCount);
 	}
-	
+
 	public Preferences getMemory() {
 		return memory;
 	}

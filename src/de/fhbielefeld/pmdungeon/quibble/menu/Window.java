@@ -3,15 +3,12 @@ package de.fhbielefeld.pmdungeon.quibble.menu;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 
 import de.fhbielefeld.pmdungeon.quibble.DungeonStart;
-import de.fhbielefeld.pmdungeon.quibble.memory.MemoryDataHandler;
 
 public class Window {
 
@@ -29,7 +26,7 @@ public class Window {
 	public void createWindow(String Title) {
 		this.frame = new JFrame();
 		this.frame.setTitle("Quibble Dungeon");
-		this.frame.setVisible(true);
+		this.frame.setVisible(true);	
 		this.frame.setBounds(200, 200, WIDTH, HEIGHT);
 		this.frame.setLocationRelativeTo(null);
 		this.frame.setResizable(false);
@@ -52,6 +49,7 @@ public class Window {
 	}
 
 	private ActionListener actionLoadGame(JFrame frame) {
+		
 		ActionListener listener = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
