@@ -297,16 +297,6 @@ public class DungeonStart extends MainController implements EntityEventHandler
 		}
 		this.currentLevel.getParticleSystem().update((System.currentTimeMillis() - this.lastFrameTimeStamp) / 1000.0F);
 		this.lastFrameTimeStamp = System.currentTimeMillis();
-		
-
-		if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE))
-		{
-			this.uiLayerGameOverScreen.play();
-		}
-		if(Gdx.input.isKeyJustPressed(Input.Keys.P))
-		{
-			this.uiLayerGameOverScreen.reset();
-		}
 	}
 	
 	@Override
