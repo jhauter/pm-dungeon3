@@ -40,6 +40,8 @@ public class DungeonLevel
 	 * @param shgCol number of columns in the spatial hash grid
 	 * @param levelWidth width of the level in dungeon blocks (how far the fog will be shown/collisions are detected)
 	 * @param levelHeight height of the level in dungeon blocks (how far the fog will be shown/collisions are detected)
+	 * @param defaultLightValue default light value that fills the level. (<code>0</code> means most fog density;
+	 * <code>&gt;= 1</code> means no fog)
 	 */
 	public DungeonLevel(DungeonWorld world, int shgRow, int shgCol, int levelWidth, int levelHeight, float defaultLightValue)
 	{

@@ -135,6 +135,17 @@ public class FogOfWarQuadTree
 	
 	private Node rootNode;
 	
+	/**
+	 * Creates a quad tree that is used by the <code>FogOfWarController</code>.
+	 * @param minX minimum x-value of the area that this quad tree covers
+	 * @param minY minimum y-value of the area that this quad tree covers
+	 * @param maxX maximum x-value of the area that this quad tree covers
+	 * @param maxY maximum y-value of the area that this quad tree covers
+	 * @param fogValue the starting fog value of the root area
+	 * @throws IllegalArgumentException if the area of the quad tree is <= 0
+	 * @throws IllegalArgumentException if the area of the quad tree is not square
+	 * @throws IllegalArgumentException if the width of the area of the quad tree is not a power of two
+	 */
 	public FogOfWarQuadTree(int minX, int minY, int maxX, int maxY, float fogValue)
 	{
 		final int width = maxX - minX;
@@ -154,12 +165,22 @@ public class FogOfWarQuadTree
 		this.rootNode = new Node(minX, minY, maxX, maxY, fogValue);
 	}
 	
+	/**
+	 * Removes all children of this quad tree and sets the fog value of the root area.
+	 * @param clearFogValue  new fog value of the root area
+	 */
 	public void clear(float clearFogValue)
 	{
 		this.rootNode.removeChildren();
 		this.rootNode.fogValue = clearFogValue;
 	}
 	
+	/**
+	 * Sets a fog value in this quad tree.
+	 * @param x x-position
+	 * @param y y-position
+	 * @param fogValue fog value at the specified position
+	 */
 	public void set(int x, int y, float fogValue)
 	{
 		this.set(this.rootNode, x, y, fogValue);
@@ -183,6 +204,11 @@ public class FogOfWarQuadTree
 		}
 	}
 	
+	/**
+	 * @param x x-position
+	 * @param y y-position
+	 * @return fog value at the specified position
+	 */
 	public float get(int x, int y)
 	{
 		return this.get(this.rootNode, x, y);
@@ -197,6 +223,10 @@ public class FogOfWarQuadTree
 		return node.fogValue;
 	}
 	
+	/**
+	 * Executes the <code>Consumer</code> argument for each node.
+	 * @param traverser consumer to execute
+	 */
 	public void traversePreorder(Consumer<Node> traverser)
 	{
 		this.traversePreorder(this.rootNode, traverser);

@@ -1,5 +1,10 @@
 package de.fhbielefeld.pmdungeon.quibble.fow;
 
+/**
+ * A light spread function that makes light travel about 4 dungeon tiles
+ * and should be suitable for most cases.
+ * @author Andreas
+ */
 public class DefaultLightSpreadFunction implements LightSpreadFunction
 {
 	@Override

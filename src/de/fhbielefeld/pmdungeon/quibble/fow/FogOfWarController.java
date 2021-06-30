@@ -48,6 +48,23 @@ public class FogOfWarController
 	
 	private FrameBuffer frameBuffer;
 	
+	/**
+	 * Creates a fog of war controller than calculates the fog of war and is able to render the fog of war.
+	 * The level is sliced in sectors which are sliced again to contain "fog tiles".
+	 * A fog tile is a tile that has a value of fog density. Fog tiles can be smaller than normal dungeon tiles.
+	 * @param level the dungeon that is used to detect tiles
+	 * @param sectorSize width of a sector in dungeon tiles
+	 * @param fogTilesPerSector number of fog tiles that make up the width of a sector
+	 * @param levelWidth width of the level in dungeon tiles
+	 * @param levelHeight height of the level in dungeon tiles
+	 * @param defaultLightValue default light value that fills the level. (<code>0</code> means most fog density;
+	 * <code>&gt;= 1</code> means no fog)
+	 * @throws IllegalArgumentException if fogTilesPerSector is <= 0
+	 * @throws IllegalArgumentException if fogTilesPerSector is not a power of 2
+	 * @throws IllegalArgumentException if sectorSize is <= 2
+	 * @throws IllegalArgumentException if levelWidth or levelHeight is <= 0
+	 * @throws IllegalArgumentException if defauleLightValue is < 0
+	 */
 	public FogOfWarController(DungeonLevel level, int sectorSize, int fogTilesPerSector, int levelWidth, int levelHeight, float defaultLightValue)
 	{
 		if(fogTilesPerSector <= 0)
@@ -99,6 +116,13 @@ public class FogOfWarController
 		this.frameBuffer = new FrameBuffer(Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
 	}
 	
+	/**
+	 * Sets the size of the texture that is used as light map.
+	 * <code>width</code> and <code>height</code> must be in dungeon units
+	 * and should be the dimensions of the visible part of the dungeon on the screen.
+	 * @param width width in dungeon units used to calculate the size of the light map
+	 * @param height height in dungeon units used to calculate the size of the light map
+	 */
 	public void setLightmapSize(int width, int height)
 	{
 		if(this.lightMap != null)
@@ -111,18 +135,32 @@ public class FogOfWarController
 		this.lightMapTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 	}
 	
+	/**
+	 * Loads a sprite sheet that is used as the animated fog texture
+	 * @param path texture file
+	 * @param fogTextureSize size that the texture should be displayed in dungeon units
+	 * @param spriteSheetRows rows of the spritesheet
+	 * @param spriteSheetCols columns of the spritesheet
+	 * @param frameDuration how long in seconds a frame of the animation takes
+	 */
 	public void loadTexture(String path, float fogTextureSize, int spriteSheetRows, int spriteSheetCols, float frameDuration)
 	{
 		this.fogAnim = AnimationFactory.createAnimation(path, spriteSheetRows, spriteSheetCols, frameDuration);
 		this.fogTextureSize = fogTextureSize;
 	}
 	
+	/**
+	 * Must be called on every frame in order to do the logic and calculations.
+	 */
 	public void update()
 	{
 		this.resetFog();
 		this.processLightSources();
 	}
 	
+	/**
+	 * Renders the fog.
+	 */
 	public void render()
 	{
 		this.lightMap.setColor(0.0F, 0.0F, 0.0F, 0.0F);
@@ -203,6 +241,10 @@ public class FogOfWarController
 		DungeonStart.getGameBatch().setColor(1.0F, 1.0F, 1.0F, 1.0F);
 	}
 	
+	/**
+	 * Renders the quad trees used to calculate the fog.
+	 * @param renderer <code>ShapeRenderer</code> used for drawing
+	 */
 	public void renderDebug(ShapeRenderer renderer)
 	{
 		if(!DungeonStart.getDungeonMain().getDrawFoWQuadTrees())
@@ -233,51 +275,93 @@ public class FogOfWarController
 		renderer.end();
 	}
 	
+	/**
+	 * @return size of a fog tile in dungeon units
+	 */
 	public float getFogTileSize()
 	{
 		return this.fogTileSize;
 	}
 	
+	/**
+	 * Converts dungeon units in fog units.
+	 * @param dungeonX the x-position in dungeon units
+	 * @return the x-position in fog units
+	 */
 	public int getFogX(float dungeonX)
 	{
 		return (int)(dungeonX / this.fogTileSize);
 	}
 	
+	/**
+	 * Converts dungeon units in fog units.
+	 * @param dungeonY the y-position in dungeon units
+	 * @return the y-position in fog units
+	 */
 	public int getFogY(float dungeonY)
 	{
 		return (int)(dungeonY / this.fogTileSize);
 	}
 	
+	/**
+	 * @return the width of the level in fog units
+	 */
 	public int getFogOfWarWidth()
 	{
 		return this.fogOfWarWidth;
 	}
 	
+	/**
+	 * @return the height of the level in fog units
+	 */
 	public int getFogOfWarHeight()
 	{
 		return this.fogOfWarHeight;
 	}
 	
+	/**
+	 * Converts fog units in sector units.
+	 * @param fogX the x-position in dungeon units
+	 * @return the x-position of the sectors that contain the specified <code>fogX</code>
+	 */
 	public int getSectorX(int fogX)
 	{
 		return (int)(fogX / this.fogTilesPerSector);
 	}
 	
+	/**
+	 * Converts fog units in sector units.
+	 * @param fogY the y-position in dungeon units
+	 * @return the y-position of the sectors that contain the specified <code>fogY</code>
+	 */
 	public int getSectorY(int fogY)
 	{
 		return (int)(fogY / this.fogTilesPerSector);
 	}
 	
+	/**
+	 * @return the number of sectors along the x-axis
+	 */
 	public int getSectorsX()
 	{
 		return this.sectorsX;
 	}
 	
+	/**
+	 * @return the number of sectors along the y-axis
+	 */
 	public int getSectorsY()
 	{
 		return this.sectorsY;
 	}
 	
+	/**
+	 * Returns the light value at the specified position in fog units
+	 * @param fogX x-position in fog units
+	 * @param fogY y-position in fog units
+	 * @return the light value at the specified position. (<code>0</code> means no light;
+	 * <code>&gt;= 1</code> means completely lit)
+	 */
 	public float getLightValueAt(int fogX, int fogY)
 	{
 		if(fogX < 0 || fogY < 0 || fogX >= this.fogOfWarWidth || fogY >= this.fogOfWarHeight)
@@ -287,6 +371,13 @@ public class FogOfWarController
 		return this.sectors[getSectorX(fogX)][getSectorY(fogY)].get(fogX, fogY);
 	}
 	
+	/**
+	 * Returns the light value at the specified position in dungeon units
+	 * @param dungeonX x-position in dungeon units
+	 * @param dungeonY y-position in dungeon units
+	 * @return the light value at the specified position. (<code>0</code> means no light;
+	 * <code>&gt;= 1</code> means completely lit)
+	 */
 	public float getLightValueAt(float dungeonX, float dungeonY)
 	{
 		return this.getLightValueAt(this.getFogX(dungeonX), this.getFogY(dungeonY));
@@ -301,6 +392,9 @@ public class FogOfWarController
 		this.sectors[getSectorX(fogX)][getSectorY(fogY)].set(fogX, fogY, value);
 	}
 	
+	/**
+	 * Resets all light values to the default value specified in the <code>FogOfWarController</code> constructor.
+	 */
 	public void resetFog()
 	{
 		int x, y;
@@ -313,6 +407,15 @@ public class FogOfWarController
 		}
 	}
 	
+	/**
+	 * Shines a light at the specified position in the dungeon. The light will last one frame and will then be removed.
+	 * Removed means that the light will start to fade out quickly.
+	 * To create constant light, this method must be called every frame with the same arguments.
+	 * @param dungeonX the x-position of the light in dungeon units
+	 * @param dungeonY the y-position of the light in dungeon units
+	 * @param intensity the intensity of the light. (<code>0</code> means no light; <code>1</code> means completely lit;
+	 * <code>&gt;1</code> is not brighter but makes the light go farther)
+	 */
 	public void light(float dungeonX, float dungeonY, float intensity)
 	{
 		this.lightSources.add(new FogOfWarLightSource(this.getFogX(dungeonX), this.getFogY(dungeonY), intensity));
