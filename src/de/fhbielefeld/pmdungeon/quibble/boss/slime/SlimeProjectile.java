@@ -35,7 +35,6 @@ public class SlimeProjectile extends ProjectileMagic {
 
     @Override
     protected void updateLogic() {
-        System.out.println(this.getPosition());
         super.updateLogic();
     }
 }

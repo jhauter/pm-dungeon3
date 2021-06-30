@@ -23,12 +23,12 @@ public class SlimeBossBattle extends BossBattle {
         super(level);
         phases = new HashMap<>();
         phases.put("start", new SlimeFirstPhase(this));
+        phases.put("second", new SlimeSecondPhase(this));
         currentPhase = phases.get("start");
     }
     @Override
     protected void updateLogic() {
         super.updateLogic();
-        System.out.println(boss.getPosition());
     }
 
     @Override
@@ -44,12 +44,19 @@ public class SlimeBossBattle extends BossBattle {
 
     @Override
     protected boolean isBattleOver() {
-        return false;
+        return boss.getCurrentHealth() <= 0;
     }
 
     @Override
     protected void switchPhase() {
+        if(currentPhase.active && boss.getCurrentHealth() <= 75 && currentPhase == phases.get("start")) {
+            var nextPhase = phases.get("second");
+            currentPhase.cleanStage();
+            currentPhase.active = false;
 
+            currentPhase = nextPhase;
+            getCurrentPhase().init();
+        }
     }
 
     @Override

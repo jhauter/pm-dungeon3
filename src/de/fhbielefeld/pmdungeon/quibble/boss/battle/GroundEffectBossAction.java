@@ -6,6 +6,7 @@ import de.fhbielefeld.pmdungeon.quibble.DungeonStart;
 import de.fhbielefeld.pmdungeon.quibble.boss.attacks.GroundAoe;
 import de.fhbielefeld.pmdungeon.quibble.boss.attacks.KnockbackGroundAOE;
 import de.fhbielefeld.pmdungeon.quibble.boss.misc.CamRumbleEffect;
+import de.fhbielefeld.pmdungeon.quibble.entity.Entity;
 import de.fhbielefeld.pmdungeon.vorgaben.tools.DungeonCamera;
 
 import java.lang.reflect.InvocationTargetException;
@@ -19,6 +20,8 @@ public class GroundEffectBossAction extends BossAction {
     private int wait = 100;
     private int counter = 0;
     private boolean attack = false;
+    private Entity target = null;
+
     private GroundAoe effect;
     /**
      * Constructs a GroundEffect that can be used by a boss
@@ -26,6 +29,16 @@ public class GroundEffectBossAction extends BossAction {
      * @param radius Max Radius of the GroundEffect
      * @param bossRelativePosition Position of the GroundEffect relative to the boss
      */
+    public GroundEffectBossAction(GroundAoe effect, int radius, Vector2 position, Entity target) {
+        this.effect = effect;
+
+        this.radius = radius;
+        this.duration = 140;
+        this.cooldown = 120;
+        this.position = position;
+        this.target = target;
+    }
+
     public GroundEffectBossAction(GroundAoe effect, int radius, Vector2 bossRelativePosition) {
         this.effect = effect;
 
@@ -56,13 +69,14 @@ public class GroundEffectBossAction extends BossAction {
         super.onActionBegin(battle);
         //TODO: Replace with an "onCreate" or sth in effect
         battle.getBoss().playAttackAnimation("slam", false, 12);
+        System.out.println("Starting ground effect");
     }
 
     @Override
     public void execute() {
         super.execute();
         counter++;
-
+        System.out.println("Using ground effect");
         if(counter >= wait && !attack) {
             attack = true;
             //battle.level.spawnEntity(new KnockbackGroundAOE(radius, new Vector2(
@@ -78,7 +92,11 @@ public class GroundEffectBossAction extends BossAction {
             } catch (NoSuchMethodException e) {
                 e.printStackTrace();
             }
-            effect.setPosition(this.position.x + battle.getBoss().getX(), this.position.y + battle.getBoss().getY());
+            if(target == null) {
+                effect.setPosition(this.position.x + battle.getBoss().getX(), this.position.y + battle.getBoss().getY());
+            } else {
+                effect.setPosition(this.position.x + target.getX(), this.position.y + target.getY());
+            }
             effect.shouldDespawn = false;
             battle.level.spawnEntity(effect);
             counter = 0;
