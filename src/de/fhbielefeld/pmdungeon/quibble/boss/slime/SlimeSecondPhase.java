@@ -13,12 +13,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SlimeSecondPhase extends BossPhase {
-    private BossBattle battle;
     private ArrayList<BossAction> actions;
 
     public SlimeSecondPhase(BossBattle battle) {
         super(battle);
-        this.battle = battle;
         this.actions = new ArrayList<>();
         var bullet = new BulletCreationFunction() {
 
@@ -37,23 +35,24 @@ public class SlimeSecondPhase extends BossPhase {
             proj.setFacing(face);
             projSpawner.add(proj);
         }
+
         var waitAction = new WaitAction(120, 100);
-        var spawnAction = new GroundEffectBossAction(new SpawnGroundAOE(new FireSlimeAdd()),1, new Vector2(0,0));
+        var spawnGround = new SpawnGroundAOE();
+        spawnGround.setTarget(new FireSlimeAdd());
+        var spawnAction = new GroundEffectBossAction(spawnGround, 1, new Vector2(0,0));
         var projAction = new ProjectileBossAction(projSpawner, 60, 50);
 
-        actions.add(projAction);
+        //actions.add(projAction);
         //actions.add(waitAction);
         actions.add(spawnAction);
-    }
-
-    public void run() {
-        super.run();
     }
 
     @Override
     protected List<BossAction> getActions() {
         return actions;
     }
+
+    @Override
     public void init() {
         super.init();
     }

@@ -35,7 +35,7 @@ public class GolemDemoThirdPhase extends BossPhase {
 
         var testProjectileAction = new ProjectileBossAction(Collections.singletonList(projectile), 150, 20);
 
-        //TODO: THIS STILL DOES NOT WORK
+        //TODO: THIS STILL DOES NOT WORK EDIT: IT DOES NOW
         actions.add(spawnAction);
         actions.add(knockbackAction);
         actions.add(testProjectileAction);

@@ -16,23 +16,17 @@ public class SpawnGroundAOE extends GroundAoe{
 
     private boolean activated = false;
     private Random rand = new Random();
-    private NPC target = null;
+    public boolean useSpecificTarget = false;
 
     public SpawnGroundAOE() {
         this.radius = 1;
-        animationHandler.addAsDefaultAnimation("spawn", 11,0, 0.3f, 11, 11,
-                "assets/textures/entity/boss_general/effect_spawn.png");
-
-        this.ticksUntilAction = 30;
-    }
-
-    public SpawnGroundAOE(NPC target) {
-        this.radius = 1;
         animationHandler.addAsDefaultAnimation("spawn", 11,0, 0.1f, 11, 11,
                 "assets/textures/entity/boss_general/effect_spawn.png");
+        this.renderScaleX = 3;
+        this.renderScaleY = 3;
         this.ticksUntilAction = 30;
-        this.target = target;
     }
+
     @Override
     protected void onRoam() {
         spawnCDCounter++;
@@ -58,7 +52,10 @@ public class SpawnGroundAOE extends GroundAoe{
             enemy.setPosition(this.getPosition());
         } else {
             try {
-                var enemy = target.getClass().getDeclaredConstructor().newInstance();
+                var enemy = target.getClass().getDeclaredConstructor(null).newInstance();
+
+                System.out.println("Specific");
+                System.out.println(enemy.getClass().getName());
                 level.spawnEntity(enemy);
                 enemy.setPosition(this.getPosition());
             } catch (InstantiationException e) {

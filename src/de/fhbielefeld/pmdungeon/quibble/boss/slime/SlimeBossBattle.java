@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class SlimeBossBattle extends BossBattle {
-    private BossPhase currentPhase;
     private HashMap<String, BossPhase> phases;
 
     /**
@@ -79,12 +78,11 @@ public class SlimeBossBattle extends BossBattle {
         bossStats.setStat(CreatureStatsAttribs.HEALTH, 5000);
 
         bossBuilder = bossBuilder
-                .setRenderScale(new Vector2(12,10))
+                .setRenderScale(new Vector2(14,12))
                 .setAnimation(animList)
                 .setMaxHP(bossStats);
         return bossBuilder;
     }
-
 
     @Override
     protected BossPhase getCurrentPhase() {

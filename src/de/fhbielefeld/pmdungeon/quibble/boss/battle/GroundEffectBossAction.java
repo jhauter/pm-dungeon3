@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Vector3;
 import de.fhbielefeld.pmdungeon.quibble.DungeonStart;
 import de.fhbielefeld.pmdungeon.quibble.boss.attacks.GroundAoe;
 import de.fhbielefeld.pmdungeon.quibble.boss.attacks.KnockbackGroundAOE;
+import de.fhbielefeld.pmdungeon.quibble.boss.attacks.SpawnGroundAOE;
 import de.fhbielefeld.pmdungeon.quibble.boss.misc.CamRumbleEffect;
 import de.fhbielefeld.pmdungeon.quibble.entity.Entity;
 import de.fhbielefeld.pmdungeon.vorgaben.tools.DungeonCamera;
@@ -82,7 +83,9 @@ public class GroundEffectBossAction extends BossAction {
             //battle.level.spawnEntity(new KnockbackGroundAOE(radius, new Vector2(
             //this.position.x + BossBattle.boss.getX(), this.position.y + BossBattle.boss.getY())));
             try {
+                var target = effect.getTarget();
                 effect = effect.getClass().getDeclaredConstructor().newInstance(null);
+                effect.setTarget(target);
             } catch (InstantiationException e) {
                 e.printStackTrace();
             } catch (IllegalAccessException e) {

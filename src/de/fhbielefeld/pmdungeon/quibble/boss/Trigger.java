@@ -54,7 +54,7 @@ public class Trigger extends Entity {
     protected void onEntityCollision(Entity otherEntity) {
         if(otherEntity.getDisplayName().equals("Knight") && !triggered) {
 
-            fireEvent(new EntityEvent(EntityEvent.genEventID(), otherEntity));
+            //fireEvent(new EntityEvent(EntityEvent.genEventID(), otherEntity));
 
             //var battle = new GolemBossBattle(this.level);
             var battle = new SlimeBossBattle(this.level);

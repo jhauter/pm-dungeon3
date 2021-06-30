@@ -46,6 +46,7 @@ public class GolemLastPhase extends BossPhase {
 
         actions.add(new ProjectileBossAction(projSpawner, 300,300));
         actions.add(new WaitAction(100, 100));
+        this.battle = battle;
     }
 
     @Override

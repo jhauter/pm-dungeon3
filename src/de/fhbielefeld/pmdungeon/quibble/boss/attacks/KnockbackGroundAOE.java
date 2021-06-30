@@ -18,20 +18,29 @@ import de.fhbielefeld.pmdungeon.vorgaben.tools.Point;
 
 public class KnockbackGroundAOE extends GroundAoe implements DamageSource {
     private DungeonLevel level;
+    private float strength;
 
     public KnockbackGroundAOE() {
         super();
         this.radius = 2;
+        this.strength = 0.6f;
         this.animationHandler.addAsDefaultAnimation("slam",
                 4, 0.1f, 1, 4, "assets/textures/entity/golem/groundAOE.png");
+        this.animationHandler.addAnimation("exp",8, 0.1f, 1, 8, "assets/textures/entity/boss_general/explosion.png");
         this.ticksUntilAction = 10;
+        this.ticksUntilRemove = 17;
         this.renderScaleX = 3;
         this.renderScaleY = 3;
-
+    }
+    public void setStrength(float strength) {
+        this.strength = strength;
+    }
+    public void setRadius(int radius) {
+        this.radius = radius;
     }
     @Override
     protected void onRoam() {
-        CamRumbleEffect.shake(0.6f, 5f);
+        CamRumbleEffect.shake(strength, 5f);
         System.out.println(CamRumbleEffect.getTimeLeft());
         var cam = DungeonStart.getDungeonMain().getCamera();
         //Let's just assert that we'll always follow the player
@@ -48,6 +57,7 @@ public class KnockbackGroundAOE extends GroundAoe implements DamageSource {
 
     @Override
     protected void onTrigger() {
+        animationHandler.playAnimation("exp", 10, false);
         var entitiesInReach = level.getEntitiesInRadius(this.getPosition().x, this.getPosition().y, radius);
         entitiesInReach.stream().filter(e -> e instanceof Player).findFirst().ifPresent(p -> {
             Player player = (Player) p;
@@ -64,7 +74,7 @@ public class KnockbackGroundAOE extends GroundAoe implements DamageSource {
     @Override
     public CreatureStats getCurrentStats() {
         var stats = new CreatureStats();
-        stats.setStat(CreatureStatsAttribs.KNOCKBACK, 2);
+        stats.setStat(CreatureStatsAttribs.KNOCKBACK, strength * 10);
         return stats;
     }
 }

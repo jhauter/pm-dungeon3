@@ -43,10 +43,6 @@ public abstract class BossAction {
 
         if(this.durationCounter >= duration) {
             System.out.println("End");
-
-            if(cooldownCounter <= cooldown) {
-                battle.nextAction();
-            }
             this.onActionEnd();
             battle.removeAction(this);
             durationCounter = 0;

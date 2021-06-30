@@ -53,9 +53,21 @@ public class SlimeFirstPhase extends BossPhase {
         actions.add(testProjectileAction2);
         actions.add(waitAction2);
     }
+
+    @Override
+    public void run() {
+        super.run();
+        System.out.println("Running first phase");
+    }
+
     @Override
     protected List<BossAction> getActions() {
         return actions;
+    }
+
+    @Override
+    public void cleanStage() {
+        super.cleanStage();
     }
 
     @Override
