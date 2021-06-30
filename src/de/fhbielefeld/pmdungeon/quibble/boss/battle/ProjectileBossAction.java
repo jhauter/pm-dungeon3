@@ -11,23 +11,20 @@ public class ProjectileBossAction extends BossAction {
 
     //NOTE: Die Positionen der Projectiles sollen Boss-Relative sein. Ist noch unsch�n und net eindeutig
     List<ProjectileSpawner> spawnerList;
-
-
     /**
      * Creates a new action that spawns projectileSpawners
      * @param spawnerList  List of projectile spawners that are supposed to spawn upon executing this action
      */
-    public ProjectileBossAction(List<ProjectileSpawner> spawnerList) {
+    public ProjectileBossAction(List<ProjectileSpawner> spawnerList, int duration, int cooldown, Boss boss) {
         this.spawnerList = spawnerList;
 
-        this.duration = 200;
-        this.cooldown = 210;
+        this.duration = duration;
+        this.cooldown = cooldown;
 
         for(var i : spawnerList) {
-            i.setPosition(new Vector2(BossBattle.boss.getPosition().x + i.getX(),
-                    BossBattle.boss.getY() + i.getY()));
+            i.setPosition(new Vector2(boss.getPosition().x + i.getX(),
+                    boss.getY() + i.getY()));
         }
-
     }
 
     public ProjectileBossAction(List<ProjectileSpawner> spawnerList, int duration, int cooldown) {
@@ -37,8 +34,7 @@ public class ProjectileBossAction extends BossAction {
         this.cooldown = cooldown;
 
         for(var i : spawnerList) {
-            i.setPosition(new Vector2(BossBattle.boss.getPosition().x + i.getX(),
-                    BossBattle.boss.getY() + i.getY()));
+            i.setPosition(new Vector2(i.getX(), i.getY()));
         }
 
     }
@@ -46,7 +42,7 @@ public class ProjectileBossAction extends BossAction {
     @Override
     public void onActionBegin(BossBattle battle) {
         super.onActionBegin(battle);
-        BossBattle.boss.playAttackAnimation("shoot" , false, 10);
+        battle.getBoss().playAttackAnimation("shoot" , false, 10);
 
         for(var i : spawnerList) {
             System.out.println("Spawn");

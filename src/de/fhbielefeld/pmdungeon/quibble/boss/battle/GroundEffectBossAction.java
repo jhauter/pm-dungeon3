@@ -8,6 +8,7 @@ import de.fhbielefeld.pmdungeon.quibble.boss.attacks.KnockbackGroundAOE;
 import de.fhbielefeld.pmdungeon.quibble.boss.misc.CamRumbleEffect;
 import de.fhbielefeld.pmdungeon.vorgaben.tools.DungeonCamera;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Objects;
 
 public class GroundEffectBossAction extends BossAction {
@@ -19,7 +20,6 @@ public class GroundEffectBossAction extends BossAction {
     private int counter = 0;
     private boolean attack = false;
     private GroundAoe effect;
-
     /**
      * Constructs a GroundEffect that can be used by a boss
      * @param effect Effect
@@ -55,7 +55,7 @@ public class GroundEffectBossAction extends BossAction {
     public void onActionBegin(BossBattle battle) {
         super.onActionBegin(battle);
         //TODO: Replace with an "onCreate" or sth in effect
-        BossBattle.boss.playAttackAnimation("slam", false, 12);
+        battle.getBoss().playAttackAnimation("slam", false, 12);
     }
 
     @Override
@@ -67,7 +67,18 @@ public class GroundEffectBossAction extends BossAction {
             attack = true;
             //battle.level.spawnEntity(new KnockbackGroundAOE(radius, new Vector2(
             //this.position.x + BossBattle.boss.getX(), this.position.y + BossBattle.boss.getY())));
-            effect.setPosition(this.position.x + BossBattle.boss.getX(), this.position.y + BossBattle.boss.getY());
+            try {
+                effect = effect.getClass().getDeclaredConstructor().newInstance(null);
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+            } catch (NoSuchMethodException e) {
+                e.printStackTrace();
+            }
+            effect.setPosition(this.position.x + battle.getBoss().getX(), this.position.y + battle.getBoss().getY());
             effect.shouldDespawn = false;
             battle.level.spawnEntity(effect);
             counter = 0;

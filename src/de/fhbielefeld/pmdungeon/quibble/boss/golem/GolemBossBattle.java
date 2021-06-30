@@ -11,7 +11,6 @@ import de.fhbielefeld.pmdungeon.quibble.boss.battle.BossBuilder;
 import de.fhbielefeld.pmdungeon.quibble.boss.battle.BossPhase;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
-import de.fhbielefeld.pmdungeon.quibble.input.Key;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,12 +23,12 @@ public class GolemBossBattle extends BossBattle {
         super(level);
 
         phases = new HashMap<>();
-        phases.put("start", new GolemStartPhase());
-        phases.put("second", new GolemDemoSecondPhase());
-        phases.put("third", new GolemDemoThirdPhase());
-        phases.put("last", new GolemLastPhase());
+        phases.put("start", new GolemStartPhase(this));
+        phases.put("second", new GolemDemoSecondPhase(this));
+        phases.put("third", new GolemDemoThirdPhase(this));
+        phases.put("last", new GolemLastPhase(this));
 
-        currentPhase = phases.get("last");
+        currentPhase = phases.get("start");
     }
 
     @Override
@@ -53,7 +52,7 @@ public class GolemBossBattle extends BossBattle {
                 currentPhase.active = false;
 
                 currentPhase = nextPhase;
-                getCurrentPhase().init(this);
+                getCurrentPhase().init();
                 //currentPhase.init(this);
             }
         }
@@ -65,7 +64,7 @@ public class GolemBossBattle extends BossBattle {
                 currentPhase.active = false;
 
                 currentPhase = nextPhase;
-                getCurrentPhase().init(this);
+                getCurrentPhase().init();
             }
         }
 
@@ -76,7 +75,7 @@ public class GolemBossBattle extends BossBattle {
             currentPhase.active = false;
 
             currentPhase = nextPhase;
-            getCurrentPhase().init(this);
+            getCurrentPhase().init();
         }
     }
 

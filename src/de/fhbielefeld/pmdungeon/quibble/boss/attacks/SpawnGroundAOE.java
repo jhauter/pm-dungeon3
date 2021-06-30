@@ -16,9 +16,8 @@ public class SpawnGroundAOE extends GroundAoe{
     private boolean activated = false;
     private Random rand = new Random();
 
-    public SpawnGroundAOE(int radius) {
-        super(radius);
-
+    public SpawnGroundAOE() {
+        this.radius = 1;
         animationHandler.addAsDefaultAnimation("idle", 1, 0.3f, 1, 5,
                 "assets/textures/entity/golem/ground_fire.png");
         animationHandler.addAnimation("spawn", 5, 0.3f, 1, 5,

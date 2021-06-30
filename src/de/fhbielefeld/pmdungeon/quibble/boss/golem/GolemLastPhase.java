@@ -2,7 +2,6 @@ package de.fhbielefeld.pmdungeon.quibble.boss.golem;
 
 import com.badlogic.gdx.math.Vector2;
 import de.fhbielefeld.pmdungeon.quibble.DungeonStart;
-import de.fhbielefeld.pmdungeon.quibble.boss.attacks.KnockbackGroundAOE;
 import de.fhbielefeld.pmdungeon.quibble.boss.battle.*;
 import de.fhbielefeld.pmdungeon.quibble.boss.bulletHell.BulletCreationFunction;
 import de.fhbielefeld.pmdungeon.quibble.boss.bulletHell.ProjectileSpawner;
@@ -14,7 +13,6 @@ import de.fhbielefeld.pmdungeon.quibble.entity.projectile.Projectile;
 import de.fhbielefeld.pmdungeon.vorgaben.tools.Point;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -27,17 +25,18 @@ public class GolemLastPhase extends BossPhase {
     private ArrayList<BossAction> actions = new ArrayList<>();
 
 
-    public GolemLastPhase() {
+    public GolemLastPhase(BossBattle battle) {
+        super(battle);
         var bullet = new BulletCreationFunction() {
             @Override
             public Projectile createProjectile() {
-                return new GolemProjectile("def", 0, 0, new CreatureStats(), BossBattle.boss);
+                return new GolemProjectile("def", 0, 0, new CreatureStats(), battle.getBoss());
             }
         };
         ArrayList<ProjectileSpawner> projSpawner = new ArrayList<>();
         for(int i = 0; i<9; ++i) {
             var face = rand.nextInt(360);
-            var spawner = new ProjectileSpawner(30, new CreatureStats(), new Vector2(0,0), bullet, BossBattle.boss);
+            var spawner = new ProjectileSpawner(30, new CreatureStats(), new Vector2(0,0), bullet, battle.getBoss());
             spawner.setFacing(face);
             spawner.addPattern(new SpinMovementPattern(spawner, 30));
             spawner.currentBulletSpeed = 0.08f;
@@ -52,7 +51,7 @@ public class GolemLastPhase extends BossPhase {
     @Override
     public void run() {
         super.run();
-        BossBattle.boss.playAttackAnimation("panic_idle", true, 19);
+        battle.getBoss().playAttackAnimation("panic_idle", true, 19);
         CamRumbleEffect.shake(0.05f, 9999f);
         var cam = DungeonStart.getDungeonMain().getCamera();
         var fpos = DungeonStart.getDungeonMain().getPlayer().getPosition();
@@ -67,10 +66,9 @@ public class GolemLastPhase extends BossPhase {
     }
 
     @Override
-    public void init(BossBattle battle) {
-        super.init(battle);
-        this.battle = battle;
-        BossBattle.boss.playAttackAnimation("animPanic", false, 20);
+    public void init() {
+        super.init();
+        battle.getBoss().playAttackAnimation("animPanic", false, 20);
     }
 
     @Override

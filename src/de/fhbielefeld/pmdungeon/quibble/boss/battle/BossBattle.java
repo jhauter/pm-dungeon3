@@ -49,7 +49,7 @@ public abstract class BossBattle extends Entity {
     /**
      * Instance of the boss
      */
-    public static Boss boss;
+    protected Boss boss;
 
     /**
      * Phase that is currently being executed
@@ -124,7 +124,7 @@ public abstract class BossBattle extends Entity {
             }
             if(cutscene.isFinished()) {
                 currentPhase = getCurrentPhase();
-                currentPhase.init(this);
+                currentPhase.init();
                 this.initialized = true;
                 boss.getCurrentStats().setStat(CreatureStatsAttribs.WALKING_SPEED, initialBossSpeed);
                 DungeonStart.getDungeonMain().getPlayer().getCurrentStats().setStat(CreatureStatsAttribs.WALKING_SPEED, initialPlayerSpeed);
@@ -178,6 +178,9 @@ public abstract class BossBattle extends Entity {
     @Override
     public boolean shouldDespawn() {
         return !this.active;
+    }
 
+    public Boss getBoss() {
+        return boss;
     }
 }

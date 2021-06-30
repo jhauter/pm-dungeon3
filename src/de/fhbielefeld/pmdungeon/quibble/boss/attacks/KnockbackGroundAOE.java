@@ -19,8 +19,9 @@ import de.fhbielefeld.pmdungeon.vorgaben.tools.Point;
 public class KnockbackGroundAOE extends GroundAoe implements DamageSource {
     private DungeonLevel level;
 
-    public KnockbackGroundAOE(int radius) {
-        super(radius);
+    public KnockbackGroundAOE() {
+        super();
+        this.radius = 2;
         this.animationHandler.addAsDefaultAnimation("slam",
                 4, 0.1f, 1, 4, "assets/textures/entity/golem/groundAOE.png");
         this.ticksUntilAction = 10;

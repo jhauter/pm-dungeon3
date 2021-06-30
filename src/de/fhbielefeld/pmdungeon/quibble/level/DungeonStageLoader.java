@@ -1,13 +1,10 @@
 package de.fhbielefeld.pmdungeon.quibble.level;
 
 
-import com.badlogic.gdx.math.Vector2;
 import de.fhbielefeld.pmdungeon.quibble.DungeonLevel;
 import de.fhbielefeld.pmdungeon.quibble.DungeonStart;
 import de.fhbielefeld.pmdungeon.quibble.LoggingHandler;
-import de.fhbielefeld.pmdungeon.quibble.animation.AnimationHandlerImpl;
 import de.fhbielefeld.pmdungeon.quibble.boss.*;
-import de.fhbielefeld.pmdungeon.quibble.boss.golem.GolemBossBattle;
 import de.fhbielefeld.pmdungeon.quibble.chest.GoldenChest;
 import de.fhbielefeld.pmdungeon.quibble.entity.*;
 import de.fhbielefeld.pmdungeon.quibble.quest.QuestDummy;
@@ -21,7 +18,6 @@ import de.fhbielefeld.pmdungeon.vorgaben.tools.Constants;
 import de.fhbielefeld.pmdungeon.vorgaben.tools.Point;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.Random;
 import java.util.logging.Level;
 

@@ -2,9 +2,9 @@ package de.fhbielefeld.pmdungeon.quibble.boss;
 
 import de.fhbielefeld.pmdungeon.quibble.DungeonLevel;
 import de.fhbielefeld.pmdungeon.quibble.boss.golem.GolemBossBattle;
+import de.fhbielefeld.pmdungeon.quibble.boss.slime.SlimeBossBattle;
 import de.fhbielefeld.pmdungeon.quibble.entity.BoundingBox;
 import de.fhbielefeld.pmdungeon.quibble.entity.Entity;
-import de.fhbielefeld.pmdungeon.quibble.entity.Player;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEvent;
 
 public class Trigger extends Entity {
@@ -56,7 +56,8 @@ public class Trigger extends Entity {
 
             fireEvent(new EntityEvent(EntityEvent.genEventID(), otherEntity));
 
-            var battle = new GolemBossBattle(this.level);
+            //var battle = new GolemBossBattle(this.level);
+            var battle = new SlimeBossBattle(this.level);
             battle.start();
             triggered = true;
 

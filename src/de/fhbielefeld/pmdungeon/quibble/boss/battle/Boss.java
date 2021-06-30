@@ -87,6 +87,10 @@ public class Boss extends NPC {
         return 50;
     }
 
+    public void setRenderOffset(float x, float y) {
+        this.renderOffsetX = x;
+        this.renderOffsetY = y;
+    }
 
     /**
      * Plays an animation

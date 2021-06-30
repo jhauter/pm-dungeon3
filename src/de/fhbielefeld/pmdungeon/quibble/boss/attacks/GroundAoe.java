@@ -8,16 +8,12 @@ import de.fhbielefeld.pmdungeon.quibble.entity.battle.DamageSource;
 public abstract class GroundAoe extends Entity implements DamageSource {
     protected int ticksUntilAction;
     protected int actionCounter = 0;
-    protected int radius;
+    protected int radius = 1;
 
     public boolean shouldDespawn = false;
 
     protected abstract void onRoam();
     protected abstract void onTrigger();
-
-    public GroundAoe(int radius) {
-        this.radius = radius;
-    }
 
     @Override
     protected void updateLogic() {

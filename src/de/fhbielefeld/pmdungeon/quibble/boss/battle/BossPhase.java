@@ -12,15 +12,14 @@ public abstract class BossPhase {
     public boolean active = false;
 
     private List <BossAction> currentActions;
-    public BossPhase() {
+    public BossPhase(BossBattle battle) {
+        this.battle = battle;
     }
-
-
     /**
      * Called once after switche to this phase
      * @param battle Reference to the battle
-     */ public void init(BossBattle battle) {
-        this.battle = battle;
+     *
+     */ public void init() {
         currentActions = new ArrayList<>();
         index = 0;
         var action = getActions().get(0);

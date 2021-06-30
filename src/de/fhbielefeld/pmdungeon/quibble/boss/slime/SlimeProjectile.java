@@ -1,10 +1,11 @@
-package de.fhbielefeld.pmdungeon.quibble.boss.golem;
+package de.fhbielefeld.pmdungeon.quibble.boss.slime;
 
 import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
 import de.fhbielefeld.pmdungeon.quibble.entity.projectile.ProjectileMagic;
 
-public class GolemProjectile extends ProjectileMagic {
+public class SlimeProjectile extends ProjectileMagic {
+
     /**
      * Creates a projectile entity that will keep moving at the same speed when the velocity is set (by default).
      * Projectiles will damage creatures on impact and disappear if they hit a wall.
@@ -16,20 +17,25 @@ public class GolemProjectile extends ProjectileMagic {
      * @param stats <code>CreatureStats</code> containing the damage attributes of the projectile
      * @param owner owner of the projectile. May be <code>null</code>. Owner is invincible to projectile
      */
-    public GolemProjectile(String name, float x, float y, CreatureStats stats, Creature owner) {
+    public SlimeProjectile(String name, float x, float y, CreatureStats stats, Creature owner) {
         super(name, x, y, stats, owner);
-        //this.animationHandler.addAsDefaultAnimation("", 8, 0.1F, 1, 8, PROJECTILE_PATH + "fireBall.png");
-        this.animationHandler.addAsDefaultAnimation("", 1, 0.01F, 1, 1,
-                "assets/textures/entity/golem/laser_projectile.png");
+        this.animationHandler.addAsDefaultAnimation("idle", 3, 0,0.1f,2,11,
+                "assets/textures/entity/boss_slime/projectiles.png");
     }
 
     @Override
     public int getTicksLasting() {
-        return 300;
+        return 200;
     }
 
     @Override
     public float getDamageDecreaseOverTime() {
         return 0;
+    }
+
+    @Override
+    protected void updateLogic() {
+        System.out.println(this.getPosition());
+        super.updateLogic();
     }
 }
