@@ -13,6 +13,7 @@ import de.fhbielefeld.pmdungeon.quibble.entity.projectile.Projectile;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class GolemDemoThirdPhase extends BossPhase {
@@ -27,34 +28,15 @@ public class GolemDemoThirdPhase extends BossPhase {
         };
 
         var projectile = new ProjectileSpawner(15, new CreatureStats(), new Vector2(0,0), bullet, BossBattle.boss);
-        var projectile2 = new ProjectileSpawner(15, new CreatureStats(), new Vector2(0,0), bullet, BossBattle.boss);
-
-        var projectile3 = new ProjectileSpawner(20, new CreatureStats(), new Vector2(3,0), bullet, BossBattle.boss);
-        var projectile4 = new ProjectileSpawner(20, new CreatureStats(), new Vector2(-3,0), bullet, BossBattle.boss);
-
-        var projectile5 = new ProjectileSpawner(20, new CreatureStats(), new Vector2(0,3), bullet, BossBattle.boss);
-        var projectile6 = new ProjectileSpawner(20, new CreatureStats(), new Vector2(0,-3), bullet, BossBattle.boss);
-
-        projectile2.setFacing(90);
-        projectile.addPattern(new SpinMovementPattern(projectile, 40));
-        projectile2.addPattern(new SpinMovementPattern(projectile, 40));
-        projectile3.addPattern(new SpinMovementPattern(projectile, 40));
-        projectile4.addPattern(new SpinMovementPattern(projectile, 40));
-        projectile5.addPattern(new SpinMovementPattern(projectile, 40));
-        projectile6.addPattern(new SpinMovementPattern(projectile, 40));
-
+        projectile.addPattern(new SpinMovementPattern(projectile, 200));
         projectile.currentBulletSpeed = 0.2f;
-        projectile2.currentBulletSpeed = 0.2f;
-        projectile3.currentBulletSpeed = 0.2f;
-        projectile4.currentBulletSpeed = 0.2f;
-        projectile5.currentBulletSpeed = 0.2f;
-        projectile6.currentBulletSpeed = 0.2f;
 
-        var spawnAction = new GroundEffectBossAction(new SpawnGroundAOE(2),230 , 200, 2,new Vector2(0,0));
+        var knockbackAction = new GroundEffectBossAction(new KnockbackGroundAOE(2),  300, 200, 2, new Vector2(0,0));
+        var spawnAction = new GroundEffectBossAction(new SpawnGroundAOE(2),100 , 20, 2,new Vector2(0,0));
 
-        var testProjectileAction = new ProjectileBossAction(Arrays.asList(projectile, projectile2, projectile3, projectile4, projectile5, projectile6), 200, 100);
-        var knockbackAction = new GroundEffectBossAction(new KnockbackGroundAOE(2),  140, 120, 2, new Vector2(0,0));
+        var testProjectileAction = new ProjectileBossAction(Collections.singletonList(projectile), 150, 20);
 
+        //TODO: THIS STILL DOES NOT WORK
         actions.add(spawnAction);
         actions.add(knockbackAction);
         actions.add(testProjectileAction);
@@ -64,7 +46,11 @@ public class GolemDemoThirdPhase extends BossPhase {
     protected List<BossAction> getActions() {
         return this.actions;
     }
+    @Override
+    public void run() {
+        super.run();
 
+    }
     @Override
     public void init(BossBattle battle) {
         //Tranform Animation
@@ -73,7 +59,7 @@ public class GolemDemoThirdPhase extends BossPhase {
 
         //BossBattle.boss.setPosition(battle.getInitialBossPosition());
 
-        BossBattle.boss.playAttackAnimation("arm_transform", false, 1);
+        BossBattle.boss.playAttackAnimation("arm_transform", false, 12);
 
         var arm = new GolemArmAdd(BossBattle.boss.getPosition().x, BossBattle.boss.getPosition().y);
 

@@ -102,8 +102,10 @@ public abstract class BossBattle extends Entity {
     public void removeAction(BossAction action) {
         currentPhase.removeAction(action);
     }
+    protected abstract void onBossBattleEnd();
 
-    private void onBossBattleEnd() {
+
+    private void onBossBattleEndClean() {
         getCurrentPhase().cleanStage();
         bossBar.setBoss(null);
         DungeonStart.getDungeonMain().getUIManager().removeUI(bossBar);
@@ -130,6 +132,7 @@ public abstract class BossBattle extends Entity {
         } else {
             if(isBattleOver()) {
                 onBossBattleEnd();
+                onBossBattleEndClean();
             } else {
                 switchPhase();
                 getCurrentPhase().run();

@@ -18,7 +18,6 @@ import java.util.HashMap;
 
 public class GolemBossBattle extends BossBattle {
     private HashMap<String, BossPhase> phases;
-    private BossPhase currentPhase;
     private long timePassed;
 
     public GolemBossBattle(DungeonLevel level) {
@@ -30,8 +29,14 @@ public class GolemBossBattle extends BossBattle {
         phases.put("third", new GolemDemoThirdPhase());
         phases.put("last", new GolemLastPhase());
 
-        currentPhase = phases.get("start");
+        currentPhase = phases.get("last");
     }
+
+    @Override
+    protected void onBossBattleEnd() {
+        boss.playAttackAnimation("death", false, 100);
+    }
+
     @Override
     protected boolean isBattleOver() {
             return boss.getCurrentHealth() <= 0;
@@ -64,7 +69,7 @@ public class GolemBossBattle extends BossBattle {
             }
         }
 
-        if(hpPercent <= 0.25) {
+        if(hpPercent <= 0.25 && currentPhase == phases.get("third")) {
             timePassed = 0;
             var nextPhase = phases.get("last");
             currentPhase.cleanStage();
@@ -106,6 +111,10 @@ public class GolemBossBattle extends BossBattle {
         var animInfoArmTransform = new AnimationHandlerImpl.AnimationInfo("arm_transform", 9, 20, 0.4f, 10, 10,
                 "assets/textures/entity/golem/Character_sheet.png");
 
+        var animPanic = new AnimationHandlerImpl.AnimationInfo("panic", 10, 70, 0.4f, 10,10, "assets/textures/entity/golem/Character_sheet.png");
+        var animPanicIdle = new AnimationHandlerImpl.AnimationInfo("panic_idle", 2, 78, 0.4f, 10,10, "assets/textures/entity/golem/Character_sheet.png");
+        var animDeath = new AnimationHandlerImpl.AnimationInfo("death", 4, 80, 0.4f, 10,10, "assets/textures/entity/golem/Character_sheet.png");
+
         animList.add(animInfoIdle);
         animList.add(animSpawn);
         animList.add(animShoot);
@@ -113,6 +122,9 @@ public class GolemBossBattle extends BossBattle {
         animList.add(animInfoShield);
         animList.add(animInfoShieldIdle);
         animList.add(animInfoArmTransform);
+        animList.add(animPanic);
+        animList.add(animPanicIdle);
+        animList.add(animDeath);
 
         var bossBuilder = new BossBuilder();
         CreatureStats bossStats = new CreatureStats();

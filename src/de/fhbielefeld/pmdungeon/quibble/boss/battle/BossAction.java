@@ -35,8 +35,6 @@ public abstract class BossAction {
     public void execute() {
         durationCounter++;
         cooldownCounter++;
-        System.out.println("Check");
-
         if(this.cooldownCounter >= cooldown) {
             System.out.println("Switch");
             battle.nextAction();

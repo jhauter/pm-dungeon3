@@ -19,8 +19,7 @@ public abstract class BossPhase {
     /**
      * Called once after switche to this phase
      * @param battle Reference to the battle
-     */
-    public void init(BossBattle battle) {
+     */ public void init(BossBattle battle) {
         this.battle = battle;
         currentActions = new ArrayList<>();
         index = 0;
@@ -32,17 +31,20 @@ public abstract class BossPhase {
 
     public void nextAction() {
         int maxActions = getActions().size();
+
+        if((index + 1) < maxActions) {
+            index++;
+        } else {
+            index = 0;
+        }
         System.out.println(index);
 
-        if(index + 1 >= maxActions) {
-            index = 0;
-        } else {
-            index++;
-        }
         var newAction = getActions().get(index);
         if(!currentActions.contains(newAction)) {
             currentActions.add(newAction);
             newAction.onActionBegin(battle);
+        } else {
+            System.out.println("ALREADY CONTAINS");
         }
 
     }
@@ -51,68 +53,14 @@ public abstract class BossPhase {
     public void removeAction(BossAction action) {
         currentActions.remove(action);
     }
-
-    public void switchAction() {
-        /*
-        int maxActions = getActions().size();
-        int index = 0;
-        BossAction currentAction = getActions().get(index);
-
-        if(this.index >= maxActions) {
-            this.index = 0;
-        }
-        if(!currentAction.completed && currentAc)
-
-        durationCounter++;
-        cooldownCounter++;
-        System.out.println(currentActions.toString());
-        if(this.index >= getActions().size() || currentActions.isEmpty()) {
-            this.index = 0;
-            var a= getActions().get(index);
-            durationCounter = 0;
-
-            if(!currentActions.contains(a)) {
-                currentActions.add(a);
-                a.onActionBegin(battle);
-            }
-        }
-
-        var iter = currentActions.listIterator();
-        while (iter.hasNext()) {
-            var a = iter.next();
-
-            if(cooldownCounter % a.cooldown == 0) {
-                index++;
-                if(this.getActions().size() > 1) {
-                    try {
-                        var newAction = getActions().get(index);
-                        if(!currentActions.contains(newAction)) {
-                            iter.add(newAction);
-                            newAction.onActionBegin(battle);
-                        }
-                    } catch (IndexOutOfBoundsException ignored) {
-                    }
-                }
-            }
-            if(!a.completed && durationCounter >= a.duration) {
-                a.onActionEnd();
-                a.completed = true;
-                iter.remove();
-            }
-        }
-         */
-    }
     /*
         Called each frame while BossPhase is active
      */
     public void run() {
         if(active) {
             if(currentActions.isEmpty()) {
-                var newAction = getActions().get(0);
-                newAction.onActionBegin(battle);
-                currentActions.add(newAction);
+                nextAction();
             }
-
             for(int i = 0; i<currentActions.size(); ++i) {
                 currentActions.get(i).execute();
             }

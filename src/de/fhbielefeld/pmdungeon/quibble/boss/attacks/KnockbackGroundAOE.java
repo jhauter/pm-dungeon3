@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 import de.fhbielefeld.pmdungeon.quibble.DungeonLevel;
 import de.fhbielefeld.pmdungeon.quibble.DungeonStart;
 import de.fhbielefeld.pmdungeon.quibble.boss.battle.BossBattle;
+import de.fhbielefeld.pmdungeon.quibble.boss.misc.CamRumbleEffect;
 import de.fhbielefeld.pmdungeon.quibble.entity.BoundingBox;
 import de.fhbielefeld.pmdungeon.quibble.entity.Entity;
 import de.fhbielefeld.pmdungeon.quibble.entity.Player;
@@ -13,6 +14,7 @@ import de.fhbielefeld.pmdungeon.quibble.entity.battle.DamageSource;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.DamageType;
 import de.fhbielefeld.pmdungeon.quibble.entity.effect.StatusEffect;
 import de.fhbielefeld.pmdungeon.quibble.entity.effect.StatusEffectKnockback;
+import de.fhbielefeld.pmdungeon.vorgaben.tools.Point;
 
 public class KnockbackGroundAOE extends GroundAoe implements DamageSource {
     private DungeonLevel level;
@@ -20,15 +22,27 @@ public class KnockbackGroundAOE extends GroundAoe implements DamageSource {
     public KnockbackGroundAOE(int radius) {
         super(radius);
         this.animationHandler.addAsDefaultAnimation("slam",
-                4, 0.01f, 1, 4, "assets/textures/entity/golem/groundAOE.png");
-        this.ticksUntilAction = 2;
+                4, 0.1f, 1, 4, "assets/textures/entity/golem/groundAOE.png");
+        this.ticksUntilAction = 10;
         this.renderScaleX = 3;
         this.renderScaleY = 3;
 
     }
     @Override
     protected void onRoam() {
-        //Nix
+        CamRumbleEffect.shake(0.6f, 5f);
+        System.out.println(CamRumbleEffect.getTimeLeft());
+        var cam = DungeonStart.getDungeonMain().getCamera();
+        //Let's just assert that we'll always follow the player
+        //var fpos= cam.getFollowedObject().getPosition();
+        var fpos = DungeonStart.getDungeonMain().getPlayer().getPosition();
+        if(CamRumbleEffect.getTimeLeft() > 0) {
+
+            var rumble = CamRumbleEffect.update();
+            cam.setFocusPoint(new Point(fpos.x + rumble.x, fpos.y + rumble.y));
+        } else {
+            DungeonStart.getDungeonMain().setCameraTarget(DungeonStart.getDungeonMain().getPlayer());
+        }
     }
 
     @Override
@@ -42,6 +56,7 @@ public class KnockbackGroundAOE extends GroundAoe implements DamageSource {
 
     @Override
     public void onSpawn(DungeonLevel level) {
+        System.out.println("Knockback spawn");
         super.onSpawn(level);
         this.level = level;
     }

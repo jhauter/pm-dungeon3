@@ -18,7 +18,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class GolemDemoSecondPhase extends BossPhase {
-    private ArrayList<BossAction> actions = new ArrayList<>();
+    private final ArrayList<BossAction> actions = new ArrayList<>();
 
     public GolemDemoSecondPhase() {
         var bullet = new BulletCreationFunction() {
@@ -43,7 +43,7 @@ public class GolemDemoSecondPhase extends BossPhase {
     @Override
     public void init(BossBattle battle) {
         super.init(battle);
-        BossBattle.boss.playAttackAnimation("shield", false, 1);
+        BossBattle.boss.playAttackAnimation("shield", false, 14);
         BossBattle.boss.physBuff = 1000;
         BossBattle.boss.updateMaxStats();
     }
@@ -51,11 +51,17 @@ public class GolemDemoSecondPhase extends BossPhase {
     @Override
     public void run() {
         super.run();
-        BossBattle.boss.playAttackAnimation("shield_idle", false, 0);
+        BossBattle.boss.playAttackAnimation("shield_idle", true, 20);
     }
+
 
     @Override
     protected List<BossAction> getActions() {
         return actions;
+    }
+
+    @Override
+    public void cleanStage() {
+        super.cleanStage();
     }
 }
