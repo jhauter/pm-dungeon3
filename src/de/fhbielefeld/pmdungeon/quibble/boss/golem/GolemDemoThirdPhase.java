@@ -8,6 +8,7 @@ import de.fhbielefeld.pmdungeon.quibble.boss.bulletHell.BulletCreationFunction;
 import de.fhbielefeld.pmdungeon.quibble.boss.bulletHell.ProjectileSpawner;
 import de.fhbielefeld.pmdungeon.quibble.boss.bulletHell.SpinMovementPattern;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
+import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
 import de.fhbielefeld.pmdungeon.quibble.entity.projectile.Projectile;
 
 import java.util.ArrayList;
@@ -22,7 +23,9 @@ public class GolemDemoThirdPhase extends BossPhase {
         var bullet = new BulletCreationFunction() {
             @Override
             public Projectile createProjectile() {
-                return new GolemProjectile("def", 0, 0, new CreatureStats(), battle.getBoss());
+                var projectileStats = new CreatureStats();
+                projectileStats.setStat(CreatureStatsAttribs.DAMAGE_MAGIC, 4f);
+                return new GolemProjectile("def", 0, 0, projectileStats, battle.getBoss());
             }
         };
 

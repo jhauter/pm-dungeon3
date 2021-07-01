@@ -7,6 +7,7 @@ import de.fhbielefeld.pmdungeon.quibble.boss.bulletHell.BulletCreationFunction;
 import de.fhbielefeld.pmdungeon.quibble.boss.bulletHell.ProjectileSpawner;
 import de.fhbielefeld.pmdungeon.quibble.boss.bulletHell.SpinMovementPattern;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
+import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
 import de.fhbielefeld.pmdungeon.quibble.entity.projectile.Projectile;
 
 import java.util.ArrayList;
@@ -23,7 +24,9 @@ public class SlimeFirstPhase extends BossPhase {
 
             @Override
             public Projectile createProjectile() {
-                return new SlimeProjectile("def", 0, 0, new CreatureStats(), battle.getBoss());
+                var projectileStats = new CreatureStats();
+                projectileStats.setStat(CreatureStatsAttribs.DAMAGE_MAGIC, 5);
+                return new SlimeProjectile("def", 0, 0, projectileStats, battle.getBoss());
             }
         };
 

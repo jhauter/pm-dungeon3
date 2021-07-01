@@ -27,6 +27,9 @@ public class Boss extends NPC {
         this.build(builder);
     }
 
+    public void growBoundingBox(float x, float y) {
+        this.boundingBox.grow(x, y);
+    }
 
     /**
      * Builds a boss entity described by the BossBuilder structure

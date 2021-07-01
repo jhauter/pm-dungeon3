@@ -9,6 +9,7 @@ import de.fhbielefeld.pmdungeon.quibble.boss.bulletHell.ProjectileSpawner;
 import de.fhbielefeld.pmdungeon.quibble.boss.bulletHell.SpinMovementPattern;
 import de.fhbielefeld.pmdungeon.quibble.boss.misc.CamRumbleEffect;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
+import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
 import de.fhbielefeld.pmdungeon.quibble.entity.projectile.Projectile;
 import de.fhbielefeld.pmdungeon.vorgaben.tools.Point;
 
@@ -24,10 +25,14 @@ public class GolemDemoSecondPhase extends BossPhase {
         var bullet = new BulletCreationFunction() {
             @Override
             public Projectile createProjectile() {
-                return new GolemProjectile("def", 0, 0, new CreatureStats(), battle.getBoss());
+                var projectileStats = new CreatureStats();
+                projectileStats.setStat(CreatureStatsAttribs.DAMAGE_MAGIC, 4f);
+                return new GolemProjectile("def", 0, 0, projectileStats, battle.getBoss());
             }
         };
-        var projectile = new ProjectileSpawner(100, new CreatureStats(), new Vector2(0,0), bullet, battle.getBoss());
+        var projectileStats = new CreatureStats();
+        projectileStats.setStat(CreatureStatsAttribs.DAMAGE_PHYS, 2);
+        var projectile = new ProjectileSpawner(100, projectileStats, new Vector2(0,0), bullet, battle.getBoss());
 
         projectile.addPattern(new SpinMovementPattern(projectile, 10));
         projectile.currentBulletSpeed = 0.05f;

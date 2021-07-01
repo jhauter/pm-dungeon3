@@ -15,6 +15,7 @@ import java.util.HashMap;
 public class DemonBossBattle extends BossBattle {
     private HashMap<String, BossPhase> phases;
     private int counter;
+    private boolean finished = false;
     /**
      * @param level Current level
      */
@@ -34,7 +35,8 @@ public class DemonBossBattle extends BossBattle {
     @Override
     public void start() {
         super.start();
-
+        boss.setRenderOffset(0, 2);
+        boss.growBoundingBox(2,3);
     }
 
 
@@ -45,6 +47,10 @@ public class DemonBossBattle extends BossBattle {
 
     @Override
     protected void onBossBattleEnd() {
+        if(!finished) {
+            finished = true;
+            //DungeonStart.getDungeonMain().getUICredits().play();
+        }
     }
 
     @Override

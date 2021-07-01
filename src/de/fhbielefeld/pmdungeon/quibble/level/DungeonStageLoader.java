@@ -5,6 +5,8 @@ import de.fhbielefeld.pmdungeon.quibble.DungeonLevel;
 import de.fhbielefeld.pmdungeon.quibble.DungeonStart;
 import de.fhbielefeld.pmdungeon.quibble.LoggingHandler;
 import de.fhbielefeld.pmdungeon.quibble.boss.*;
+import de.fhbielefeld.pmdungeon.quibble.boss.golem.GolemBossBattle;
+import de.fhbielefeld.pmdungeon.quibble.boss.slime.SlimeBossBattle;
 import de.fhbielefeld.pmdungeon.quibble.chest.GoldenChest;
 import de.fhbielefeld.pmdungeon.quibble.entity.*;
 import de.fhbielefeld.pmdungeon.quibble.quest.QuestDummy;
@@ -102,8 +104,7 @@ public class DungeonStageLoader {
         //NOTE(Jonathan) Right now this is only for testing purposes and assumes that we will be using the default
         // "boss-map" which we won't!
         if(getCurrentStageType() == StageType.Boss) {
-
-            Trigger t = new Trigger(15, 23);
+            Trigger t = new Trigger(new SlimeBossBattle(level));
             level.spawnEntity(t);
 
         }

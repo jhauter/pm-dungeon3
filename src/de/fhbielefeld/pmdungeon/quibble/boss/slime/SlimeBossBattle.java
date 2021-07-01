@@ -34,7 +34,7 @@ public class SlimeBossBattle extends BossBattle {
     @Override
     public void start() {
         super.start();
-        boss.setRenderOffset(0, 4);
+        boss.setRenderOffset(0, 5.6f);
     }
 
     @Override

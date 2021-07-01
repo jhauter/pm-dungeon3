@@ -26,6 +26,8 @@ public abstract class BossBattle extends Entity {
      * Indicates whether the boss battle is still running or should be ended
      */
     private boolean active = true;
+    private boolean startBattle = false;
+
     private UIBossBar bossBar;
     private BossCutsceneHandler cutscene;
     private boolean initialized = false;
@@ -82,7 +84,7 @@ public abstract class BossBattle extends Entity {
         this.initialBossSpeed = boss.getWalkingSpeed();
 
         cutscene.playCutscene();
-
+        startBattle = true;
         // TODO: set boss invisable?
         // moved spawn animation to updateLogic
     }
@@ -99,7 +101,7 @@ public abstract class BossBattle extends Entity {
         this.cutscene = new BossCutsceneHandler(boss, level, DungeonStart.getDungeonMain().getPlayer());
         this.initialPlayerSpeed = DungeonStart.getDungeonMain().getPlayer().getWalkingSpeed();
         this.initialBossSpeed = boss.getWalkingSpeed();
-
+        startBattle = true;
         if(playCutscene) {
             cutscene.playCutscene();
         }
@@ -141,6 +143,9 @@ public abstract class BossBattle extends Entity {
 
     @Override
     protected void updateLogic() {
+        if(!startBattle) {
+            return;
+        }
         if(!initialized) {
             if (!playCutscene || cutscene.bossReached()){
                 boss.playAttackAnimation("spawn", false, 10);
