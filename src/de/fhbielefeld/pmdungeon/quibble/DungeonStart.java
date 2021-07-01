@@ -105,7 +105,7 @@ public class DungeonStart extends MainController implements EntityEventHandler
 	
 	private ShapeRenderer debugRenderer;
 	
-	private boolean drawBoundingBoxes = true;
+	private boolean drawBoundingBoxes = false;
 	//Draws spatial hash grid cells of the level
 	private boolean drawSHGCells = false;
 	private boolean drawSHGCNearby = false;

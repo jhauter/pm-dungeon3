@@ -32,7 +32,8 @@ public abstract class BossBattle extends Entity {
 
     private float initialPlayerSpeed = 0;
     private float initialBossSpeed = 0;
-
+    private boolean playCutscene = true;
+    protected Vector2 initialPosition = new Vector2(9, 28);
 
     /**
      *
@@ -85,7 +86,29 @@ public abstract class BossBattle extends Entity {
         // TODO: set boss invisable?
         // moved spawn animation to updateLogic
     }
+    public void start(boolean playCutscene) {
+        this.playCutscene = playCutscene;
+        this.level.spawnEntity(this);
+        prepareArea();
+        bossBar = new UIBossBar();
+        bossBar.setBoss(boss);
 
+        DungeonStart.getDungeonMain().getUIManager().addUI(bossBar);
+        boss.setPosition(getInitialBossPosition());
+        this.level.spawnEntity(boss);
+        this.cutscene = new BossCutsceneHandler(boss, level, DungeonStart.getDungeonMain().getPlayer());
+        this.initialPlayerSpeed = DungeonStart.getDungeonMain().getPlayer().getWalkingSpeed();
+        this.initialBossSpeed = boss.getWalkingSpeed();
+
+        if(playCutscene) {
+            cutscene.playCutscene();
+        }
+    }
+
+    public void start(boolean playCutscene, Vector2 pos) {
+        start(playCutscene);
+        initialPosition = pos;
+    }
     /**
      * Prepared the area if needed by removing enemy entities
      */
@@ -119,10 +142,10 @@ public abstract class BossBattle extends Entity {
     @Override
     protected void updateLogic() {
         if(!initialized) {
-            if (cutscene.bossReached()){
+            if (!playCutscene || cutscene.bossReached()){
                 boss.playAttackAnimation("spawn", false, 10);
             }
-            if(cutscene.isFinished()) {
+            if(!playCutscene || cutscene.isFinished()) {
                 currentPhase = getCurrentPhase();
                 currentPhase.init();
                 this.initialized = true;

@@ -92,6 +92,23 @@ public class Boss extends NPC {
         this.renderOffsetY = y;
     }
 
+    public void setRenderSize(float x, float y) {
+        this.renderWidth = x;
+        this.renderHeight = y;
+    }
+
+    public void setRenderScale(float x, float y) {
+        this.renderScaleX = x;
+        this.renderScaleY = y;
+    }
+
+    public Vector2 getRenderScale() {
+        return new Vector2(this.renderScaleX, this.renderScaleY);
+    }
+
+    public void addDefaultAnimation(AnimationHandlerImpl.AnimationInfo info) {
+        this.animationHandler.addAsDefaultAnimation(info);
+    }
     /**
      * Plays an animation
      * @param animName Name of the animation held by the animationHandler

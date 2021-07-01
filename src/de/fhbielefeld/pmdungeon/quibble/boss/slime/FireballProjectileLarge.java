@@ -4,7 +4,7 @@ import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
 import de.fhbielefeld.pmdungeon.quibble.entity.projectile.ProjectileMagic;
 
-public class SlimeProjectile extends ProjectileMagic {
+public class FireballProjectileLarge extends ProjectileMagic {
 
     /**
      * Creates a projectile entity that will keep moving at the same speed when the velocity is set (by default).
@@ -17,25 +17,21 @@ public class SlimeProjectile extends ProjectileMagic {
      * @param stats <code>CreatureStats</code> containing the damage attributes of the projectile
      * @param owner owner of the projectile. May be <code>null</code>. Owner is invincible to projectile
      */
-
-    public SlimeProjectile(String name, float x, float y, CreatureStats stats, Creature owner) {
+    public FireballProjectileLarge(String name, float x, float y, CreatureStats stats, Creature owner) {
         super(name, x, y, stats, owner);
-        this.animationHandler.addAsDefaultAnimation("idle", 3, 0,0.1f,2,11,
-                "assets/textures/entity/boss_slime/projectiles.png");
+        this.animationHandler.addAsDefaultAnimation("idle", 45, 0, 0.05f, 1, 45,
+                "assets/textures/entity/boss_slime/fireball2.png");
+        this.renderHeight = 5;
+        this.renderWidth = 5;
     }
 
     @Override
     public int getTicksLasting() {
-        return 200;
+        return 500;
     }
 
     @Override
     public float getDamageDecreaseOverTime() {
         return 0;
-    }
-
-    @Override
-    protected void updateLogic() {
-        super.updateLogic();
     }
 }

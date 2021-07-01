@@ -74,7 +74,7 @@ public class KnockbackGroundAOE extends GroundAoe implements DamageSource {
     @Override
     public CreatureStats getCurrentStats() {
         var stats = new CreatureStats();
-        stats.setStat(CreatureStatsAttribs.KNOCKBACK, strength * 10);
+        stats.setStat(CreatureStatsAttribs.KNOCKBACK, strength * 3);
         return stats;
     }
 }

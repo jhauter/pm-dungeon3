@@ -10,6 +10,7 @@ import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
 import de.fhbielefeld.pmdungeon.quibble.entity.projectile.Projectile;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class SlimeSecondPhase extends BossPhase {
@@ -19,15 +20,20 @@ public class SlimeSecondPhase extends BossPhase {
         super(battle);
         this.actions = new ArrayList<>();
         var bullet = new BulletCreationFunction() {
-
             @Override
             public Projectile createProjectile() {
                 return new SlimeProjectile("def", 0, 0, new CreatureStats(), battle.getBoss());
             }
         };
+        var fireball = new BulletCreationFunction() {
+            @Override
+            public Projectile createProjectile() {
+                return new FireballProjectile("def", 0, 0, new CreatureStats(), battle.getBoss());
+            }
+        };
 
         List<ProjectileSpawner> projSpawner = new ArrayList<>();
-        for(int i = 0; i<6; ++i) {
+        for(int i = 0; i<8; ++i) {
             var face = i * 25;
             var proj = new ProjectileSpawner(40, new CreatureStats(), new Vector2(0,0), bullet, battle.getBoss());
             proj.addPattern(new SpinMovementPattern(proj, 250));
@@ -35,16 +41,19 @@ public class SlimeSecondPhase extends BossPhase {
             proj.setFacing(face);
             projSpawner.add(proj);
         }
-
+        var fireballSpawner = new ProjectileSpawner(20, new CreatureStats(), new Vector2(0,0), fireball, battle.getBoss());
+        fireballSpawner.addPattern(new SpinMovementPattern(fireballSpawner, 150));
+        fireballSpawner.currentBulletSpeed = 0.07f;
         var waitAction = new WaitAction(120, 100);
         var spawnGround = new SpawnGroundAOE();
         spawnGround.setTarget(new FireSlimeAdd());
         var spawnAction = new GroundEffectBossAction(spawnGround, 1, new Vector2(0,0));
         var projAction = new ProjectileBossAction(projSpawner, 60, 50);
-
-        //actions.add(projAction);
+        var projAction2 = new ProjectileBossAction(Collections.singletonList(fireballSpawner), 200, 50);
+        actions.add(projAction);
         //actions.add(waitAction);
         actions.add(spawnAction);
+        actions.add(projAction2);
     }
 
     @Override

@@ -1,4 +1,4 @@
-package de.fhbielefeld.pmdungeon.quibble.boss.slime;
+package de.fhbielefeld.pmdungeon.quibble.boss.demon;
 
 import com.badlogic.gdx.math.Vector2;
 import de.fhbielefeld.pmdungeon.quibble.DungeonLevel;
@@ -6,26 +6,26 @@ import de.fhbielefeld.pmdungeon.quibble.animation.AnimationHandlerImpl;
 import de.fhbielefeld.pmdungeon.quibble.boss.battle.BossBattle;
 import de.fhbielefeld.pmdungeon.quibble.boss.battle.BossBuilder;
 import de.fhbielefeld.pmdungeon.quibble.boss.battle.BossPhase;
-import de.fhbielefeld.pmdungeon.quibble.boss.demon.DemonBossBattle;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class SlimeBossBattle extends BossBattle {
+public class DemonBossBattle extends BossBattle {
     private HashMap<String, BossPhase> phases;
-    private boolean shouldEnd = false;
+    private int counter;
     /**
      * @param level Current level
      */
-    public SlimeBossBattle(DungeonLevel level) {
+    public DemonBossBattle(DungeonLevel level) {
         super(level);
         phases = new HashMap<>();
-        phases.put("start", new SlimeFirstPhase(this));
-        phases.put("second", new SlimeSecondPhase(this));
-        currentPhase = phases.get("start");
+        phases.put("transform", new DemonTransformPhase(this));
+        phases.put("second", new DemonSecondPhase(this));
+        currentPhase = phases.get("transform");
     }
+
     @Override
     protected void updateLogic() {
         super.updateLogic();
@@ -34,8 +34,14 @@ public class SlimeBossBattle extends BossBattle {
     @Override
     public void start() {
         super.start();
-        boss.setRenderOffset(0, 4);
+
     }
+
+
+    @Override
+    protected void updateEnd(){
+        super.updateEnd();
+        }
 
     @Override
     protected void onBossBattleEnd() {
@@ -43,54 +49,51 @@ public class SlimeBossBattle extends BossBattle {
 
     @Override
     protected boolean isBattleOver() {
-        return shouldEnd;
+        return boss.getCurrentHealth() <= 0;
     }
 
     @Override
     protected void switchPhase() {
-        if(currentPhase.active && boss.getCurrentHealth() <= 75 && currentPhase == phases.get("start")) {
+        counter++;
+        if(currentPhase == phases.get("transform") && counter >= 200) {
+            counter = 0;
             var nextPhase = phases.get("second");
             currentPhase.cleanStage();
             currentPhase.active = false;
+
             currentPhase = nextPhase;
             getCurrentPhase().init();
-        }
 
-        if(!shouldEnd && currentPhase == phases.get("second") && boss.getCurrentHealth() <= 25) {
-            currentPhase.cleanStage();
-            currentPhase.active = false;
-            var demon = new DemonBossBattle(this.level);
-            demon.start(false, boss.getPosition());
-
-            this.shouldEnd = true;
         }
     }
 
     @Override
     public Vector2 getInitialBossPosition() {
-        return new Vector2(9, 28);
+        return initialPosition;
     }
 
     @Override
     protected BossBuilder getBossInformation() {
         var animList = new ArrayList<AnimationHandlerImpl.AnimationInfo>();
-        var idle = new AnimationHandlerImpl.AnimationInfo("idle", 6, 0,
-                0.1f, 12, 32, "assets/textures/entity/boss_slime/sheet.png");
-        var slam = new AnimationHandlerImpl.AnimationInfo("slam", 8, 32, 0.3f, 12, 32,
-                "assets/textures/entity/boss_slime/sheet.png");
-
-
+        var idle = new AnimationHandlerImpl.AnimationInfo("idle",
+                12, 160,0.1f, 12, 32, "assets/textures/entity/boss_slime/sheet.png");
+        var transform = new AnimationHandlerImpl.AnimationInfo("transform", 32, 96, 0.2f, 12, 32,"assets/textures/entity/boss_slime/sheet.png");
+        var slam = new AnimationHandlerImpl.AnimationInfo("slam", 18, 224, 0.1f, 12, 32, "assets/textures/entity/boss_slime/sheet.png");
+        var shoot = new AnimationHandlerImpl.AnimationInfo("shoot", 6, 288, 0.1f, 12, 32, "assets/textures/entity/boss_slime/sheet.png");
         animList.add(idle);
+        animList.add(transform);
         animList.add(slam);
+        animList.add(shoot);
 
         var bossBuilder = new BossBuilder();
         CreatureStats bossStats = new CreatureStats();
-        bossStats.setStat(CreatureStatsAttribs.HEALTH, 8000);
+        bossStats.setStat(CreatureStatsAttribs.HEALTH, 9000);
 
         bossBuilder = bossBuilder
-                .setRenderScale(new Vector2(14,12))
+                .setRenderScale(new Vector2(8,6))
                 .setAnimation(animList)
                 .setMaxHP(bossStats);
+
         return bossBuilder;
     }
 
@@ -98,5 +101,4 @@ public class SlimeBossBattle extends BossBattle {
     protected BossPhase getCurrentPhase() {
         return currentPhase;
     }
-
 }

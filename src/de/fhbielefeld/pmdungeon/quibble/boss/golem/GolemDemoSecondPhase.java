@@ -1,13 +1,16 @@
 package de.fhbielefeld.pmdungeon.quibble.boss.golem;
 
 import com.badlogic.gdx.math.Vector2;
+import de.fhbielefeld.pmdungeon.quibble.DungeonStart;
 import de.fhbielefeld.pmdungeon.quibble.boss.attacks.SpawnGroundAOE;
 import de.fhbielefeld.pmdungeon.quibble.boss.battle.*;
 import de.fhbielefeld.pmdungeon.quibble.boss.bulletHell.BulletCreationFunction;
 import de.fhbielefeld.pmdungeon.quibble.boss.bulletHell.ProjectileSpawner;
 import de.fhbielefeld.pmdungeon.quibble.boss.bulletHell.SpinMovementPattern;
+import de.fhbielefeld.pmdungeon.quibble.boss.misc.CamRumbleEffect;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
 import de.fhbielefeld.pmdungeon.quibble.entity.projectile.Projectile;
+import de.fhbielefeld.pmdungeon.vorgaben.tools.Point;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,7 +43,7 @@ public class GolemDemoSecondPhase extends BossPhase {
     @Override
     public void init() {
         super.init();
-        battle.getBoss().playAttackAnimation("shield", false, 14);
+        battle.getBoss().playAttackAnimation("transform", false, 14);
         battle.getBoss().physBuff = 1000;
         battle.getBoss().updateMaxStats();
     }
@@ -49,6 +52,8 @@ public class GolemDemoSecondPhase extends BossPhase {
     public void run() {
         super.run();
         battle.getBoss().playAttackAnimation("shield_idle", true, 20);
+
+
     }
 
 
