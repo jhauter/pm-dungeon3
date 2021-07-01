@@ -113,9 +113,13 @@ public class DungeonStart extends MainController implements EntityEventHandler
 	
 	private Player myHero;
 	private Entity cameraTarget;
+
 	private boolean setupDone = false;
 	
 	private static boolean isSaveGame;
+
+	private int dungeonLevelCounter = 0;
+
 	
 	private static int playerType;
 	
@@ -302,7 +306,7 @@ public class DungeonStart extends MainController implements EntityEventHandler
 		}
 		// Set current level from the level controller and entity controller
 		this.currentLevel = new DungeonLevel(this.levelController.getDungeon(), 50, 50, 150, 150);
-		
+
 		// Set the camera to follow the hero
 		this.cameraTarget = this.myHero;
 		LoggingHandler.logger.log(Level.INFO, "New level loaded.");
@@ -337,6 +341,7 @@ public class DungeonStart extends MainController implements EntityEventHandler
 		this.gameInputProcessor.update();
 		
 		this.currentLevel.update();
+
 		
 		// Check the triggeredNextLevel flag of the player
 		if(this.myHero.triggeredNextLevel())
@@ -352,6 +357,7 @@ public class DungeonStart extends MainController implements EntityEventHandler
 		if(Gdx.input.isKeyJustPressed(Input.Keys.F12))
 		{
 			stageLoader.loadNextStage();
+
 			LoggingHandler.logger.log(Level.INFO, "Player entered new level.");
 			
 		}
