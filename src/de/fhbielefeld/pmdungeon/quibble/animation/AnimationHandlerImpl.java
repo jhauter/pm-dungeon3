@@ -18,7 +18,7 @@ import de.fhbielefeld.pmdungeon.quibble.file.ResourceType;
 
 public class AnimationHandlerImpl implements AnimationHandler
 {
-	private static class AnimationInfo
+	public static class AnimationInfo
 	{
 		private final String name;
 		private final int numFrames;
@@ -88,7 +88,7 @@ public class AnimationHandlerImpl implements AnimationHandler
 		this.loadedAnimations = new HashMap<String, LoadedAnimation>();
 	}
 	
-	private void addAnimation(AnimationInfo animInfo)
+	public void addAnimation(AnimationInfo animInfo)
 	{
 		if(animInfo.numFrames <= 0)
 		{
@@ -146,7 +146,8 @@ public class AnimationHandlerImpl implements AnimationHandler
 	{
 		this.addAsDefaultAnimation(animName, numFrames, 0, frameDuration, rows, columns, fileName);
 	}
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -157,7 +158,16 @@ public class AnimationHandlerImpl implements AnimationHandler
 		this.addAnimation(animInfo);
 		this.defaultAnimInfo = animInfo;
 	}
-	
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void addAsDefaultAnimation(AnimationInfo animInfo) {
+		this.addAnimation(animInfo);
+		this.defaultAnimInfo = animInfo;
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -223,14 +233,13 @@ public class AnimationHandlerImpl implements AnimationHandler
 		final int tileWidth = texRes.getResource().getWidth() / animInfo.columns;
 		final int tileHeight = texRes.getResource().getHeight() / animInfo.rows;
 		TextureRegion[][] grid = TextureRegion.split(texRes.getResource(), tileWidth, tileHeight);
-		for(int n = animInfo.firstFrame; n < animInfo.numFrames + animInfo.firstFrame; ++n)
-		{
+		for(int n = animInfo.firstFrame; n < animInfo.numFrames + animInfo.firstFrame; ++n) {
 			frames.add(grid[n / animInfo.columns][n % animInfo.columns]);
 		}
 		Animation<TextureRegion> anim = new Animation<>(animInfo.frameDuration, frames.toArray(new TextureRegion[0]));
 		return new LoadedAnimation(anim);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
