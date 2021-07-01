@@ -46,7 +46,7 @@ public class MainController extends ScreenAdapter {
     /**
      * Marks if the firstFrame is already calculated or not (true= not calculated)
      */
-    protected boolean firstFrame = true;
+    protected static boolean firstFrame = true;
 
     //if you call a gdx function in setup this will call draw, so this boolean will be used to stop loops of firstFrame
     private boolean finishedSetup = false;
