@@ -1,27 +1,34 @@
 package de.fhbielefeld.pmdungeon.quibble.memory;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 
-import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
+import com.google.gson.Gson;
 
+import de.fhbielefeld.pmdungeon.quibble.DungeonStart;
 import de.fhbielefeld.pmdungeon.quibble.LoggingHandler;
-import de.fhbielefeld.pmdungeon.quibble.entity.Creature;
 import de.fhbielefeld.pmdungeon.quibble.entity.Player;
-import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
 import de.fhbielefeld.pmdungeon.quibble.inventory.Inventory;
 import de.fhbielefeld.pmdungeon.quibble.item.Item;
-import de.fhbielefeld.pmdungeon.vorgaben.tools.Constants;
+import de.fhbielefeld.pmdungeon.quibble.memory.MemoryData.ItemInformation;
 
 public class MemoryDataHandler {
 
 	private static MemoryDataHandler instance;
+	
+	private Gson gson;
 
-	MemoryData memoryData;
+	private MemoryData memoryData;	
+	
+	private int counter = 0;
 
 	private MemoryDataHandler() {
-		memoryData = new MemoryData();
+		this.gson = new Gson();
+	
 	}
 
 	/**
@@ -36,83 +43,52 @@ public class MemoryDataHandler {
 		return instance;
 	}
 
+
 	/**
-	 * Called to save the Player
+	 * Will save the player as MemoryData to a JsonFile
 	 */
-	public void save() {
-		memoryData.save();
+	public void savePlayer() {
+		this.memoryData = new MemoryData(DungeonStart.getDungeonMain().getPlayer(), counter += 1);
+		String memory = gson.toJson(memoryData);
+		FileHandle file = Gdx.files.local("Game.json");
+		file.writeString(memory, false);
+		
+		LoggingHandler.logger.log(Level.INFO, "Save Player to Memory");
 	}
-
-	private Preferences getMemory() {
-		return memoryData.getMemory();
-	}
-
+	
 	/**
 	 * 
-	 * @return the last instance of the Player. <br>
-	 *         <blockquote> Stored data :
-	 *         <li>Position
-	 *         <li>Inventory
-	 *         <li>Items
-	 *         <li>Equipped
-	 *         <li>Items
-	 *         <li>Exp
-	 *         <li>Life Points
+	 * @return the last saved instance of the Player
 	 */
-	public Creature getSavedPlayer() {
-		Player player = getSavedCreatureType();
-
-		player.setPosition(getMemory().getFloat(SaveType.POSITION_X.name()),
-				getMemory().getFloat(SaveType.POSITION_Y.name()));
-		player.setName(getMemory().getString(SaveType.NAME.name()));
-
-		player.setTotalExp(getMemory().getInteger(SaveType.TOTAL_EXP.name()));
-		setPlayerAttrib((Player) player);
-
-		loadEqu(getMemory().getInteger(SaveType.EQUPPEMENT_SLOTS.name()), SaveType.EQUIPPED_ITEM, player);
-		loadInv(getMemory().getInteger(SaveType.INVENTORY_SLOTS.name()), SaveType.INVENTORY_ITEM, player);
-		LoggingHandler.logger.log(Level.INFO, "Loaded Player from Memory");
+	public Player loadPlayer() {
+		Gson gson = new Gson();
+		FileHandle file = Gdx.files.local("Game.json");
+		String data = file.readString();
+		this.memoryData = gson.fromJson(data, MemoryData.class);
+		Player player = (Player) getSavedClass(memoryData.classType); 
+		player.setPosition(memoryData.position);
+		player.setName(memoryData.displayName);
+		for (int i = 0; i < CreatureStatsAttribs.values().length; i++) {
+			player.getCurrentStats().setStat(CreatureStatsAttribs.values()[i], memoryData.stats.get(i));
+		}
+		getSavedItems(player.getEquippedItems(), memoryData.equ);
+		getSavedItems(player.getInventory(), memoryData.inv);
+		LoggingHandler.logger.log(Level.INFO, "Loaded Player Data");
 		return player;
 	}
 	
-	private void loadInv(int lenghtOfInventory, SaveType invType, Player player) {
+	private void getSavedItems(Inventory<Item> inv, ArrayList<ItemInformation> list) {
 		Item item = null;
-		for (int i = 0; i < lenghtOfInventory; i++) {
-			String memory = getMemory().getString(invType.name() + i);
-			if(!memory.isBlank()) {
-				item = getItem(memory);
-				setItemAttrib(item, invType.name() + i);
-				item.setDisplayName(getMemory().getString(invType.name() + i + "displayName"));
-				player.getInventory().addItem(item);
-			}
-		}
-	}
-	private void loadEqu(int lenghtOfInventory, SaveType invType, Player player) {
-		Item item = null;
-		for (int i = 0; i < lenghtOfInventory; i++) {
-			String memory = getMemory().getString(invType.name() + i);
-			if(!memory.isBlank()) {
-				item = getItem(memory);
-				setItemAttrib(item, invType.name() + i);
-				player.getEquippedItems().addItem(item);
-			}
-		}
-	}
-
-
-	private void addItems(int lenghtOfInventory, String InventoryType, Inventory<Item> inv) {
-		Item item = null;
-		for (int i = 0; i < lenghtOfInventory; i++) {
-			String memory = getMemory().getString(InventoryType + i);
-			if(!memory.isBlank()) {
-				item = getItem(memory);
-				setItemAttrib(item, InventoryType + i);
-				item.setDisplayName(getMemory().getString(InventoryType + i + "displayName"));
+		for (int i = 0; i < list.size(); i++) {
+			if(list.get(i) != null) {
+				item = getItem(list.get(i).classType);
+				item.setDisplayName(list.get(i).name);
+				item.setAttackStats(list.get(i).stats);
 				inv.addItem(item);
 			}
 		}
 	}
-
+	
 	private Item getItem(String type) {
 		for (Item item : Item.getRegisteredItems()) {
 			if (type.equals(item.getClass().getTypeName()))
@@ -120,47 +96,7 @@ public class MemoryDataHandler {
 		}
 		return null;
 	}
-
-	private void setItemAttrib(Item item, String saveType) {
-		CreatureStats stats = new CreatureStats();
-		for (int i = 0; i < CreatureStatsAttribs.values().length; i++) {
-			stats.setStat(CreatureStatsAttribs.values()[i], getMemory().getFloat(saveType + i));
-		}
-		item.setAttackStats(stats);
-	}
-
-	private void setPlayerAttrib(Player player) {
-		for (int i = 0; i < CreatureStatsAttribs.values().length; i++) {
-			player.getCurrentStats().setStat(CreatureStatsAttribs.values()[i],
-					getMemory().getFloat(SaveType.NAME.name() + CreatureStatsAttribs.values()[i]));
-		}
-	}
-
-	/**
-	 * 
-	 * @return the last DungeonWorld which was loaded. <br>
-	 *         Use this to get the last Map the Player has entered.
-	 */
-	public String getSavedLevel() {
-		String logMsg = "Loaded Dungeon from Memory";
-		int x = getMemory().getInteger(SaveType.CURRENT_LEVEL.name());
-		switch (x) {
-		case 1:
-			LoggingHandler.logger.log(Level.INFO, logMsg);
-			return Constants.PATHTOLEVEL + "small_dungeon.json";
-		case 2:
-			LoggingHandler.logger.log(Level.INFO, logMsg);
-			return Constants.PATHTOLEVEL + "simple_dungeon_2.json";
-		case 3:
-			LoggingHandler.logger.log(Level.INFO, logMsg);
-			return Constants.PATHTOLEVEL + "simple_dungeon.json";
-		case 4:
-			LoggingHandler.logger.log(Level.INFO, logMsg);
-			return Constants.PATHTOLEVEL + "boss_dungeon.json";
-		}
-
-		return null;
-	}
+	
 
 	/**
 	 * Recreate the right instance of the Creature. <br>
@@ -168,17 +104,20 @@ public class MemoryDataHandler {
 	 * 
 	 * @return The saved Creature.
 	 */
-	private Player getSavedCreatureType() {
-		Player creature = null;
-		String type = getMemory().getString(SaveType.CLASS.name());
-		SimpleClassReflection sc = new SimpleClassReflection(type, false);
+	private Object getSavedClass(String type) {
+		Object object = null;
+		SimpleClassReflection sc = new SimpleClassReflection(type, true);
 		try {
-			creature = (Player) sc.getConstructor().newInstance();
+			object = (Object) sc.getConstructor().newInstance();
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
 				| InvocationTargetException e) {
 			e.printStackTrace();
 		}
-		return creature;
+		return object;
+	}
+	
+	public String getSavedLevel() {
+		return this.memoryData.level;
 	}
 
 }

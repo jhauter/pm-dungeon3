@@ -174,35 +174,34 @@ public class DungeonStart extends MainController implements EntityEventHandler
 		case 0: {
 			this.myHero = new Knight();
 			this.myHero.getEquippedItems().addItem(RandomItemGenerator.getInstance().generateMeleeWeapon(1));
+			this.myHero.setName(WindowForPlayername.getPlayerName());
 			LoggingHandler.logger.info(logMsg + "knight");
 			break;
 		}
 		case 1 : {
 			this.myHero = new Mage();
 			this.myHero.getEquippedItems().addItem(Item.RED_MAGIC_STAFF);
+			this.myHero.setName(WindowForPlayername.getPlayerName());
 			LoggingHandler.logger.info(logMsg + "mage");
 			break;
 		}
 		case 9 : {
-			this.myHero = (Player) MemoryDataHandler.getInstance().getSavedPlayer();
+			this.myHero = MemoryDataHandler.getInstance().loadPlayer();
 			break;
 		}
 		}
 		
 		this.myHero.addEntityEventHandler(this);
+		
 
-		this.myHero.setName(WindowForPlayername.getPlayerName());
 	}
 
 	@Override
 	protected void setup() {
 		super.setup();
-
-		if (!isSaveGame)
-			this.setUpPlayer();
-		else {
-			this.myHero = (Player) MemoryDataHandler.getInstance().getSavedPlayer();
-		}
+		
+		setUpPlayer();
+		
 
 		this.uiManager = new UIManager();
 
@@ -363,8 +362,7 @@ public class DungeonStart extends MainController implements EntityEventHandler
 			this.myHero.onNextLevelEntered();
 
 			LoggingHandler.logger.log(Level.INFO, "Player entered new level.");
-
-			MemoryDataHandler.getInstance().save();
+			MemoryDataHandler.getInstance().savePlayer();
 		}
 		this.currentLevel.getParticleSystem().update((System.currentTimeMillis() - this.lastFrameTimeStamp) / 1000.0F);
 		this.lastFrameTimeStamp = System.currentTimeMillis();
