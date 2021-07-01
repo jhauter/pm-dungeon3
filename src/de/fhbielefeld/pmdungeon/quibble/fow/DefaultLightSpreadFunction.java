@@ -26,8 +26,7 @@ public class DefaultLightSpreadFunction implements LightSpreadFunction
 	}
 
 	@Override
-	public float getIntensityOverTime(float startIntensity, float delta)
-	{
+	public float getIntensityOverTime(float startIntensity, float delta) {
 		return startIntensity - delta;
 	}
 }

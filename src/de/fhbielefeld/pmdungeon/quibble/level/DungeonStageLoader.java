@@ -8,6 +8,9 @@ import de.fhbielefeld.pmdungeon.quibble.boss.*;
 import de.fhbielefeld.pmdungeon.quibble.boss.golem.GolemBossBattle;
 import de.fhbielefeld.pmdungeon.quibble.boss.slime.SlimeBossBattle;
 import de.fhbielefeld.pmdungeon.quibble.chest.GoldenChest;
+import de.fhbielefeld.pmdungeon.quibble.demo.RestlessSpirit;
+import de.fhbielefeld.pmdungeon.quibble.demo.RestlessSpirit2;
+import de.fhbielefeld.pmdungeon.quibble.demo.RestlessSpirit3;
 import de.fhbielefeld.pmdungeon.quibble.entity.*;
 import de.fhbielefeld.pmdungeon.quibble.memory.MemoryData;
 import de.fhbielefeld.pmdungeon.quibble.quest.QuestDummy;
@@ -87,17 +90,24 @@ public class DungeonStageLoader {
         for(int i = 0; i < 5; ++i)
         {
             final Point pos = level.getDungeon().getRandomPointInDungeon();
-            final Creature toSpawn = switch(level.getRNG().nextInt(4))
+            final Creature toSpawn = switch(level.getRNG().nextInt(5))
                     {
                         case 0 -> new Demon();
                         case 1 -> new Goblin();
                         case 2 -> new Lizard();
                         case 3 -> new Chort();
+                        case 4 -> new RestlessSpirit3();
+
                         default -> throw new IllegalArgumentException("Unexpected value [spawn entity]");
                     };
             toSpawn.setPosition(pos.x, pos.y);
             level.spawnEntity(toSpawn);
         }
+        System.out.println("Moin");
+        var ghost = new RestlessSpirit3();
+        var pos = level.getDungeon().getRandomPointInDungeon();
+        ghost.setPosition(pos.x, pos.y);
+        level.spawnEntity(ghost);
     }
 
     private void placeHero(DungeonLevel level) {
