@@ -5,6 +5,7 @@ import java.util.logging.Level;
 
 import com.badlogic.gdx.math.Vector2;
 
+import de.fhbielefeld.pmdungeon.quibble.DungeonStart;
 import de.fhbielefeld.pmdungeon.quibble.LoggingHandler;
 import de.fhbielefeld.pmdungeon.quibble.entity.Player;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
@@ -15,6 +16,16 @@ import de.fhbielefeld.pmdungeon.vorgaben.tools.Constants;
 
 public class MemoryData {
 
+	public class StageInformation {
+		public String mapName;
+		public int progress;
+
+		public StageInformation(String mapName, int progress) {
+			this.mapName = mapName;
+			this.progress = progress;
+		}
+	}
+
 	public String displayName;
 	public String classType;
 	public Vector2 position;
@@ -23,7 +34,7 @@ public class MemoryData {
 	public ArrayList<ItemInformation> inv;
 	public ArrayList<ItemInformation> equ;
 	public ArrayList<Double> stats;
-	public String level;
+	public StageInformation level;
 
 	public MemoryData() {
 	}
@@ -39,7 +50,7 @@ public class MemoryData {
 	 * <li> equippedItems
 	 * <li> stats
 	 */
-	public MemoryData(Player player, int counter) {
+	public MemoryData(Player player) {
 		if (player != null) {
 			this.displayName = player.getDisplayName();
 			this.classType = player.getClass().getTypeName();
@@ -49,7 +60,7 @@ public class MemoryData {
 			this.equSlots = player.getEquipmentSlots();
 			this.equ = getItems(player.getEquippedItems());
 			this.stats = getStats(player);
-			this.level = saveLevel(counter);
+			this.level = saveLevel();
 		}
 	}
 	
@@ -58,24 +69,18 @@ public class MemoryData {
 	 * @return the last DungeonWorld which was loaded. <br>
 	 *         Use this to get the last Map the Player has entered.
 	 */
-	public String saveLevel(int counter) {
+	public StageInformation saveLevel() {
 		String logMsg = "Loaded Dungeon from Memory";
-		switch (counter) {
-		case 1:
-			LoggingHandler.logger.log(Level.INFO, logMsg);
-			return Constants.PATHTOLEVEL + "small_dungeon.json";
-		case 2:
-			LoggingHandler.logger.log(Level.INFO, logMsg);
-			return Constants.PATHTOLEVEL + "simple_dungeon_2.json";
-		case 3:
-			LoggingHandler.logger.log(Level.INFO, logMsg);
-			return Constants.PATHTOLEVEL + "simple_dungeon.json";
-		case 4:
-			LoggingHandler.logger.log(Level.INFO, logMsg);
-			return Constants.PATHTOLEVEL + "boss_dungeon.json";
-		}
+		var mapName = DungeonStart.getDungeonMain()
+				.getStageLoader()
+				.getCurrentlyLoadedDungeonMap();
 
-		return null;
+		var progress = DungeonStart.getDungeonMain()
+				.getStageLoader()
+				.getCurrentStageNum();
+		System.out.println(progress);
+		LoggingHandler.logger.log(Level.INFO, logMsg);
+		return new StageInformation(mapName, progress);
 	}
 
 	private ArrayList<Double> getStats(Player player) {

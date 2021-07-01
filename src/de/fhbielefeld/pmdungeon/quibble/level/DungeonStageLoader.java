@@ -9,6 +9,7 @@ import de.fhbielefeld.pmdungeon.quibble.boss.golem.GolemBossBattle;
 import de.fhbielefeld.pmdungeon.quibble.boss.slime.SlimeBossBattle;
 import de.fhbielefeld.pmdungeon.quibble.chest.GoldenChest;
 import de.fhbielefeld.pmdungeon.quibble.entity.*;
+import de.fhbielefeld.pmdungeon.quibble.memory.MemoryData;
 import de.fhbielefeld.pmdungeon.quibble.quest.QuestDummy;
 import de.fhbielefeld.pmdungeon.quibble.quest.QuestFactory;
 import de.fhbielefeld.pmdungeon.quibble.trap.TrapDamage;
@@ -40,6 +41,7 @@ public class DungeonStageLoader {
 
     private DungeonConverter converter;
     private Random rng;
+    private String currentlyLoadedDungeonMap;
 
     private StageType currentStageType = StageType.Normal;
 
@@ -59,6 +61,26 @@ public class DungeonStageLoader {
      */
     public void loadNextStage() {
         loadRandomStage();
+    }
+    public void loadStage(MemoryData.StageInformation info) {
+        System.out.println("Loaded specific map");
+        this.dungeonProgressCounter= info.progress;
+        this.currentlyLoadedDungeonMap = info.mapName;
+        System.out.println(info.progress);
+        if(dungeonProgressCounter== golemStageRequirement) {
+            currentStageType = StageType.Golem;
+        } else if(dungeonProgressCounter == slimeStageRequirement) {
+            currentStageType = StageType.Slime;
+        }
+
+        try {
+            controller.loadDungeon(converter.dungeonFromJson(this.currentlyLoadedDungeonMap));
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
     }
 
     private void placeDungeonEnemies(DungeonLevel level) {
@@ -103,7 +125,7 @@ public class DungeonStageLoader {
 
         final Point pos4 = level.getDungeon().getRandomPointInDungeon();
         level.spawnEntity(new QuestDummy(QuestFactory.getRandomQuest(), pos4.x, pos4.y));
-
+        System.out.println("Place Misc");
         //NOTE(Jonathan) Right now this is only for testing purposes and assumes that we will be using the default
         // "boss-map" which we won't!
         if(getCurrentStageType() == StageType.Golem) {
@@ -132,28 +154,34 @@ public class DungeonStageLoader {
     }
 
     private void loadRandomStage() {
-        try {
-            dungeonProgressCounter+=1;
-//            System.out.println(dungeonProgressCounter);
-
-            if(dungeonProgressCounter == golemStageRequirement) {
-                currentStageType = StageType.Golem;
-                controller.loadDungeon(converter.dungeonFromJson(Constants.PATHTOLEVEL + "boss_dungeon.json"));
-            } else if(dungeonProgressCounter == slimeStageRequirement) {
-                currentStageType = StageType.Slime;
-                controller.loadDungeon(converter.dungeonFromJson(Constants.PATHTOLEVEL + "boss_dungeon.json"));
-            } else {
-                switch (rng.nextInt(2)) {
-                    case 0 -> controller.loadDungeon(converter.dungeonFromJson(Constants.PATHTOLEVEL + "small_dungeon.json"));
-                    case 1 -> controller.loadDungeon(converter.dungeonFromJson(Constants.PATHTOLEVEL + "simple_dungeon_2.json"));
-                    case 2 -> controller.loadDungeon(converter.dungeonFromJson(Constants.PATHTOLEVEL + "simple_dungeon.json"));
-                }
-                currentStageType = StageType.Normal;
+        dungeonProgressCounter+=1;
+        System.out.println("Moin");
+        if(dungeonProgressCounter == golemStageRequirement) {
+            currentStageType = StageType.Golem;
+            this.currentlyLoadedDungeonMap = Constants.PATHTOLEVEL + "boss_dungeon.json";
+        } else if(dungeonProgressCounter == slimeStageRequirement) {
+            currentStageType = StageType.Slime;
+            this.currentlyLoadedDungeonMap = Constants.PATHTOLEVEL + "boss_dungeon.json";
+        } else {
+            currentStageType = StageType.Normal;
+            switch (rng.nextInt(2)) {
+                case 0 -> this.currentlyLoadedDungeonMap = Constants.PATHTOLEVEL + "small_dungeon.json";
+                case 1 -> this.currentlyLoadedDungeonMap = Constants.PATHTOLEVEL + "simple_dungeon_2.json";
+                case 2 -> this.currentlyLoadedDungeonMap = Constants.PATHTOLEVEL + "simple_dungeon.json";
             }
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
         }
+        try {
+            controller.loadDungeon(converter.dungeonFromJson(this.currentlyLoadedDungeonMap));
+        } catch (InvocationTargetException invocationTargetException) {
+            invocationTargetException.printStackTrace();
+        } catch (IllegalAccessException illegalAccessException) {
+            illegalAccessException.printStackTrace();
+        }
+    }
+    public String getCurrentlyLoadedDungeonMap() {
+        return currentlyLoadedDungeonMap;
+    }
+    public int getCurrentStageNum() {
+        return this.dungeonProgressCounter;
     }
 }

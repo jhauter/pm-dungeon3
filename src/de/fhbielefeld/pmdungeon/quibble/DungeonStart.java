@@ -266,26 +266,15 @@ public class DungeonStart extends MainController implements EntityEventHandler
 		this.debugRenderer.setAutoShapeType(true);
 		
 		if(isSaveGame)
-			try
-			{
-				this.levelController.loadDungeon(new DungeonConverter().dungeonFromJson(MemoryDataHandler.getInstance().getSavedLevel()));
-			}
-			catch(InvocationTargetException | IllegalAccessException e)
-			{
+			try {
+				//this.levelController.loadDungeon(new DungeonConverter().dungeonFromJson(MemoryDataHandler.getInstance().getSavedLevel()));
+				this.stageLoader.loadStage(MemoryDataHandler.getInstance().getSavedLevel());
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
-		else
-		{
-			try
-			{
-				this.levelController.loadDungeon(new DungeonConverter().dungeonFromJson(Constants.PATHTOLEVEL + "small_dungeon.json"));
-			}
-			catch(InvocationTargetException | IllegalAccessException e)
-			{
-				e.printStackTrace();
-			}
+		else {
+		    this.stageLoader.loadNextStage();
 		}
-		
 		LoggingHandler.logger.log(Level.INFO, "Setup done.");
 	}
 	
@@ -352,6 +341,7 @@ public class DungeonStart extends MainController implements EntityEventHandler
 		if(Gdx.input.isKeyJustPressed(Input.Keys.F12))
 		{
 			stageLoader.loadNextStage();
+			MemoryDataHandler.getInstance().savePlayer();
 			LoggingHandler.logger.log(Level.INFO, "Player entered new level.");
 			
 		}
