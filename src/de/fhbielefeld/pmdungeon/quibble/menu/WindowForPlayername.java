@@ -1,4 +1,4 @@
-package de.fhbielefeld.pmdungeon.quibble.input;
+package de.fhbielefeld.pmdungeon.quibble.menu;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
@@ -14,6 +14,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.WindowConstants;
+
 
 import de.fhbielefeld.pmdungeon.quibble.DungeonStart;
 import de.fhbielefeld.pmdungeon.quibble.LoggingHandler;
@@ -39,7 +41,7 @@ public class WindowForPlayername{
         frame.setTitle("Dungeon");
         frame.setSize(400, 200);
         frame.setLocationRelativeTo(null);
-        frame.setDefaultCloseOperation(frame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setResizable(true);
 
         textField = new JTextField(20);
@@ -49,8 +51,10 @@ public class WindowForPlayername{
         JLabel label = new JLabel("Please enter a name for your hero", SwingConstants.CENTER);
         label.setFont(new Font(label.getFont().getName(), Font.PLAIN, (int) (label.getFont().getSize() * 1.5f)));
 
-        JButton button = new JButton("Confirm");
-        button.addActionListener(e -> checkName());
+        JButton buttonMage = new JButton("Mage");
+        buttonMage.addActionListener(e -> checkName(1));
+        JButton buttonKnight = new JButton("Knight");
+        buttonKnight.addActionListener(e -> checkName(0));
 
         Container pane = frame.getContentPane();
         pane.setLayout(new BorderLayout());
@@ -61,20 +65,24 @@ public class WindowForPlayername{
 
         pane.add(label, BorderLayout.NORTH);
         pane.add(panel, BorderLayout.CENTER);
-        pane.add(button, BorderLayout.SOUTH);
-
+        
+        JPanel bottemPanel = new JPanel();
+        
+        bottemPanel.add(buttonMage);
+        bottemPanel.add(buttonKnight);
+		pane.add(bottemPanel, BorderLayout.SOUTH);
         this.showNameRestrictions();
     }
 
     /**
      * Checks if the entered name is accepted. If so it sets the name as the hero's name and closes the window.
      */
-    private void checkName(){
+    private void checkName(int heroType){
         if(textField.getText().matches("[a-zA-Z]{3,}(_|\\s[a-zA-Z]{3,})*")){
             LoggingHandler.logger.info("The entered name for the hero is accepted.");
             playerName = textField.getText();
             frame.dispose();
-            new Thread(() -> DungeonStart.startGame(), "DungeonThread").start();
+            new Thread(() -> DungeonStart.startGame(false, heroType), "DungeonThread").start();
         } else {
             JOptionPane.showMessageDialog(frame, "The entered name was not accepted.");
             this.showNameRestrictions();
@@ -82,7 +90,7 @@ public class WindowForPlayername{
     }
 
     private void showNameRestrictions(){
-        String message = "The name of your hero must be at least 3 characters long and can contain only letters. " +
+        String message = "The name of your hero must be at least 3 characters long and can contain only letters. \n " +
                 "You can have multiple words as a name if the words are separated by a whitespace or an underscore";
         JOptionPane.showMessageDialog(frame, message, "A name for your hero", JOptionPane.INFORMATION_MESSAGE);
     }
