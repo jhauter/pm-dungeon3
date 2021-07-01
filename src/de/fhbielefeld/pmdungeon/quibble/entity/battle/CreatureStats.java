@@ -161,14 +161,16 @@ public class CreatureStats
 			}
 		}
 	}
-
+	
 	/**
 	 * Multiplies all stats by a certain value. Is used to change the strengh of an item entirely without changing the
 	 * proportions of the stats
 	 * @param value the value by which every stats should be multiplied
 	 */
-	public void multiplyAllStats(double value){
-		for(int i = 0; i < stats.length; i++){
+	public void multiplyAllStats(double value)
+	{
+		for(int i = 0; i < stats.length; i++)
+		{
 			this.setStat(CreatureStatsAttribs.values()[i], this.stats[i] * value);
 		}
 	}

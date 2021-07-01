@@ -30,7 +30,7 @@ public class TrapDamage extends Trap implements DamageSource
 		stats.setStat(CreatureStatsAttribs.DAMAGE_PHYS, damage);
 		return stats;
 	}
-
+	
 	@Override
 	public int getCoolDownTicks()
 	{

@@ -1,6 +1,5 @@
 package de.fhbielefeld.pmdungeon.quibble.boss.demon;
 
-
 import com.badlogic.gdx.math.Vector2;
 import de.fhbielefeld.pmdungeon.quibble.boss.attacks.KnockbackGroundAOE;
 import de.fhbielefeld.pmdungeon.quibble.boss.attacks.SpawnGroundAOE;

@@ -222,8 +222,10 @@ public class UILayer
 				e = uiElements.get(i);
 				if(x >= e.x && x <= e.x + e.width && y >= e.y && y <= e.y + e.height)
 				{
-					final boolean clickWithGrabbed = elementOnMouse != null && uiElements.get(i).onClickWithGrabbedElement(event, x, y, pointer, button, elementOnMouse);
-					final boolean clickAsGrabbed = elementOnMouse != null && elementOnMouse.onClickAsGrabbedElement(event, x, y, pointer, button, uiElements.get(i));
+					final boolean clickWithGrabbed = elementOnMouse != null
+						&& uiElements.get(i).onClickWithGrabbedElement(event, x, y, pointer, button, elementOnMouse);
+					final boolean clickAsGrabbed = elementOnMouse != null
+						&& elementOnMouse.onClickAsGrabbedElement(event, x, y, pointer, button, uiElements.get(i));
 					if(uiElements.get(i).onClick(event, x, y, pointer, button) || clickWithGrabbed || clickAsGrabbed)
 					{
 						return true;

@@ -423,7 +423,7 @@ public class FogOfWarController
 	
 	private void processLightSources()
 	{
-//		long start = System.currentTimeMillis();
+		//		long start = System.currentTimeMillis();
 		FogOfWarLightSource source;
 		for(int i = 0; i < this.lightSources.size(); ++i)
 		{
@@ -437,7 +437,7 @@ public class FogOfWarController
 			source.addDeltaTime(Gdx.graphics.getDeltaTime());
 			
 		}
-//		System.out.println(System.currentTimeMillis() - start);
+		//		System.out.println(System.currentTimeMillis() - start);
 	}
 	
 	private boolean processLightSource(FogOfWarLightSource src)

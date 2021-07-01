@@ -38,7 +38,7 @@ public class MemoryData {
 
 	public MemoryData() {
 	}
-
+	
 	/**
 	 * 
 	 * @param player to be saved
@@ -82,40 +82,48 @@ public class MemoryData {
 		LoggingHandler.logger.log(Level.INFO, logMsg);
 		return new StageInformation(mapName, progress);
 	}
-
-	private ArrayList<Double> getStats(Player player) {
+	
+	private ArrayList<Double> getStats(Player player)
+	{
 		ArrayList<Double> stats = new ArrayList<>();
-		for (int i = 0; i < CreatureStatsAttribs.values().length; i++) {
+		for(int i = 0; i < CreatureStatsAttribs.values().length; i++)
+		{
 			stats.add(player.getCurrentStats().getStat(CreatureStatsAttribs.values()[i]));
 		}
 		return stats;
 	}
-
-	private ArrayList<ItemInformation> getItems(Inventory<Item> inv) {
+	
+	private ArrayList<ItemInformation> getItems(Inventory<Item> inv)
+	{
 		ArrayList<ItemInformation> items = new ArrayList<>();
 		ItemInformation info = null;
-		for (int i = 0; i < inv.getCapacity(); i++) {
-			if (inv.getItem(i) != null) {
+		for(int i = 0; i < inv.getCapacity(); i++)
+		{
+			if(inv.getItem(i) != null)
+			{
 				info = new ItemInformation(inv.getItem(i).getItemType());
 				items.add(info);
 			}
 		}
 		return items;
 	}
-
-	class ItemInformation {
+	
+	class ItemInformation
+	{
 		String name;
 		String classType;
 		CreatureStats stats;
+		
 		/**
 		 * Simple class to store nessecary informations of Items
 		 * @param item the item that should be recognized again
 		 */
-		public ItemInformation(Item item) {
+		public ItemInformation(Item item)
+		{
 			this.name = item.getDisplayName();
 			this.classType = item.getClass().getTypeName();
 			this.stats = item.getAttackStats();
 		}
 	}
-
+	
 }

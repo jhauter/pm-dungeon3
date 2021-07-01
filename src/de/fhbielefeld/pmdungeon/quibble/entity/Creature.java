@@ -460,11 +460,12 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 				drawPos.add(this.getRenderOffsetX(), this.getRenderOffsetY());
 				
 				drawPos.add(this.renderItemMovement.getOffsetX(stateTime) * this.getScaleX(), this.renderItemMovement.getOffsetY(stateTime) * this.getScaleY());
-				drawPos.add(this.renderedItem.getRenderOffsetX() * this.renderedItem.getRenderWidth(), this.renderedItem.getRenderOffsetY() * this.renderedItem.getRenderHeight());
+				drawPos.add(this.renderedItem.getRenderOffsetX() * this.renderedItem.getRenderWidth(),
+					this.renderedItem.getRenderOffsetY() * this.renderedItem.getRenderHeight());
 				drawPos.add(this.renderedItem.getHoldOffsetX() * this.getScaleX(), this.renderedItem.getHoldOffsetY() * this.getScaleY());
 				drawPos.add(-this.renderedItem.getRenderWidth() * 0.5F, -this.renderedItem.getRenderHeight() * 0.5F);
 				drawPos.add(this.getItemHoldOffset().scl(this.getScaleX(), this.getScaleY()));
-
+				
 				float appliedScaleX = this.getScaleX();
 				float appliedScaleY = this.getScaleY();
 				
@@ -485,8 +486,7 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 					this.renderedItem.getRenderHeight(),
 					appliedScaleX * this.renderItemMovement.getScaleX(stateTime),
 					appliedScaleY * this.renderItemMovement.getScaleY(stateTime),
-					this.getRotation() + this.renderItemMovement.getRotation(stateTime)
-					);
+					this.getRotation() + this.renderItemMovement.getRotation(stateTime));
 			}
 		}
 	}
@@ -964,12 +964,13 @@ public abstract class Creature extends Entity implements DamageSource, CreatureS
 	{
 		return this.deadTicks % 2 != 0 || this.invulnerableTicks % 2 != 0 ? 0.0F : super.getTransparency();
 	}
-
-	public void setDead() {
+	
+	public void setDead()
+	{
 		this.isDead = true;
 		this.deadTicks = this.getDeadTicksBeforeDelete();
 	}
-
+	
 	@Override
 	public boolean shouldDespawn()
 	{

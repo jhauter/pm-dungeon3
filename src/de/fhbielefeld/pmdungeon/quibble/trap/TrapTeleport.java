@@ -18,7 +18,7 @@ public class TrapTeleport extends Trap
 		Point pos = this.level.getDungeon().getRandomPointInDungeon();
 		((Creature)p).setPosition(pos.x, pos.y);
 	}
-
+	
 	@Override
 	public int getCoolDownTicks()
 	{

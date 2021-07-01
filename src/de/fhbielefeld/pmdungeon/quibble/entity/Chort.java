@@ -77,7 +77,7 @@ public class Chort extends NPC
 		stats.setStat(CreatureStatsAttribs.CRIT_CHANCE, 0.1D);
 		stats.setStat(CreatureStatsAttribs.KNOCKBACK, 0.1D);
 		stats.setStat(CreatureStatsAttribs.KNOCKBACK_RES, 0.1D);
-		stats.setStat(CreatureStatsAttribs.DAMAGE_PHYS, 2.0D);
+		stats.setStat(CreatureStatsAttribs.DAMAGE_PHYS, 2.0D + level);
 		stats.setStat(CreatureStatsAttribs.DAMAGE_MAGIC, 0.0D);
 		stats.setStat(CreatureStatsAttribs.WALKING_SPEED, 0.05D);
 		stats.setStat(CreatureStatsAttribs.HIT_REACH, 0.4D);

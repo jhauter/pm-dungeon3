@@ -74,7 +74,7 @@ public class UILayerQuestView extends UILayer
 			lt = this.addText(q.getTask(), UIFonts.DEFAULT, this.x, this.y - i * 96 + 48);
 			lp = this.addText(q.getProgressText(), UIFonts.DEFAULT, this.x, this.y - i * 96 + 24);
 			lr = this.addText("Reward: " + q.getRewardText(), UIFonts.DEFAULT, this.x, this.y - i * 96);
-
+			
 			lt.setColor(Color.WHITE);
 			lp.setColor(Color.YELLOW);
 			lr.setColor(Color.GREEN);

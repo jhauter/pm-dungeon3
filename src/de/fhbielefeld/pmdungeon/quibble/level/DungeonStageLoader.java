@@ -1,6 +1,5 @@
 package de.fhbielefeld.pmdungeon.quibble.level;
 
-
 import de.fhbielefeld.pmdungeon.quibble.DungeonLevel;
 import de.fhbielefeld.pmdungeon.quibble.DungeonStart;
 import de.fhbielefeld.pmdungeon.quibble.LoggingHandler;

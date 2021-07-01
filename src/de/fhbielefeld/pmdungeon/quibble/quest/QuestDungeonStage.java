@@ -12,7 +12,7 @@ public class QuestDungeonStage extends QuestItemReward
 	 * @param rewardItems the items that are given to the player when the quest is completed
 	 * @param expOnReward the exp that are rewarded when the quest is completed
 	 */
-	public QuestDungeonStage(String questName, int expOnReward, Item ... rewardItems)
+	public QuestDungeonStage(String questName, int expOnReward, Item... rewardItems)
 	{
 		super(questName, expOnReward, rewardItems);
 	}
