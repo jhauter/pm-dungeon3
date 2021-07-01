@@ -24,7 +24,7 @@ public class SlimeSecondPhase extends BossPhase {
             @Override
             public Projectile createProjectile() {
                 var projectileStats = new CreatureStats();
-                projectileStats.setStat(CreatureStatsAttribs.DAMAGE_MAGIC, 5);
+                projectileStats.setStat(CreatureStatsAttribs.DAMAGE_MAGIC, 3);
                 return new SlimeProjectile("def", 0, 0, projectileStats, battle.getBoss());
             }
         };
@@ -38,11 +38,11 @@ public class SlimeSecondPhase extends BossPhase {
         };
 
         List<ProjectileSpawner> projSpawner = new ArrayList<>();
-        for(int i = 0; i<8; ++i) {
-            var face = i * 25;
+        for(int i = 0; i<4; ++i) {
+            var face = i * 40;
             var proj = new ProjectileSpawner(40, new CreatureStats(), new Vector2(0,0), bullet, battle.getBoss());
             proj.addPattern(new SpinMovementPattern(proj, 250));
-            proj.currentBulletSpeed = 0.09f;
+            proj.currentBulletSpeed = 0.07f;
             proj.setFacing(face);
             projSpawner.add(proj);
         }

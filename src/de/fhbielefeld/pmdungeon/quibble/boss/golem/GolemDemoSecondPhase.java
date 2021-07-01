@@ -50,6 +50,7 @@ public class GolemDemoSecondPhase extends BossPhase {
         super.init();
         battle.getBoss().playAttackAnimation("transform", false, 14);
         battle.getBoss().physBuff = 1000;
+        battle.getBoss().magBuff = 1000;
         battle.getBoss().updateMaxStats();
     }
 

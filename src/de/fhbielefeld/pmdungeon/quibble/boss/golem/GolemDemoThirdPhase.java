@@ -57,6 +57,7 @@ public class GolemDemoThirdPhase extends BossPhase {
     public void init() {
         //Tranform Animation
         battle.getBoss().physBuff = 3;
+        battle.getBoss().magBuff = 3;
         battle.getBoss().updateMaxStats();
 
         //BossBattle.boss.setPosition(battle.getInitialBossPosition());

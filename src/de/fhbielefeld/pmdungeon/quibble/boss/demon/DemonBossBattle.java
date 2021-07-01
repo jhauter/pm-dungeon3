@@ -25,6 +25,8 @@ public class DemonBossBattle extends BossBattle {
         phases.put("transform", new DemonTransformPhase(this));
         phases.put("second", new DemonSecondPhase(this));
         currentPhase = phases.get("transform");
+        boss.physBuff = 10;
+        boss.magBuff = 10;
     }
 
     @Override
@@ -36,7 +38,7 @@ public class DemonBossBattle extends BossBattle {
     public void start() {
         super.start();
         boss.setRenderOffset(0, 2);
-        boss.growBoundingBox(2,3);
+        boss.growBoundingBox(4,9);
     }
 
 
@@ -93,7 +95,7 @@ public class DemonBossBattle extends BossBattle {
 
         var bossBuilder = new BossBuilder();
         CreatureStats bossStats = new CreatureStats();
-        bossStats.setStat(CreatureStatsAttribs.HEALTH, 9000);
+        bossStats.setStat(CreatureStatsAttribs.HEALTH, 40000);
 
         bossBuilder = bossBuilder
                 .setRenderScale(new Vector2(8,6))

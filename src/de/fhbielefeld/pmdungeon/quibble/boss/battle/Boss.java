@@ -16,7 +16,7 @@ public class Boss extends NPC {
 
     //TODO: NEIN!
     public int physBuff = 0;
-
+    public int magBuff = 0;
 
     /**
      * Boss entity
@@ -127,7 +127,7 @@ public class Boss extends NPC {
         CreatureStats stats = new CreatureStats();
         stats.setStat(CreatureStatsAttribs.HEALTH, 100 + 2 * level);
         stats.setStat(CreatureStatsAttribs.RESISTANCE_PHYS, level + physBuff);
-        stats.setStat(CreatureStatsAttribs.RESISTANCE_MAGIC, level);
+        stats.setStat(CreatureStatsAttribs.RESISTANCE_MAGIC, level + magBuff);
         stats.setStat(CreatureStatsAttribs.MISS_CHANCE, 0.0D);
         stats.setStat(CreatureStatsAttribs.CRIT_CHANCE, 0.1D);
         stats.setStat(CreatureStatsAttribs.KNOCKBACK, 0.25D);

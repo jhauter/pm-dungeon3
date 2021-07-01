@@ -25,6 +25,8 @@ public class SlimeBossBattle extends BossBattle {
         phases.put("start", new SlimeFirstPhase(this));
         phases.put("second", new SlimeSecondPhase(this));
         currentPhase = phases.get("start");
+        boss.magBuff = 10;
+        boss.physBuff = 10;
     }
     @Override
     protected void updateLogic() {
@@ -85,7 +87,7 @@ public class SlimeBossBattle extends BossBattle {
 
         var bossBuilder = new BossBuilder();
         CreatureStats bossStats = new CreatureStats();
-        bossStats.setStat(CreatureStatsAttribs.HEALTH, 8000);
+        bossStats.setStat(CreatureStatsAttribs.HEALTH, 10000);
 
         bossBuilder = bossBuilder
                 .setRenderScale(new Vector2(14,12))
