@@ -1,13 +1,12 @@
 package de.fhbielefeld.pmdungeon.quibble.boss.battle;
 
 import com.badlogic.gdx.math.Vector2;
+
 import de.fhbielefeld.pmdungeon.quibble.DungeonLevel;
-import de.fhbielefeld.pmdungeon.quibble.DungeonStart;
 import de.fhbielefeld.pmdungeon.quibble.entity.Player;
+import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEvent;
 import de.fhbielefeld.pmdungeon.quibble.entity.event.EntityEventHandler;
-import de.fhbielefeld.pmdungeon.vorgaben.tools.Point;
-import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
 
 public class BossCutsceneHandler implements EntityEventHandler
 {

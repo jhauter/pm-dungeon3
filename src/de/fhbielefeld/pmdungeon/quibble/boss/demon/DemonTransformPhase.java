@@ -1,9 +1,18 @@
 package de.fhbielefeld.pmdungeon.quibble.boss.demon;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.badlogic.gdx.math.Vector2;
+
 import de.fhbielefeld.pmdungeon.quibble.DungeonStart;
 import de.fhbielefeld.pmdungeon.quibble.boss.attacks.KnockbackGroundAOE;
-import de.fhbielefeld.pmdungeon.quibble.boss.battle.*;
+import de.fhbielefeld.pmdungeon.quibble.boss.battle.BossAction;
+import de.fhbielefeld.pmdungeon.quibble.boss.battle.BossBattle;
+import de.fhbielefeld.pmdungeon.quibble.boss.battle.BossPhase;
+import de.fhbielefeld.pmdungeon.quibble.boss.battle.GroundEffectBossAction;
+import de.fhbielefeld.pmdungeon.quibble.boss.battle.ProjectileBossAction;
+import de.fhbielefeld.pmdungeon.quibble.boss.battle.WaitAction;
 import de.fhbielefeld.pmdungeon.quibble.boss.bulletHell.BulletCreationFunction;
 import de.fhbielefeld.pmdungeon.quibble.boss.bulletHell.ProjectileSpawner;
 import de.fhbielefeld.pmdungeon.quibble.boss.bulletHell.SpinMovementPattern;
@@ -13,9 +22,6 @@ import de.fhbielefeld.pmdungeon.quibble.boss.slime.FireballProjectileLarge;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
 import de.fhbielefeld.pmdungeon.quibble.entity.projectile.Projectile;
 import de.fhbielefeld.pmdungeon.vorgaben.tools.Point;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class DemonTransformPhase extends BossPhase
 {

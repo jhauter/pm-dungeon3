@@ -1,19 +1,13 @@
 package de.fhbielefeld.pmdungeon.quibble.boss.attacks;
 
-import com.badlogic.gdx.math.Vector2;
 import de.fhbielefeld.pmdungeon.quibble.DungeonLevel;
 import de.fhbielefeld.pmdungeon.quibble.DungeonStart;
-import de.fhbielefeld.pmdungeon.quibble.boss.battle.BossBattle;
 import de.fhbielefeld.pmdungeon.quibble.boss.misc.CamRumbleEffect;
-import de.fhbielefeld.pmdungeon.quibble.entity.BoundingBox;
-import de.fhbielefeld.pmdungeon.quibble.entity.Entity;
 import de.fhbielefeld.pmdungeon.quibble.entity.Player;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.DamageSource;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.DamageType;
-import de.fhbielefeld.pmdungeon.quibble.entity.effect.StatusEffect;
-import de.fhbielefeld.pmdungeon.quibble.entity.effect.StatusEffectKnockback;
 import de.fhbielefeld.pmdungeon.vorgaben.tools.Point;
 
 /**

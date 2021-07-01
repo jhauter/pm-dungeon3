@@ -1,8 +1,17 @@
 package de.fhbielefeld.pmdungeon.quibble.boss.golem;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
 import com.badlogic.gdx.math.Vector2;
+
 import de.fhbielefeld.pmdungeon.quibble.DungeonStart;
-import de.fhbielefeld.pmdungeon.quibble.boss.battle.*;
+import de.fhbielefeld.pmdungeon.quibble.boss.battle.BossAction;
+import de.fhbielefeld.pmdungeon.quibble.boss.battle.BossBattle;
+import de.fhbielefeld.pmdungeon.quibble.boss.battle.BossPhase;
+import de.fhbielefeld.pmdungeon.quibble.boss.battle.ProjectileBossAction;
+import de.fhbielefeld.pmdungeon.quibble.boss.battle.WaitAction;
 import de.fhbielefeld.pmdungeon.quibble.boss.bulletHell.BulletCreationFunction;
 import de.fhbielefeld.pmdungeon.quibble.boss.bulletHell.ProjectileSpawner;
 import de.fhbielefeld.pmdungeon.quibble.boss.bulletHell.SpinMovementPattern;
@@ -12,10 +21,6 @@ import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
 import de.fhbielefeld.pmdungeon.quibble.entity.projectile.Projectile;
 import de.fhbielefeld.pmdungeon.vorgaben.tools.Point;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 
 public class GolemLastPhase extends BossPhase
 {

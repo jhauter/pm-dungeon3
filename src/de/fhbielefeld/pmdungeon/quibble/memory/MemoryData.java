@@ -12,20 +12,22 @@ import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
 import de.fhbielefeld.pmdungeon.quibble.inventory.Inventory;
 import de.fhbielefeld.pmdungeon.quibble.item.Item;
-import de.fhbielefeld.pmdungeon.vorgaben.tools.Constants;
 
-public class MemoryData {
-
-	public class StageInformation {
+public class MemoryData
+{
+	
+	public class StageInformation
+	{
 		public String mapName;
 		public int progress;
-
-		public StageInformation(String mapName, int progress) {
+		
+		public StageInformation(String mapName, int progress)
+		{
 			this.mapName = mapName;
 			this.progress = progress;
 		}
 	}
-
+	
 	public String displayName;
 	public String classType;
 	public Vector2 position;
@@ -35,8 +37,9 @@ public class MemoryData {
 	public ArrayList<ItemInformation> equ;
 	public ArrayList<Double> stats;
 	public StageInformation level;
-
-	public MemoryData() {
+	
+	public MemoryData()
+	{
 	}
 	
 	/**
@@ -50,8 +53,10 @@ public class MemoryData {
 	 * <li> equippedItems
 	 * <li> stats
 	 */
-	public MemoryData(Player player) {
-		if (player != null) {
+	public MemoryData(Player player)
+	{
+		if(player != null)
+		{
 			this.displayName = player.getDisplayName();
 			this.classType = player.getClass().getTypeName();
 			this.position = player.getPosition();
@@ -69,15 +74,16 @@ public class MemoryData {
 	 * @return the last DungeonWorld which was loaded. <br>
 	 *         Use this to get the last Map the Player has entered.
 	 */
-	public StageInformation saveLevel() {
+	public StageInformation saveLevel()
+	{
 		String logMsg = "Loaded Dungeon from Memory";
 		var mapName = DungeonStart.getDungeonMain()
-				.getStageLoader()
-				.getCurrentlyLoadedDungeonMap();
-
+			.getStageLoader()
+			.getCurrentlyLoadedDungeonMap();
+		
 		var progress = DungeonStart.getDungeonMain()
-				.getStageLoader()
-				.getCurrentStageNum();
+			.getStageLoader()
+			.getCurrentStageNum();
 		System.out.println(progress);
 		LoggingHandler.logger.log(Level.INFO, logMsg);
 		return new StageInformation(mapName, progress);

@@ -1,7 +1,5 @@
 package de.fhbielefeld.pmdungeon.quibble.boss.battle;
 
-import de.fhbielefeld.pmdungeon.quibble.boss.battle.BossBattle;
-
 import java.util.Objects;
 
 /**

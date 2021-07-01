@@ -1,17 +1,12 @@
 package de.fhbielefeld.pmdungeon.quibble.boss.battle;
 
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
-import de.fhbielefeld.pmdungeon.quibble.DungeonStart;
-import de.fhbielefeld.pmdungeon.quibble.boss.attacks.GroundAoe;
-import de.fhbielefeld.pmdungeon.quibble.boss.attacks.KnockbackGroundAOE;
-import de.fhbielefeld.pmdungeon.quibble.boss.attacks.SpawnGroundAOE;
-import de.fhbielefeld.pmdungeon.quibble.boss.misc.CamRumbleEffect;
-import de.fhbielefeld.pmdungeon.quibble.entity.Entity;
-import de.fhbielefeld.pmdungeon.vorgaben.tools.DungeonCamera;
-
 import java.lang.reflect.InvocationTargetException;
 import java.util.Objects;
+
+import com.badlogic.gdx.math.Vector2;
+
+import de.fhbielefeld.pmdungeon.quibble.boss.attacks.GroundAoe;
+import de.fhbielefeld.pmdungeon.quibble.entity.Entity;
 
 public class GroundEffectBossAction extends BossAction
 {

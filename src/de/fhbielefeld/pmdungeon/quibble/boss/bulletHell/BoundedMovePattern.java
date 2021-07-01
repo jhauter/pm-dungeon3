@@ -1,8 +1,6 @@
 package de.fhbielefeld.pmdungeon.quibble.boss.bulletHell;
 
 import com.badlogic.gdx.math.Vector2;
-import de.fhbielefeld.pmdungeon.quibble.boss.bulletHell.ProjectileMovementPattern;
-import de.fhbielefeld.pmdungeon.quibble.boss.bulletHell.ProjectileSpawner;
 
 /**
  * Moves Projectilespawner back and forth given a lower and an upper bound limit

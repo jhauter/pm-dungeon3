@@ -1,12 +1,13 @@
 package de.fhbielefeld.pmdungeon.quibble.boss.attacks;
 
-import de.fhbielefeld.pmdungeon.quibble.DungeonLevel;
-import de.fhbielefeld.pmdungeon.quibble.DungeonStart;
-import de.fhbielefeld.pmdungeon.quibble.boss.battle.BossBattle;
-import de.fhbielefeld.pmdungeon.quibble.entity.*;
-
 import java.lang.reflect.InvocationTargetException;
 import java.util.Random;
+
+import de.fhbielefeld.pmdungeon.quibble.DungeonLevel;
+import de.fhbielefeld.pmdungeon.quibble.entity.Chort;
+import de.fhbielefeld.pmdungeon.quibble.entity.Goblin;
+import de.fhbielefeld.pmdungeon.quibble.entity.Lizard;
+import de.fhbielefeld.pmdungeon.quibble.entity.NPC;
 
 /**
  * Groundaoe that spawns either random or specific entities

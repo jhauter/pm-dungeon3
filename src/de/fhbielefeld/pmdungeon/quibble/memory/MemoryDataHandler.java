@@ -49,7 +49,8 @@ public class MemoryDataHandler
 	/**
 	 * Will save the player as MemoryData to a JsonFile
 	 */
-	public void savePlayer() {
+	public void savePlayer()
+	{
 		System.out.println("Saved");
 		this.memoryData = new MemoryData(DungeonStart.getDungeonMain().getPlayer());
 		String memory = gson.toJson(memoryData);
@@ -129,7 +130,8 @@ public class MemoryDataHandler
 		return object;
 	}
 	
-	public MemoryData.StageInformation getSavedLevel() {
+	public MemoryData.StageInformation getSavedLevel()
+	{
 		return this.memoryData.level;
 	}
 	

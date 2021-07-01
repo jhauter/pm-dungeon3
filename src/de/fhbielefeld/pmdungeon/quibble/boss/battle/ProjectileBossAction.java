@@ -1,11 +1,10 @@
 package de.fhbielefeld.pmdungeon.quibble.boss.battle;
 
-import com.badlogic.gdx.math.Vector2;
-import de.fhbielefeld.pmdungeon.quibble.boss.battle.BossAction;
-import de.fhbielefeld.pmdungeon.quibble.boss.battle.BossBattle;
-import de.fhbielefeld.pmdungeon.quibble.boss.bulletHell.ProjectileSpawner;
-
 import java.util.List;
+
+import com.badlogic.gdx.math.Vector2;
+
+import de.fhbielefeld.pmdungeon.quibble.boss.bulletHell.ProjectileSpawner;
 
 public class ProjectileBossAction extends BossAction
 {

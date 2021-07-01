@@ -1,8 +1,8 @@
 package de.fhbielefeld.pmdungeon.quibble.boss.misc;
 
-import com.badlogic.gdx.math.Vector2;
-
 import java.util.Random;
+
+import com.badlogic.gdx.math.Vector2;
 
 public class CamRumbleEffect
 {

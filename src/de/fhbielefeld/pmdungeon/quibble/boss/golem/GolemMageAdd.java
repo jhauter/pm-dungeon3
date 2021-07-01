@@ -1,6 +1,7 @@
 package de.fhbielefeld.pmdungeon.quibble.boss.golem;
 
 import com.badlogic.gdx.math.Vector2;
+
 import de.fhbielefeld.pmdungeon.quibble.entity.Entity;
 
 public class GolemMageAdd extends Entity

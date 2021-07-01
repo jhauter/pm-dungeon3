@@ -1,11 +1,8 @@
 package de.fhbielefeld.pmdungeon.quibble.boss.slime;
 
-import com.badlogic.gdx.math.Vector2;
 import de.fhbielefeld.pmdungeon.quibble.DungeonLevel;
 import de.fhbielefeld.pmdungeon.quibble.boss.attacks.KnockbackGroundAOE;
 import de.fhbielefeld.pmdungeon.quibble.boss.attacks.PuddleFireAOE;
-import de.fhbielefeld.pmdungeon.quibble.boss.battle.BossBattle;
-import de.fhbielefeld.pmdungeon.quibble.boss.battle.GroundEffectBossAction;
 import de.fhbielefeld.pmdungeon.quibble.entity.Entity;
 import de.fhbielefeld.pmdungeon.quibble.entity.NPC;
 import de.fhbielefeld.pmdungeon.quibble.entity.Player;

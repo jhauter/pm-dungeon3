@@ -1,7 +1,6 @@
 package de.fhbielefeld.pmdungeon.quibble.boss.attacks;
 
 import de.fhbielefeld.pmdungeon.quibble.entity.Entity;
-import de.fhbielefeld.pmdungeon.quibble.entity.NPC;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.DamageSource;
 

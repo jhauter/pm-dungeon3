@@ -1,12 +1,13 @@
 package de.fhbielefeld.pmdungeon.quibble.boss.battle;
 
-import com.badlogic.gdx.math.Vector2;
-import de.fhbielefeld.pmdungeon.quibble.animation.AnimationHandlerImpl;
-import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import com.badlogic.gdx.math.Vector2;
+
+import de.fhbielefeld.pmdungeon.quibble.animation.AnimationHandlerImpl;
+import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
 
 public class BossBuilder
 {
