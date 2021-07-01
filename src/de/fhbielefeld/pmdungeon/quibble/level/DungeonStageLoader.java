@@ -8,9 +8,7 @@ import de.fhbielefeld.pmdungeon.quibble.boss.*;
 import de.fhbielefeld.pmdungeon.quibble.boss.golem.GolemBossBattle;
 import de.fhbielefeld.pmdungeon.quibble.boss.slime.SlimeBossBattle;
 import de.fhbielefeld.pmdungeon.quibble.chest.GoldenChest;
-import de.fhbielefeld.pmdungeon.quibble.demo.RestlessSpirit;
-import de.fhbielefeld.pmdungeon.quibble.demo.RestlessSpirit2;
-import de.fhbielefeld.pmdungeon.quibble.demo.RestlessSpirit3;
+import de.fhbielefeld.pmdungeon.quibble.demo.*;
 import de.fhbielefeld.pmdungeon.quibble.entity.*;
 import de.fhbielefeld.pmdungeon.quibble.memory.MemoryData;
 import de.fhbielefeld.pmdungeon.quibble.quest.QuestDummy;
@@ -96,7 +94,7 @@ public class DungeonStageLoader {
                         case 1 -> new Goblin();
                         case 2 -> new Lizard();
                         case 3 -> new Chort();
-                        case 4 -> new RestlessSpirit3();
+                        case 4 -> new RestlessSpirit5();
 
                         default -> throw new IllegalArgumentException("Unexpected value [spawn entity]");
                     };
@@ -104,7 +102,7 @@ public class DungeonStageLoader {
             level.spawnEntity(toSpawn);
         }
         System.out.println("Moin");
-        var ghost = new RestlessSpirit3();
+        var ghost = new RestlessSpirit5();
         var pos = level.getDungeon().getRandomPointInDungeon();
         ghost.setPosition(pos.x, pos.y);
         level.spawnEntity(ghost);
@@ -138,6 +136,7 @@ public class DungeonStageLoader {
         System.out.println("Place Misc");
         //NOTE(Jonathan) Right now this is only for testing purposes and assumes that we will be using the default
         // "boss-map" which we won't!
+        //I love old comments like this. We were so motivated to make our own maps and yet...
         if(getCurrentStageType() == StageType.Golem) {
             Trigger t = new Trigger(new GolemBossBattle(level));
             level.spawnEntity(t);
