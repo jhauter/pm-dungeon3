@@ -30,7 +30,7 @@ public class GolemBossBattle extends BossBattle {
 
         currentPhase = phases.get("start");
         boss.physBuff = 10;
-        boss.magBuff = 7;
+        boss.magBuff = 3;
     }
 
     @Override

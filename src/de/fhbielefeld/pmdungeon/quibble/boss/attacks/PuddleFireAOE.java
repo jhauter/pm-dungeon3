@@ -34,6 +34,7 @@ public class PuddleFireAOE extends GroundAoe{
     @Override
     protected void onRoam() {
         counter++;
+        this.level.getFogOfWarController().light(this.getX(), this.getY(), 0.5F);
         var entitiesInReach = level.getEntitiesInRadius(this.getPosition().x, this.getPosition().y, radius);
         entitiesInReach.stream().filter(e -> e instanceof Player).findFirst().ifPresent(p -> {
             Player player = (Player) p;

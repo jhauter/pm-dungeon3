@@ -59,7 +59,7 @@ public class DemonSecondPhase extends BossPhase {
         var projAction1 = new ProjectileBossAction(projSpawner1, 60, 50);
 
         List<ProjectileSpawner> projSpawner2 = new ArrayList<>();
-        for(int i = 0; i<5; ++i) {
+        for(int i = 0; i<8; ++i) {
             var face = i * 90;
             var proj = new ProjectileSpawner(40, new CreatureStats(), new Vector2((float) Math.pow(-1, i+1) * -2,(float) Math.pow(-1, i+1) * -2), bullet, battle.getBoss());
             var proj2 = new ProjectileSpawner(40, new CreatureStats(), new Vector2((float) Math.pow(-1, i+1) * -2,(float) Math.pow(-1, i+1) * -2), fireball, battle.getBoss());
@@ -74,7 +74,7 @@ public class DemonSecondPhase extends BossPhase {
         var projAction2 = new ProjectileBossAction(projSpawner2, 60, 50);
 
         List<ProjectileSpawner> projSpawner3 = new ArrayList<>();
-        for(int i = 0; i<3; ++i) {
+        for(int i = 0; i<6; ++i) {
             var face = i * 45;
             var proj = new ProjectileSpawner(20, new CreatureStats(), new Vector2((float) Math.pow(-1, i+1) * 4,(float) Math.pow(-1, i+1) * -4), bullet, battle.getBoss());
             proj.addPattern(new SpinMovementPattern(proj, 100));

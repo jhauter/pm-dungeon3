@@ -111,7 +111,7 @@ public class DungeonStageLoader {
             level.spawnEntity(t);
         }
         else if(getCurrentStageType() == StageType.Slime) {
-            Trigger t = new Trigger(new GolemBossBattle(level));
+            Trigger t = new Trigger(new SlimeBossBattle(level));
             level.spawnEntity(t);
         }
     }
