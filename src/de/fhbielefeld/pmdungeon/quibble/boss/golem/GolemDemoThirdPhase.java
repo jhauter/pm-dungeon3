@@ -24,7 +24,7 @@ public class GolemDemoThirdPhase extends BossPhase {
             @Override
             public Projectile createProjectile() {
                 var projectileStats = new CreatureStats();
-                projectileStats.setStat(CreatureStatsAttribs.DAMAGE_MAGIC, 4f);
+                projectileStats.setStat(CreatureStatsAttribs.DAMAGE_MAGIC, 7f);
                 return new GolemProjectile("def", 0, 0, projectileStats, battle.getBoss());
             }
         };
@@ -56,8 +56,8 @@ public class GolemDemoThirdPhase extends BossPhase {
     @Override
     public void init() {
         //Tranform Animation
-        battle.getBoss().physBuff = 3;
-        battle.getBoss().magBuff = 3;
+        battle.getBoss().physBuff = 12;
+        battle.getBoss().magBuff = 12;
         battle.getBoss().updateMaxStats();
 
         //BossBattle.boss.setPosition(battle.getInitialBossPosition());

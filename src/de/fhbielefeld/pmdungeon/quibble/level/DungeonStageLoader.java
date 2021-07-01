@@ -104,7 +104,7 @@ public class DungeonStageLoader {
         //NOTE(Jonathan) Right now this is only for testing purposes and assumes that we will be using the default
         // "boss-map" which we won't!
         if(getCurrentStageType() == StageType.Boss) {
-            Trigger t = new Trigger(new SlimeBossBattle(level));
+            Trigger t = new Trigger(new GolemBossBattle(level));
             level.spawnEntity(t);
 
         }

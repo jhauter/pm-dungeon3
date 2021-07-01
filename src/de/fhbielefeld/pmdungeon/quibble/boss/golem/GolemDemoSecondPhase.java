@@ -26,7 +26,7 @@ public class GolemDemoSecondPhase extends BossPhase {
             @Override
             public Projectile createProjectile() {
                 var projectileStats = new CreatureStats();
-                projectileStats.setStat(CreatureStatsAttribs.DAMAGE_MAGIC, 4f);
+                projectileStats.setStat(CreatureStatsAttribs.DAMAGE_MAGIC, 6f);
                 return new GolemProjectile("def", 0, 0, projectileStats, battle.getBoss());
             }
         };

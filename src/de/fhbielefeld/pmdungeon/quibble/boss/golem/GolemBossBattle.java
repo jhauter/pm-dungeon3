@@ -29,6 +29,8 @@ public class GolemBossBattle extends BossBattle {
         phases.put("last", new GolemLastPhase(this));
 
         currentPhase = phases.get("start");
+        boss.physBuff = 10;
+        boss.magBuff = 8;
     }
 
     @Override
@@ -127,7 +129,7 @@ public class GolemBossBattle extends BossBattle {
 
         var bossBuilder = new BossBuilder();
         CreatureStats bossStats = new CreatureStats();
-        bossStats.setStat(CreatureStatsAttribs.HEALTH, 3000);
+        bossStats.setStat(CreatureStatsAttribs.HEALTH, 9000);
 
         bossBuilder = bossBuilder
                 .setRenderScale(new Vector2(6,5))
