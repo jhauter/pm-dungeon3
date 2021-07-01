@@ -26,13 +26,16 @@ import java.util.logging.Level;
 public class DungeonStageLoader {
     enum StageType {
         Normal,
-        Boss
+        Golem,
+        Slime
     };
 
     private LevelController controller;
 
     private int dungeonProgressCounter = 1;
-    private int bossStageRequirement = 5;
+    private int golemStageRequirement = 5;
+    private int slimeStageRequirement = 10;
+
     private int currentStageNum = 1;
 
     private DungeonConverter converter;
@@ -103,10 +106,13 @@ public class DungeonStageLoader {
 
         //NOTE(Jonathan) Right now this is only for testing purposes and assumes that we will be using the default
         // "boss-map" which we won't!
-        if(getCurrentStageType() == StageType.Boss) {
+        if(getCurrentStageType() == StageType.Golem) {
             Trigger t = new Trigger(new GolemBossBattle(level));
             level.spawnEntity(t);
-
+        }
+        else if(getCurrentStageType() == StageType.Slime) {
+            Trigger t = new Trigger(new GolemBossBattle(level));
+            level.spawnEntity(t);
         }
     }
 
@@ -114,7 +120,6 @@ public class DungeonStageLoader {
         placeDungeonEnemies(level);
         placeHero(level);
         placeMiscEntities(level);
-//        System.out.println("Moinsen");
 
         LoggingHandler.logger.log(Level.INFO, "New level loaded.");
     }
@@ -131,10 +136,12 @@ public class DungeonStageLoader {
             dungeonProgressCounter+=1;
 //            System.out.println(dungeonProgressCounter);
 
-            if(dungeonProgressCounter >= bossStageRequirement) {
-                currentStageType = StageType.Boss;
+            if(dungeonProgressCounter == golemStageRequirement) {
+                currentStageType = StageType.Golem;
                 controller.loadDungeon(converter.dungeonFromJson(Constants.PATHTOLEVEL + "boss_dungeon.json"));
-                dungeonProgressCounter = 1;
+            } else if(dungeonProgressCounter == slimeStageRequirement) {
+                currentStageType = StageType.Slime;
+                controller.loadDungeon(converter.dungeonFromJson(Constants.PATHTOLEVEL + "boss_dungeon.json"));
             } else {
                 switch (rng.nextInt(2)) {
                     case 0 -> controller.loadDungeon(converter.dungeonFromJson(Constants.PATHTOLEVEL + "small_dungeon.json"));

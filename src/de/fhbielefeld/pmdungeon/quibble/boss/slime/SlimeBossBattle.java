@@ -25,7 +25,7 @@ public class SlimeBossBattle extends BossBattle {
         phases.put("start", new SlimeFirstPhase(this));
         phases.put("second", new SlimeSecondPhase(this));
         currentPhase = phases.get("start");
-        boss.magBuff = 10;
+        boss.magBuff = 7;
         boss.physBuff = 10;
     }
     @Override

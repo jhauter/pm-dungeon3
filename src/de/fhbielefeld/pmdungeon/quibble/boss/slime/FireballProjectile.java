@@ -26,6 +26,12 @@ public class FireballProjectile extends ProjectileMagic {
     }
 
     @Override
+    protected void updateLogic() {
+        super.updateLogic();
+        this.level.getFogOfWarController().light(this.getX(), this.getY(), 0.5F);
+    }
+
+    @Override
     public int getTicksLasting() {
         return 500;
     }

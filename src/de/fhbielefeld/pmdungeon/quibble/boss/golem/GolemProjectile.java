@@ -24,6 +24,12 @@ public class GolemProjectile extends ProjectileMagic {
     }
 
     @Override
+    protected void updateLogic() {
+        this.level.getFogOfWarController().light(this.getX(), this.getY(), 0.5F);
+        super.updateLogic();
+    }
+
+    @Override
     public int getTicksLasting() {
         return 300;
     }

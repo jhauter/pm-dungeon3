@@ -31,6 +31,12 @@ public class Boss extends NPC {
         this.boundingBox.grow(x, y);
     }
 
+    @Override
+    protected void updateLogic() {
+        super.updateLogic();
+        this.level.getFogOfWarController().light(this.getX(), this.getY(), 1F);
+    }
+
     /**
      * Builds a boss entity described by the BossBuilder structure
      * @param builder Boss-info

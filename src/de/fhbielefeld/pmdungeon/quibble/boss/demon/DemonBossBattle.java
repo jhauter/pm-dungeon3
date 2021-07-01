@@ -26,7 +26,7 @@ public class DemonBossBattle extends BossBattle {
         phases.put("second", new DemonSecondPhase(this));
         currentPhase = phases.get("transform");
         boss.physBuff = 10;
-        boss.magBuff = 10;
+        boss.magBuff = 7;
     }
 
     @Override
