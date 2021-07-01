@@ -40,12 +40,22 @@ import de.fhbielefeld.pmdungeon.quibble.file.DungeonResource;
 import de.fhbielefeld.pmdungeon.quibble.file.ResourceHandler;
 import de.fhbielefeld.pmdungeon.quibble.file.ResourceType;
 import de.fhbielefeld.pmdungeon.quibble.input.DungeonInputHandler;
+
+
+import de.fhbielefeld.pmdungeon.quibble.item.RandomItemGenerator;
+
 import de.fhbielefeld.pmdungeon.quibble.item.Item;
 import de.fhbielefeld.pmdungeon.quibble.item.RandomItemGenerator;
 import de.fhbielefeld.pmdungeon.quibble.level.DungeonStageLoader;
 import de.fhbielefeld.pmdungeon.quibble.memory.MemoryDataHandler;
 import de.fhbielefeld.pmdungeon.quibble.menu.Window;
 import de.fhbielefeld.pmdungeon.quibble.menu.WindowForPlayername;
+
+
+import de.fhbielefeld.pmdungeon.quibble.item.RandomItemGenerator;
+import de.fhbielefeld.pmdungeon.quibble.item.Item;
+import de.fhbielefeld.pmdungeon.quibble.level.DungeonFloorLoader;
+
 import de.fhbielefeld.pmdungeon.quibble.particle.DrawingUtil;
 import de.fhbielefeld.pmdungeon.quibble.ui.UIFonts;
 import de.fhbielefeld.pmdungeon.quibble.ui.UILayerCredits;
@@ -114,6 +124,7 @@ public class DungeonStart extends MainController implements EntityEventHandler
 	private Player myHero;
 	private Entity cameraTarget;
 
+
 	private boolean setupDone = false;
 	
 	private static boolean isSaveGame;
@@ -122,6 +133,10 @@ public class DungeonStart extends MainController implements EntityEventHandler
 
 	
 	private static int playerType;
+
+	
+	private DungeonFloorLoader dungeon = new DungeonFloorLoader();
+
 	
 	private long lastFrameTimeStamp;
 	
@@ -307,6 +322,7 @@ public class DungeonStart extends MainController implements EntityEventHandler
 		// Set current level from the level controller and entity controller
 		this.currentLevel = new DungeonLevel(this.levelController.getDungeon(), 50, 50, 150, 150);
 
+
 		// Set the camera to follow the hero
 		this.cameraTarget = this.myHero;
 		LoggingHandler.logger.log(Level.INFO, "New level loaded.");
@@ -346,8 +362,11 @@ public class DungeonStart extends MainController implements EntityEventHandler
 		// Check the triggeredNextLevel flag of the player
 		if(this.myHero.triggeredNextLevel())
 		{
+
+			dungeon.updateDungeonLevel();
 			this.levelController.triggerNextStage();
 			this.myHero.onNextLevelEntered();
+
 			
 			MemoryDataHandler.getInstance().savePlayer();
 
