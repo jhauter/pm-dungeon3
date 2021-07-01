@@ -54,7 +54,7 @@ public abstract class Item
 	private final String textureFile;
 	
 	private final int visibleTicks;
-
+	
 	private CreatureStats attackStats = new CreatureStats();
 	
 	//--------- Render Settings ------------
@@ -135,13 +135,14 @@ public abstract class Item
 	{
 		return attackStats;
 	}
-
+	
 	/**
 	 * These stats will be used to damage an entity when hit with this item if this item is a weapon.
 	 * Projectiles will also get the stats that this method gets.
 	 * @param stats the stats for the item
 	 */
-	public void setAttackStats(CreatureStats stats){
+	public void setAttackStats(CreatureStats stats)
+	{
 		this.attackStats = stats;
 	}
 	
@@ -212,32 +213,32 @@ public abstract class Item
 		//Default item render animation
 		return new Swing((int)user.getLookingDirection().getAxisX(), 5F);
 	}
-
+	
 	public float getRenderWidth()
 	{
 		return renderWidth;
 	}
-
+	
 	public float getRenderHeight()
 	{
 		return renderHeight;
 	}
-
+	
 	public float getRenderPivotX()
 	{
 		return renderPivotX;
 	}
-
+	
 	public float getRenderPivotY()
 	{
 		return renderPivotY;
 	}
-
+	
 	public float getRenderOffsetX()
 	{
 		return renderOffsetX;
 	}
-
+	
 	public float getRenderOffsetY()
 	{
 		return renderOffsetY;
@@ -262,7 +263,8 @@ public abstract class Item
 		return this.renderAllowNegativeEntityScale;
 	}
 	
-	public static List<Item> getRegisteredItems() {
+	public static List<Item> getRegisteredItems()
+	{
 		return registeredItems;
 	}
 }

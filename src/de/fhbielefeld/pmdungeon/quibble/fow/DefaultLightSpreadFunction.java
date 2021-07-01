@@ -12,7 +12,7 @@ public class DefaultLightSpreadFunction implements LightSpreadFunction
 	{
 		return (float)(fogTileSize * 0.015F * Math.pow(dist * fogTileSize, 2));
 	}
-
+	
 	@Override
 	public int getMaxDist(float fogTileSize)
 	{
@@ -24,7 +24,7 @@ public class DefaultLightSpreadFunction implements LightSpreadFunction
 	{
 		return fogTileSize * 1.5F;
 	}
-
+	
 	@Override
 	public float getIntensityOverTime(float startIntensity, float delta)
 	{

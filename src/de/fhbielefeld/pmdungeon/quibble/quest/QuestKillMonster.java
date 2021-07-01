@@ -16,7 +16,7 @@ public class QuestKillMonster extends QuestItemReward
 	 * @param rewardItems the items that are given to the player when the quest is completed
 	 * @param expOnReward the exp that are rewarded when the quest is completed
 	 */
-	public QuestKillMonster(String questName, int toKill, int expOnReward, Item ... rewardItems)
+	public QuestKillMonster(String questName, int toKill, int expOnReward, Item... rewardItems)
 	{
 		super(questName, expOnReward, rewardItems);
 		this.toKill = toKill;

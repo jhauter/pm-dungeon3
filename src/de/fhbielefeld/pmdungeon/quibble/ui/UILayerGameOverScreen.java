@@ -20,7 +20,7 @@ public class UILayerGameOverScreen extends UILayer
 	private float bgAlpha;
 	
 	private int phase;
-
+	
 	private static final int PHASE_TRANSITION_OVERLAY = 0;
 	private static final int PHASE_TRANSITION_COLOR = 1;
 	

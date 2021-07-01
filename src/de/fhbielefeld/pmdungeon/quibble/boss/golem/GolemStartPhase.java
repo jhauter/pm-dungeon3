@@ -12,47 +12,54 @@ import de.fhbielefeld.pmdungeon.quibble.entity.projectile.Projectile;
 
 import java.util.*;
 
-public class GolemStartPhase extends BossPhase {
-    private final ArrayList<BossAction> actions = new ArrayList<>();
-    private Random rand = new Random();
-
-    public GolemStartPhase(BossBattle battle) {
-        super(battle);
-        var bullet = new BulletCreationFunction() {
-            @Override
-            public Projectile createProjectile() {
-                var projectileStats = new CreatureStats();
-                projectileStats.setStat(CreatureStatsAttribs.DAMAGE_MAGIC, 4);
-                return new GolemProjectile("def", 0, 0, projectileStats, battle.getBoss());
-            }
-        };
-
-        List<ProjectileSpawner> projSpawner = new ArrayList<>();
-
-        for(int i = 0; i<3; ++i) {
-            var face = rand.nextInt(360);
-            var proj = new ProjectileSpawner(50, new CreatureStats(), new Vector2(0,0), bullet, battle.getBoss());
-            proj.addPattern(new SpinMovementPattern(proj, 200));
-            proj.currentBulletSpeed = 0.08f;
-            proj.setFacing(face);
-            projSpawner.add(proj);
-        }
-        var testProjectileAction = new ProjectileBossAction(projSpawner, 80, 40);
-
-        var knockbackAction = new GroundEffectBossAction(new KnockbackGroundAOE(), 2, new Vector2(0, 0));
-
-        actions.add(testProjectileAction);
-        actions.add(knockbackAction);
-    }
-
-    @Override
-    public void init() {
-        super.init();
-    }
-
-    @Override
-    protected List<BossAction> getActions() {
-        return actions;
-
-    }
+public class GolemStartPhase extends BossPhase
+{
+	private final ArrayList<BossAction> actions = new ArrayList<>();
+	private Random rand = new Random();
+	
+	public GolemStartPhase(BossBattle battle)
+	{
+		super(battle);
+		var bullet = new BulletCreationFunction()
+		{
+			@Override
+			public Projectile createProjectile()
+			{
+				var projectileStats = new CreatureStats();
+				projectileStats.setStat(CreatureStatsAttribs.DAMAGE_MAGIC, 4);
+				return new GolemProjectile("def", 0, 0, projectileStats, battle.getBoss());
+			}
+		};
+		
+		List<ProjectileSpawner> projSpawner = new ArrayList<>();
+		
+		for(int i = 0; i < 3; ++i)
+		{
+			var face = rand.nextInt(360);
+			var proj = new ProjectileSpawner(50, new CreatureStats(), new Vector2(0, 0), bullet, battle.getBoss());
+			proj.addPattern(new SpinMovementPattern(proj, 200));
+			proj.currentBulletSpeed = 0.08f;
+			proj.setFacing(face);
+			projSpawner.add(proj);
+		}
+		var testProjectileAction = new ProjectileBossAction(projSpawner, 80, 40);
+		
+		var knockbackAction = new GroundEffectBossAction(new KnockbackGroundAOE(), 2, new Vector2(0, 0));
+		
+		actions.add(testProjectileAction);
+		actions.add(knockbackAction);
+	}
+	
+	@Override
+	public void init()
+	{
+		super.init();
+	}
+	
+	@Override
+	protected List<BossAction> getActions()
+	{
+		return actions;
+		
+	}
 }

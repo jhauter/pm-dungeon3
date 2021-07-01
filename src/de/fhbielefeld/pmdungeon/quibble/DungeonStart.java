@@ -41,7 +41,6 @@ import de.fhbielefeld.pmdungeon.quibble.file.ResourceHandler;
 import de.fhbielefeld.pmdungeon.quibble.file.ResourceType;
 import de.fhbielefeld.pmdungeon.quibble.input.DungeonInputHandler;
 
-
 import de.fhbielefeld.pmdungeon.quibble.item.RandomItemGenerator;
 
 import de.fhbielefeld.pmdungeon.quibble.item.Item;
@@ -51,15 +50,11 @@ import de.fhbielefeld.pmdungeon.quibble.memory.MemoryDataHandler;
 import de.fhbielefeld.pmdungeon.quibble.menu.Window;
 import de.fhbielefeld.pmdungeon.quibble.menu.WindowForPlayername;
 
-
 import de.fhbielefeld.pmdungeon.quibble.item.RandomItemGenerator;
 
-
 import de.fhbielefeld.pmdungeon.quibble.item.RandomItemGenerator;
-
 
 import de.fhbielefeld.pmdungeon.quibble.item.Item;
-
 
 import de.fhbielefeld.pmdungeon.quibble.level.EnemySpawner;
 
@@ -130,21 +125,16 @@ public class DungeonStart extends MainController implements EntityEventHandler
 	
 	private Player myHero;
 	private Entity cameraTarget;
-
-
+	
 	private boolean setupDone = false;
 	
 	private static boolean isSaveGame;
-
+	
 	private int dungeonLevelCounter = 0;
-
 	
 	private static int playerType;
-
 	
-
 	private EnemySpawner enemy = new EnemySpawner();
-
 	
 	private long lastFrameTimeStamp;
 	
@@ -167,7 +157,7 @@ public class DungeonStart extends MainController implements EntityEventHandler
 	
 	private ShapeRenderer debugRenderer;
 	
-	private boolean drawBoundingBoxes = true;
+	private boolean drawBoundingBoxes = false;
 	//Draws spatial hash grid cells of the level
 	private boolean drawSHGCells = false;
 	private boolean drawSHGCNearby = false;
@@ -329,10 +319,7 @@ public class DungeonStart extends MainController implements EntityEventHandler
 		}
 		// Set current level from the level controller and entity controller
 		this.currentLevel = new DungeonLevel(this.levelController.getDungeon(), 50, 50, 150, 150);
-
-
-
-
+		
 		// Set the camera to follow the hero
 		this.cameraTarget = this.myHero;
 		LoggingHandler.logger.log(Level.INFO, "New level loaded.");
@@ -367,27 +354,25 @@ public class DungeonStart extends MainController implements EntityEventHandler
 		this.gameInputProcessor.update();
 		
 		this.currentLevel.update();
-
 		
 		// Check the triggeredNextLevel flag of the player
 		if(this.myHero.triggeredNextLevel())
 		{
-
+			
 			enemy.updateDungeonLevel();
-
+			
 			this.levelController.triggerNextStage();
 			this.myHero.onNextLevelEntered();
-
 			
 			MemoryDataHandler.getInstance().savePlayer();
-
+			
 		}
 		
 		//NOTE: Zum Testen
 		if(Gdx.input.isKeyJustPressed(Input.Keys.F12))
 		{
 			stageLoader.loadNextStage();
-
+			
 			LoggingHandler.logger.log(Level.INFO, "Player entered new level.");
 			
 		}

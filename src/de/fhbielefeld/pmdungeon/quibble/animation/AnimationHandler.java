@@ -35,6 +35,7 @@ public interface AnimationHandler
 	 * @throws IllegalArgumentException <code>frameDuration</code> is negative
 	 */
 	public void addAnimation(AnimationHandlerImpl.AnimationInfo a);
+	
 	public void addAnimation(String animName, int numFrames, float frameDuration, int rows, int columns, String fileName);
 	
 	/**
@@ -72,8 +73,9 @@ public interface AnimationHandler
 	 * @see AnimationHandler#addAnimation(String, int, String, String)
 	 */
 	public void addAsDefaultAnimation(String animName, int numFrames, float frameDuration, int rows, int columns, String fileName);
+	
 	public void addAsDefaultAnimation(AnimationHandlerImpl.AnimationInfo a);
-
+	
 	/**
 	 * See {@link #addAsDefaultAnimation(String, int, float, int, int, String)} for more info.
 	 * 

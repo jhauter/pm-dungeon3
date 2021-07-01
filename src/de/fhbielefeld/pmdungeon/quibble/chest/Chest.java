@@ -30,8 +30,9 @@ public abstract class Chest extends Entity
 	{
 		Random r = new Random();
 		int itemAmount = r.nextInt(5) + 1;
-
-		for(int j = 0; j < itemAmount; j++){
+		
+		for(int j = 0; j < itemAmount; j++)
+		{
 			this.inv.addItem(RandomItemGenerator.getInstance().generateRandomItem(DungeonStart.getDungeonMain().getLevelCount()));
 		}
 	}

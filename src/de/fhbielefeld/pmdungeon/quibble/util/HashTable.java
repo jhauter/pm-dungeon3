@@ -69,7 +69,6 @@ public class HashTable<K, V>
 		
 		size--;
 		
-		
 		if(prev != null)
 		{
 			prev.next = head.next;

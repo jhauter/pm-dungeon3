@@ -125,6 +125,7 @@ public class DungeonLevel
 		this.entities.set(index, this.entities.get(this.entities.size() - 1));
 		this.entities.remove(this.entities.size() - 1);
 	}
+	
 	/**
 	 * This is the preferred way to add entities to a level.
 	 * This ensures that all entity resources are loaded and level reference of the entity is set correctly.
@@ -198,12 +199,13 @@ public class DungeonLevel
 	{
 		return this.entities.get(index);
 	}
-
+	
 	/**
 	 * Retures all entities of this level
 	 * @return all entities of this level
 	 */
-	public List<Entity> getAllEntities(){
+	public List<Entity> getAllEntities()
+	{
 		return this.entities;
 	}
 	
@@ -218,7 +220,7 @@ public class DungeonLevel
 			this.removeEntity(0); //Important because onDespawn and to remove from hash grid
 		}
 	}
-
+	
 	/**
 	 * @return the <code>Random</code> instance of this level
 	 */

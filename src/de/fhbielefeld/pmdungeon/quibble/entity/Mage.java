@@ -21,7 +21,7 @@ public class Mage extends Player
 	{
 		this(0.0F, 0.0F);
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -83,7 +83,7 @@ public class Mage extends Player
 	{
 		return 2;
 	}
-
+	
 	@Override
 	public String getPortraitImagePath()
 	{

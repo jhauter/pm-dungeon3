@@ -34,11 +34,11 @@ public class UILayerInventoryView extends UILayer
 	public void draw()
 	{
 		super.draw();
-//		Iterator<UIElement> slotElements = this.getUIElements();
-//		while(slotElements.hasNext())
-//		{
-//			slotElements.next();
-//		}
+		//		Iterator<UIElement> slotElements = this.getUIElements();
+		//		while(slotElements.hasNext())
+		//		{
+		//			slotElements.next();
+		//		}
 	}
 	
 	public void setInventory(Inventory<?> inventory)
@@ -116,10 +116,10 @@ public class UILayerInventoryView extends UILayer
 				}
 				nextItemX += slotXDiffBag * (bagItems.getCapacity() % 2);
 			}
-//			if(inv == this.myHero.getEquippedItems() && i == this.myHero.getSelectedEquipSlot())
-//			{
-//				currentHUDElement.setMarked(true);
-//			}
+			//			if(inv == this.myHero.getEquippedItems() && i == this.myHero.getSelectedEquipSlot())
+			//			{
+			//				currentHUDElement.setMarked(true);
+			//			}
 			this.addUIElement(cSlotElem);
 		}
 	}
