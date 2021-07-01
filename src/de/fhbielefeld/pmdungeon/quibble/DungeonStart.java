@@ -91,7 +91,7 @@ public class DungeonStart extends MainController implements EntityEventHandler
 	{
 		return GameSetup.batch;
 	}
-	
+
 	/****************************************
 	 *                GAME                  *
 	 ****************************************/
@@ -686,7 +686,9 @@ public class DungeonStart extends MainController implements EntityEventHandler
 	{
 		return levelCount;
 	}
-	
+	public DungeonStageLoader getStageLoader() {
+		return this.stageLoader;
+	}
 	/**
 	 * Starts the gameloop
 	 */

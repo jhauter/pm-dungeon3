@@ -1,6 +1,7 @@
 package de.fhbielefeld.pmdungeon.vorgaben.game.Controller;
 
 
+import de.fhbielefeld.pmdungeon.quibble.DungeonStart;
 import de.fhbielefeld.pmdungeon.vorgaben.dungeonCreator.DungeonWorld;
 import de.fhbielefeld.pmdungeon.vorgaben.dungeonCreator.dungeonconverter.DungeonConverter;
 import de.fhbielefeld.pmdungeon.vorgaben.game.GameSetup;
@@ -128,6 +129,8 @@ public class LevelController {
      * If next stage is triggered, change the dungeon.
      */
     private void nextStage() throws InvocationTargetException, IllegalAccessException {
+
+        /*
         switch (nextStage) {
             case A:
                 loadDungeon(dungeonConverter.dungeonFromJson(Constants.PATHTOLEVEL + "small_dungeon.json"));
@@ -146,6 +149,8 @@ public class LevelController {
                 nextStage = Stage.A;
                 break;
         }
+        */
+        DungeonStart.getDungeonMain().getStageLoader().loadNextStage();
     }
 
     /**
