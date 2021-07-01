@@ -5,8 +5,16 @@ import de.fhbielefeld.pmdungeon.quibble.entity.NPC;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.DamageSource;
 
+/**
+ * Class representing a circular area on the ground that triggers after a specific amount of time
+ */
 public abstract class GroundAoe extends Entity implements DamageSource {
+
     protected int ticksUntilAction;
+
+    /**
+     * Time it takes for the aoe to despawn after having been triggered. Used to play animations etc
+     */
     protected int ticksUntilRemove = 20;
 
     protected boolean finished = false;
@@ -14,19 +22,30 @@ public abstract class GroundAoe extends Entity implements DamageSource {
     protected int actionCounter = 0;
     protected int radius = 1;
 
+
     public boolean shouldDespawn = false;
+
     protected Entity target = null;
 
-    //TODO: I hate my life
     public Entity getTarget() {
         return target;
     }
 
+    /**
+     * @param target Sets the target of this action.
+     */
     public void setTarget(Entity target) {
         this.target = target;
     }
 
+    /**
+     * Called if aoe is active but not yet triggered
+     */
     protected abstract void onRoam();
+
+    /**
+     * Called on trigger
+     */
     protected abstract void onTrigger();
 
     @Override

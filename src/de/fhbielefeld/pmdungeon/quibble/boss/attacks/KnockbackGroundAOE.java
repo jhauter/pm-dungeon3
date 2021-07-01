@@ -16,6 +16,9 @@ import de.fhbielefeld.pmdungeon.quibble.entity.effect.StatusEffect;
 import de.fhbielefeld.pmdungeon.quibble.entity.effect.StatusEffectKnockback;
 import de.fhbielefeld.pmdungeon.vorgaben.tools.Point;
 
+/**
+ * Groundaoe that knocks the player back when touched
+ */
 public class KnockbackGroundAOE extends GroundAoe implements DamageSource {
     private DungeonLevel level;
     private float strength;

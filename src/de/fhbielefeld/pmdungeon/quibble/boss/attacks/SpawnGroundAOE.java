@@ -8,6 +8,9 @@ import de.fhbielefeld.pmdungeon.quibble.entity.*;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Random;
 
+/**
+ * Groundaoe that spawns either random or specific entities
+ */
 public class SpawnGroundAOE extends GroundAoe{
     private DungeonLevel level;
 

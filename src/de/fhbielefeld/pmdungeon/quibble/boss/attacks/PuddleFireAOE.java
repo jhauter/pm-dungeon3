@@ -6,6 +6,9 @@ import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.DamageType;
 
+/**
+ * GroundAOE that leaves a small fire effect that hurts the player when touched
+ */
 public class PuddleFireAOE extends GroundAoe{
 
     private DungeonLevel level;

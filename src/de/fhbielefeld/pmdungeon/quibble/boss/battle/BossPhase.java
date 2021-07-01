@@ -28,6 +28,11 @@ public abstract class BossPhase {
         this.active = true;
     }
 
+    /**
+     * Adds the next action in the action pool to the active actions. Wraps to the first action
+     * if actions have been exhausted
+     */
+
     public void nextAction() {
         int maxActions = getActions().size();
 
@@ -49,6 +54,9 @@ public abstract class BossPhase {
     }
 
 
+    /**
+     * @param action Action to be removed from active actions
+     */
     public void removeAction(BossAction action) {
         currentActions.remove(action);
     }

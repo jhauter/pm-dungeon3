@@ -4,6 +4,11 @@ import de.fhbielefeld.pmdungeon.quibble.boss.battle.BossBattle;
 
 import java.util.Objects;
 
+/**
+ * Represents an action that can be executed during a boss battle. Is responsible for
+ * removing itself from the list of active actions and calling for the next action to
+ * be added to the queue
+ */
 public abstract class BossAction {
 
     /**

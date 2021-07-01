@@ -9,12 +9,8 @@ import de.fhbielefeld.pmdungeon.quibble.entity.Entity;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
 
 /**
- * Contains information and functionality required to controll
- * the entire boss fight, including spawning, despawning specific projectileSpawners for
- * projectile patterns and seperate entities "created" by the boss during the encounter
- * Thus Boss should not be used directly
+ * Contains information about the current BossBattle
  */
-
 public abstract class BossBattle extends Entity {
 
     /*
@@ -120,10 +116,19 @@ public abstract class BossBattle extends Entity {
         enemies.forEach(Creature::setDead);
     }
 
+
+    /**
+     * Adds the next action in the action pool to the active actions. Wraps to the first action
+     * if actions have been exhausted
+     */
     public void nextAction() {
         currentPhase.nextAction();
     }
 
+
+    /**
+     * @param action Action to be removed from active actions
+     */
     public void removeAction(BossAction action) {
         currentPhase.removeAction(action);
     }
