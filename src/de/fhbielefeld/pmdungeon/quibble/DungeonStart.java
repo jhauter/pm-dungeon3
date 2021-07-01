@@ -249,9 +249,6 @@ public class DungeonStart extends MainController implements EntityEventHandler
 
 		Gdx.input.setInputProcessor(this.inputMultiplexer);
 		
-		this.myHero.setName(WindowForPlayername.getPlayerName());
-		System.out.println("Your name is: " + this.myHero.getDisplayName());
-		
 		this.uiLayerHUD.setPlayer(myHero);
 		this.uiLayerPlayerEquipment.setInventory(myHero.getEquippedItems());
 		this.uiLayerPlayerInventory.setInventory(myHero.getInventory());
