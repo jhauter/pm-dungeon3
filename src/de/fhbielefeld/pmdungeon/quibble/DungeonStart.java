@@ -59,7 +59,10 @@ import de.fhbielefeld.pmdungeon.quibble.item.RandomItemGenerator;
 
 
 import de.fhbielefeld.pmdungeon.quibble.item.Item;
-import de.fhbielefeld.pmdungeon.quibble.level.DungeonFloorLoader;
+
+
+
+import de.fhbielefeld.pmdungeon.quibble.level.EnemySpawner;
 
 import de.fhbielefeld.pmdungeon.quibble.particle.DrawingUtil;
 import de.fhbielefeld.pmdungeon.quibble.ui.UIFonts;
@@ -140,7 +143,8 @@ public class DungeonStart extends MainController implements EntityEventHandler
 	private static int playerType;
 
 	
-	private DungeonFloorLoader dungeon = new DungeonFloorLoader();
+
+	private EnemySpawner enemy = new EnemySpawner();
 
 	
 	private long lastFrameTimeStamp;
@@ -328,6 +332,8 @@ public class DungeonStart extends MainController implements EntityEventHandler
 		this.currentLevel = new DungeonLevel(this.levelController.getDungeon(), 50, 50, 150, 150);
 
 
+
+
 		// Set the camera to follow the hero
 		this.cameraTarget = this.myHero;
 		LoggingHandler.logger.log(Level.INFO, "New level loaded.");
@@ -368,7 +374,8 @@ public class DungeonStart extends MainController implements EntityEventHandler
 		if(this.myHero.triggeredNextLevel())
 		{
 
-			dungeon.updateDungeonLevel();
+			enemy.updateDungeonLevel();
+
 			this.levelController.triggerNextStage();
 			this.myHero.onNextLevelEntered();
 
