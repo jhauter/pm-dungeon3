@@ -22,7 +22,7 @@ public abstract class Player extends Creature
 	private float controlMaxY;
 	
 	private List<Quest> quests = new ArrayList<Quest>();
-
+	
 	private String name;
 	
 	/**
@@ -169,20 +169,22 @@ public abstract class Player extends Creature
 	{
 		return this.quests;
 	}
-
+	
 	/**
 	 * @return the name of the player
 	 */
 	@Override
-	public String getDisplayName() {
+	public String getDisplayName()
+	{
 		return name;
 	}
-
+	
 	/**
 	 * Sets a new player name
 	 * @param name the new name for the player
 	 */
-	public void setName(String name) {
+	public void setName(String name)
+	{
 		this.name = name;
 	}
 	

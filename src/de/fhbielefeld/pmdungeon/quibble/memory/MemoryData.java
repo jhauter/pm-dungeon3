@@ -12,20 +12,22 @@ import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
 import de.fhbielefeld.pmdungeon.quibble.inventory.Inventory;
 import de.fhbielefeld.pmdungeon.quibble.item.Item;
-import de.fhbielefeld.pmdungeon.vorgaben.tools.Constants;
 
-public class MemoryData {
-
-	public class StageInformation {
+public class MemoryData
+{
+	
+	public class StageInformation
+	{
 		public String mapName;
 		public int progress;
-
-		public StageInformation(String mapName, int progress) {
+		
+		public StageInformation(String mapName, int progress)
+		{
 			this.mapName = mapName;
 			this.progress = progress;
 		}
 	}
-
+	
 	public String displayName;
 	public String classType;
 	public Vector2 position;
@@ -35,10 +37,11 @@ public class MemoryData {
 	public ArrayList<ItemInformation> equ;
 	public ArrayList<Double> stats;
 	public StageInformation level;
-
-	public MemoryData() {
+	
+	public MemoryData()
+	{
 	}
-
+	
 	/**
 	 * 
 	 * @param player to be saved
@@ -50,8 +53,10 @@ public class MemoryData {
 	 * <li> equippedItems
 	 * <li> stats
 	 */
-	public MemoryData(Player player) {
-		if (player != null) {
+	public MemoryData(Player player)
+	{
+		if(player != null)
+		{
 			this.displayName = player.getDisplayName();
 			this.classType = player.getClass().getTypeName();
 			this.position = player.getPosition();
@@ -69,53 +74,62 @@ public class MemoryData {
 	 * @return the last DungeonWorld which was loaded. <br>
 	 *         Use this to get the last Map the Player has entered.
 	 */
-	public StageInformation saveLevel() {
+	public StageInformation saveLevel()
+	{
 		String logMsg = "Loaded Dungeon from Memory";
 		var mapName = DungeonStart.getDungeonMain()
-				.getStageLoader()
-				.getCurrentlyLoadedDungeonMap();
-
+			.getStageLoader()
+			.getCurrentlyLoadedDungeonMap();
+		
 		var progress = DungeonStart.getDungeonMain()
-				.getStageLoader()
-				.getCurrentStageNum();
+			.getStageLoader()
+			.getCurrentStageNum();
 		System.out.println(progress);
 		LoggingHandler.logger.log(Level.INFO, logMsg);
 		return new StageInformation(mapName, progress);
 	}
-
-	private ArrayList<Double> getStats(Player player) {
+	
+	private ArrayList<Double> getStats(Player player)
+	{
 		ArrayList<Double> stats = new ArrayList<>();
-		for (int i = 0; i < CreatureStatsAttribs.values().length; i++) {
+		for(int i = 0; i < CreatureStatsAttribs.values().length; i++)
+		{
 			stats.add(player.getCurrentStats().getStat(CreatureStatsAttribs.values()[i]));
 		}
 		return stats;
 	}
-
-	private ArrayList<ItemInformation> getItems(Inventory<Item> inv) {
+	
+	private ArrayList<ItemInformation> getItems(Inventory<Item> inv)
+	{
 		ArrayList<ItemInformation> items = new ArrayList<>();
 		ItemInformation info = null;
-		for (int i = 0; i < inv.getCapacity(); i++) {
-			if (inv.getItem(i) != null) {
+		for(int i = 0; i < inv.getCapacity(); i++)
+		{
+			if(inv.getItem(i) != null)
+			{
 				info = new ItemInformation(inv.getItem(i).getItemType());
 				items.add(info);
 			}
 		}
 		return items;
 	}
-
-	class ItemInformation {
+	
+	class ItemInformation
+	{
 		String name;
 		String classType;
 		CreatureStats stats;
+		
 		/**
 		 * Simple class to store nessecary informations of Items
 		 * @param item the item that should be recognized again
 		 */
-		public ItemInformation(Item item) {
+		public ItemInformation(Item item)
+		{
 			this.name = item.getDisplayName();
 			this.classType = item.getClass().getTypeName();
 			this.stats = item.getAttackStats();
 		}
 	}
-
+	
 }

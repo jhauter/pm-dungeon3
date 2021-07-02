@@ -19,3 +19,6 @@
 log.txt
 *.log
 *.lck
+
+# Savegame
+Game.json

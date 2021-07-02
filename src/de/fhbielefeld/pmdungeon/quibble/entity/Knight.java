@@ -39,7 +39,7 @@ public class Knight extends Player
 	{
 		this(0.0F, 0.0F);
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */

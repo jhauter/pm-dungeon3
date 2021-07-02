@@ -111,7 +111,7 @@ public abstract class Quest implements EntityEventHandler
 		return "gray_flag";
 	}
 	
-	public static String makeRewardString(int rewardExp, Item ... rewardItems)
+	public static String makeRewardString(int rewardExp, Item... rewardItems)
 	{
 		StringBuilder b = new StringBuilder();
 		if(rewardExp > 0)

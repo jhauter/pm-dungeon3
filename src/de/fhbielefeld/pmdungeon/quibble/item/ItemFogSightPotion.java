@@ -14,7 +14,7 @@ public class ItemFogSightPotion extends ItemPotion
 		this.fogSightChange = fogSightChange;
 		this.duration = duration;
 	}
-
+	
 	@Override
 	public boolean onUse(Creature user, float targetX, float targetY)
 	{

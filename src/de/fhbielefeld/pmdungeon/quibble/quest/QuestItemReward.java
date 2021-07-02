@@ -7,7 +7,7 @@ public abstract class QuestItemReward extends Quest
 {
 	private final Item[] rewardItems;
 	
-	public QuestItemReward(String questName, int rewardExp, Item ... rewardItems)
+	public QuestItemReward(String questName, int rewardExp, Item... rewardItems)
 	{
 		super(questName, rewardExp);
 		this.rewardItems = rewardItems;
@@ -27,7 +27,7 @@ public abstract class QuestItemReward extends Quest
 			player.addItem(i);
 		}
 	}
-
+	
 	@Override
 	public String getRewardText()
 	{

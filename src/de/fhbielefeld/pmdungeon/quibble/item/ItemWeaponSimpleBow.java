@@ -16,13 +16,14 @@ public class ItemWeaponSimpleBow extends ItemWeaponRanged
 	{
 		this("Simple Bow");
 	}
-
-	protected ItemWeaponSimpleBow(String displayName){
+	
+	protected ItemWeaponSimpleBow(String displayName)
+	{
 		super(displayName, 15, "assets/textures/items/bow.png");
 		this.renderHeight = 1.75F;
 		this.renderWidth = 1F;
 		this.renderOffsetX = 0.5F;
-
+		
 		CreatureStats stats = new CreatureStats();
 		stats.setStat(CreatureStatsAttribs.DAMAGE_PHYS, 2);
 		this.setAttackStats(stats);

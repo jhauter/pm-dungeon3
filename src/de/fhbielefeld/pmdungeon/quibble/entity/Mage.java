@@ -4,7 +4,6 @@ import com.badlogic.gdx.math.Vector2;
 
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStats;
 import de.fhbielefeld.pmdungeon.quibble.entity.battle.CreatureStatsAttribs;
-import de.fhbielefeld.pmdungeon.quibble.item.Item;
 
 public class Mage extends Player
 {
@@ -21,7 +20,7 @@ public class Mage extends Player
 	{
 		this(0.0F, 0.0F);
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -83,7 +82,7 @@ public class Mage extends Player
 	{
 		return 2;
 	}
-
+	
 	@Override
 	public String getPortraitImagePath()
 	{

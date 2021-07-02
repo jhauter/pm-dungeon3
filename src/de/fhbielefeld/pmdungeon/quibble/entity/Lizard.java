@@ -75,8 +75,8 @@ public class Lizard extends NPC
 		stats.setStat(CreatureStatsAttribs.CRIT_CHANCE, 0.1D);
 		stats.setStat(CreatureStatsAttribs.KNOCKBACK, 0.25D);
 		stats.setStat(CreatureStatsAttribs.KNOCKBACK_RES, 0.1D);
-		stats.setStat(CreatureStatsAttribs.DAMAGE_PHYS, 2.0D);
-		stats.setStat(CreatureStatsAttribs.DAMAGE_MAGIC, 3.0D);
+		stats.setStat(CreatureStatsAttribs.DAMAGE_PHYS, 2.0D + level);
+		stats.setStat(CreatureStatsAttribs.DAMAGE_MAGIC, 3.0D + level);
 		stats.setStat(CreatureStatsAttribs.WALKING_SPEED, 0.04D);
 		stats.setStat(CreatureStatsAttribs.HIT_REACH, 0.4D);
 		stats.setStat(CreatureStatsAttribs.HIT_COOLDOWN, 20.0D);
@@ -117,6 +117,6 @@ public class Lizard extends NPC
 	@Override
 	public int getExpDrop()
 	{
-		return 7;
+		return 10;
 	}
 }

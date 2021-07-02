@@ -1,6 +1,5 @@
 package de.fhbielefeld.pmdungeon.quibble;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Set;
 import java.util.logging.Level;
@@ -43,6 +42,7 @@ import de.fhbielefeld.pmdungeon.quibble.input.DungeonInputHandler;
 import de.fhbielefeld.pmdungeon.quibble.item.Item;
 import de.fhbielefeld.pmdungeon.quibble.item.RandomItemGenerator;
 import de.fhbielefeld.pmdungeon.quibble.level.DungeonStageLoader;
+import de.fhbielefeld.pmdungeon.quibble.level.EnemySpawner;
 import de.fhbielefeld.pmdungeon.quibble.memory.MemoryDataHandler;
 import de.fhbielefeld.pmdungeon.quibble.menu.Window;
 import de.fhbielefeld.pmdungeon.quibble.menu.WindowForPlayername;
@@ -91,7 +91,7 @@ public class DungeonStart extends MainController implements EntityEventHandler
 	{
 		return GameSetup.batch;
 	}
-
+	
 	/****************************************
 	 *                GAME                  *
 	 ****************************************/
@@ -113,11 +113,16 @@ public class DungeonStart extends MainController implements EntityEventHandler
 	
 	private Player myHero;
 	private Entity cameraTarget;
+	
 	private boolean setupDone = false;
 	
 	private static boolean isSaveGame;
 	
+	private int dungeonLevelCounter = 0;
+	
 	private static int playerType;
+	
+	private EnemySpawner enemy = new EnemySpawner();
 	
 	private long lastFrameTimeStamp;
 	
@@ -140,7 +145,7 @@ public class DungeonStart extends MainController implements EntityEventHandler
 	
 	private ShapeRenderer debugRenderer;
 	
-	private boolean drawBoundingBoxes = true;
+	private boolean drawBoundingBoxes = false;
 	//Draws spatial hash grid cells of the level
 	private boolean drawSHGCells = false;
 	private boolean drawSHGCNearby = false;
@@ -266,14 +271,18 @@ public class DungeonStart extends MainController implements EntityEventHandler
 		this.debugRenderer.setAutoShapeType(true);
 		
 		if(isSaveGame)
-			try {
+			try
+			{
 				//this.levelController.loadDungeon(new DungeonConverter().dungeonFromJson(MemoryDataHandler.getInstance().getSavedLevel()));
 				this.stageLoader.loadStage(MemoryDataHandler.getInstance().getSavedLevel());
-			} catch (Exception e) {
+			}
+			catch(Exception e)
+			{
 				e.printStackTrace();
 			}
-		else {
-		    this.stageLoader.loadNextStage();
+		else
+		{
+			this.stageLoader.loadNextStage();
 		}
 		LoggingHandler.logger.log(Level.INFO, "Setup done.");
 	}
@@ -330,11 +339,14 @@ public class DungeonStart extends MainController implements EntityEventHandler
 		// Check the triggeredNextLevel flag of the player
 		if(this.myHero.triggeredNextLevel())
 		{
+			
+			enemy.updateDungeonLevel();
+			
 			this.levelController.triggerNextStage();
 			this.myHero.onNextLevelEntered();
 			
 			MemoryDataHandler.getInstance().savePlayer();
-
+			
 		}
 		
 		//NOTE: Zum Testen
@@ -676,9 +688,12 @@ public class DungeonStart extends MainController implements EntityEventHandler
 	{
 		return levelCount;
 	}
-	public DungeonStageLoader getStageLoader() {
+	
+	public DungeonStageLoader getStageLoader()
+	{
 		return this.stageLoader;
 	}
+	
 	/**
 	 * Starts the gameloop
 	 */
