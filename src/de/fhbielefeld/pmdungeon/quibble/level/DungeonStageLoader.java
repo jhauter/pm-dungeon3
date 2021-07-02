@@ -47,16 +47,19 @@ public class DungeonStageLoader
 	private String currentlyLoadedDungeonMap;
 	
 	private StageType currentStageType = StageType.Normal;
-	
+	private EnemySpawner spawner;
+
 	/**
 	 * Custom loader for DungeonStages
 	 * @param controller LevelController
 	 */
 	public DungeonStageLoader(LevelController controller)
 	{
+
 		this.controller = controller;
 		this.converter = new DungeonConverter();
 		this.rng = new Random();
+		this.spawner = new EnemySpawner();
 	}
 	
 	/**
@@ -100,6 +103,7 @@ public class DungeonStageLoader
 	
 	private void placeDungeonEnemies(DungeonLevel level)
 	{
+	    /*
 		for(int i = 0; i < 5; ++i)
 		{
 			final Point pos = level.getDungeon().getRandomPointInDungeon();
@@ -114,6 +118,8 @@ public class DungeonStageLoader
 			toSpawn.setPosition(pos.x, pos.y);
 			level.spawnEntity(toSpawn);
 		}
+		*/
+        spawner.placeEnemies(level);
 	}
 	
 	private void placeHero(DungeonLevel level)
@@ -178,6 +184,7 @@ public class DungeonStageLoader
 	private void loadRandomStage()
 	{
 		dungeonProgressCounter += 1;
+		spawner.updateDungeonLevel();
 		System.out.println("Moin");
 		if(dungeonProgressCounter == golemStageRequirement)
 		{

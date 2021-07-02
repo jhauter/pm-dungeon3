@@ -339,9 +339,6 @@ public class DungeonStart extends MainController implements EntityEventHandler
 		// Check the triggeredNextLevel flag of the player
 		if(this.myHero.triggeredNextLevel())
 		{
-			
-			enemy.updateDungeonLevel();
-			
 			this.levelController.triggerNextStage();
 			this.myHero.onNextLevelEntered();
 			
