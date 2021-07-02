@@ -73,6 +73,7 @@ public abstract class BossBattle extends Entity
 	 */
 	public void start()
 	{
+		DungeonStart.getDungeonMain().setCanLeaveDungeon(false);
 		this.level.spawnEntity(this);
 		prepareArea();
 		bossBar = new UIBossBar();
@@ -153,6 +154,7 @@ public abstract class BossBattle extends Entity
 		bossBar.setBoss(null);
 		DungeonStart.getDungeonMain().getUIManager().removeUI(bossBar);
 		active = false;
+		DungeonStart.getDungeonMain().setCanLeaveDungeon(true);
 	}
 	
 	abstract protected boolean isBattleOver();

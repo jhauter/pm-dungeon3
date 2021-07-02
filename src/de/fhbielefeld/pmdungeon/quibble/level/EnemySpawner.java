@@ -19,7 +19,7 @@ import de.fhbielefeld.pmdungeon.vorgaben.tools.Point;
 public class EnemySpawner
 {
 	// current level the hero is in
-	private int dungeonLevelCounter = 1;
+	private int dungeonLevelCounter = 0;
 	//experience monster get if the hero progresses in the dungeon
 	private int creatureExp = 10;
 	

@@ -86,7 +86,8 @@ public class DungeonStart extends MainController implements EntityEventHandler
 	{
 		return instance;
 	}
-	
+
+
 	public static SpriteBatch getGameBatch()
 	{
 		return GameSetup.batch;
@@ -97,7 +98,7 @@ public class DungeonStart extends MainController implements EntityEventHandler
 	 ****************************************/
 	
 	private static DungeonStart instance;
-	
+	private boolean canLeaveDungeon = true;
 	public static Matrix4 orthoProjMatrix = new Matrix4();
 	private static GlyphLayout glyphLayout = new GlyphLayout();
 	
@@ -337,7 +338,7 @@ public class DungeonStart extends MainController implements EntityEventHandler
 		this.currentLevel.update();
 		
 		// Check the triggeredNextLevel flag of the player
-		if(this.myHero.triggeredNextLevel())
+		if(this.myHero.triggeredNextLevel() && canLeaveDungeon)
 		{
 			this.levelController.triggerNextStage();
 			this.myHero.onNextLevelEntered();
@@ -690,7 +691,10 @@ public class DungeonStart extends MainController implements EntityEventHandler
 	{
 		return this.stageLoader;
 	}
-	
+
+	public void setCanLeaveDungeon(boolean canLeave) {
+		this.canLeaveDungeon = canLeave;
+	}
 	/**
 	 * Starts the gameloop
 	 */
