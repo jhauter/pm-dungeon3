@@ -65,6 +65,22 @@ public class GroundEffectBossAction extends BossAction {
         this.position = bossRelativePosition;
     }
 
+    /**
+     * @param effect Effect
+     * @param duration Time until action is finished
+     * @param cooldown Time until next action may be executed
+     * @param radius Max Radius
+     * @param bossRelativePosition Position of the GroundEffect relative to the boss
+     */
+    public GroundEffectBossAction(GroundAoe effect, int cooldown, int radius, Vector2 position, Entity target) {
+        this.effect = effect;
+
+        this.radius = radius;
+        this.duration = 140;
+        this.cooldown = cooldown;
+        this.position = position;
+        this.target = target;
+    }
     @Override
     public void onActionBegin(BossBattle battle) {
         super.onActionBegin(battle);

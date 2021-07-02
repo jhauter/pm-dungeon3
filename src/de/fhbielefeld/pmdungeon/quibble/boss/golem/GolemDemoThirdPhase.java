@@ -1,6 +1,8 @@
 package de.fhbielefeld.pmdungeon.quibble.boss.golem;
 
 import com.badlogic.gdx.math.Vector2;
+import de.fhbielefeld.pmdungeon.quibble.DungeonStart;
+import de.fhbielefeld.pmdungeon.quibble.boss.attacks.ExplosionGroundAOE;
 import de.fhbielefeld.pmdungeon.quibble.boss.attacks.KnockbackGroundAOE;
 import de.fhbielefeld.pmdungeon.quibble.boss.attacks.SpawnGroundAOE;
 import de.fhbielefeld.pmdungeon.quibble.boss.battle.*;
@@ -37,8 +39,9 @@ public class GolemDemoThirdPhase extends BossPhase {
         var spawnAction = new GroundEffectBossAction(new SpawnGroundAOE(),100 , 20, 2,new Vector2(0,0));
 
         var testProjectileAction = new ProjectileBossAction(Collections.singletonList(projectile), 150, 20);
+        var testExplosionAction = new GroundEffectBossAction(new ExplosionGroundAOE(), 2, new Vector2(0,0), DungeonStart.getDungeonMain().getPlayer());
 
-        //TODO: THIS STILL DOES NOT WORK EDIT: IT DOES NOW
+        actions.add(testExplosionAction);
         actions.add(spawnAction);
         actions.add(knockbackAction);
         actions.add(testProjectileAction);

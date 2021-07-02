@@ -131,7 +131,7 @@ public class Boss extends NPC {
     @Override
     protected CreatureStats getBaseStatsForLevel(int level) {
         CreatureStats stats = new CreatureStats();
-        stats.setStat(CreatureStatsAttribs.HEALTH, 100 + 2 * level);
+        stats.setStat(CreatureStatsAttribs.HEALTH, 200 + 2 * level);
         stats.setStat(CreatureStatsAttribs.RESISTANCE_PHYS, level + physBuff);
         stats.setStat(CreatureStatsAttribs.RESISTANCE_MAGIC, level + magBuff);
         stats.setStat(CreatureStatsAttribs.MISS_CHANCE, 0.0D);

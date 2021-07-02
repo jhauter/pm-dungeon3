@@ -1,6 +1,8 @@
 package de.fhbielefeld.pmdungeon.quibble.boss.golem;
 
 import com.badlogic.gdx.math.Vector2;
+import de.fhbielefeld.pmdungeon.quibble.DungeonStart;
+import de.fhbielefeld.pmdungeon.quibble.boss.attacks.ExplosionGroundAOE;
 import de.fhbielefeld.pmdungeon.quibble.boss.attacks.KnockbackGroundAOE;
 import de.fhbielefeld.pmdungeon.quibble.boss.battle.*;
 import de.fhbielefeld.pmdungeon.quibble.boss.bulletHell.BulletCreationFunction;
@@ -40,9 +42,10 @@ public class GolemStartPhase extends BossPhase {
         var testProjectileAction = new ProjectileBossAction(projSpawner, 80, 40);
 
         var knockbackAction = new GroundEffectBossAction(new KnockbackGroundAOE(), 2, new Vector2(0, 0));
-
+        var testExplosionAction = new GroundEffectBossAction(new ExplosionGroundAOE(), 2, new Vector2(0,0), DungeonStart.getDungeonMain().getPlayer());
         actions.add(testProjectileAction);
         actions.add(knockbackAction);
+        actions.add(testExplosionAction);
     }
 
     @Override

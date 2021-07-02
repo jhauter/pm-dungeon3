@@ -50,7 +50,8 @@ public class SlimeBossBattle extends BossBattle {
 
     @Override
     protected void switchPhase() {
-        if(currentPhase.active && boss.getCurrentHealth() <= 75 && currentPhase == phases.get("start")) {
+        var hpPercent = boss.getCurrentHealth() / boss.getMaxStats().getStat(CreatureStatsAttribs.HEALTH);
+        if(currentPhase.active && hpPercent <= 0.75 && currentPhase == phases.get("start")) {
             var nextPhase = phases.get("second");
             currentPhase.cleanStage();
             currentPhase.active = false;
@@ -58,7 +59,7 @@ public class SlimeBossBattle extends BossBattle {
             getCurrentPhase().init();
         }
 
-        if(!shouldEnd && currentPhase == phases.get("second") && boss.getCurrentHealth() <= 25) {
+        if(!shouldEnd && currentPhase == phases.get("second") && hpPercent <= 0.25) {
             currentPhase.cleanStage();
             currentPhase.active = false;
             var demon = new DemonBossBattle(this.level);
