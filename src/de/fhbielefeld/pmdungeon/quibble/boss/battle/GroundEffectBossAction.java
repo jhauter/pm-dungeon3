@@ -93,11 +93,8 @@ public class GroundEffectBossAction extends BossAction {
     public void execute() {
         super.execute();
         counter++;
-//        System.out.println("Using ground effect");
         if(counter >= wait && !attack) {
             attack = true;
-            //battle.level.spawnEntity(new KnockbackGroundAOE(radius, new Vector2(
-            //this.position.x + BossBattle.boss.getX(), this.position.y + BossBattle.boss.getY())));
             try {
                 var target = effect.getTarget();
                 effect = effect.getClass().getDeclaredConstructor().newInstance(null);
@@ -111,7 +108,7 @@ public class GroundEffectBossAction extends BossAction {
             } catch (NoSuchMethodException e) {
                 e.printStackTrace();
             }
-            if(target == null) {
+            if(this.target == null) {
                 effect.setPosition(this.position.x + battle.getBoss().getX(), this.position.y + battle.getBoss().getY());
             } else {
                 effect.setPosition(this.position.x + target.getX(), this.position.y + target.getY());

@@ -2,6 +2,7 @@ package de.fhbielefeld.pmdungeon.quibble.boss.golem;
 
 import com.badlogic.gdx.math.Vector2;
 import de.fhbielefeld.pmdungeon.quibble.DungeonStart;
+import de.fhbielefeld.pmdungeon.quibble.boss.attacks.ExplosionFollowGroundAOE;
 import de.fhbielefeld.pmdungeon.quibble.boss.attacks.ExplosionGroundAOE;
 import de.fhbielefeld.pmdungeon.quibble.boss.attacks.SpawnGroundAOE;
 import de.fhbielefeld.pmdungeon.quibble.boss.battle.*;
@@ -45,6 +46,11 @@ public class GolemDemoSecondPhase extends BossPhase {
         var testExplosionAction2 = new GroundEffectBossAction(new ExplosionGroundAOE(), 5,2, new Vector2(2,0), DungeonStart.getDungeonMain().getPlayer());
         var testExplosionAction3 = new GroundEffectBossAction(new ExplosionGroundAOE(), 5,2, new Vector2(0,2), DungeonStart.getDungeonMain().getPlayer());
         var testExplosionAction4 = new GroundEffectBossAction(new ExplosionGroundAOE(), 5, 2,new Vector2(-2,0), DungeonStart.getDungeonMain().getPlayer());
+
+        var effect = new ExplosionFollowGroundAOE();
+        var hero = DungeonStart.getDungeonMain().getPlayer();
+        effect.setTarget(hero);
+        actions.add(new GroundEffectBossAction(effect, 10, 2, new Vector2(0,0), hero));
 
         actions.add(testExplosionAction);
         actions.add(spawnAction);

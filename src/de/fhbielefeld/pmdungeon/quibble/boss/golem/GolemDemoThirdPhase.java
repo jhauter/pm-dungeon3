@@ -41,6 +41,11 @@ public class GolemDemoThirdPhase extends BossPhase {
         var testProjectileAction = new ProjectileBossAction(Collections.singletonList(projectile), 150, 20);
         var testExplosionAction = new GroundEffectBossAction(new ExplosionGroundAOE(), 2, new Vector2(0,0), DungeonStart.getDungeonMain().getPlayer());
 
+        for(int i = 0; i<4; ++i) {
+            var action = new GroundEffectBossAction(new ExplosionGroundAOE(), 2, new Vector2((float)Math.pow(-1, i)*2, (float)Math.pow(-1, i+1)*2));
+            actions.add(action);
+        }
+
         actions.add(testExplosionAction);
         actions.add(spawnAction);
         actions.add(knockbackAction);

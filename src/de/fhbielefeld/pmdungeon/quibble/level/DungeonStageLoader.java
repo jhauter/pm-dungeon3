@@ -42,8 +42,6 @@ public class DungeonStageLoader
 	private int golemStageRequirement = 5;
 	private int slimeStageRequirement = 10;
 	
-	private int currentStageNum = 1;
-	
 	private DungeonConverter converter;
 	private Random rng;
 	private String currentlyLoadedDungeonMap;
